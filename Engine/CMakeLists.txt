@@ -12,14 +12,17 @@ include_directories ("vendor/glad/include"
                      "vendor" 
                      "src")
 
-add_subdirectory (glad)
-add_subdirectory(glfw)
+add_subdirectory (vendor/glad)
+add_subdirectory(vendor/glfw)
 
 if(MSVC)
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")
 endif()
 
-add_executable(${PROJECT_NAME} "main.cpp" "src/Shader.cpp" "src/VertexBuffer.cpp" "src/IndexBuffer.cpp" "src/Texture.cpp" "src/VertexArray.h" "src/VertexArray.cpp" "src/VertexBufferLayout.h" "src/gl_headers.h" "vendor/stb_image.cpp")
+file(GLOB ENGINE_SRC "main.cpp" "src/*.cpp" "vendor/stb_image/*.cpp")
+
+
+add_executable(${PROJECT_NAME} ${ENGINE_SRC})
 
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glfw glad)
 
