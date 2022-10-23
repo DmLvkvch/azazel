@@ -17,7 +17,10 @@
 #include <glm/mat4x4.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
-#include <glm/ext/scalar_constants.hpp> 
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -67,11 +70,11 @@ int main()
 
     glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
  
-    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100.0f, -200.0f, 0.0f));
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, 0.0f, 0.0f));
 
-    glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 0.0f));
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(400.0f, 200.0f, 0.0f));
 
-    proj = proj * glm::mat4(1.0f) * model;
+    proj = proj * view * model;
 
     std::string vertCode = readFile("shaders/2d/default.vert.glsl");
 
@@ -114,6 +117,7 @@ int main()
         ib.unbind();
         va.unbind();
         shader.unbind();
+        texture.unbind();
 
         glfwSwapBuffers(window);
         glfwPollEvents();

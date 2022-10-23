@@ -37,8 +37,7 @@ private:
     };
 
 public:
-    VertexBufferLayout() :
-        stride(0) { }
+    VertexBufferLayout() : stride(0) { }
 
     void addFloat(unsigned int count) 
     { 

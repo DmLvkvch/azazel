@@ -10,6 +10,7 @@ set(GLFW_INSTALL OFF CACHE BOOL  "GLFW lib only")
 include_directories ("vendor/glad/include"
                      "vendor/glfw"
 					 "vendor/glm"
+					 "vendor/freetype"
                      "vendor"
                      "src")
 
@@ -17,6 +18,7 @@ add_subdirectory(vendor/glad)
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/glm)
 add_subdirectory(vendor/stb_image)
+add_subdirectory(vendor/freetype)
 
 if(MSVC)
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")
@@ -33,7 +35,7 @@ file(GLOB_RECURSE ENGINE_HEADERS
 
 add_executable(${PROJECT_NAME} "main.cpp" ${ENGINE_HEADERS} ${ENGINE_SRC})
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glfw stb_image glad glm::glm)
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glfw stb_image glad glm::glm freetype)
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/res/shaders/ DESTINATION ${CMAKE_BINARY_DIR}/shaders)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/res/images/ DESTINATION ${CMAKE_BINARY_DIR}/images)

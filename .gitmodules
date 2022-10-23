@@ -7,3 +7,6 @@
 [submodule "Engine/vendor/glfw"]
 	path = Engine/vendor/glfw
 	url = https://github.com/glfw/glfw.git
+[submodule "Engine/vendor/freetype"]
+	path = Engine/vendor/freetype
+	url = https://github.com/freetype/freetype

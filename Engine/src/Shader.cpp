@@ -26,7 +26,12 @@ Shader::Shader(std::string vertexShader, std::string fragmentShader)
 	}
 }
 
-int Shader::getShaderType(ShaderType shaderType)
+Shader::~Shader()
+{
+	glDeleteProgram(rendererId);
+}
+
+int Shader::getShaderType(const ShaderType& shaderType)
 {
 	switch (shaderType)
 	{
@@ -40,18 +45,13 @@ int Shader::getShaderType(ShaderType shaderType)
 	return -1;
 }
 
-unsigned int Shader::compile(const std::string& programCode, ShaderType shaderType)
+unsigned int Shader::compile(const std::string& programCode, const ShaderType& shaderType)
 {
 	unsigned int handle = glCreateShader(getShaderType(shaderType));
 	const char* code = programCode.c_str();
 	glShaderSource(handle, 1, &code, nullptr);
 	glCompileShader(handle);
 	return handle;
-}
-
-Shader::~Shader()
-{
-	glDeleteShader(rendererId);
 }
 
 void Shader::bind()

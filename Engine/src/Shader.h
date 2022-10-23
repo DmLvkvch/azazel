@@ -6,9 +6,6 @@
 class Shader
 {
 private:
-	std::string vertexShader;
-	std::string fragmentShader;
-
 	unsigned int rendererId;
 
 public:
@@ -17,15 +14,14 @@ public:
 	{
 		VERTEX,
 		FRAGMENT,
-		GEOMETRY,
-		UNKNOWN
+		GEOMETRY
 	};
 
 	Shader(std::string vertexShader, std::string fragmentShader);
 
-	int getShaderType(ShaderType shaderType);
+	int getShaderType(const ShaderType& shaderType);
 
-	unsigned int compile(const std::string& programCode, ShaderType shaderType);
+	unsigned int compile(const std::string& programCode, const ShaderType& shaderType);
 
 	~Shader();
 
