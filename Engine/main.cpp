@@ -23,8 +23,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 400;
+const unsigned int SCR_WIDTH = 940;
+const unsigned int SCR_HEIGHT = 560;
 
 std::string readFile(const std::string& file)
 {
@@ -59,11 +59,19 @@ int main()
     }
 
     static const GLfloat vertices[] = {
-         -1.0f , -1  , 0 , 0,
-         -1.0f , 1.0f, 0 , 1,
-         1.0f  , 1.0f, 1 , 1,
-         1.0f  , -1  , 1 , 0
+         0.0f  , 0.0      , 0 , 0,
+         0.0f  , 200.0f   , 0 , 1,
+         200.0f, 200.0f, 1 , 1,
+         200.0f, 0.0   , 1 , 0
     };
+
+    glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
+ 
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100.0f, -200.0f, 0.0f));
+
+    glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 0.0f));
+
+    proj = proj * glm::mat4(1.0f) * model;
 
     std::string vertCode = readFile("shaders/2d/default.vert.glsl");
 
@@ -87,6 +95,7 @@ int main()
 
     shader.bind();
     shader.setUniform1i("texture_0", 0);
+    shader.setMatrix4f("mvp", proj);
 
     while (!glfwWindowShouldClose(window))
     {

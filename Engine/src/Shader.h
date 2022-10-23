@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <glm/glm.hpp>
 
 class Shader
 {
@@ -35,4 +36,5 @@ public:
 	void setUniform1f(const std::string& name, float value);
 	void setUniform1i(const std::string& name, int value);
 	void setUniform4f(const std::string& name, float f0, float f1, float f2, float f3);
+	void setMatrix4f(const std::string& name, const glm::mat4& mvp);
 };
