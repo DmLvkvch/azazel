@@ -18,9 +18,7 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
+#include "Render.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -72,7 +70,7 @@ int main()
  
     glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, 0.0f, 0.0f));
 
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(400.0f, 200.0f, 0.0f));
+    glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 
     proj = proj * view * model;
 
@@ -100,6 +98,9 @@ int main()
     shader.setUniform1i("texture_0", 0);
     shader.setMatrix4f("mvp", proj);
 
+    Render render;
+
+
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
@@ -107,17 +108,10 @@ int main()
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        texture.bind();
-        shader.bind();
-        va.bind();
-        ib.bind();
+        render.draw(va, ib, shader);
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-        ib.unbind();
-        va.unbind();
-        shader.unbind();
-        texture.unbind();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -133,6 +127,8 @@ void processInput(GLFWwindow* window)
     {
         glfwSetWindowShouldClose(window, true);
     }
+
+
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)

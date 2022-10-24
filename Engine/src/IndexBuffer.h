@@ -6,11 +6,15 @@ public:
 
 	unsigned int rendererId;
 
+	int count;
+
 	IndexBuffer(const void* data, int size);
 
 	~IndexBuffer();
 
-	void bind();
+	void bind() const;
 
-	void unbind();
+	void unbind() const;
+
+	int getCount() const;
 };

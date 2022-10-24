@@ -13,6 +13,6 @@ public:
 
 	void addBuffer(VertexBuffer& vb, const VertexBufferLayout& layout);
 
-	void bind();
-	void unbind();
+	void bind() const;
+	void unbind() const;
 };

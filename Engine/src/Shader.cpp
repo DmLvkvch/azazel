@@ -54,12 +54,12 @@ unsigned int Shader::compile(const std::string& programCode, const ShaderType& s
 	return handle;
 }
 
-void Shader::bind()
+void Shader::bind() const
 {
 	glUseProgram(rendererId);
 }
 
-void Shader::unbind()
+void Shader::unbind() const
 {
 	glUseProgram(0);
 }

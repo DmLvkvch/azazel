@@ -25,9 +25,9 @@ public:
 
 	~Shader();
 
-	void bind();
+	void bind() const;
 
-	void unbind();
+	void unbind() const;
 	int getUniformLocation(const std::string& name);
 	void setUniform1f(const std::string& name, float value);
 	void setUniform1i(const std::string& name, int value);

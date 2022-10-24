@@ -9,6 +9,6 @@
 class Render
 {
     public:
-        void clear() const;
-        void draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) const;
+        void clear();
+        void draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader);
 };
