@@ -20,6 +20,10 @@
 
 #include "Render.h"
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 
@@ -60,19 +64,17 @@ int main()
     }
 
     static const GLfloat vertices[] = {
-         0.0f  , 0.0      , 0 , 0,
-         0.0f  , 200.0f   , 0 , 1,
-         200.0f, 200.0f, 1 , 1,
-         200.0f, 0.0   , 1 , 0
+         0.0f  , 0.0      ,0.0f, 0 , 0,
+         0.0f  , 200.0f   ,0.0f, 0 , 1,
+         200.0f, 200.0f   ,0.0f, 1 , 1,
+         200.0f, 0.0      ,0.0f, 1 , 0
     };
 
-    glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
+    glm::mat4 proj = glm::ortho(0.0f, 940.0f, 0.0f, 560.0f, -1.0f, 1.0f);
  
-    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(100.0f, 0.0f, 0.0f));
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 
     glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-
-    proj = proj * view * model;
 
     std::string vertCode = readFile("shaders/2d/default.vert.glsl");
 
@@ -87,7 +89,7 @@ int main()
     IndexBuffer ib(indices, 6);
 
     VertexBufferLayout layout;
-    layout.addFloat(2);
+    layout.addFloat(3);
     layout.addFloat(2);
 
     va.addBuffer(vb, layout);
@@ -100,15 +102,38 @@ int main()
 
     Render render;
 
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init((char *)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
+
+    glm::vec3 translation(0, 0, 0);
 
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
 
+        glm::mat4 mvp = proj * view * glm::translate(glm::mat4(1.0f), translation);;
+
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
 
+
+        shader.bind();
+        shader.setMatrix4f("mvp", mvp);
         render.draw(va, ib, shader);
+        ImGui::SliderFloat("Translation X", &translation.x, 0.0f, 940.0f);
+        ImGui::SliderFloat("Translation Y", &translation.y, 0.0f, 560.0f);
+
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);            
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -117,6 +142,9 @@ int main()
         glfwPollEvents();
     }
 
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
     glfwTerminate();
     return 0;
 }
@@ -127,8 +155,6 @@ void processInput(GLFWwindow* window)
     {
         glfwSetWindowShouldClose(window, true);
     }
-
-
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
