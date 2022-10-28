@@ -76,7 +76,7 @@ int main()
 
     glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 
-    std::string vertCode = readFile("shaders/2d/default.vert.glsl");
+    std::string vertCode = readFile("shaders/default.vert.glsl");
 
     std::string fragCode = readFile("shaders/default.frag.glsl");
 
