@@ -1,16 +1,23 @@
 #pragma once
 
-class IndexBuffer
+namespace Azazel
 {
-public:
+	class IndexBuffer
+	{
+	public:
 
-	unsigned int rendererId;
+		unsigned int rendererId;
 
-	IndexBuffer(const void* data, int size);
+		int count;
 
-	~IndexBuffer();
+		IndexBuffer(const void* data, int size);
 
-	void bind();
+		~IndexBuffer();
 
-	void unbind();
-};
+		void bind() const;
+
+		void unbind() const;
+
+		int getCount() const;
+	};
+}
