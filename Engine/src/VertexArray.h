@@ -3,16 +3,19 @@
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
 
-class VertexArray
+namespace Azazel
 {
-public:
-	unsigned int rendererId;
+	class VertexArray
+	{
+	public:
+		unsigned int rendererId;
 
-	VertexArray();
-	~VertexArray();
+		VertexArray();
+		~VertexArray();
 
-	void addBuffer(VertexBuffer& vb, const VertexBufferLayout& layout);
+		void addBuffer(VertexBuffer& vb, const VertexBufferLayout& layout);
 
-	void bind() const;
-	void unbind() const;
-};
+		void bind() const;
+		void unbind() const;
+	};
+}

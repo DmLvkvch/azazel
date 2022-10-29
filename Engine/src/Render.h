@@ -5,10 +5,14 @@
 #include "VertexArray.h"
 #include "IndexBuffer.h"
 #include "Shader.h"
+#include "ControllersWindow.h"
 
-class Render
+namespace Azazel
 {
-    public:
-        void clear();
-        void draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader);
-};
+    class Render
+    {
+        public:
+            void clear();
+            void draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader);
+    };
+}

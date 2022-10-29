@@ -1,14 +1,17 @@
 #pragma once
 
-class VertexBuffer
+namespace Azazel
 {
-public:
-	unsigned int rendererId;
+	class VertexBuffer
+	{
+	public:
+		unsigned int rendererId;
 
-	VertexBuffer(const void* data, int size);
+		VertexBuffer(const void* data, int size);
 
-	~VertexBuffer();
+		~VertexBuffer();
 
-	void bind() const;
-	void unbind() const;
-};
+		void bind() const;
+		void unbind() const;
+	};
+}

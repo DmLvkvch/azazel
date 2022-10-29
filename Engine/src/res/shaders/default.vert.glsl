@@ -3,14 +3,12 @@
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec2 tex_coord;
 
-out vec4 color;
 out vec2 texCoord;
 
 uniform mat4 mvp;
 
 void main()
 {
-   color = vec4(position, 1.0f);
    texCoord = tex_coord;
    gl_Position = mvp * vec4(position, 1.0f);
 };
