@@ -37,5 +37,6 @@ namespace Azazel
 		void setUniform1i(const std::string& name, int value);
 		void setUniform4f(const std::string& name, float f0, float f1, float f2, float f3);
 		void setMatrix4f(const std::string& name, const glm::mat4& mvp);
+		void setVec3f(const std::string& name, const glm::vec3& vec3);
 	};
 }

@@ -18,19 +18,18 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 
+#include <Mesh.h>
 #include "Render.h"
 #include "Camera.h"
 
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+#include "imgui/ControllersWindow.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window, Azazel::Camera& camera);
 
-// settings
 const unsigned int SCR_WIDTH = 940;
 const unsigned int SCR_HEIGHT = 560;
 
@@ -61,8 +60,6 @@ int main()
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetScrollCallback(window, scroll_callback);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
@@ -70,44 +67,109 @@ int main()
         return -1;
     }
 
-    static const GLfloat vertices[] = {
-         0.0f  , 0.0      ,0.0f, 0 , 0,
-         0.0f  , 200.0f   ,0.0f, 0 , 1,
-         200.0f, 200.0f   ,0.0f, 1 , 1,
-         200.0f, 0.0      ,0.0f, 1 , 0,
+    float vertices[] = {
+         0.0f  , 0.0      ,0.0f,
+         0.0f  , 200.0f   ,0.0f,
+         200.0f, 200.0f   ,0.0f,
+         200.0f, 0.0      ,0.0f,
 
-         0.0f  , 0.0      ,-200.0f, 0 , 0,
-         0.0f  , 200.0f   ,-200.0f, 0 , 1,
-         200.0f, 200.0f   ,-200.0f, 1 , 1,
-         200.0f, 0.0      ,-200.0f, 1 , 0,
+         0.0f  , 0.0      ,-200.0f,
+         0.0f  , 200.0f   ,-200.0f,
+         200.0f, 200.0f   ,-200.0f,
+         200.0f, 0.0      ,-200.0f,
 
-         0.0f  , 0.0      ,0.0f, 0 , 0,
-         0.0f  , 200.0f   ,0.0f, 0 , 1,
-         0.0f, 200.0f     ,-200.0f, 1 , 1,
-         0.0f, 0.0      ,-200.0f, 1 , 0,
+         0.0f  , 0.0      ,0.0f,
+         0.0f  , 200.0f   ,0.0f,
+         0.0f, 200.0f     ,-200.0f,
+         0.0f, 0.0        ,-200.0f,
 
-         200.0f  , 0.0      ,0.0f, 0 , 0,
-         200.0f  , 200.0f   ,0.0f, 0 , 1,
-         200.0f, 200.0f     ,-200.0f, 1 , 1,
-         200.0f, 0.0      ,-200.0f, 1 , 0,
+         200.0f  , 0.0      ,0.0f,
+         200.0f  , 200.0f   ,0.0f,
+         200.0f, 200.0f     ,-200.0f,
+         200.0f, 0.0        ,-200.0f,
 
-         0.0f  , 200.0      ,0.0f, 0 , 0,
-         0.0f  , 200.0f   ,-200.0f, 0 , 1,
-         200.0f, 200.0f   ,-200.0f, 1 , 1,
-         200.0f, 200.0      ,0.0f, 1 , 0,
+         0.0f  , 200.0      ,0.0f,
+         0.0f  , 200.0f     ,-200.0f,
+         200.0f, 200.0f     ,-200.0f,
+         200.0f, 200.0      ,0.0f,
 
-         0.0f  , 0.0      ,0.0f, 0 , 0,
-         0.0f  , 0.0f   ,-200.0f, 0 , 1,
-         200.0f, 0.0f   ,-200.0f, 1 , 1,
-         200.0f, 0.0      ,0.0f, 1 , 0,
+         0.0f  , 0.0      ,0.0f,
+         0.0f  , 0.0f     ,-200.0f,
+         200.0f, 0.0f     ,-200.0f,
+         200.0f, 0.0      ,0.0f
     };
 
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 1000.0f);
-    glm::mat4 model = glm::mat4(1.0f);
+    float texC[] = {
+                    0 , 0,
+                    0 , 1,
+                    1 , 1,
+                    1 , 0,
 
-    std::string vertCode = readFile("shaders/default.vert.glsl");
+                    0 , 0,
+                    0 , 1,
+                    1 , 1,
+                    1 , 0,
 
-    std::string fragCode = readFile("shaders/default.frag.glsl");
+                    0 , 0,
+                    0 , 1,
+                    1 , 1,
+                    1 , 0,
+
+                    0 , 0,
+                    0 , 1,
+                    1 , 1,
+                    1 , 0,
+
+                    0 , 0,
+                    0 , 1,
+                    1 , 1,
+                    1 , 0,
+
+                    0 , 0,
+                    0 , 1,
+                    1 , 1,
+                    1 , 0
+    };
+
+    float normals[] = {
+            0 , 0, 1,
+            0 , 0, 1,
+            0 , 0, 1,
+            0 , 0, 1,
+
+            0 , 0, -1,
+            0 , 0, -1,
+            0 , 0, -1,
+            0 , 0, -1,
+
+            -1 , 0, 0,
+            -1 , 0, 0,
+            -1 , 0, 0,
+            -1 , 0, 0,
+
+            1 , 0, 0,
+            1 , 0, 0,
+            1 , 0, 0,
+            1 , 0, 0,
+
+            0 , 1, 0,
+            0 , 1, 0,
+            0 , 1, 0,
+            0 , 1, 0,
+
+            0 , -1, 0,
+            0 , -1, 0,
+            0 , -1, 0,
+            0 , -1, 0
+    };
+
+    glm::mat4 projection = glm::perspective(glm::radians(90.0f), (float) SCR_WIDTH / SCR_HEIGHT, 0.1f, 1000.0f);
+    //glm::mat4 projection = glm::ortho(0.0f, 940.0f, 0.0f, 560.0f, -100.0f, 100.0f);
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 200.0f));
+
+    std::string vertCode = readFile("shaders/diffuse.light.vert.glsl");
+
+    std::string fragCode = readFile("shaders/diffuse.light.frag.glsl");
 
     Shader shader(vertCode, fragCode);
 
@@ -119,15 +181,60 @@ int main()
                                 20, 21, 22, 20, 22, 23,
                                 };
 
+    std::vector<float> norms;
+
+    for (int i = 0; i < 36; i+=3)
+    {
+        float a = vertices[3 * indices[i] + 0];
+        float b = vertices[3 * indices[i] + 1];
+        float c = vertices[3 * indices[i] + 2];
+        
+        glm::vec3 A(a, b, c);
+
+        a = vertices[3 * indices[i + 1] + 0];
+        b = vertices[3 * indices[i + 1] + 1];
+        c = vertices[3 * indices[i + 1] + 2];
+
+        glm::vec3 B(a, b, c);
+
+        a = vertices[3 * indices[i + 2] + 0];
+        b = vertices[3 * indices[i + 2] + 1];
+        c = vertices[3 * indices[i + 2] + 2];
+
+        glm::vec3 C(a, b, c);
+
+        glm::vec3 n = glm::normalize(glm::cross(B - A, C - A));
+
+        norms.push_back(n.x);
+        norms.push_back(n.y);
+        norms.push_back(n.z);
+
+        norms.push_back(n.x);
+        norms.push_back(n.y);
+        norms.push_back(n.z);
+    }
+
+
+    Mesh mesh = Mesh::genQuadMesh(0.0f, 0.0f, -100.0f, 300.0f, 300.0f);
+
     VertexArray va;
+   // VertexBuffer vb(mesh.vertices.data(), sizeof (float) * mesh.vertices.size());
+   // IndexBuffer ib(mesh.indices.data(), mesh.indices.size());
     VertexBuffer vb(vertices, sizeof(vertices));
+    VertexBuffer vbt(texC, sizeof(texC));
+    VertexBuffer vbn(norms.data(), norms.size() * sizeof(float));
     IndexBuffer ib(indices, 36);
 
     VertexBufferLayout layout;
     layout.addFloat(3);
-    layout.addFloat(2);
-
     va.addBuffer(vb, layout);
+    VertexBufferLayout cl;
+    cl.addFloat(2);
+    va.addBuffer(vbt, cl, 1);
+
+    VertexBufferLayout cn;
+    cn.addFloat(3);
+    va.addBuffer(vbn, cn, 2);
 
     Texture texture("images/cat.png");
 
@@ -143,37 +250,39 @@ int main()
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init((char *)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
 
-    glm::vec3 translation(0.0f, 0.0f, 0.0f);
-
     Camera camera;
     glEnable(GL_DEPTH_TEST);
+    ControllerWindow c;
+
+    glm::vec3 lightPos(0.0, 0.0, 0.0);
+
     while (!glfwWindowShouldClose(window))
     {
         processInput(window, camera);
         render.clear();
+
+        glm::mat4 mvp = projection * camera.getViewLookAtMatrix() * model;
+
+        shader.bind();
+        shader.setMatrix4f("mvp", mvp);
+        shader.setMatrix4f("model", model);
+        shader.setVec3f("lightPos", lightPos);
+        render.draw(va, ib, shader);
+
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        ImGui::SliderFloat("Translation X", &translation.x, 0.0f, 940.0f);
-        ImGui::SliderFloat("Translation Y", &translation.y, 0.0f, 560.0f);
-        ImGui::SliderFloat("Translation Z", &translation.z, 0.0f, 560.0f);
+        ImGui::SliderFloat("Translation X", &lightPos.x, 0.0f, 940.0f);
+        ImGui::SliderFloat("Translation Y", &lightPos.y, 0.0f, 560.0f);
+        ImGui::SliderFloat("Translation Z", &lightPos.z, 0.0f, 560.0f);
 
-        camera.setRotation(translation);
 
-        glm::mat4 mvp = projection * camera.getViewMatrix() * model;
-
-        shader.bind();
-        shader.setMatrix4f("mvp", mvp);
-        render.draw(va, ib, shader);
-
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);            
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -189,32 +298,36 @@ int main()
 void processInput(GLFWwindow* window, Camera& camera)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    {
         glfwSetWindowShouldClose(window, true);
-
+    }
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    {
         camera.moveUp(10.0f / 100);
+    }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    {
         camera.moveUp(-10.0f / 100);
+    }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    {
         camera.moveRight(-10.0f / 100);
+    }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    {
         camera.moveRight(10.0f / 100);
+    }
     if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
+    {
         camera.moveForward(10.0f / 100);
+    }
     if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
+    {
         camera.moveForward(-10.0f / 100);
+    }
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
-}
-
-void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
-{
-
-}
-
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
 }

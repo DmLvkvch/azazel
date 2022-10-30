@@ -96,4 +96,8 @@ namespace Azazel
 		glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &mvp[0][0]);
 	}
 
+	void Shader::setVec3f(const std::string& name, const glm::vec3& vec3)
+	{
+		glUniform3fv(getUniformLocation(name), 1, &vec3.x);
+	}
 }

@@ -4,12 +4,11 @@ namespace Azazel
 {
 	class IndexBuffer
 	{
-	public:
-
+	private:
 		unsigned int rendererId;
 
 		int count;
-
+	public:
 		IndexBuffer(const void* data, int size);
 
 		~IndexBuffer();

@@ -12,25 +12,18 @@ namespace Azazel
 
 	void Camera::setPosition(glm::vec3 position)
 	{
-
 	}
 
 	void Camera::setScale(glm::vec3 scale)
 	{
-
 	}
 
 	void Camera::setRotation(glm::vec3 rotation)
 	{
-		if (this->rotation == rotation)
-			return;
-		this->position = glm::vec3(glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x),glm::vec3(-1.0f, 0.0f, 0.0f)) * glm::vec4(this->position, 1.0f));
-		this->rotation = rotation;
 	}
 
 	void Camera::setDirection(glm::vec3 direction)
 	{
-
 	}
 	
 	void Camera::moveForward(float z)
@@ -45,8 +38,8 @@ namespace Azazel
 	{
 		this->position = this->position + glm::vec3(0.0f, y, 0.0f);
 	}
-	glm::mat4 Camera::getViewMatrix()
+	glm::mat4 Camera::getViewLookAtMatrix(glm::vec3 lookAt, glm::vec3 up)
 	{
-		return glm::lookAt(position, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+		return glm::lookAt(position, lookAt, up);
 	}
 }

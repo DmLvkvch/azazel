@@ -13,7 +13,7 @@
       "variables": [
         {
           "name": "CMAKE_INSTALL_PREFIX",
-          "value": "C:/Users/Dmitry/dev/Engine/out/install/x64-Debug",
+          "value": "C:/Users/Dmitry/dev/Engine/install/x64-Debug",
           "type": "PATH"
         }
       ]

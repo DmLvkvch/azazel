@@ -24,15 +24,19 @@ namespace Azazel
         createTexture(data, width, height, bpp);
     }
 
-    Texture::Texture()
+    Texture::Texture(int color)
     {
         unsigned char *data = new unsigned char[1024 * 1024 * 4];
+        unsigned char b = color & 0xff;
+        unsigned char g = (color >> 8) & 0xff;
+        unsigned char r = (color >> 16) & 0xff;
+        unsigned char a = (color >> 24) & 0xff;
         for (int i = 0; i < 1024 * 1024 * 4; i+=4)
         {
-            data[i] = 255;
-            data[i + 1] = 0;
-            data[i + 2] = 0;
-            data[i + 3] = 255;
+            data[i] = r;
+            data[i + 1] = g;
+            data[i + 2] = b;
+            data[i + 3] = a;
         }
         createTexture(data, 1024, 1024, 4);
         delete[] data;

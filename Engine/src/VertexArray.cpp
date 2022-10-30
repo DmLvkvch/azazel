@@ -14,7 +14,7 @@ namespace Azazel
         glDeleteVertexArrays(1, &rendererId);
     }
 
-    void VertexArray::addBuffer(VertexBuffer& vertexBuffer, const VertexBufferLayout& layout)
+    void VertexArray::addBuffer(VertexBuffer& vertexBuffer, const VertexBufferLayout& layout, int attribOffset)
     {
         bind();
         vertexBuffer.bind();
@@ -23,8 +23,8 @@ namespace Azazel
         for (unsigned int i = 0; i < elements.size(); i++)
         {
             const VertexBufferElement& element = elements[i];
-            glEnableVertexAttribArray(i);
-            glVertexAttribPointer(i, element.count, element.type, element.normalized,
+            glEnableVertexAttribArray(i + attribOffset);
+            glVertexAttribPointer(i + attribOffset, element.count, element.type, element.normalized,
                                     layout.getStride(), reinterpret_cast<const void *>(offset));
             offset += element.count * VertexBufferElement::getSizeOfType(element.type);
         }

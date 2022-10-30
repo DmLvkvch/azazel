@@ -6,8 +6,8 @@
 
 namespace Azazel
 {
-	Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const Texture& texture)
-		: texture("")
+	Mesh::Mesh(const std::vector<float>& vertices, const std::vector<unsigned int>& indices, const Texture& texture)
+		: texture(texture), vertices(vertices), indices(indices)
 	{
 		
 	}
@@ -17,11 +17,15 @@ namespace Azazel
 
 	}
 
-	static Mesh genQuadMesh(float x, float y, float width, float height)
+	Mesh Mesh::genQuadMesh(float x, float y, float z, float width, float height)
 	{
-		std::vector<Vertex> vertices;
-		std::vector<unsigned int> indices;
+		std::vector<float> vertices {x,         y,          z, 0.0, 0.0,
+									 x,         y + height, z, 0.0, 1.0,
+									 x + width, y + height, z, 1.0, 1.0,
+									 x + width, y,          z, 1.0, 0.0};
+		
+		std::vector<unsigned int> indices {0, 1, 2, 0, 2, 3};
 
-		return Mesh(vertices, indices, Texture());
+		return Mesh(vertices, indices, Texture(0xff00ff00));
 	}
 }

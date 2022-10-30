@@ -36,7 +36,7 @@ namespace Azazel
 	public:
 		void createTexture(unsigned char* data, int width, int height, int bpp);
 		Texture(std::string path);
-		Texture();
+		Texture(int color);
 		Texture(unsigned char* data, int width, int height, int bpp);
 		~Texture();
 		void bind(unsigned int slot = 0);
