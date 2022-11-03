@@ -45,7 +45,7 @@ namespace Azazel
     void Texture::createTexture(unsigned char* data, int width, int height, int bpp)
     {
         glGenTextures(1, &rendererId);
-        glBindTexture(GL_TEXTURE_2D, rendererId);
+        bind();
         this->width = width;
         this->height = height;
         this->bpp = bpp;
@@ -61,6 +61,7 @@ namespace Azazel
         {
             std::cout << "Failed to load texture" << std::endl;
         }
+        unbind();
     }
 
     Texture::~Texture()

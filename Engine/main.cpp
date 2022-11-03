@@ -27,6 +27,8 @@
 #include <imgui_impl_opengl3.h>
 #include "imgui/ControllersWindow.h"
 
+#include "FrameBuffer.h"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window, Azazel::Camera& camera);
 
@@ -129,7 +131,7 @@ int main()
                     0 , 1,
                     1 , 1,
                     1 , 0
-    };
+                };
 
     float normals[] = {
             0 , 0, 1,
@@ -167,9 +169,9 @@ int main()
     //glm::mat4 projection = glm::ortho(0.0f, 940.0f, 0.0f, 560.0f, -100.0f, 100.0f);
     glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 200.0f));
 
-    std::string vertCode = readFile("shaders/diffuse.light.vert.glsl");
+    std::string vertCode = readFile("shaders/light/diffuse.light.vert.glsl");
 
-    std::string fragCode = readFile("shaders/diffuse.light.frag.glsl");
+    std::string fragCode = readFile("shaders/light/diffuse.light.frag.glsl");
 
     Shader shader(vertCode, fragCode);
 
@@ -222,7 +224,7 @@ int main()
    // IndexBuffer ib(mesh.indices.data(), mesh.indices.size());
     VertexBuffer vb(vertices, sizeof(vertices));
     VertexBuffer vbt(texC, sizeof(texC));
-    VertexBuffer vbn(norms.data(), norms.size() * sizeof(float));
+    VertexBuffer vbn(normals, sizeof(normals));
     IndexBuffer ib(indices, 36);
 
     VertexBufferLayout layout;
@@ -237,7 +239,6 @@ int main()
     va.addBuffer(vbn, cn, 2);
 
     Texture texture("images/cat.png");
-
     shader.bind();
     shader.setUniform1i("texture_0", 0);
 
@@ -255,17 +256,20 @@ int main()
     ControllerWindow c;
 
     glm::vec3 lightPos(0.0, 0.0, 0.0);
+    shader.setMatrix4f("model", model);
+
+    FrameBuffer frameBuffer;
 
     while (!glfwWindowShouldClose(window))
     {
         processInput(window, camera);
+        //frameBuffer.bind();
         render.clear();
 
         glm::mat4 mvp = projection * camera.getViewLookAtMatrix() * model;
-
+        texture.bind();
         shader.bind();
         shader.setMatrix4f("mvp", mvp);
-        shader.setMatrix4f("model", model);
         shader.setVec3f("lightPos", lightPos);
         render.draw(va, ib, shader);
 
@@ -283,7 +287,7 @@ int main()
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+     //   frameBuffer.bind();
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -303,27 +307,27 @@ void processInput(GLFWwindow* window, Camera& camera)
     }
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        camera.moveUp(10.0f / 100);
+        camera.moveUp(10.0f / 10);
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        camera.moveUp(-10.0f / 100);
+        camera.moveUp(-10.0f / 10);
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        camera.moveRight(-10.0f / 100);
+        camera.moveRight(-10.0f / 10);
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        camera.moveRight(10.0f / 100);
+        camera.moveRight(10.0f / 10);
     }
     if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
     {
-        camera.moveForward(10.0f / 100);
+        camera.moveForward(10.0f / 10);
     }
     if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
     {
-        camera.moveForward(-10.0f / 100);
+        camera.moveForward(-10.0f / 10);
     }
 }
 

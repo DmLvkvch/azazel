@@ -45,6 +45,11 @@ namespace Azazel
 		void setTextureFilter(TextureFilter textureFilter);
 		void setTextureWrap(TextureWrap textureWrap);
 
+		int getRendererId()
+		{
+			return rendererId;
+		}
+
 		int getWidth() const
 		{
 			return width;

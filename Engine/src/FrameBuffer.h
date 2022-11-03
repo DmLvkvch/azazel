@@ -1,10 +1,18 @@
 #pragma once
 
-class FrameBuffer
+#include "Texture.h"
+
+namespace Azazel
 {
-private:
-	unsigned int rendererId;
-public:
-	void bind();
-	void unbind();
-};
+	class FrameBuffer
+	{
+	private:
+		unsigned int rendererId;
+	public:
+		Texture* texture;
+		FrameBuffer();
+		~FrameBuffer();
+		void bind();
+		void unbind();
+	};
+}
