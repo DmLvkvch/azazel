@@ -22,7 +22,7 @@ jobs:
 
     - name: Install OpenGl
       run: |
-        apt-get install libgl1-mesa-dev
+        sudo apt-get install libgl1-mesa-dev
       shell: bash  
 
     - name: Configure CMake
