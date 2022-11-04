@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Texture.h"
+#include "FrameBufferTarget.h"
 
 namespace Azazel
 {
@@ -10,9 +11,12 @@ namespace Azazel
 		unsigned int rendererId;
 	public:
 		Texture* texture;
+		FrameBufferTarget* frameBufferDepthTarget;
 		FrameBuffer();
 		~FrameBuffer();
 		void bind();
 		void unbind();
+		void setTextureTarget(Texture* texture);
+		void setFrameBufferDepthTarget(FrameBufferTarget* frameBufferTarget);
 	};
 }

@@ -260,10 +260,29 @@ int main()
 
     FrameBuffer frameBuffer;
 
+    Mesh m = Mesh::genQuadMesh(0, 0, 0, 500, 500);
+    //m.texture = frameBuffer.texture;
+
+     VertexArray v;
+   // VertexBuffer vb(mesh.vertices.data(), sizeof (float) * mesh.vertices.size());
+   // IndexBuffer ib(mesh.indices.data(), mesh.indices.size());
+    VertexBuffer a(m.vertices.data(), m.vertices.size() * sizeof(float));
+    IndexBuffer b(m.indices.data(),  m.indices.size());
+
+    VertexBufferLayout l;
+    l.addFloat(3);
+    l.addFloat(2);
+    v.addBuffer(a, l);
+
+    Shader defaultShader(readFile("shaders/default.vert.glsl"), readFile("shaders/default.frag.glsl"));
+    frameBuffer.texture->bind();
+    defaultShader.bind();
+    defaultShader.setUniform1i("texture_0", 0);
+
     while (!glfwWindowShouldClose(window))
     {
         processInput(window, camera);
-        //frameBuffer.bind();
+        frameBuffer.bind();
         render.clear();
 
         glm::mat4 mvp = projection * camera.getViewLookAtMatrix() * model;
@@ -287,7 +306,21 @@ int main()
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-     //   frameBuffer.bind();
+        frameBuffer.unbind();
+
+        render.clear();
+        frameBuffer.texture->bind();
+        defaultShader.bind();
+        glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
+
+        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100.0f, -200.0f, 0.0f));
+
+        glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+
+        proj = proj * glm::mat4(1.0f) * model;
+        defaultShader.setMatrix4f("mvp", proj);
+        render.draw(v, b, defaultShader);
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

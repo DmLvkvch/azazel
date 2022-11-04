@@ -26,19 +26,21 @@ namespace Azazel
 
     Texture::Texture(int color)
     {
-        unsigned char *data = new unsigned char[1024 * 1024 * 4];
+        int width = 512;
+        int height = 512;
+        unsigned char *data = new unsigned char[width * height * 4];
         unsigned char b = color & 0xff;
         unsigned char g = (color >> 8) & 0xff;
         unsigned char r = (color >> 16) & 0xff;
         unsigned char a = (color >> 24) & 0xff;
-        for (int i = 0; i < 1024 * 1024 * 4; i+=4)
+        for (int i = 0; i < width * height * 4; i+=4)
         {
             data[i] = r;
             data[i + 1] = g;
             data[i + 2] = b;
             data[i + 3] = a;
         }
-        createTexture(data, 1024, 1024, 4);
+        createTexture(data, width, height, 4);
         delete[] data;
     }
 
