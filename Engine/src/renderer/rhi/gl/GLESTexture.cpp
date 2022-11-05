@@ -1,4 +1,4 @@
-#include "Texture.h"
+#include "GLESTexture.h"
 
 #include "gl_headers.h"
 
@@ -8,27 +8,26 @@
 
 namespace Azazel
 {
-    Texture::Texture(std::string path)
-    {
 
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char* data = stbi_load(path.c_str(), &width, &height, &bpp, 4);
-    
-    createTexture(data, width, height, bpp);
-    stbi_image_free(data);
+    GLESTexture::GLESTexture(std::string path)
+    {
+        stbi_set_flip_vertically_on_load(true);
+        unsigned char* data = stbi_load(path.c_str(), &width, &height, &bpp, 4);
+        createTexture(data, width, height, bpp);
+        stbi_image_free(data);
     }
 
-    Texture::Texture(unsigned char* data, int width, int height, int bpp)
+    GLESTexture::GLESTexture(unsigned char* data, int width, int height, int bpp)
         :width(width), height(height), bpp(bpp)
     {
         createTexture(data, width, height, bpp);
     }
 
-    Texture::Texture(int color)
+    GLESTexture::GLESTexture(int color)
     {
         int width = 512;
         int height = 512;
-        unsigned char *data = new unsigned char[width * height * 4];
+        unsigned char* data = new unsigned char[width * height * 4];
         unsigned char b = color & 0xff;
         unsigned char g = (color >> 8) & 0xff;
         unsigned char r = (color >> 16) & 0xff;
@@ -44,7 +43,7 @@ namespace Azazel
         delete[] data;
     }
 
-    void Texture::createTexture(unsigned char* data, int width, int height, int bpp)
+    void GLESTexture::createTexture(unsigned char* data, int width, int height, int bpp)
     {
         glGenTextures(1, &rendererId);
         bind();
@@ -52,8 +51,8 @@ namespace Azazel
         this->height = height;
         this->bpp = bpp;
 
-        setTextureFilter(NEAREST);
-        setTextureWrap(REPEAT);
+        setTextureFilter(Texture::NEAREST);
+        setTextureWrap(Texture::REPEAT);
 
         if (data)
         {
@@ -66,31 +65,31 @@ namespace Azazel
         unbind();
     }
 
-    Texture::~Texture()
+    GLESTexture::~GLESTexture()
     {
         glDeleteTextures(1, &rendererId);
     }
 
-    void Texture::bind(unsigned int slot)
+    void GLESTexture::bind(unsigned int slot)
     {
         glActiveTexture(GL_TEXTURE0 + slot);
         glBindTexture(GL_TEXTURE_2D, rendererId);
     }
 
-    void Texture::unbind()
+    void GLESTexture::unbind()
     {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    unsigned int Texture::textureFilterToGLFormat (TextureFilter textureFilter)
+    unsigned int GLESTexture::textureFilterToGLFormat (Texture::TextureFilter textureFilter)
     {
         switch (textureFilter)
         {
-            case LINEAR:
+            case Texture::LINEAR:
             {
                 return GL_LINEAR;
             }
-            case NEAREST:
+            case Texture::NEAREST:
             {
                 return GL_NEAREST;
             }
@@ -99,23 +98,23 @@ namespace Azazel
     }
 
 
-    unsigned int Texture::textureWrapToGLFormat (TextureWrap textureWrap)
+    unsigned int GLESTexture::textureWrapToGLFormat (Texture::TextureWrap textureWrap)
     {
         switch (textureWrap)
         {
-            case REPEAT:
+            case Texture::REPEAT:
             {
                 return GL_REPEAT;
             }
-            case MIRRORED_REPEAT:
+            case Texture::MIRRORED_REPEAT:
             {
                 return GL_MIRRORED_REPEAT;
             }
-            case CLAMP_TO_EDGE:
+            case Texture::CLAMP_TO_EDGE:
             {
                 return GL_CLAMP_TO_EDGE;
             }
-            case CLAMP_TO_BORDER:
+            case Texture::CLAMP_TO_BORDER:
             {
                 return GL_CLAMP_TO_BORDER;
             }
@@ -123,7 +122,7 @@ namespace Azazel
         return 0;
     }
 
-    void Texture::setTextureFilter(TextureFilter textureFilter)
+    void GLESTexture::setTextureFilter(Texture::TextureFilter textureFilter)
     {
         this->textureFilter = textureFilter;
         unsigned int  filter = textureFilterToGLFormat(textureFilter);
@@ -131,11 +130,26 @@ namespace Azazel
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
     }
 
-    void Texture::setTextureWrap(TextureWrap textureWrap)
+    void GLESTexture::setTextureWrap(Texture::TextureWrap textureWrap)
     {
         this->textureWrap = textureWrap;
         unsigned int wrap = textureWrapToGLFormat(textureWrap);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+    }
+
+    unsigned int GLESTexture::getRendererId()
+    {
+        return rendererId;
+    }
+
+    int GLESTexture::getWidth()
+    {
+        return width;
+    }
+
+    int GLESTexture::getHeight()
+    {
+        return height;
     }
 }

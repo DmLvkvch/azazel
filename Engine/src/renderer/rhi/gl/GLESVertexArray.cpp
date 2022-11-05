@@ -1,20 +1,20 @@
-#include "VertexArray.h"
+#include "GLESVertexArray.h"
 
 #include "gl_headers.h"
 
 namespace Azazel
 {
-    VertexArray::VertexArray()
+    GLESVertexArray::GLESVertexArray()
     {
         glGenVertexArrays(1, &rendererId);
     }
 
-    VertexArray::~VertexArray()
+    GLESVertexArray::~GLESVertexArray()
     {
         glDeleteVertexArrays(1, &rendererId);
     }
 
-    void VertexArray::addBuffer(VertexBuffer& vertexBuffer, const VertexBufferLayout& layout, int attribOffset)
+    void GLESVertexArray::addBuffer(GLESVertexBuffer& vertexBuffer, const GLESVertexBufferLayout& layout, int attribOffset)
     {
         bind();
         vertexBuffer.bind();
@@ -32,12 +32,12 @@ namespace Azazel
         unbind();
     }
 
-    void VertexArray::bind() const
+    void GLESVertexArray::bind() const
     {
         glBindVertexArray(rendererId);
     }
 
-    void VertexArray::unbind() const
+    void GLESVertexArray::unbind() const
     {
         glBindVertexArray(0);
     }

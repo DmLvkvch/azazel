@@ -1,19 +1,19 @@
 #version 330 core
-layout (location = 0) in vec3 a_positions;
-layout (location = 1) in vec2 a_tex_coords;
-layout (location = 2) in vec3 a_normals;
+layout (location = 0) in vec3 a_position;
+layout (location = 1) in vec2 a_texture_coord;
+layout (location = 2) in vec3 a_normal;
 
 out vec3 normal;
 out vec3 fragPos;
 out vec2 texCoord;
 
-uniform mat4 mvp;
-uniform mat4 model;
+uniform mat4 u_mvp;
+uniform mat4 u_model;
 
 void main()
 {
-    normal = mat3(transpose(inverse(model))) * a_normals;
-    fragPos = vec3(model * vec4(a_positions, 1.0));
-    texCoord = a_tex_coords;
-    gl_Position = mvp * vec4(a_positions, 1.0f);
+    normal = mat3(transpose(inverse(model))) * a_normal;
+    fragPos = vec3(u_model * vec4(a_position, 1.0));
+    texCoord = a_texture_coord;
+    gl_Position = u_mvp * vec4(a_position, 1.0f);
 }

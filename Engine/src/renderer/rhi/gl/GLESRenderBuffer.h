@@ -2,14 +2,14 @@
 
 namespace Azazel
 {
-    class RenderBuffer
+    class GLESRenderBuffer
     {
     private:
         unsigned int rendererId;
     public:
-        RenderBuffer(int width, int height);
+        GLESRenderBuffer(int width, int height);
         
-        ~RenderBuffer();
+        ~GLESRenderBuffer();
 
         void bind();
 

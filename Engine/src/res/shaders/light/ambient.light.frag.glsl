@@ -2,7 +2,7 @@
 
 in vec2 texCoord;
 
-uniform sampler2D texture_0;
+uniform sampler2D u_texture_0;
 
 void main()
 {

@@ -1,10 +1,10 @@
-#include "IndexBuffer.h"
+#include "GLESIndexBuffer.h"
 
 #include "gl_headers.h"
 
 namespace Azazel
 {
-    IndexBuffer::IndexBuffer(const void* data, int count)
+    GLESIndexBuffer::GLESIndexBuffer(const void* data, int count)
     {
         this->count = count;
         glGenBuffers(1, &rendererId);
@@ -13,22 +13,22 @@ namespace Azazel
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    IndexBuffer::~IndexBuffer()
+    GLESIndexBuffer::~GLESIndexBuffer()
     {
         glDeleteBuffers(1, &rendererId);
     }
 
-    void IndexBuffer::bind() const
+    void GLESIndexBuffer::bind() const
     {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendererId);
     }
 
-    void IndexBuffer::unbind() const
+    void GLESIndexBuffer::unbind() const
     {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    int IndexBuffer::getCount() const
+    int GLESIndexBuffer::getCount() const
     {
         return count;
     }

@@ -2,14 +2,14 @@
 
 namespace Azazel
 {
-	class VertexBuffer
+	class GLESVertexBuffer
 	{
 	public:
 		unsigned int rendererId;
 
-		VertexBuffer(const void* data, int size);
+		GLESVertexBuffer(const void* data, int size);
 
-		~VertexBuffer();
+		~GLESVertexBuffer();
 
 		void bind() const;
 		void unbind() const;

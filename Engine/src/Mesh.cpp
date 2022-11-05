@@ -2,12 +2,11 @@
 
 #include <vector>
 #include "Vertex.h"
-#include "Texture.h"
 
 namespace Azazel
 {
-	Mesh::Mesh(const std::vector<float>& vertices, const std::vector<unsigned int>& indices, const Texture& texture)
-		: texture(texture), vertices(vertices), indices(indices)
+	Mesh::Mesh(const std::vector<float>& vertices, const std::vector<unsigned int>& indices)
+		: vertices(vertices), indices(indices)
 	{
 		
 	}
@@ -26,6 +25,6 @@ namespace Azazel
 		
 		std::vector<unsigned int> indices {0, 1, 2, 0, 2, 3};
 
-		return Mesh(vertices, indices, Texture(0xff00ff00));
+		return Mesh(vertices, indices);
 	}
 }

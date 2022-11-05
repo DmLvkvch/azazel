@@ -1,10 +1,10 @@
-#include "VertexBuffer.h"
+#include "GLESVertexBuffer.h"
 
 #include "gl_headers.h"
 
 namespace Azazel
 {
-    VertexBuffer::VertexBuffer(const void* data, int size)
+    GLESVertexBuffer::GLESVertexBuffer(const void* data, int size)
     {
         glGenBuffers(1, &rendererId);
         glBindBuffer(GL_ARRAY_BUFFER, rendererId);
@@ -12,17 +12,17 @@ namespace Azazel
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
-    VertexBuffer::~VertexBuffer()
+    GLESVertexBuffer::~GLESVertexBuffer()
     {
         glDeleteBuffers(1, &rendererId);
     }
 
-    void VertexBuffer::bind() const
+    void GLESVertexBuffer::bind() const
     {
         glBindBuffer(GL_ARRAY_BUFFER, rendererId);
     }
 
-    void VertexBuffer::unbind() const
+    void GLESVertexBuffer::unbind() const
     {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }

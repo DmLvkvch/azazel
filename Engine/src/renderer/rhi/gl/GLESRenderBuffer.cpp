@@ -1,10 +1,10 @@
-#include "RenderBuffer.h"
+#include "GLESRenderBuffer.h"
 
 #include "gl_headers.h"
 
 namespace Azazel
 {
-    RenderBuffer::RenderBuffer(int width, int height)
+    GLESRenderBuffer::GLESRenderBuffer(int width, int height)
     {
         glGenRenderbuffers(1, &rendererId);
         bind();
@@ -12,17 +12,17 @@ namespace Azazel
         unbind();
     }
 
-    RenderBuffer::~RenderBuffer()
+    GLESRenderBuffer::~GLESRenderBuffer()
     {
         glDeleteRenderbuffers(1, &rendererId);
     }
     
-    void RenderBuffer::bind()
+    void GLESRenderBuffer::bind()
     {
         glBindRenderbuffer(GL_RENDERBUFFER, rendererId);
     }
 
-    void RenderBuffer::unbind()
+    void GLESRenderBuffer::unbind()
     {
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
     }

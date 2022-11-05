@@ -5,12 +5,6 @@
 #include <fstream>
 #include <streambuf>
 
-#include "Shader.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-
-#include "VertexArray.h"
-#include "Texture.h"
 
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
@@ -18,8 +12,7 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 
-#include <Mesh.h>
-#include "Render.h"
+#include "Mesh.h"
 #include "Camera.h"
 
 #include <imgui.h>
@@ -27,7 +20,6 @@
 #include <imgui_impl_opengl3.h>
 #include "imgui/ControllersWindow.h"
 
-#include "FrameBuffer.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window, Azazel::Camera& camera);
@@ -173,8 +165,6 @@ int main()
 
     std::string fragCode = readFile("shaders/light/diffuse.light.frag.glsl");
 
-    Shader shader(vertCode, fragCode);
-
     unsigned int indices[36] = { 0, 1, 2, 0, 2, 3,
                                 4, 5, 6, 4, 6, 7,
                                 8, 9, 10, 8, 10, 11,
@@ -216,34 +206,6 @@ int main()
         norms.push_back(n.z);
     }
 
-
-    Mesh mesh = Mesh::genQuadMesh(0.0f, 0.0f, -100.0f, 300.0f, 300.0f);
-
-    VertexArray va;
-   // VertexBuffer vb(mesh.vertices.data(), sizeof (float) * mesh.vertices.size());
-   // IndexBuffer ib(mesh.indices.data(), mesh.indices.size());
-    VertexBuffer vb(vertices, sizeof(vertices));
-    VertexBuffer vbt(texC, sizeof(texC));
-    VertexBuffer vbn(normals, sizeof(normals));
-    IndexBuffer ib(indices, 36);
-
-    VertexBufferLayout layout;
-    layout.addFloat(3);
-    va.addBuffer(vb, layout);
-    VertexBufferLayout cl;
-    cl.addFloat(2);
-    va.addBuffer(vbt, cl, 1);
-
-    VertexBufferLayout cn;
-    cn.addFloat(3);
-    va.addBuffer(vbn, cn, 2);
-
-    Texture texture("images/cat.png");
-    shader.bind();
-    shader.setUniform1i("texture_0", 0);
-
-    Render render;
-
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -251,48 +213,12 @@ int main()
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init((char *)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
 
-    Camera camera;
-    glEnable(GL_DEPTH_TEST);
-    ControllerWindow c;
-
-    glm::vec3 lightPos(0.0, 0.0, 0.0);
-    shader.setMatrix4f("model", model);
-
-    FrameBuffer frameBuffer;
-
-    Mesh m = Mesh::genQuadMesh(0, 0, 0, 500, 500);
-    //m.texture = frameBuffer.texture;
-
-     VertexArray v;
-   // VertexBuffer vb(mesh.vertices.data(), sizeof (float) * mesh.vertices.size());
-   // IndexBuffer ib(mesh.indices.data(), mesh.indices.size());
-    VertexBuffer a(m.vertices.data(), m.vertices.size() * sizeof(float));
-    IndexBuffer b(m.indices.data(),  m.indices.size());
-
-    VertexBufferLayout l;
-    l.addFloat(3);
-    l.addFloat(2);
-    v.addBuffer(a, l);
-
-    Shader defaultShader(readFile("shaders/default.vert.glsl"), readFile("shaders/default.frag.glsl"));
-    frameBuffer.texture->bind();
-    defaultShader.bind();
-    defaultShader.setUniform1i("texture_0", 0);
+    glm::vec3 lightPos;
 
     while (!glfwWindowShouldClose(window))
     {
-        processInput(window, camera);
-        frameBuffer.bind();
-        render.clear();
-
-        glm::mat4 mvp = projection * camera.getViewLookAtMatrix() * model;
-        texture.bind();
-        shader.bind();
-        shader.setMatrix4f("mvp", mvp);
-        shader.setVec3f("lightPos", lightPos);
-        render.draw(va, ib, shader);
-
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
@@ -306,20 +232,6 @@ int main()
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        frameBuffer.unbind();
-
-        render.clear();
-        frameBuffer.texture->bind();
-        defaultShader.bind();
-        glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
-
-        glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100.0f, -200.0f, 0.0f));
-
-        glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-
-        proj = proj * glm::mat4(1.0f) * model;
-        defaultShader.setMatrix4f("mvp", proj);
-        render.draw(v, b, defaultShader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -26,7 +26,7 @@ namespace Azazel
         }
     };
 
-    class VertexBufferLayout
+    class GLESVertexBufferLayout
     {
     private:
         unsigned int stride;
@@ -39,7 +39,7 @@ namespace Azazel
         };
 
     public:
-        VertexBufferLayout() : stride(0) { }
+        GLESVertexBufferLayout() : stride(0) { }
 
         void addFloat(unsigned int count) 
         { 

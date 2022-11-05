@@ -1,4 +1,4 @@
-#include "Shader.h"
+#include "GLESShader.h"
 
 #include "gl_headers.h"
 
@@ -6,7 +6,7 @@
 
 namespace Azazel
 {
-	Shader::Shader(std::string vertexShader, std::string fragmentShader)
+	GLESShader::GLESShader(std::string vertexShader, std::string fragmentShader)
 	{
 		unsigned int vertexShaderHandle = compile(vertexShader, VERTEX);
 		unsigned int fragmentShaderHandle = compile(fragmentShader, FRAGMENT);
@@ -28,12 +28,12 @@ namespace Azazel
 		}
 	}
 
-	Shader::~Shader()
+	GLESShader::~GLESShader()
 	{
 		glDeleteProgram(rendererId);
 	}
 
-	int Shader::getShaderType(const ShaderType& shaderType)
+	int GLESShader::getShaderType(const ShaderType& shaderType)
 	{
 		switch (shaderType)
 		{
@@ -47,7 +47,7 @@ namespace Azazel
 		return -1;
 	}
 
-	unsigned int Shader::compile(const std::string& programCode, const ShaderType& shaderType)
+	unsigned int GLESShader::compile(const std::string& programCode, const ShaderType& shaderType)
 	{
 		unsigned int handle = glCreateShader(getShaderType(shaderType));
 		const char* code = programCode.c_str();
@@ -56,17 +56,17 @@ namespace Azazel
 		return handle;
 	}
 
-	void Shader::bind() const
+	void GLESShader::bind() const
 	{
 		glUseProgram(rendererId);
 	}
 
-	void Shader::unbind() const
+	void GLESShader::unbind() const
 	{
 		glUseProgram(0);
 	}
 
-	int Shader::getUniformLocation(const std::string& name)
+	int GLESShader::getUniformLocation(const std::string& name)
 	{
 		int location = glGetUniformLocation(rendererId, name.c_str());
 		if (location == -1)
@@ -76,27 +76,27 @@ namespace Azazel
 		return location;
 	}
 
-	void Shader::setUniform1f(const std::string& name, float value)
+	void GLESShader::setUniform1f(const std::string& name, float value)
 	{
 		glUniform1f(getUniformLocation(name), value);
 	}
 
-	void Shader::setUniform4f(const std::string& name, float f0, float f1, float f2, float f3)
+	void GLESShader::setUniform4f(const std::string& name, float f0, float f1, float f2, float f3)
 	{
 		glUniform4f(getUniformLocation(name), f0, f1, f2, f3);
 	}
 
-	void Shader::setUniform1i(const std::string& name, int value)
+	void GLESShader::setUniform1i(const std::string& name, int value)
 	{
 		glUniform1i(getUniformLocation(name), value);
 	}
 
-	void Shader::setMatrix4f(const std::string& name, const glm::mat4& mvp)
+	void GLESShader::setMatrix4f(const std::string& name, const glm::mat4& mvp)
 	{
 		glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &mvp[0][0]);
 	}
 
-	void Shader::setVec3f(const std::string& name, const glm::vec3& vec3)
+	void GLESShader::setVec3f(const std::string& name, const glm::vec3& vec3)
 	{
 		glUniform3fv(getUniformLocation(name), 1, &vec3.x);
 	}

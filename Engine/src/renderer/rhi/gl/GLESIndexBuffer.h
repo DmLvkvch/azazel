@@ -2,16 +2,16 @@
 
 namespace Azazel
 {
-	class IndexBuffer
+	class GLESIndexBuffer
 	{
 	private:
 		unsigned int rendererId;
 
 		int count;
 	public:
-		IndexBuffer(const void* data, int size);
+		GLESIndexBuffer(const void* data, int size);
 
-		~IndexBuffer();
+		~GLESIndexBuffer();
 
 		void bind() const;
 
