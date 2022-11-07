@@ -2,12 +2,13 @@
 
 #include <vector>
 
+#include <renderer/rhi/FrameBufferRHI.h>
 #include <renderer/rhi/TextureRHI.h>
 #include "GLESFrameBufferTarget.h"
 
 namespace Azazel
 {
-	class GLESFrameBuffer
+	class GLESFrameBuffer : public FrameBufferRHI
 	{
 	private:
 		unsigned int rendererId;

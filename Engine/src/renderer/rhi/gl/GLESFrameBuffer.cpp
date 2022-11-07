@@ -5,16 +5,21 @@
 #include <iostream>
 namespace Azazel
 {
-	GLESFrameBuffer::GLESFrameBuffer(TextureRHI* texture)
+	GLESFrameBuffer::GLESFrameBuffer(TextureRHI* texture) : frameBufferDepthTarget(nullptr)
     {
         glGenFramebuffers(1, &rendererId);
         this->colorAttachments.push_back(texture);
         setTextureTarget(texture);
     }
 
-    GLESFrameBuffer::GLESFrameBuffer(const std::vector<TextureRHI*>& colorAttachments)
+    GLESFrameBuffer::GLESFrameBuffer(const std::vector<TextureRHI*>& colorAttachments) : frameBufferDepthTarget(nullptr)
     {
+        glGenFramebuffers(1, &rendererId);
         this->colorAttachments.insert(this->colorAttachments.end(), colorAttachments.begin(), colorAttachments.end());
+        for (int i = 0; i < colorAttachments.size(); i++)
+        {
+            setTextureTarget(colorAttachments[i], i);
+        }
     }
 
     void GLESFrameBuffer::setColorTargets(const std::vector<TextureRHI*>& colorAttachments)

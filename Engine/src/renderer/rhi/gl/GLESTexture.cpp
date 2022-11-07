@@ -50,10 +50,8 @@ namespace Azazel
         this->width = width;
         this->height = height;
         this->bpp = bpp;
-
         setTextureFilter(Texture::NEAREST);
         setTextureWrap(Texture::REPEAT);
-
         if (data)
         {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);

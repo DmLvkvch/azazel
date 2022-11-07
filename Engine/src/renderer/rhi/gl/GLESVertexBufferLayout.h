@@ -41,15 +41,26 @@ namespace Azazel
     public:
         GLESVertexBufferLayout() : stride(0) { }
 
-        void addFloat(unsigned int count) 
+        template<typename T>
+        void add(unsigned int count)
+        {
+
+        }
+
+        template<>
+        void add<float>(unsigned int count) 
         { 
             push(GL_FLOAT, count, GL_FALSE); 
         }
-        void addUnsignedInt(unsigned int count)
+
+        template<>
+        void add<unsigned int>(unsigned int count)
         {
             push(GL_UNSIGNED_INT, count, GL_FALSE); 
         }
-        void addUnsignedByte(unsigned int count)
+
+        template<>
+        void add<unsigned char>(unsigned int count)
         {
             push(GL_UNSIGNED_BYTE, count, GL_TRUE); 
         }

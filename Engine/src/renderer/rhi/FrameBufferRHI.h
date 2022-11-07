@@ -2,10 +2,10 @@
 
 namespace Azazel
 {
-	class IndexBufferRHI
+	class FrameBufferRHI
 	{
 	public:
-		virtual ~IndexBufferRHI();
+		virtual ~FrameBufferRHI();
 		virtual void bind() = 0;
 		virtual void unbind() = 0;
 	};

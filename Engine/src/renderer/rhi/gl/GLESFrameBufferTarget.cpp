@@ -1,20 +1,24 @@
 #include "GLESFrameBufferTarget.h"
 
-Azazel::FrameBufferTarget::~FrameBufferTarget()
+namespace Azazel
 {
-}
 
-int Azazel::FrameBufferTarget::getWidth()
-{
-	return 0;
-}
+	FrameBufferTarget::~FrameBufferTarget()
+	{
+	}
 
-int Azazel::FrameBufferTarget::getHeight()
-{
-	return 0;
-}
+	int FrameBufferTarget::getWidth()
+	{
+		return 0;
+	}
 
-bool Azazel::FrameBufferTarget::isTextureTarget()
-{
-	return false;
+	int FrameBufferTarget::getHeight()
+	{
+		return 0;
+	}
+
+	bool FrameBufferTarget::isTextureTarget()
+	{
+		return false;
+	}
 }

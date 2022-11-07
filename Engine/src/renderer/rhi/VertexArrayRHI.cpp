@@ -2,12 +2,7 @@
 
 namespace Azazel
 {
-    	VertexArrayRHI::VertexArrayRHI()
-        {
-
-        }
-
-        VertexArrayRHI::~VertexArrayRHI()
-        {
-        }
+    VertexArrayRHI::~VertexArrayRHI()
+    {
+    }
 }

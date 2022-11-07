@@ -1,15 +1,15 @@
 #pragma once
 
-#include <string>
-#include <glm/glm.hpp>
+#include <renderer/rhi/ShaderRHI.h>
+#include <unordered_map>
 
 namespace Azazel
 {
-	class GLESShader
+	class GLESShader : public ShaderRHI
 	{
 	private:
 		unsigned int rendererId;
-
+		std::unordered_map<std::string, int> uniformLocationMap;
 	public:
 
 		enum ShaderType
@@ -27,9 +27,9 @@ namespace Azazel
 
 		unsigned int compile(const std::string& programCode, const ShaderType& shaderType);
 
-		void bind() const;
+		void bind();
 
-		void unbind() const;
+		void unbind();
 		
 		int getUniformLocation(const std::string& name);
 

@@ -1,7 +1,6 @@
 #include "GLESShader.h"
 
 #include "gl_headers.h"
-
 #include <iostream>
 
 namespace Azazel
@@ -56,12 +55,12 @@ namespace Azazel
 		return handle;
 	}
 
-	void GLESShader::bind() const
+	void GLESShader::bind()
 	{
 		glUseProgram(rendererId);
 	}
 
-	void GLESShader::unbind() const
+	void GLESShader::unbind()
 	{
 		glUseProgram(0);
 	}

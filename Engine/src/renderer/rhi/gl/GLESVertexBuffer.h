@@ -1,8 +1,10 @@
 #pragma once
 
+#include <renderer/rhi/VertexBufferRHI.h>
+
 namespace Azazel
 {
-	class GLESVertexBuffer
+	class GLESVertexBuffer : public VertexBufferRHI
 	{
 	public:
 		unsigned int rendererId;
@@ -11,7 +13,7 @@ namespace Azazel
 
 		~GLESVertexBuffer();
 
-		void bind() const;
-		void unbind() const;
+		void bind();
+		void unbind();
 	};
 }

@@ -17,12 +17,12 @@ namespace Azazel
         glDeleteBuffers(1, &rendererId);
     }
 
-    void GLESVertexBuffer::bind() const
+    void GLESVertexBuffer::bind()
     {
         glBindBuffer(GL_ARRAY_BUFFER, rendererId);
     }
 
-    void GLESVertexBuffer::unbind() const
+    void GLESVertexBuffer::unbind()
     {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }

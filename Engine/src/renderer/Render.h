@@ -4,6 +4,8 @@
 #include <renderer/rhi/TextureRHI.h>
 #include <renderer/Texture.h>
 
+#include <renderer/rhi/ShaderRHI.h>
+
 namespace Azazel
 {
     class Render
@@ -16,6 +18,7 @@ namespace Azazel
         virtual ~Render();
         
         TextureRHI* createTextureRHI(const Texture* texture);
+
         RenderApi* getRenderApi();
         static Render* getCurrent();
     };

@@ -18,17 +18,17 @@ namespace Azazel
         glDeleteBuffers(1, &rendererId);
     }
 
-    void GLESIndexBuffer::bind() const
+    void GLESIndexBuffer::bind()
     {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, rendererId);
     }
 
-    void GLESIndexBuffer::unbind() const
+    void GLESIndexBuffer::unbind()
     {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    int GLESIndexBuffer::getCount() const
+    int GLESIndexBuffer::getCount()
     {
         return count;
     }

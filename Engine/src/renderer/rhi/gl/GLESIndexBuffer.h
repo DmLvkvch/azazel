@@ -1,22 +1,24 @@
 #pragma once
 
+#include <renderer/rhi/IndexBufferRHI.h>
+
 namespace Azazel
 {
-	class GLESIndexBuffer
+	class GLESIndexBuffer : public IndexBufferRHI
 	{
 	private:
 		unsigned int rendererId;
-
 		int count;
+
 	public:
 		GLESIndexBuffer(const void* data, int size);
 
 		~GLESIndexBuffer();
 
-		void bind() const;
+		void bind();
 
-		void unbind() const;
+		void unbind();
 
-		int getCount() const;
+		int getCount();
 	};
 }

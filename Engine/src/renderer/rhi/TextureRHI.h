@@ -6,17 +6,15 @@ namespace Azazel
 	{
 	public:
 
-		TextureRHI();
-
 		virtual ~TextureRHI();
 
 		virtual int getWidth();
 
 		virtual int getHeight();
 
-		virtual void bind();
+		virtual void bind() = 0;
 		
-		virtual void unbind();
+		virtual void unbind() = 0;
 
 		unsigned int getRendererId();
 	};
