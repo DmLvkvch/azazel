@@ -31,7 +31,7 @@ namespace Azazel
             CLAMP_TO_BORDER
         };
         
-        Texture(int width, int height, const char* data);
+        Texture(int width, int height, const unsigned char* data);
 
         ~Texture();
     

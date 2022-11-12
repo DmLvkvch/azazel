@@ -12,10 +12,10 @@ namespace Azazel
 
 		virtual int getHeight();
 
-		virtual void bind() = 0;
+		virtual void bind(unsigned int slot = 0) = 0;
 		
 		virtual void unbind() = 0;
 
-		unsigned int getRendererId();
+		virtual unsigned int getRendererId() = 0;
 	};
 }

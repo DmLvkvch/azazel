@@ -2,7 +2,7 @@
 
 namespace Azazel
 {
-    class GLESRenderBuffer
+    class GLESRenderBuffer 
     {
     private:
         unsigned int rendererId;

@@ -1,10 +1,12 @@
 #include "Texture.h"
 
+#include <renderer/rhi/gl/GLESTexture.h>
+
 namespace Azazel
 {
-    Texture::Texture(int width, int height, const char* data)
+    Texture::Texture(int width, int height, const unsigned char* data)
     {
-
+        textureRHI = new GLESTexture(data, width, height, 4);
     }
 
     Texture::~Texture()

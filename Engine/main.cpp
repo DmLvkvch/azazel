@@ -19,7 +19,16 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include "imgui/ControllersWindow.h"
+#include "events/Event.h"
+#include "events/KeyEvent.h"
+#include "events/ApplicationEvent.h"
 
+#include <renderer/rhi/gl/GLESTexture.h>
+#include <renderer/rhi/gl/GLESShader.h>
+#include <renderer/rhi/gl/GLESIndexBuffer.h>
+#include <renderer/rhi/gl/GLESVertexBuffer.h>
+#include <renderer/rhi/gl/GLESVertexArray.h>
+#include <renderer/rhi/gl/GLESVertexBufferLayout.h>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window, Azazel::Camera& camera);
@@ -40,6 +49,7 @@ std::string readFile(const std::string& file)
 
 int main()
 {
+    Event* e = new AppTickEvent();
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -60,70 +70,100 @@ int main()
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+    float left = 1; 
+    float top = 1; 
+    float front = 1; 
+    float bottom = 1; 
+    float back = 1; 
+    float right = 1; 
 
-    float vertices[] = {
-         0.0f  , 0.0      ,0.0f,
-         0.0f  , 200.0f   ,0.0f,
-         200.0f, 200.0f   ,0.0f,
-         200.0f, 0.0      ,0.0f,
-
-         0.0f  , 0.0      ,-200.0f,
-         0.0f  , 200.0f   ,-200.0f,
-         200.0f, 200.0f   ,-200.0f,
-         200.0f, 0.0      ,-200.0f,
-
-         0.0f  , 0.0      ,0.0f,
-         0.0f  , 200.0f   ,0.0f,
-         0.0f, 200.0f     ,-200.0f,
-         0.0f, 0.0        ,-200.0f,
-
-         200.0f  , 0.0      ,0.0f,
-         200.0f  , 200.0f   ,0.0f,
-         200.0f, 200.0f     ,-200.0f,
-         200.0f, 0.0        ,-200.0f,
-
-         0.0f  , 200.0      ,0.0f,
-         0.0f  , 200.0f     ,-200.0f,
-         200.0f, 200.0f     ,-200.0f,
-         200.0f, 200.0      ,0.0f,
-
-         0.0f  , 0.0      ,0.0f,
-         0.0f  , 0.0f     ,-200.0f,
-         200.0f, 0.0f     ,-200.0f,
-         200.0f, 0.0      ,0.0f
+    std::vector<glm::vec3> positions = {
+        glm::vec3(-left, top, front), // 0
+        glm::vec3(-left, -bottom, front), // 1
+        glm::vec3(-left, top, -back), // 2
+        glm::vec3(-left, -bottom, -back), // 3
+        glm::vec3(right, top, front), // 4
+        glm::vec3(right, -bottom, front), // 5
+        glm::vec3(right, top, -back), // 6
+        glm::vec3(right, -bottom, -back), // 7
     };
 
-    float texC[] = {
-                    0 , 0,
-                    0 , 1,
-                    1 , 1,
-                    1 , 0,
+    std::vector<glm::vec3> vertices;
+    vertices.push_back(positions[4]);
+    vertices.push_back(positions[2]);
+    vertices.push_back(positions[0]);
+    vertices.push_back(positions[2]);
+    vertices.push_back(positions[7]);
+    vertices.push_back(positions[3]);
+    vertices.push_back(positions[6]);
+    vertices.push_back(positions[5]);
+    vertices.push_back(positions[7]);
+    vertices.push_back(positions[1]);
+    vertices.push_back(positions[7]);
+    vertices.push_back(positions[5]);
+    vertices.push_back(positions[0]);
+    vertices.push_back(positions[3]);
+    vertices.push_back(positions[1]);
+    vertices.push_back(positions[4]);
+    vertices.push_back(positions[1]);
+    vertices.push_back(positions[5]);
+    vertices.push_back(positions[4]);
+    vertices.push_back(positions[6]);
+    vertices.push_back(positions[2]);
+    vertices.push_back(positions[2]);
+    vertices.push_back(positions[6]);
+    vertices.push_back(positions[7]);
+    vertices.push_back(positions[6]);
+    vertices.push_back(positions[4]);
+    vertices.push_back(positions[5]);
+    vertices.push_back(positions[1]);
+    vertices.push_back(positions[3]);
+    vertices.push_back(positions[7]);
+    vertices.push_back(positions[0]);
+    vertices.push_back(positions[2]);
+    vertices.push_back(positions[3]);
+    vertices.push_back(positions[4]);
+    vertices.push_back(positions[0]);
+    vertices.push_back(positions[1]);
 
-                    0 , 0,
-                    0 , 1,
-                    1 , 1,
-                    1 , 0,
+    std::vector<glm::vec2> texC;
 
-                    0 , 0,
-                    0 , 1,
-                    1 , 1,
-                    1 , 0,
-
-                    0 , 0,
-                    0 , 1,
-                    1 , 1,
-                    1 , 0,
-
-                    0 , 0,
-                    0 , 1,
-                    1 , 1,
-                    1 , 0,
-
-                    0 , 0,
-                    0 , 1,
-                    1 , 1,
-                    1 , 0
-                };
+   texC.push_back(glm::vec2(1.0f, 0.0f));
+   texC.push_back(glm::vec2(0.0f, 1.0f));
+   texC.push_back(glm::vec2(0.0f, 0.0f));
+   texC.push_back(glm::vec2(1.0f, 1.0f));
+   texC.push_back(glm::vec2(0.0f, 0.0f));
+   texC.push_back(glm::vec2(1.0f, 0.0f));
+   texC.push_back(glm::vec2(1.0f, 1.0f));
+   texC.push_back(glm::vec2(0.0f, 0.0f));
+   texC.push_back(glm::vec2(1.0f, 0.0f));
+   texC.push_back(glm::vec2(0.0f, 1.0f));
+   texC.push_back(glm::vec2(1.0f, 0.0f));
+   texC.push_back(glm::vec2(1.0f, 1.0f));
+   texC.push_back(glm::vec2(1.0f, 1.0f));
+   texC.push_back(glm::vec2(0.0f, 0.0f));
+   texC.push_back(glm::vec2(1.0f, 0.0f));
+   texC.push_back(glm::vec2(1.0f, 1.0f));
+   texC.push_back(glm::vec2(0.0f, 0.0f));
+   texC.push_back(glm::vec2(1.0f, 0.0f));
+   texC.push_back(glm::vec2(1.0f, 0.0f));
+   texC.push_back(glm::vec2(1.0f, 1.0f));
+   texC.push_back(glm::vec2(0.0f, 1.0f));
+   texC.push_back(glm::vec2(1.0f, 1.0f));
+   texC.push_back(glm::vec2(0.0f, 1.0f));
+   texC.push_back(glm::vec2(0.0f, 0.0f));
+   texC.push_back(glm::vec2(1.0f, 1.0f));
+   texC.push_back(glm::vec2(0.0f, 1.0f));
+   texC.push_back(glm::vec2(0.0f, 0.0f));
+   texC.push_back(glm::vec2(0.0f, 1.0f));
+   texC.push_back(glm::vec2(0.0f, 0.0f));
+   texC.push_back(glm::vec2(1.0f, 0.0f));
+   texC.push_back(glm::vec2(1.0f, 1.0f));
+   texC.push_back(glm::vec2(0.0f, 1.0f));
+   texC.push_back(glm::vec2(0.0f, 0.0f));
+   texC.push_back(glm::vec2(1.0f, 1.0f));
+   texC.push_back(glm::vec2(0.0f, 1.0f));
+   texC.push_back(glm::vec2(0.0f, 0.0f));
 
     float normals[] = {
             0 , 0, 1,
@@ -157,53 +197,10 @@ int main()
             0 , -1, 0
     };
 
-    glm::mat4 projection = glm::perspective(glm::radians(90.0f), (float) SCR_WIDTH / SCR_HEIGHT, 0.1f, 1000.0f);
-    //glm::mat4 projection = glm::ortho(0.0f, 940.0f, 0.0f, 560.0f, -100.0f, 100.0f);
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 200.0f));
-
-    std::string vertCode = readFile("shaders/light/diffuse.light.vert.glsl");
-
-    std::string fragCode = readFile("shaders/light/diffuse.light.frag.glsl");
-
-    unsigned int indices[36] = { 0, 1, 2, 0, 2, 3,
-                                4, 5, 6, 4, 6, 7,
-                                8, 9, 10, 8, 10, 11,
-                                12, 13, 14, 12, 14, 15,
-                                16, 17, 18, 16, 18, 19,
-                                20, 21, 22, 20, 22, 23,
-                                };
-
-    std::vector<float> norms;
-
-    for (int i = 0; i < 36; i+=3)
+    std::vector<unsigned int> indices;
+    for (int i = 0; i < vertices.size(); i++)
     {
-        float a = vertices[3 * indices[i] + 0];
-        float b = vertices[3 * indices[i] + 1];
-        float c = vertices[3 * indices[i] + 2];
-        
-        glm::vec3 A(a, b, c);
-
-        a = vertices[3 * indices[i + 1] + 0];
-        b = vertices[3 * indices[i + 1] + 1];
-        c = vertices[3 * indices[i + 1] + 2];
-
-        glm::vec3 B(a, b, c);
-
-        a = vertices[3 * indices[i + 2] + 0];
-        b = vertices[3 * indices[i + 2] + 1];
-        c = vertices[3 * indices[i + 2] + 2];
-
-        glm::vec3 C(a, b, c);
-
-        glm::vec3 n = glm::normalize(glm::cross(B - A, C - A));
-
-        norms.push_back(n.x);
-        norms.push_back(n.y);
-        norms.push_back(n.z);
-
-        norms.push_back(n.x);
-        norms.push_back(n.y);
-        norms.push_back(n.z);
+        indices.push_back(i);
     }
 
     IMGUI_CHECKVERSION();
@@ -215,6 +212,34 @@ int main()
 
     glm::vec3 lightPos;
 
+    GLESTexture texture("images/cat.png");
+
+    GLESIndexBuffer indexBuffer(indices.data(), indices.size());
+    GLESVertexBuffer vertexBuffer(vertices.data(), sizeof(float) * vertices.size() * 3);
+    GLESVertexBuffer vertexBufferT(texC.data(), sizeof(float) * texC.size() * 2);
+
+    GLESVertexArray vertexArray;
+    GLESVertexBufferLayout vbo;
+    vbo.add<float> (3);
+    vertexArray.addBuffer(vertexBuffer, vbo);
+    GLESVertexBufferLayout vbo1;
+    vbo1.add<float> (2);
+    vertexArray.addBuffer(vertexBufferT, vbo1, 1);
+
+    std::string vertCode = readFile("shaders/default.vert.glsl");
+
+    std::string fragCode = readFile("shaders/default.frag.glsl");
+
+    GLESShader shader(vertCode, fragCode);
+    shader.bind();
+    shader.setUniform1i("u_texture_0", 0);
+
+    glm::mat4 projection = glm::ortho(0.0f, 900.0f, 0.0f, 600.0f, -1000.0f, 1000.0f);
+
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(200.0f, 200.0f, 0.0f));
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glm::mat4 proj;
     while (!glfwWindowShouldClose(window))
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -228,11 +253,25 @@ int main()
         ImGui::SliderFloat("Translation Z", &lightPos.z, 0.0f, 560.0f);
 
 
+        glm::mat4 rotX = glm::rotate(glm::mat4(1.0f), glm::radians(lightPos.x), glm::vec3(1.0f, 0.0f, 0.0f));
+        glm::mat4 rotZ = glm::rotate(glm::mat4(1.0f), glm::radians(lightPos.z), glm::vec3(0.0f, 0.0f, 1.0f));
+        glm::mat4 rotY= glm::rotate(glm::mat4(1.0f), glm::radians(lightPos.y), glm::vec3(0.0f, 1.0f, 0.0f));
+
+        glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(200.0f, 200.0f, 200.0f));
+        proj = projection * view * scale * rotX * rotY * rotZ;
+
+        shader.setMatrix4f("u_mvp", proj);
+
+
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
+        texture.bind();
+        vertexArray.bind();
+        indexBuffer.bind();
+        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

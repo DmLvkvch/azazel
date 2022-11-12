@@ -12,16 +12,19 @@ namespace Azazel
 	{
 	private:
 		unsigned int rendererId;
-	public:
 		std::vector<TextureRHI*> colorAttachments;
 		FrameBufferTarget* frameBufferDepthTarget;
+	public:
+
 		GLESFrameBuffer(const std::vector<TextureRHI*>& colorAttachments);
 		GLESFrameBuffer(TextureRHI* texture);
 		~GLESFrameBuffer();
-		void bind();
-		void unbind();
+		void bind() override;
+		void unbind() override;
 		void setColorTargets(const std::vector<TextureRHI*>& colorAttachments);
 		void setTextureTarget(TextureRHI* texture, int slot = 0);
 		void setFrameBufferDepthTarget(FrameBufferTarget* frameBufferTarget);
+
+		void addColorAttachment(TextureRHI* textureRHI);
 	};
 }

@@ -21,11 +21,11 @@ namespace Azazel
 		
 		unsigned int  textureWrapToGLFormat(Texture::TextureWrap textureWrap);
 
-		void createTexture(unsigned char* data, int width, int height, int bpp);
+		void createTexture(const unsigned char* data, int width, int height, int bpp);
 	public:
 		GLESTexture(std::string path);
 		GLESTexture(int color);
-		GLESTexture(unsigned char* data, int width, int height, int bpp);
+		GLESTexture(const unsigned char* data, int width, int height, int bpp);
 		~GLESTexture();
 		void bind(unsigned int slot = 0);
 		void unbind();

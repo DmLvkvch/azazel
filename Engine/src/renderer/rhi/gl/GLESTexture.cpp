@@ -17,7 +17,7 @@ namespace Azazel
         stbi_image_free(data);
     }
 
-    GLESTexture::GLESTexture(unsigned char* data, int width, int height, int bpp)
+    GLESTexture::GLESTexture(const unsigned char* data, int width, int height, int bpp)
         :width(width), height(height), bpp(bpp)
     {
         createTexture(data, width, height, bpp);
@@ -43,7 +43,7 @@ namespace Azazel
         delete[] data;
     }
 
-    void GLESTexture::createTexture(unsigned char* data, int width, int height, int bpp)
+    void GLESTexture::createTexture(const unsigned char* data, int width, int height, int bpp)
     {
         glGenTextures(1, &rendererId);
         bind();

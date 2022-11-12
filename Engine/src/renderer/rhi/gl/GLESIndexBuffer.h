@@ -15,9 +15,9 @@ namespace Azazel
 
 		~GLESIndexBuffer();
 
-		void bind();
+		void bind() override;
 
-		void unbind();
+		void unbind() override;
 
 		int getCount();
 	};

@@ -52,6 +52,16 @@ namespace Azazel
 		const char* code = programCode.c_str();
 		glShaderSource(handle, 1, &code, nullptr);
 		glCompileShader(handle);
+
+		int status;
+		char infoLog[512];
+		glGetShaderiv(handle, GL_COMPILE_STATUS, &status);
+
+		if (status != GL_TRUE) {
+			glGetProgramInfoLog(rendererId, 512, NULL, infoLog);
+			std::cout << "Shader creation error!\n" << infoLog << std::endl;
+		}
+
 		return handle;
 	}
 

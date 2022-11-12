@@ -27,20 +27,20 @@ namespace Azazel
 
 		unsigned int compile(const std::string& programCode, const ShaderType& shaderType);
 
-		void bind();
+		void bind() override;
 
-		void unbind();
+		void unbind() override;
 		
-		int getUniformLocation(const std::string& name);
+		int getUniformLocation(const std::string& name) override;
 
-		void setUniform1f(const std::string& name, float value);
+		void setUniform1f(const std::string& name, float value) override;
 
-		void setUniform1i(const std::string& name, int value);
+		void setUniform1i(const std::string& name, int value) override;
 
-		void setUniform4f(const std::string& name, float f0, float f1, float f2, float f3);
+		void setUniform4f(const std::string& name, float f0, float f1, float f2, float f3) override;
 
-		void setMatrix4f(const std::string& name, const glm::mat4& mvp);
+		void setMatrix4f(const std::string& name, const glm::mat4& mvp) override;
 
-		void setVec3f(const std::string& name, const glm::vec3& vec3);
+		void setVec3f(const std::string& name, const glm::vec3& vec3) override;
 	};
 }
