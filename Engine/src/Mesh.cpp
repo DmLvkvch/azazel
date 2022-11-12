@@ -121,6 +121,6 @@ namespace Azazel
 		texC.push_back(glm::vec2(1.0f, 1.0f));
 		texC.push_back(glm::vec2(0.0f, 1.0f));
 		texC.push_back(glm::vec2(0.0f, 0.0f));
-		return genQuadMesh(0,0,0,0,0);
+		return genQuadMesh(1, 1, 1, 1, 1);
 	}
 }

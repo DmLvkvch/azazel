@@ -12,7 +12,7 @@ uniform mat4 u_model;
 
 void main()
 {
-    normal = mat3(transpose(inverse(model))) * a_normal;
+    normal = mat3(transpose(inverse(u_model))) * a_normal;
     fragPos = vec3(u_model * vec4(a_position, 1.0));
     texCoord = a_texture_coord;
     gl_Position = u_mvp * vec4(a_position, 1.0f);

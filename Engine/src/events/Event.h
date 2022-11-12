@@ -18,15 +18,14 @@ namespace Azazel
     {
         None = 0,
         EventCategoryApplication = 1 << 0,
-        EventCategoryInput = 1 << 1,
-        EventCategorykeyboard = 1 << 2,
-        EventCategoryMouse = 1 << 3,
+        EventCategoryInput       = 1 << 1,
+        EventCategorykeyboard    = 1 << 2,
+        EventCategoryMouse       = 1 << 3,
         EventCategoryMouseButton = 1 << 4
     };
 
     class Event
     {
-
         friend class EventDispatcher;
     public:
         bool handled = false;

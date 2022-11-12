@@ -59,6 +59,7 @@ namespace Azazel
 
 		if (status != GL_TRUE) {
 			glGetProgramInfoLog(rendererId, 512, NULL, infoLog);
+			std::cout<<programCode<<std::endl;
 			std::cout << "Shader creation error!\n" << infoLog << std::endl;
 		}
 
