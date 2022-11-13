@@ -2,7 +2,7 @@
 
 #include <string>
 #include <functional>
-\
+
 namespace Azazel
 {
     enum class EventType

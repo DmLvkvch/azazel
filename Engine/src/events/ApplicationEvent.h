@@ -24,7 +24,7 @@ namespace Azazel
 
         std::string toString()
         {
-            return "key pressed: keycode: ";
+            return "Window resize: " + std::to_string(width) + "height: " + std::to_string(height);
         }
     };
 
@@ -44,7 +44,7 @@ namespace Azazel
 
         std::string toString()
         {
-            return "key pressed: keycode: ";
+            return "Window close:";
         }
     };
 
@@ -65,7 +65,7 @@ namespace Azazel
 
         std::string toString()
         {
-            return "key pressed: keycode: ";
+            return "App tick:";
         }
     };
 
@@ -85,7 +85,7 @@ namespace Azazel
 
         std::string toString()
         {
-            return "key pressed: keycode: ";
+            return "App update:";
         }
     };
 }

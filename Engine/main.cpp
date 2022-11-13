@@ -127,44 +127,44 @@ int main()
     vertices.push_back(positions[0]);
     vertices.push_back(positions[1]);
 
-    std::vector<glm::vec2> texC;
+    std::vector<glm::vec2> texCoords;
 
-   texC.push_back(glm::vec2(1.0f, 0.0f));
-   texC.push_back(glm::vec2(0.0f, 1.0f));
-   texC.push_back(glm::vec2(0.0f, 0.0f));
-   texC.push_back(glm::vec2(1.0f, 1.0f));
-   texC.push_back(glm::vec2(0.0f, 0.0f));
-   texC.push_back(glm::vec2(1.0f, 0.0f));
-   texC.push_back(glm::vec2(1.0f, 1.0f));
-   texC.push_back(glm::vec2(0.0f, 0.0f));
-   texC.push_back(glm::vec2(1.0f, 0.0f));
-   texC.push_back(glm::vec2(0.0f, 1.0f));
-   texC.push_back(glm::vec2(1.0f, 0.0f));
-   texC.push_back(glm::vec2(1.0f, 1.0f));
-   texC.push_back(glm::vec2(1.0f, 1.0f));
-   texC.push_back(glm::vec2(0.0f, 0.0f));
-   texC.push_back(glm::vec2(1.0f, 0.0f));
-   texC.push_back(glm::vec2(1.0f, 1.0f));
-   texC.push_back(glm::vec2(0.0f, 0.0f));
-   texC.push_back(glm::vec2(1.0f, 0.0f));
-   texC.push_back(glm::vec2(1.0f, 0.0f));
-   texC.push_back(glm::vec2(1.0f, 1.0f));
-   texC.push_back(glm::vec2(0.0f, 1.0f));
-   texC.push_back(glm::vec2(1.0f, 1.0f));
-   texC.push_back(glm::vec2(0.0f, 1.0f));
-   texC.push_back(glm::vec2(0.0f, 0.0f));
-   texC.push_back(glm::vec2(1.0f, 1.0f));
-   texC.push_back(glm::vec2(0.0f, 1.0f));
-   texC.push_back(glm::vec2(0.0f, 0.0f));
-   texC.push_back(glm::vec2(0.0f, 1.0f));
-   texC.push_back(glm::vec2(0.0f, 0.0f));
-   texC.push_back(glm::vec2(1.0f, 0.0f));
-   texC.push_back(glm::vec2(1.0f, 1.0f));
-   texC.push_back(glm::vec2(0.0f, 1.0f));
-   texC.push_back(glm::vec2(0.0f, 0.0f));
-   texC.push_back(glm::vec2(1.0f, 1.0f));
-   texC.push_back(glm::vec2(0.0f, 1.0f));
-   texC.push_back(glm::vec2(0.0f, 0.0f));
+    texCoords.push_back(glm::vec2(1.0f, 0.0f));
+    texCoords.push_back(glm::vec2(0.0f, 1.0f));
+    texCoords.push_back(glm::vec2(0.0f, 0.0f));
+    texCoords.push_back(glm::vec2(1.0f, 1.0f));
+    texCoords.push_back(glm::vec2(0.0f, 0.0f));
+    texCoords.push_back(glm::vec2(1.0f, 0.0f));
+    texCoords.push_back(glm::vec2(1.0f, 1.0f));
+    texCoords.push_back(glm::vec2(0.0f, 0.0f));
+    texCoords.push_back(glm::vec2(1.0f, 0.0f));
+    texCoords.push_back(glm::vec2(0.0f, 1.0f));
+    texCoords.push_back(glm::vec2(1.0f, 0.0f));
+    texCoords.push_back(glm::vec2(1.0f, 1.0f));
+    texCoords.push_back(glm::vec2(1.0f, 1.0f));
+    texCoords.push_back(glm::vec2(0.0f, 0.0f));
+    texCoords.push_back(glm::vec2(1.0f, 0.0f));
+    texCoords.push_back(glm::vec2(1.0f, 1.0f));
+    texCoords.push_back(glm::vec2(0.0f, 0.0f));
+    texCoords.push_back(glm::vec2(1.0f, 0.0f));
+    texCoords.push_back(glm::vec2(1.0f, 0.0f));
+    texCoords.push_back(glm::vec2(1.0f, 1.0f));
+    texCoords.push_back(glm::vec2(0.0f, 1.0f));
+    texCoords.push_back(glm::vec2(1.0f, 1.0f));
+    texCoords.push_back(glm::vec2(0.0f, 1.0f));
+    texCoords.push_back(glm::vec2(0.0f, 0.0f));
+    texCoords.push_back(glm::vec2(1.0f, 1.0f));
+    texCoords.push_back(glm::vec2(0.0f, 1.0f));
+    texCoords.push_back(glm::vec2(0.0f, 0.0f));
+    texCoords.push_back(glm::vec2(0.0f, 1.0f));
+    texCoords.push_back(glm::vec2(0.0f, 0.0f));
+    texCoords.push_back(glm::vec2(1.0f, 0.0f));
+    texCoords.push_back(glm::vec2(1.0f, 1.0f));
+    texCoords.push_back(glm::vec2(0.0f, 1.0f));
+    texCoords.push_back(glm::vec2(0.0f, 0.0f));
+    texCoords.push_back(glm::vec2(1.0f, 1.0f));
+    texCoords.push_back(glm::vec2(0.0f, 1.0f));
+    texCoords.push_back(glm::vec2(0.0f, 0.0f));
 
 
     std::vector<glm::vec3> normals;
@@ -201,7 +201,7 @@ int main()
 
     GLESIndexBuffer indexBuffer(indices.data(), indices.size());
     GLESVertexBuffer vertexBuffer(vertices.data(), sizeof(float) * vertices.size() * 3);
-    GLESVertexBuffer vertexBufferT(texC.data(), sizeof(float) * texC.size() * 2);
+    GLESVertexBuffer vertexBufferT(texCoords.data(), sizeof(float) * texCoords.size() * 2);
     GLESVertexBuffer vertexBufferN(normals.data(), sizeof(float) * normals.size() * 3);
 
 
@@ -217,9 +217,9 @@ int main()
     vertexArray.addBuffer(vertexBufferN, vbo2, 2);
 
 
-    std::string vertCode = readFile("shaders/light/diffuse.light.vert.glsl");
+    std::string vertCode = readFile("shaders/light/specular.light.vert.glsl");
 
-    std::string fragCode = readFile("shaders/light/diffuse.light.frag.glsl");
+    std::string fragCode = readFile("shaders/light/specular.light.frag.glsl");
 
     GLESShader shader(vertCode, fragCode);
     shader.bind();
@@ -229,30 +229,36 @@ int main()
     projection = glm::perspective(glm::radians(60.0f), 1.5f, 0.1f, 2000.0f);
 
     glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 1000.0f));
-    view = glm::lookAt(glm::vec3(0.0f, 0.0f, 1000.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::vec3 camPos = glm::vec3(0.0f, 0.0f, 1000.0f);
+    view = glm::lookAt(camPos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glm::mat4 proj;
     glm::vec3 lightPos {0.0f, 0.0f, 500.0f};
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+
+    Camera camera;
 
     while (!glfwWindowShouldClose(window))
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        processInput(window, camera);
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        ImGui::SliderFloat("Rotation X", &rotation.x, 0.0f, 360.0f);
-        ImGui::SliderFloat("Rotation Y", &rotation.y, 0.0f, 360.0f);
-        ImGui::SliderFloat("Rotation Z", &rotation.z, 0.0f, 360.0f);
+        ImGui::SliderFloat("Rotation X", &lightPos.x, -1000.0f, 1000.0f);
+        ImGui::SliderFloat("Rotation Y", &lightPos.y, -1000.0f, 1000.0f);
+        ImGui::SliderFloat("Rotation Z", &lightPos.z, -1000.0f, 1000.0f);
 
         ImGui::SliderFloat("Scale X", &scaleM.x, -10.0f, 10.0f);
         ImGui::SliderFloat("Scale Y", &scaleM.y, -10.0f, 10.0f);
         ImGui::SliderFloat("Scale Z", &scaleM.z, -10.0f, 10.0f);
 
-        ImGui::SliderFloat("Light pos", &lightPos.x, -500.0f, 500.0f);
-    shader.setVec3f("u_lightPos", lightPos);
+        shader.setVec3f("u_lightPos", lightPos);
 
 
         glm::mat4 rotX = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -261,7 +267,7 @@ int main()
 
         glm::mat4 scale = glm::scale(glm::mat4(1.0f), scaleM);
 
-        proj = projection * view * scale * rotX * rotY * rotZ;
+        proj = projection * camera.getViewLookAtMatrix(glm::vec3(0.0f, 1.0f, 0.0f)) * scale * rotX * rotY * rotZ;
 
         shader.setMatrix4f("u_mvp", proj);
         shader.setMatrix4f("u_model", scale * rotX * rotY * rotZ);

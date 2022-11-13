@@ -24,7 +24,7 @@ namespace Azazel
     class Window
     {
     public:
-        using EventCollbackFn = std::function<void(Event&)>;
+        using EventCallbackFn = std::function<void(Event&)>;
 
         virtual ~Window(){}
 
@@ -32,10 +32,10 @@ namespace Azazel
         virtual unsigned int getWidth() const = 0;
         virtual unsigned int getHeight() const = 0;
 
-        virtual void setEventCallback(const EventCallbackFb& callback) = 0;
+        virtual void setEventCallback(const EventCallbackFn& callback) = 0;
         virtual void setVSync(bool enabled) = 0;
         virtual bool isVSync() const = 0;
 
-        static Window* create(const WindowsProps& props = WindowProps());
+        static Window* create(const WindowProps& props = WindowProps());
     };
 }

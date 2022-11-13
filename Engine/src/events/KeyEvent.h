@@ -18,7 +18,10 @@ namespace Azazel
     public:    
         KeyPressedEvent(int keycode, int repeatCount)
         : KeyEvent(keycode), repeatCount(repeatCount)
-        {}
+        {
+            this->eventCategory = EventCategory::EventCategorykeyboard;
+            this->eventType = EventType::KeyPressed;
+        }
 
         static EventType getStaticEventType()
         {
@@ -27,7 +30,7 @@ namespace Azazel
 
         std::string toString()
         {
-            return "key pressed: keycode: ";
+            return "key pressed: " + std::to_string(keycode);
         }
     private:
         int repeatCount;
@@ -37,7 +40,10 @@ namespace Azazel
     {
     public:
         KeyReleasedEvent(int keycode) : KeyEvent(keycode)
-        {}
+        {
+            this->eventCategory = EventCategory::EventCategorykeyboard;
+            this->eventType = EventType::KeyReleased;
+        }
 
         static EventType getStaticEventType()
         {
@@ -46,7 +52,7 @@ namespace Azazel
 
         std::string toString()
         {
-            return "key pressed: keycode: ";
+            return "key released: " + std::to_string(keycode);
         }
     };
 }

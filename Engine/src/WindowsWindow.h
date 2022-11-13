@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Window.h"
+#include <GLFW/glfw3.h>
 
 namespace Azazel
 {
@@ -8,21 +9,25 @@ namespace Azazel
     {
     public:
         WindowsWindow(const WindowProps& props);
-        virttual ~WindowsWindow();
-
+        virtual ~WindowsWindow();
+        void shutDown();
         void onUpdate() override;
-        unsigned int getWidth() const override
-        {
-            return 0;
-        }
+        unsigned int getWidth() const override;
+        unsigned int getHeight() const override;
+        virtual void setEventCallback(const EventCallbackFn& callback) override;
+        virtual void setVSync(bool enable) override;
+        virtual bool isVSync() const override;
+    private:
+        GLFWwindow* window;
+        int width;
+        int height;
+        std::string title;
 
-        unsigned int getHeight() const override
+        struct WindowData
         {
-            return 0;
-        }
+            EventCallbackFn eventCallback;
+        };
 
-        void setEventCallback(const EventCallbackFn& callback) override
-        {
-        }
+        WindowData windowData;
     };
 }

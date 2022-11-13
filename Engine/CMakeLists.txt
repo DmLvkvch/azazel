@@ -29,11 +29,13 @@ endif()
 
 file(GLOB_RECURSE ENGINE_SRC
     ${CMAKE_SOURCE_DIR}/src/*.c
-    ${CMAKE_SOURCE_DIR}/src/*.cpp)
+    ${CMAKE_SOURCE_DIR}/src/*.cpp
+)
     
 file(GLOB_RECURSE ENGINE_HEADERS 
     ${CMAKE_SOURCE_DIR}/src/*.h
-    ${CMAKE_SOURCE_DIR}/src/*.hpp)
+    ${CMAKE_SOURCE_DIR}/src/*.hpp
+)
 
 
 add_executable(${PROJECT_NAME} "main.cpp" ${ENGINE_HEADERS} ${ENGINE_SRC})

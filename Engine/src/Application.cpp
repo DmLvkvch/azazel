@@ -1,10 +1,11 @@
 #include "Application.h"
+#include "events/ApplicationEvent.h"
 
 namespace Azazel
 {
 	Application::Application()
 	{
-
+		window = std::unique_ptr<Window>(Window::create());
 	}
 
 	Application::~Application()
@@ -14,6 +15,14 @@ namespace Azazel
 
 	void Application::run()
 	{
-		while (true);
+		while (true)
+		{
+			window->onUpdate();
+		}
+	}
+
+	Application* Application::createApplication()
+	{
+		return new Application();
 	}
 }

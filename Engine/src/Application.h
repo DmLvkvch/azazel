@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Window.h"
+#include <memory>
+
 namespace Azazel
 {
 	class Application
@@ -8,5 +11,8 @@ namespace Azazel
 		Application();
 		~Application();
 		void run();
+		static Application* createApplication();
+	private:
+		std::unique_ptr<Window> window;
 	};
 }

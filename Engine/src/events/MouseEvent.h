@@ -10,7 +10,10 @@ namespace Azazel
 
         MouseMovedEvent(float x, float y)
         : mouseX(x), mouseY(y)
-        {}
+        {
+            this->eventCategory = EventCategory::EventCategoryMouse;
+            this->eventType = EventType::MouseMoved;
+        }
 
         float getX()
         {
@@ -29,7 +32,7 @@ namespace Azazel
         
         std::string toString()
         {
-            return "key pressed: keycode: ";
+            return "Mouse moved: " + std::to_string(getX()) + "y: " + std::to_string(getY());
         }
     private:
         float mouseX;
@@ -41,7 +44,10 @@ namespace Azazel
     public:
         MouseScrollEvent(float offsetX, float offsetY)
         : offsetX(offsetX), offsetY(offsetY)
-        {}
+        {
+            this->eventCategory = EventCategory::EventCategoryMouse;
+            this->eventType = EventType::MouseScrolled;
+        }
         
         static EventType getStaticEventType()
         {
@@ -50,7 +56,7 @@ namespace Azazel
 
         std::string toString()
         {
-            return "key pressed: keycode: ";
+            return "Mouse scroll: " + std::to_string(offsetX) + "offsetY: " + std::to_string(offsetY);
         }
     private:
         float offsetX;
@@ -71,7 +77,10 @@ namespace Azazel
     public:
         MouseButtonPressedEvent(int button)
         : MouseButtonEvent(button)
-        {}
+        {
+            this->eventCategory = EventCategory::EventCategoryMouseButton;
+            this->eventType = EventType::MousePressed;
+        }
         
         static EventType getStaticEventType()
         {
@@ -80,7 +89,7 @@ namespace Azazel
         
         std::string toString()
         {
-            return "key pressed: keycode: ";
+            return "Mouse button pressed: " + std::to_string(button);
         }
     };
 
@@ -89,7 +98,10 @@ namespace Azazel
     public:
         MouseButtonReleasedEvent(int button)
         : MouseButtonEvent(button)
-        {}
+        {
+            this->eventCategory = EventCategory::EventCategoryMouseButton;
+            this->eventType = EventType::MouseReleased;
+        }
 
         static EventType getStaticEventType()
         {
@@ -98,7 +110,7 @@ namespace Azazel
         
         std::string toString()
         {
-            return "key pressed: keycode: ";
+            return "Mouse button released: " + std::to_string(button);
         }
     };
 }

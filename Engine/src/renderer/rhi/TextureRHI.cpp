@@ -17,6 +17,16 @@ namespace Azazel{
 		return 0;
 	}
 
+	void TextureRHI::bind(unsigned int slot)
+	{
+
+	}
+
+	void TextureRHI::unbind()
+	{
+
+	}
+
 	unsigned int TextureRHI::getRendererId()
 	{
 		return 0;
