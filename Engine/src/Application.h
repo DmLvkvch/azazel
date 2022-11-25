@@ -11,8 +11,12 @@ namespace Azazel
 		Application();
 		~Application();
 		void run();
+		void onEvent(Event& e);
+
 		static Application* createApplication();
 	private:
 		std::unique_ptr<Window> window;
+
+		bool running = true;
 	};
 }

@@ -31,6 +31,8 @@
 #include <renderer/rhi/gl/GLESVertexArray.h>
 #include <renderer/rhi/gl/GLESVertexBufferLayout.h>
 
+#include <Application.h>
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window, Azazel::Camera& camera);
 
@@ -50,6 +52,8 @@ std::string readFile(const std::string& file)
 
 int main()
 {
+    Application* p = new Application();
+    p->run();
     Event* e = new AppTickEvent();
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -194,8 +198,7 @@ int main()
     ImGui_ImplOpenGL3_Init((char *)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
 
     glm::vec3 rotation{};
-    glm::vec3 scaleM {1.0f, 1.0f, 1.0f};
-    glm::vec3 translation {};
+    glm::vec3 scale {1.0f, 1.0f, 1.0f};
 
     GLESTexture texture("images/cat.png");
 
@@ -203,7 +206,7 @@ int main()
     GLESVertexBuffer vertexBuffer(vertices.data(), sizeof(float) * vertices.size() * 3);
     GLESVertexBuffer vertexBufferT(texCoords.data(), sizeof(float) * texCoords.size() * 2);
     GLESVertexBuffer vertexBufferN(normals.data(), sizeof(float) * normals.size() * 3);
-
+    glfwSwapInterval(1);
 
     GLESVertexArray vertexArray;
     GLESVertexBufferLayout vbo;
@@ -233,7 +236,6 @@ int main()
     view = glm::lookAt(camPos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    glm::mat4 proj;
     glm::vec3 lightPos {0.0f, 0.0f, 500.0f};
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -254,23 +256,23 @@ int main()
         ImGui::SliderFloat("Rotation Y", &lightPos.y, -1000.0f, 1000.0f);
         ImGui::SliderFloat("Rotation Z", &lightPos.z, -1000.0f, 1000.0f);
 
-        ImGui::SliderFloat("Scale X", &scaleM.x, -10.0f, 10.0f);
-        ImGui::SliderFloat("Scale Y", &scaleM.y, -10.0f, 10.0f);
-        ImGui::SliderFloat("Scale Z", &scaleM.z, -10.0f, 10.0f);
+        ImGui::SliderFloat("Scale X", &scale.x, -10.0f, 10.0f);
+        ImGui::SliderFloat("Scale Y", &scale.y, -10.0f, 10.0f);
+        ImGui::SliderFloat("Scale Z", &scale.z, -10.0f, 10.0f);
 
         shader.setVec3f("u_lightPos", lightPos);
 
 
         glm::mat4 rotX = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
         glm::mat4 rotZ = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-        glm::mat4 rotY= glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::mat4 rotY = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 
-        glm::mat4 scale = glm::scale(glm::mat4(1.0f), scaleM);
+        glm::mat4 model = glm::scale(glm::mat4(1.0f), scale) * rotX * rotY * rotZ;
 
-        proj = projection * camera.getViewLookAtMatrix(glm::vec3(0.0f, 1.0f, 0.0f)) * scale * rotX * rotY * rotZ;
+        glm::mat4 mvp = projection * camera.getViewLookAtMatrix(glm::vec3(0.0f, 1.0f, 0.0f)) * model;
 
-        shader.setMatrix4f("u_mvp", proj);
-        shader.setMatrix4f("u_model", scale * rotX * rotY * rotZ);
+        shader.setMatrix4f("u_mvp", mvp);
+        shader.setMatrix4f("u_model", model);
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
@@ -300,27 +302,27 @@ void processInput(GLFWwindow* window, Camera& camera)
     }
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        camera.moveUp(10.0f / 10);
+        camera.moveUp(10.0f / 1);
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        camera.moveUp(-10.0f / 10);
+        camera.moveUp(-10.0f / 1);
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        camera.moveRight(-10.0f / 10);
+        camera.moveRight(-10.0f / 1);
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        camera.moveRight(10.0f / 10);
+        camera.moveRight(10.0f / 1);
     }
     if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
     {
-        camera.moveForward(10.0f / 10);
+        camera.moveForward(10.0f / 1);
     }
     if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
     {
-        camera.moveForward(-10.0f / 10);
+        camera.moveForward(-10.0f / 1);
     }
 }
 
