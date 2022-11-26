@@ -4,6 +4,9 @@
 #include "events/ApplicationEvent.h"
 #include "events/KeyEvent.h"
 #include "events/MouseEvent.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 
 namespace Azazel
 {
@@ -119,6 +122,11 @@ namespace Azazel
             MouseMovedEvent e((float) xPos, (float) yPos);
             data.eventCallback(e);
         });
+
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+        {
+            std::cout << "Failed to initialize GLAD" << std::endl;
+        }
     }
 
     WindowsWindow::~WindowsWindow()
@@ -167,5 +175,9 @@ namespace Azazel
     bool WindowsWindow::isVSync() const
     {
         return true;
+    }
+    void* WindowsWindow::getNativeWindow()
+    {
+        return (void*) window;
     }
 }

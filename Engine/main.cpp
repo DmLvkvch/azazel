@@ -19,7 +19,6 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include "imgui/ControllersWindow.h"
 #include "events/Event.h"
 #include "events/KeyEvent.h"
 #include "events/ApplicationEvent.h"
@@ -54,7 +53,7 @@ int main()
 {
     Application* p = new Application();
     p->run();
-    Event* e = new AppTickEvent();
+
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -70,11 +69,6 @@ int main()
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        return -1;
-    }
     float left = 1 * 200.0f;
     float top = 1 * 200.0f;
     float front = 1 * 200.0f;
@@ -189,13 +183,6 @@ int main()
     {
         indices.push_back(i);
     }
-
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    ImGui::StyleColorsDark();
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init((char *)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
 
     glm::vec3 rotation{};
     glm::vec3 scale {1.0f, 1.0f, 1.0f};

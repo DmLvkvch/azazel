@@ -35,7 +35,7 @@ namespace Azazel
         virtual void setEventCallback(const EventCallbackFn& callback) = 0;
         virtual void setVSync(bool enabled) = 0;
         virtual bool isVSync() const = 0;
-
+        virtual void* getNativeWindow() = 0;
         static Window* create(const WindowProps& props = WindowProps());
     };
 }

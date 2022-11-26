@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Window.h"
-#include <GLFW/glfw3.h>
+
+struct GLFWwindow;
 
 namespace Azazel
 {
@@ -17,6 +18,7 @@ namespace Azazel
         virtual void setEventCallback(const EventCallbackFn& callback) override;
         virtual void setVSync(bool enable) override;
         virtual bool isVSync() const override;
+        virtual void* getNativeWindow() override;
     private:
         GLFWwindow* window;
         int width;
