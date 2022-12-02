@@ -24,7 +24,6 @@ namespace Azazel
 		void setColorTargets(const std::vector<TextureRHI*>& colorAttachments);
 		void setTextureTarget(TextureRHI* texture, int slot = 0);
 		void setFrameBufferDepthTarget(FrameBufferTarget* frameBufferTarget);
-
 		void addColorAttachment(TextureRHI* textureRHI);
 	};
 }

@@ -2,6 +2,11 @@
 
 namespace Azazel
 {
+	IndexBufferRHI::IndexBufferRHI()
+	{
+
+	}
+
 	IndexBufferRHI::~IndexBufferRHI()
 	{
 	}

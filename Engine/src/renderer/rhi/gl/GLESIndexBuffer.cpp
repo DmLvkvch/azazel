@@ -28,7 +28,7 @@ namespace Azazel
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    int GLESIndexBuffer::getCount()
+    int GLESIndexBuffer::getElementCount()
     {
         return count;
     }

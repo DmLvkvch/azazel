@@ -38,7 +38,6 @@ namespace Azazel
 	{
 		while (running)
 		{
-
 			for (Layer* layer : layerStack)
 			{
 				layer->onUpdate();
@@ -50,6 +49,7 @@ namespace Azazel
 	void Application::pushLayer(Layer* layer)
 	{
 		layerStack.pushLayer(layer);
+		layer->onAttach();
 	}
 
 	void Application::pushOverlay(Layer* layer)

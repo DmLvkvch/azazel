@@ -1,5 +1,6 @@
 #pragma once
 
+#include <renderer/rhi/VertexBufferLayout.h>
 #include <vector>
 #include "gl_headers.h"
 
@@ -26,7 +27,7 @@ namespace Azazel
         }
     };
 
-    class GLESVertexBufferLayout
+    class GLESVertexBufferLayout : public VertexBufferLayout
     {
     private:
         unsigned int stride;
@@ -40,6 +41,11 @@ namespace Azazel
 
     public:
         GLESVertexBufferLayout() : stride(0) { }
+        
+        ~GLESVertexBufferLayout()
+        {
+
+        }
 
         template<typename T>
         void add(unsigned int count)

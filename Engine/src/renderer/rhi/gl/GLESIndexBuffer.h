@@ -19,6 +19,6 @@ namespace Azazel
 
 		void unbind() override;
 
-		int getCount();
+		int getElementCount() override;
 	};
 }

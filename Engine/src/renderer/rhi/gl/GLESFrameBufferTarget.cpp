@@ -3,22 +3,12 @@
 namespace Azazel
 {
 
+	FrameBufferTarget::FrameBufferTarget(int width, int height, int color)
+	{
+
+	}
+
 	FrameBufferTarget::~FrameBufferTarget()
 	{
-	}
-
-	int FrameBufferTarget::getWidth()
-	{
-		return 0;
-	}
-
-	int FrameBufferTarget::getHeight()
-	{
-		return 0;
-	}
-
-	bool FrameBufferTarget::isTextureTarget()
-	{
-		return false;
 	}
 }

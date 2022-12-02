@@ -5,8 +5,7 @@
 
 namespace Azazel
 {
-
-	enum class Semantic
+	enum Semantic
 	{
 		POSITION,
 		COLOR,
@@ -18,7 +17,7 @@ namespace Azazel
 		AGAMMA
 	};
 
-	enum class ElementType
+	enum ElementType
 	{
 		FLOAT,
 		HALF,
@@ -30,6 +29,8 @@ namespace Azazel
 		UNSIGNED_SHORT
 	};
 
+	int sizeOfElement(const ElementType& el);
+
 	class Element
 	{
 	public:
@@ -39,6 +40,13 @@ namespace Azazel
 		int size;
 		int offset;
 		int id;
+
+		Element(Semantic& semantic, int dimension, ElementType& elementType)
+		{
+			this->semantic = semantic;
+			this->dimension = dimension;
+			this->elementType = elementType;
+		}
 	};
 
 	class Vertex
@@ -51,16 +59,20 @@ namespace Azazel
 		Vertex(std::vector<Element>& elements)
 		: elements(elements)
 		{
-
+			this->size = computeSize(elements);
 		}
 		virtual ~Vertex()
 		{
 			
 		}
 	private:
-		int computeSize(std::vector<Element>& elements)
+		int computeSize(const std::vector<Element>& elements)
 		{
 			int size = 0;
+			for (auto& element : elements)
+			{
+				size += element.size;
+			}
 			return size;
 		}
 	};

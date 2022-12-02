@@ -2,6 +2,11 @@
 
 namespace Azazel
 {
+    VertexBufferRHI::VertexBufferRHI()
+    {
+
+    }
+    
     VertexBufferRHI::~VertexBufferRHI()
     {
 

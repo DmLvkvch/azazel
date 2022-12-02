@@ -11,6 +11,11 @@ namespace Azazel
 
         KeyEvent(int keycode) : keycode(keycode)
         {}
+    public:
+        int getKeyCode() const
+        {
+            return this->keycode;
+        }
     };
 
     class KeyPressedEvent : public KeyEvent
@@ -26,6 +31,11 @@ namespace Azazel
         static EventType getStaticEventType()
         {
             return EventType::KeyPressed;
+        }
+
+        int getRepeatCount()
+        {
+            return this->repeatCount;
         }
 
         std::string toString()

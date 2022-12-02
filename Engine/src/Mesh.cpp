@@ -35,14 +35,14 @@ namespace Azazel
 		float right = 1; 
 
 		std::vector<glm::vec3> positions = {
-			glm::vec3(-left, top, front), // 0
-			glm::vec3(-left, -bottom, front), // 1
-			glm::vec3(-left, top, -back), // 2
-			glm::vec3(-left, -bottom, -back), // 3
-			glm::vec3(right, top, front), // 4
-			glm::vec3(right, -bottom, front), // 5
-			glm::vec3(right, top, -back), // 6
-			glm::vec3(right, -bottom, -back), // 7
+			glm::vec3(-left, top, front),
+			glm::vec3(-left, -bottom, front),
+			glm::vec3(-left, top, -back),
+			glm::vec3(-left, -bottom, -back),
+			glm::vec3(right, top, front),
+			glm::vec3(right, -bottom, front),
+			glm::vec3(right, top, -back),
+			glm::vec3(right, -bottom, -back),
 		};
 
 		std::vector<glm::vec3> vertices;
@@ -83,44 +83,44 @@ namespace Azazel
 		vertices.push_back(positions[0]);
 		vertices.push_back(positions[1]);
 
-		std::vector<glm::vec2> texC;
+		std::vector<glm::vec2> textureCoords;
 
-		texC.push_back(glm::vec2(1.0f, 0.0f));
-		texC.push_back(glm::vec2(0.0f, 1.0f));
-		texC.push_back(glm::vec2(0.0f, 0.0f));
-		texC.push_back(glm::vec2(1.0f, 1.0f));
-		texC.push_back(glm::vec2(0.0f, 0.0f));
-		texC.push_back(glm::vec2(1.0f, 0.0f));
-		texC.push_back(glm::vec2(1.0f, 1.0f));
-		texC.push_back(glm::vec2(0.0f, 0.0f));
-		texC.push_back(glm::vec2(1.0f, 0.0f));
-		texC.push_back(glm::vec2(0.0f, 1.0f));
-		texC.push_back(glm::vec2(1.0f, 0.0f));
-		texC.push_back(glm::vec2(1.0f, 1.0f));
-		texC.push_back(glm::vec2(1.0f, 1.0f));
-		texC.push_back(glm::vec2(0.0f, 0.0f));
-		texC.push_back(glm::vec2(1.0f, 0.0f));
-		texC.push_back(glm::vec2(1.0f, 1.0f));
-		texC.push_back(glm::vec2(0.0f, 0.0f));
-		texC.push_back(glm::vec2(1.0f, 0.0f));
-		texC.push_back(glm::vec2(1.0f, 0.0f));
-		texC.push_back(glm::vec2(1.0f, 1.0f));
-		texC.push_back(glm::vec2(0.0f, 1.0f));
-		texC.push_back(glm::vec2(1.0f, 1.0f));
-		texC.push_back(glm::vec2(0.0f, 1.0f));
-		texC.push_back(glm::vec2(0.0f, 0.0f));
-		texC.push_back(glm::vec2(1.0f, 1.0f));
-		texC.push_back(glm::vec2(0.0f, 1.0f));
-		texC.push_back(glm::vec2(0.0f, 0.0f));
-		texC.push_back(glm::vec2(0.0f, 1.0f));
-		texC.push_back(glm::vec2(0.0f, 0.0f));
-		texC.push_back(glm::vec2(1.0f, 0.0f));
-		texC.push_back(glm::vec2(1.0f, 1.0f));
-		texC.push_back(glm::vec2(0.0f, 1.0f));
-		texC.push_back(glm::vec2(0.0f, 0.0f));
-		texC.push_back(glm::vec2(1.0f, 1.0f));
-		texC.push_back(glm::vec2(0.0f, 1.0f));
-		texC.push_back(glm::vec2(0.0f, 0.0f));
-		return genQuadMesh(1, 1, 1, 1, 1);
+		textureCoords.push_back(glm::vec2(1.0f, 0.0f));
+		textureCoords.push_back(glm::vec2(0.0f, 1.0f));
+		textureCoords.push_back(glm::vec2(0.0f, 0.0f));
+		textureCoords.push_back(glm::vec2(1.0f, 1.0f));
+		textureCoords.push_back(glm::vec2(0.0f, 0.0f));
+		textureCoords.push_back(glm::vec2(1.0f, 0.0f));
+		textureCoords.push_back(glm::vec2(1.0f, 1.0f));
+		textureCoords.push_back(glm::vec2(0.0f, 0.0f));
+		textureCoords.push_back(glm::vec2(1.0f, 0.0f));
+		textureCoords.push_back(glm::vec2(0.0f, 1.0f));
+		textureCoords.push_back(glm::vec2(1.0f, 0.0f));
+		textureCoords.push_back(glm::vec2(1.0f, 1.0f));
+		textureCoords.push_back(glm::vec2(1.0f, 1.0f));
+		textureCoords.push_back(glm::vec2(0.0f, 0.0f));
+		textureCoords.push_back(glm::vec2(1.0f, 0.0f));
+		textureCoords.push_back(glm::vec2(1.0f, 1.0f));
+		textureCoords.push_back(glm::vec2(0.0f, 0.0f));
+		textureCoords.push_back(glm::vec2(1.0f, 0.0f));
+		textureCoords.push_back(glm::vec2(1.0f, 0.0f));
+		textureCoords.push_back(glm::vec2(1.0f, 1.0f));
+		textureCoords.push_back(glm::vec2(0.0f, 1.0f));
+		textureCoords.push_back(glm::vec2(1.0f, 1.0f));
+		textureCoords.push_back(glm::vec2(0.0f, 1.0f));
+		textureCoords.push_back(glm::vec2(0.0f, 0.0f));
+		textureCoords.push_back(glm::vec2(1.0f, 1.0f));
+		textureCoords.push_back(glm::vec2(0.0f, 1.0f));
+		textureCoords.push_back(glm::vec2(0.0f, 0.0f));
+		textureCoords.push_back(glm::vec2(0.0f, 1.0f));
+		textureCoords.push_back(glm::vec2(0.0f, 0.0f));
+		textureCoords.push_back(glm::vec2(1.0f, 0.0f));
+		textureCoords.push_back(glm::vec2(1.0f, 1.0f));
+		textureCoords.push_back(glm::vec2(0.0f, 1.0f));
+		textureCoords.push_back(glm::vec2(0.0f, 0.0f));
+		textureCoords.push_back(glm::vec2(1.0f, 1.0f));
+		textureCoords.push_back(glm::vec2(0.0f, 1.0f));
+		textureCoords.push_back(glm::vec2(0.0f, 0.0f));
+		return genQuadMesh(1,1,1,1,1);
 	}
 }

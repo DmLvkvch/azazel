@@ -16,11 +16,8 @@ namespace Azazel
 		int bpp;
 		Texture::TextureFilter textureFilter;
 		Texture::TextureWrap textureWrap;
-
 		unsigned int  textureFilterToGLFormat(Texture::TextureFilter textureFilter);
-		
 		unsigned int  textureWrapToGLFormat(Texture::TextureWrap textureWrap);
-
 		void createTexture(const unsigned char* data, int width, int height, int bpp);
 	public:
 		GLESTexture(std::string path);

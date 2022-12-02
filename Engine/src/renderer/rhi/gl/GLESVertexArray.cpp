@@ -14,7 +14,7 @@ namespace Azazel
         glDeleteVertexArrays(1, &rendererId);
     }
 
-    void GLESVertexArray::addBuffer(VertexBufferRHI& vertexBuffer, const GLESVertexBufferLayout& layout, int attribOffset)
+    void GLESVertexArray::addBuffer(VertexBufferRHI& vertexBuffer, const VertexBufferLayout& layout, int attribOffset)
     {
         bind();
         vertexBuffer.bind();

@@ -1,5 +1,7 @@
 #include "LayerStack.h"
 
+#include <algorithm>
+
 namespace Azazel
 {
     LayerStack::LayerStack()

@@ -6,13 +6,11 @@ namespace Azazel
 {
 	class GLESVertexBuffer : public VertexBufferRHI
 	{
-	public:
+	private:
 		unsigned int rendererId;
-
+	public:
 		GLESVertexBuffer(const void* data, int size);
-
 		~GLESVertexBuffer();
-
 		void bind();
 		void unbind();
 	};

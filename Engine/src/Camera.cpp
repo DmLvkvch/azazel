@@ -50,8 +50,18 @@ namespace Azazel
 		this->position = this->position + glm::vec3(0.0f, y, 0.0f);
 	}
 
+	void Camera::setLookAtPosition(glm::vec3 lookAtPosition)
+	{
+		
+	}
+
 	glm::mat4 Camera::getViewLookAtMatrix(glm::vec3 up)
 	{
-		return glm::lookAt(position, lookAtPosition, up);
+		return glm::lookAt(glm::vec3{1.0f, 1.0f, 1.0f}, lookAtPosition, up);
+	}
+
+	glm::vec3& Camera::getPosition()
+	{
+		return this->position;
 	}
 }
