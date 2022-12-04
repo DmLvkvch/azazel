@@ -1,6 +1,15 @@
 #pragma once
 
-enum class ColorFormat
-{
+#include <string>
 
-};
+namespace Azazel
+{
+    class ColorFormat
+    {
+    public:
+        ColorFormat(){}
+        ~ColorFormat(){}
+    private:
+        std::string name;
+    };
+}

@@ -1,4 +1,4 @@
-#include "GlobalUpdater.h"
+#include "UpdateTarget.h"
 
 namespace Azazel
 {

@@ -22,10 +22,6 @@ namespace Azazel
         }
     }
 
-    void GLESFrameBuffer::setColorTargets(const std::vector<TextureRHI*>& colorAttachments)
-    {
-    }
-
     GLESFrameBuffer::~GLESFrameBuffer()
     {
         glDeleteFramebuffers(1, &rendererId);  
@@ -48,7 +44,7 @@ namespace Azazel
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + slot, GL_TEXTURE_2D, textureId, 0);
         if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
-	        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+	        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete attachment!" << std::endl;
         }
         unbind();
     }

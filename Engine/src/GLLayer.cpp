@@ -22,6 +22,7 @@
 #include "renderer/rhi/gl/GLESVertexBuffer.h"
 #include "renderer/rhi/gl/GLESIndexBuffer.h"
 #include "renderer/rhi/gl/GLESVertexArray.h"
+#include "renderer/rhi/gl/GLESVertexBufferLayout.h"
 
 namespace Azazel
 {
@@ -153,6 +154,9 @@ namespace Azazel
 
         this->texture = new GLESTexture("images/cat.png");
 
+        VertexBuffer buffer = VertexBuffer::create(vertices.data(), sizeof(float) * vertices.size() * 3);
+        buffer.bind();
+
         this->indexBuffer = new GLESIndexBuffer(indices.data(), indices.size());
         GLESVertexBuffer vertexBuffer(vertices.data(), sizeof(float) * vertices.size() * 3);
         GLESVertexBuffer vertexBufferT(texCoords.data(), sizeof(float) * texCoords.size() * 2);
@@ -170,10 +174,9 @@ namespace Azazel
         vbo2.add<float> (3);
         vertexArray->addBuffer(vertexBufferN, vbo2, 2);
 
+        std::string vertCode = readFile("shaders/default.vert.glsl");
 
-        std::string vertCode = readFile("shaders/light/specular.light.vert.glsl");
-
-        std::string fragCode = readFile("shaders/light/specular.light.frag.glsl");
+        std::string fragCode = readFile("shaders/default.frag.glsl");
 
         shader = new GLESShader(vertCode, fragCode);
         shader->bind();

@@ -1,7 +1,6 @@
 #pragma once
 
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
+#include <vector>
 
 namespace Azazel
 {
@@ -52,7 +51,6 @@ namespace Azazel
 	class Vertex
 	{
 	public:
-
 		std::vector<Element>& elements;
 		int size;
 
