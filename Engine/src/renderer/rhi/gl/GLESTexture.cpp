@@ -66,13 +66,13 @@ namespace Azazel
         glDeleteTextures(1, &rendererId);
     }
 
-    void GLESTexture::bind(unsigned int slot)
+    void GLESTexture::bind(unsigned int slot) const
     {
         glActiveTexture(GL_TEXTURE0 + slot);
         glBindTexture(GL_TEXTURE_2D, rendererId);
     }
 
-    void GLESTexture::unbind()
+    void GLESTexture::unbind() const
     {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
@@ -137,15 +137,5 @@ namespace Azazel
     unsigned int GLESTexture::getRendererId()
     {
         return rendererId;
-    }
-
-    int GLESTexture::getWidth()
-    {
-        return width;
-    }
-
-    int GLESTexture::getHeight()
-    {
-        return height;
     }
 }

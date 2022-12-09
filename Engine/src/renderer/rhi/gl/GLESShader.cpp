@@ -6,6 +6,7 @@
 namespace Azazel
 {
 	GLESShader::GLESShader(std::string vertexShader, std::string fragmentShader)
+	: Shader(vertexShader, fragmentShader)
 	{
 		unsigned int vertexShaderHandle = compile(vertexShader, VERTEX);
 		unsigned int fragmentShaderHandle = compile(fragmentShader, FRAGMENT);
@@ -66,17 +67,17 @@ namespace Azazel
 		return handle;
 	}
 
-	void GLESShader::bind()
+	void GLESShader::bind() const
 	{
 		glUseProgram(rendererId);
 	}
 
-	void GLESShader::unbind()
+	void GLESShader::unbind() const
 	{
 		glUseProgram(0);
 	}
 
-	int GLESShader::getUniformLocation(const std::string& name)
+	int GLESShader::getUniformLocation(const std::string& name) const
 	{
 		int location = glGetUniformLocation(rendererId, name.c_str());
 		if (location == -1)
@@ -86,27 +87,27 @@ namespace Azazel
 		return location;
 	}
 
-	void GLESShader::setUniform1f(const std::string& name, float value)
+	void GLESShader::setUniform1f(const std::string& name, float value) const
 	{
 		glUniform1f(getUniformLocation(name), value);
 	}
 
-	void GLESShader::setUniform4f(const std::string& name, float f0, float f1, float f2, float f3)
+	void GLESShader::setUniform4f(const std::string& name, float f0, float f1, float f2, float f3) const
 	{
 		glUniform4f(getUniformLocation(name), f0, f1, f2, f3);
 	}
 
-	void GLESShader::setUniform1i(const std::string& name, int value)
+	void GLESShader::setUniform1i(const std::string& name, int value) const
 	{
 		glUniform1i(getUniformLocation(name), value);
 	}
 
-	void GLESShader::setMatrix4f(const std::string& name, const glm::mat4& mvp)
+	void GLESShader::setMatrix4f(const std::string& name, const glm::mat4& mvp) const
 	{
 		glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &mvp[0][0]);
 	}
 
-	void GLESShader::setVec3f(const std::string& name, const glm::vec3& vec3)
+	void GLESShader::setVec3f(const std::string& name, const glm::vec3& vec3) const
 	{
 		glUniform3fv(getUniformLocation(name), 1, &vec3.x);
 	}

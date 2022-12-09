@@ -34,9 +34,6 @@
 
 #include "Vertex.h"
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window, Azazel::Camera& camera);
-
 const unsigned int SCR_WIDTH = 940;
 const unsigned int SCR_HEIGHT = 560;
 
@@ -59,14 +56,4 @@ int main()
     p->run();
     delete p;
     return 0;
-}
-
-void processInput(GLFWwindow* window, Camera& camera)
-{
-
-}
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
 }

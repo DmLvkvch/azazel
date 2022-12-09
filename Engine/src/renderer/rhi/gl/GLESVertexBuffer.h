@@ -1,17 +1,17 @@
 #pragma once
 
-#include <renderer/rhi/VertexBufferRHI.h>
+#include <renderer/VertexBuffer.h>
 
 namespace Azazel
 {
-	class GLESVertexBuffer : public VertexBufferRHI
+	class GLESVertexBuffer : public VertexBuffer
 	{
 	private:
 		unsigned int rendererId;
 	public:
 		GLESVertexBuffer(const void* data, int size);
 		~GLESVertexBuffer();
-		void bind();
-		void unbind();
+		void bind() const;
+		void unbind() const;
 	};
 }

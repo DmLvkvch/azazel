@@ -4,11 +4,11 @@
 
 #include "Camera.h"
 
-#include "renderer/rhi/ShaderRHI.h"
-#include "renderer/rhi/TextureRHI.h"
-#include "renderer/rhi/VertexBufferRHI.h"
-#include "renderer/rhi/IndexBufferRHI.h"
-#include "renderer/rhi/VertexArrayRHI.h"
+#include "renderer/Shader.h"
+#include "renderer/Texture.h"
+#include "renderer/VertexBuffer.h"
+#include "renderer/IndexBuffer.h"
+#include "renderer/VertexArray.h"
 
 namespace Azazel
 {
@@ -16,11 +16,11 @@ namespace Azazel
     {
     public:
         Camera camera;
-        TextureRHI* texture;
-        VertexArrayRHI* vertexArray;
-        IndexBufferRHI* indexBuffer;
-        VertexBufferRHI* vertexBuffer;
-        ShaderRHI* shader;
+        Texture* texture;
+        VertexArray* vertexArray;
+        IndexBuffer* indexBuffer;
+        VertexBuffer* vertexBuffer;
+        Shader* shader;
 
         GLLayer()
         : Layer("ImGuiLayer")

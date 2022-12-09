@@ -1,8 +1,7 @@
 #pragma once
 
 #include "ColorFormat.h"
-
-#include "renderer/rhi/TextureRHI.h"
+#include "TextureData.h"
 
 namespace Azazel
 {
@@ -13,8 +12,7 @@ namespace Azazel
         int width;
         int height;
         ColorFormat colorFormat;
-        TextureRHI* textureRHI;
-
+        TextureData textureData;
     public:
 
         enum TextureFilter
@@ -30,10 +28,14 @@ namespace Azazel
             CLAMP_TO_EDGE,
             CLAMP_TO_BORDER
         };
-        
-        Texture(int width, int height, const unsigned char* data);
 
-        ~Texture();
+        Texture() = default;
+        
+		Texture(int width, int height, const unsigned char* data, ColorFormat colorFormat);
+		
+        Texture(int width, int height, TextureData textureData);
+        
+        virtual ~Texture();
     
         int getWidth();
 
@@ -41,6 +43,19 @@ namespace Azazel
 
         ColorFormat getColorFormat();
 
-        TextureRHI* getTextureRHI();
+        static Texture* createTexture()
+        {
+            
+        }
+
+        virtual void bind(unsigned int slot = 0) const = 0;
+        virtual void unbind() const = 0;
+
+        virtual void setTextureFilter(Texture::TextureFilter textureFilter) = 0;
+        virtual void setTextureWrap(Texture::TextureWrap textureWrap) = 0;
+        virtual unsigned int getRendererId()
+        {
+
+        }
     };
 }

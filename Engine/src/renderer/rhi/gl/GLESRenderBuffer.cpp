@@ -5,6 +5,7 @@
 namespace Azazel
 {
     GLESRenderBuffer::GLESRenderBuffer(int width, int height)
+    :RenderBuffer(width, height)
     {
         glGenRenderbuffers(1, &rendererId);
         bind();

@@ -154,8 +154,8 @@ namespace Azazel
 
         this->texture = new GLESTexture("images/cat.png");
 
-        VertexBuffer buffer = VertexBuffer::create(vertices.data(), sizeof(float) * vertices.size() * 3);
-        buffer.bind();
+       // VertexBuffer buffer = VertexBuffer::create(vertices.data(), sizeof(float) * vertices.size() * 3);
+       // buffer.bind();
 
         this->indexBuffer = new GLESIndexBuffer(indices.data(), indices.size());
         GLESVertexBuffer vertexBuffer(vertices.data(), sizeof(float) * vertices.size() * 3);
@@ -165,18 +165,18 @@ namespace Azazel
 
         this->vertexArray = new GLESVertexArray();
         GLESVertexBufferLayout vbo;
-        vbo.add<float> (3);
-        vertexArray->addBuffer(vertexBuffer, vbo);
+        vbo.addFloat(3);
+        vertexArray->addBuffer(vertexBuffer, &vbo);
         GLESVertexBufferLayout vbo1;
-        vbo1.add<float> (2);
-        vertexArray->addBuffer(vertexBufferT, vbo1, 1);
+        vbo1.addFloat (2);
+        vertexArray->addBuffer(vertexBufferT, &vbo1, 1);
         GLESVertexBufferLayout vbo2;
-        vbo2.add<float> (3);
-        vertexArray->addBuffer(vertexBufferN, vbo2, 2);
+        vbo2.addFloat (3);
+        vertexArray->addBuffer(vertexBufferN, &vbo2, 2);
 
-        std::string vertCode = readFile("shaders/default.vert.glsl");
+        std::string vertCode = readFile("shaders/light/specular.light.vert.glsl");
 
-        std::string fragCode = readFile("shaders/default.frag.glsl");
+        std::string fragCode = readFile("shaders/light/specular.light.frag.glsl");
 
         shader = new GLESShader(vertCode, fragCode);
         shader->bind();

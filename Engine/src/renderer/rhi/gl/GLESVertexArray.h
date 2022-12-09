@@ -1,21 +1,21 @@
 #pragma once
 
 #include <renderer/rhi/gl/GLESVertexBufferLayout.h>
-#include <renderer/rhi/VertexArrayRHI.h>
-#include <renderer/rhi/VertexBufferRHI.h>
-#include <renderer/rhi/VertexBufferLayout.h>
+#include <renderer/VertexArray.h>
+#include <renderer/VertexBuffer.h>
+#include <renderer/VertexBufferLayout.h>
 
 namespace Azazel
 {
-	class GLESVertexArray : public VertexArrayRHI
+	class GLESVertexArray : public VertexArray
 	{
 	private:
 		unsigned int rendererId;
 	public:
 		GLESVertexArray();
 		~GLESVertexArray();
-		void addBuffer(VertexBufferRHI& vb, const GLESVertexBufferLayout& layout, int attribOffset = 0);
-		void bind();
-		void unbind();
+		void addBuffer(VertexBuffer& vb, VertexBufferLayout* layout, int attribOffset = 0);
+		void bind() const;
+		void unbind() const;
 	};
 }

@@ -1,8 +1,10 @@
 #pragma once
 
+#include <renderer/RenderBuffer.h>
+
 namespace Azazel
 {
-    class GLESRenderBuffer 
+    class GLESRenderBuffer : public RenderBuffer
     {
     private:
         unsigned int rendererId;

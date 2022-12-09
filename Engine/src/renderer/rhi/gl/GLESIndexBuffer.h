@@ -1,10 +1,10 @@
 #pragma once
 
-#include <renderer/rhi/IndexBufferRHI.h>
+#include <renderer/IndexBuffer.h>
 
 namespace Azazel
 {
-	class GLESIndexBuffer : public IndexBufferRHI
+	class GLESIndexBuffer : public IndexBuffer
 	{
 	private:
 		unsigned int rendererId;
@@ -15,10 +15,10 @@ namespace Azazel
 
 		~GLESIndexBuffer();
 
-		void bind() override;
+		void bind() const override;
 
-		void unbind() override;
+		void unbind() const override;
 
-		int getElementCount() override;
+		int getElementCount() const override;
 	};
 }

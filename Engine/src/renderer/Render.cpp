@@ -13,12 +13,6 @@ namespace Azazel
 	{
 
 	}
-
-	TextureRHI* Render::createTextureRHI(const Texture* texture)
-	{
-		return renderApi->createTextureRHI(texture);
-	}
-
 	
 	RenderApi* Render::getRenderApi()
 	{

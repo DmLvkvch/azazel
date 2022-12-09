@@ -7,10 +7,17 @@ namespace Azazel
     class TextureData
     {
     public:
+        TextureData() = default;
         TextureData(int width, int height, const ColorFormat& colorFormat, int color);
-        ~TextureData();
+        ~TextureData()
+        {
+            
+        }
     private:
-        void fillData(unsigned char* data, int width, int height, ColorFormat colorFormat, int color);
+        void fillData(unsigned char* data, int width, int height, ColorFormat colorFormat, int color)
+        {
+
+        }
 
         unsigned char* data;
         int width;

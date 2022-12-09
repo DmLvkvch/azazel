@@ -5,14 +5,14 @@
 #include <iostream>
 namespace Azazel
 {
-	GLESFrameBuffer::GLESFrameBuffer(TextureRHI* texture) : frameBufferDepthTarget(nullptr)
+	GLESFrameBuffer::GLESFrameBuffer(Texture* texture) : frameBufferDepthTarget(nullptr)
     {
         glGenFramebuffers(1, &rendererId);
         this->colorAttachments.push_back(texture);
         setTextureTarget(texture);
     }
 
-    GLESFrameBuffer::GLESFrameBuffer(const std::vector<TextureRHI*>& colorAttachments) : frameBufferDepthTarget(nullptr)
+    GLESFrameBuffer::GLESFrameBuffer(const std::vector<Texture*>& colorAttachments) : frameBufferDepthTarget(nullptr)
     {
         glGenFramebuffers(1, &rendererId);
         this->colorAttachments.insert(this->colorAttachments.end(), colorAttachments.begin(), colorAttachments.end());
@@ -27,17 +27,17 @@ namespace Azazel
         glDeleteFramebuffers(1, &rendererId);  
     }
 
-	void GLESFrameBuffer::bind()
+	void GLESFrameBuffer::bind() const
     {
         glBindFramebuffer(GL_FRAMEBUFFER, rendererId);
     }
 	
-    void GLESFrameBuffer::unbind()
+    void GLESFrameBuffer::unbind() const
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    void GLESFrameBuffer::setTextureTarget(TextureRHI* texture, int slot)
+    void GLESFrameBuffer::setTextureTarget(Texture* texture, int slot)
     {
         unsigned int textureId = texture->getRendererId();
         bind();

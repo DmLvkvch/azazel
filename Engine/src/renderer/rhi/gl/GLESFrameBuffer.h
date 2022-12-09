@@ -2,27 +2,27 @@
 
 #include <vector>
 
-#include <renderer/rhi/FrameBufferRHI.h>
-#include <renderer/rhi/TextureRHI.h>
+#include <renderer/FrameBuffer.h>
+#include <renderer/Texture.h>
 #include "GLESFrameBufferTarget.h"
 
 namespace Azazel
 {
-	class GLESFrameBuffer : public FrameBufferRHI
+	class GLESFrameBuffer : public FrameBuffer
 	{
 	private:
 		unsigned int rendererId;
-		std::vector<TextureRHI*> colorAttachments;
+		std::vector<Texture*> colorAttachments;
 		FrameBufferTarget* frameBufferDepthTarget;
 	public:
 
-		GLESFrameBuffer(const std::vector<TextureRHI*>& colorAttachments);
-		GLESFrameBuffer(TextureRHI* texture);
+		GLESFrameBuffer(const std::vector<Texture*>& colorAttachments);
+		GLESFrameBuffer(Texture* texture);
 		~GLESFrameBuffer();
-		void bind() override;
-		void unbind() override;
-		void setTextureTarget(TextureRHI* texture, int slot = 0);
+		void bind() const override;
+		void unbind() const override;
+		void setTextureTarget(Texture* texture, int slot = 0);
 		void setFrameBufferDepthTarget(FrameBufferTarget* frameBufferTarget);
-		void addColorAttachment(TextureRHI* textureRHI);
+		void addColorAttachment(Texture* texture);
 	};
 }

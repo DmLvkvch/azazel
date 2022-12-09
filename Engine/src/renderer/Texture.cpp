@@ -1,21 +1,18 @@
 #include "Texture.h"
 
-#include <renderer/rhi/gl/GLESTexture.h>
-
 namespace Azazel
 {
-    Texture::Texture(int width, int height, const unsigned char* data)
+    Texture::Texture(int width, int height, const unsigned char* data, ColorFormat colorFormat)
     {
-        textureRHI = new GLESTexture(data, width, height, 4);
+    
     }
 
+	Texture::Texture(int width, int height, TextureData textureData)
+    {
+
+    }
     Texture::~Texture()
     {
-        if (data != nullptr)
-        {
-            delete[] data;
-        }
-        delete textureRHI;
     }
 
     int Texture::getWidth()
@@ -33,8 +30,8 @@ namespace Azazel
         return colorFormat;
     }
 
-    TextureRHI* Texture::getTextureRHI()
+    static Texture* createTexture()
     {
-        return textureRHI;
+        return nullptr;
     }
 }

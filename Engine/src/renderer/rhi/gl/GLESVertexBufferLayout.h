@@ -1,18 +1,26 @@
 #pragma once
 
-#include <renderer/rhi/VertexBufferLayout.h>
+#include <renderer/VertexBufferLayout.h>
 #include <vector>
 #include "gl_headers.h"
 
 namespace Azazel
 {
-    struct VertexBufferElement
+    class GLESVertexBufferElement : VertexBufferElement
     {
-        unsigned int type;
-        unsigned int count;
-        unsigned char normalized;
+    public:
+        GLESVertexBufferElement(unsigned int type, unsigned int count, unsigned int normalized)
+        : VertexBufferElement(type, count, normalized)
+        {
 
-        static unsigned int getSizeOfType(unsigned int type)
+        }
+
+        ~GLESVertexBufferElement()
+        {
+
+        }
+
+        unsigned int getSizeOfType() const override
         {
             switch (type)
             {
@@ -31,12 +39,13 @@ namespace Azazel
     {
     private:
         unsigned int stride;
-        std::vector<VertexBufferElement> elements;
+        std::vector<GLESVertexBufferElement> elements;
 
         void push(unsigned int type, unsigned int count, unsigned char normalized)
         {
-            elements.push_back({ type, count, normalized });
-            stride += count * VertexBufferElement::getSizeOfType(type);
+            GLESVertexBufferElement vbe {type, count, normalized};
+            elements.push_back(vbe);
+            stride += count * vbe.getSizeOfType();
         };
 
     public:
@@ -47,6 +56,21 @@ namespace Azazel
 
         }
 
+        void addFloat(unsigned int count)
+        {
+            this->add<float>(count);
+        }
+
+        void addInt(unsigned int count)
+        {
+            this->add<unsigned int>(count);
+        }
+
+        void addByte(unsigned int count)
+        {
+            this->add<unsigned char>(count);
+        }
+
         template<typename T>
         void add(unsigned int count)
         {
@@ -54,7 +78,7 @@ namespace Azazel
         }
 
         template<>
-        void add<float>(unsigned int count) 
+        void add<float>(unsigned int count)
         { 
             push(GL_FLOAT, count, GL_FALSE); 
         }
