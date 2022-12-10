@@ -1,16 +1,19 @@
 #pragma once
 
-#include <renderer/VertexBufferLayout.h>
 #include <vector>
 #include "gl_headers.h"
 
 namespace Azazel
 {
-    class GLESVertexBufferElement : VertexBufferElement
+    class GLESVertexBufferElement
     {
+
     public:
+        unsigned int type;
+        unsigned int count;
+        unsigned int normalized;
         GLESVertexBufferElement(unsigned int type, unsigned int count, unsigned int normalized)
-        : VertexBufferElement(type, count, normalized)
+        : type(type), count(count), normalized(normalized)
         {
 
         }
@@ -20,7 +23,7 @@ namespace Azazel
 
         }
 
-        unsigned int getSizeOfType() const override
+        unsigned int getSizeOfType() const
         {
             switch (type)
             {
@@ -35,7 +38,7 @@ namespace Azazel
         }
     };
 
-    class GLESVertexBufferLayout : public VertexBufferLayout
+    class GLESVertexBufferLayout
     {
     private:
         unsigned int stride;
@@ -95,7 +98,7 @@ namespace Azazel
             push(GL_UNSIGNED_BYTE, count, GL_TRUE); 
         }
 
-        inline const std::vector<VertexBufferElement> getElements() const 
+        inline const std::vector<GLESVertexBufferElement> getElements() const 
         { 
             return elements; 
         };

@@ -42,20 +42,13 @@ namespace Azazel
         int getHeight();
 
         ColorFormat getColorFormat();
-
-        static Texture* createTexture()
-        {
-            
-        }
-
         virtual void bind(unsigned int slot = 0) const = 0;
         virtual void unbind() const = 0;
 
         virtual void setTextureFilter(Texture::TextureFilter textureFilter) = 0;
         virtual void setTextureWrap(Texture::TextureWrap textureWrap) = 0;
-        virtual unsigned int getRendererId()
-        {
+        virtual unsigned int getRendererId() = 0;
 
-        }
+        static Texture* createTexture();
     };
 }

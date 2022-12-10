@@ -26,14 +26,16 @@ namespace Azazel
 		
 		int getUniformLocation(const std::string& name) const override;
 
-		void setUniform1f(const std::string& name, float value) const override;
+		void setFloat(const std::string& name, float value) const override;
 
-		void setUniform1i(const std::string& name, int value) const override;
+		void setInt(const std::string& name, int value) const override;
 
-		void setUniform4f(const std::string& name, float f0, float f1, float f2, float f3) const override;
+		void setVec4f(const std::string& name, float f0, float f1, float f2, float f3) const override;
 
 		void setMatrix4f(const std::string& name, const glm::mat4& mvp) const override;
 
 		void setVec3f(const std::string& name, const glm::vec3& vec3) const override;
+
+		void setVec3f(const std::string& name, float f0, float f1, float f2) const override;
 	};
 }

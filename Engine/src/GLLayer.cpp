@@ -166,13 +166,13 @@ namespace Azazel
         this->vertexArray = new GLESVertexArray();
         GLESVertexBufferLayout vbo;
         vbo.addFloat(3);
-        vertexArray->addBuffer(vertexBuffer, &vbo);
+        vertexArray->addBuffer(vertexBuffer, vbo);
         GLESVertexBufferLayout vbo1;
         vbo1.addFloat (2);
-        vertexArray->addBuffer(vertexBufferT, &vbo1, 1);
+        vertexArray->addBuffer(vertexBufferT, vbo1, 1);
         GLESVertexBufferLayout vbo2;
         vbo2.addFloat (3);
-        vertexArray->addBuffer(vertexBufferN, &vbo2, 2);
+        vertexArray->addBuffer(vertexBufferN, vbo2, 2);
 
         std::string vertCode = readFile("shaders/light/specular.light.vert.glsl");
 
@@ -180,13 +180,18 @@ namespace Azazel
 
         shader = new GLESShader(vertCode, fragCode);
         shader->bind();
-        shader->setUniform1i("u_texture_0", 0);
+        shader->setInt("u_texture_0", 0);
 
+        shader->setVec3f("material.ambient", 1.0f, 0.5f, 0.31f);
+        shader->setVec3f("material.diffuse", 1.0f, 0.5f, 0.31f);
+        shader->setVec3f("material.specular", 0.5f, 0.5f, 0.5f);
+        shader->setFloat("material.shininess", 32.0f);
+        shader->setVec3f("light.ambient",  0.2f, 0.2f, 0.2f);
+        shader->setVec3f("light.diffuse",  0.5f, 0.5f, 0.5f); // darken diffuse light a bit
+        shader->setVec3f("light.specular", 1.0f, 1.0f, 1.0f); 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
     }
 
     void GLLayer::onDetach()
@@ -199,6 +204,17 @@ namespace Azazel
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glm::vec3 lightPos {0.0f, 0.0f, 500.0f};
+        glm::vec3 lightColor;
+        lightColor.x = sin(glfwGetTime() * 2.0f);
+        lightColor.y = sin(glfwGetTime() * 0.7f);
+        lightColor.z = sin(glfwGetTime() * 1.3f);
+        
+        glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); 
+        glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); 
+        
+        shader->setVec3f("light.ambient", ambientColor);
+        shader->setVec3f("light.diffuse", diffuseColor);
+
         shader->setVec3f("u_lightPos", lightPos);
         glm::vec3 rotation{};
         glm::mat4 projection = glm::perspective(glm::radians(60.0f), 1.5f, 0.1f, 2000.0f);
@@ -229,8 +245,7 @@ namespace Azazel
         std::cout<<e.toString()<<std::endl;
         if (e.getEventType() == EventType::KeyPressed)
         {
-            Event *tmp = (Event*)&e;
-            KeyPressedEvent* k = (KeyPressedEvent*)tmp;
+            KeyPressedEvent* k = (KeyPressedEvent*)&e;
             switch(k->getKeyCode())
             {
                 case 87:

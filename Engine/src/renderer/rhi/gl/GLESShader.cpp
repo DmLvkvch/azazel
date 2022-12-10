@@ -87,17 +87,17 @@ namespace Azazel
 		return location;
 	}
 
-	void GLESShader::setUniform1f(const std::string& name, float value) const
+	void GLESShader::setFloat(const std::string& name, float value) const
 	{
 		glUniform1f(getUniformLocation(name), value);
 	}
 
-	void GLESShader::setUniform4f(const std::string& name, float f0, float f1, float f2, float f3) const
+	void GLESShader::setVec4f(const std::string& name, float f0, float f1, float f2, float f3) const
 	{
 		glUniform4f(getUniformLocation(name), f0, f1, f2, f3);
 	}
 
-	void GLESShader::setUniform1i(const std::string& name, int value) const
+	void GLESShader::setInt(const std::string& name, int value) const
 	{
 		glUniform1i(getUniformLocation(name), value);
 	}
@@ -110,5 +110,11 @@ namespace Azazel
 	void GLESShader::setVec3f(const std::string& name, const glm::vec3& vec3) const
 	{
 		glUniform3fv(getUniformLocation(name), 1, &vec3.x);
+	}
+
+	void GLESShader::setVec3f(const std::string& name, float f0, float f1, float f2) const
+	{
+		glm::vec3 tmp = glm::vec3(f0, f1, f2);
+		glUniform3fv(getUniformLocation(name), 1, &tmp.x);
 	}
 }

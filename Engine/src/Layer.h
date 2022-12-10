@@ -14,7 +14,7 @@ namespace Azazel
         virtual void onDetach();
         virtual void onUpdate();
         virtual void onEvent(Event& e);
-        std::string getName() const
+        inline std::string getName() const
         {
             return this->name;
         }

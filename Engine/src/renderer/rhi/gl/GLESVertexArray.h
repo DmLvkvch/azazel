@@ -1,6 +1,6 @@
 #pragma once
 
-#include <renderer/rhi/gl/GLESVertexBufferLayout.h>
+#include "GLESVertexBufferLayout.h"
 #include <renderer/VertexArray.h>
 #include <renderer/VertexBuffer.h>
 #include <renderer/VertexBufferLayout.h>
@@ -14,7 +14,7 @@ namespace Azazel
 	public:
 		GLESVertexArray();
 		~GLESVertexArray();
-		void addBuffer(VertexBuffer& vb, VertexBufferLayout* layout, int attribOffset = 0);
+		void addBuffer(VertexBuffer& vb, const GLESVertexBufferLayout& layout, int attribOffset = 0);
 		void bind() const;
 		void unbind() const;
 	};
