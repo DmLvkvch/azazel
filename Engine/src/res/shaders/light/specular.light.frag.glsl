@@ -17,6 +17,15 @@ struct Material {
   
 uniform Material material;
 
+struct Light {
+    vec3 position;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
+uniform Light light;
+
 void main()
 {
     float ambientStrength = 0.1;
@@ -32,6 +41,10 @@ void main()
     vec3 reflectDir = reflect(-lightDir, norm);  
     float spec = pow(max(dot(lightDir, reflectDir), 0.0), material.shininess);
     vec3 specular = lightColor * (spec * material.specular);
+
+    ambient  = light.ambient * material.ambient;
+    diffuse  = light.diffuse * (diff * material.diffuse);
+    specular = light.specular * (spec * material.specular); 
 
     vec4 result = vec4(diffuse + ambient + specular, 1.0) * texture(u_texture_0, texCoord);
     gl_FragColor = result;

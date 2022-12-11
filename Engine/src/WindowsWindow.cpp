@@ -19,9 +19,6 @@ namespace Azazel
 
     WindowsWindow::WindowsWindow(const WindowProps& props)
     {
-        this->width = 0;
-        this->height = 0;
-        this->window = nullptr;
         if (initialized)
         {
             return;
@@ -46,7 +43,7 @@ namespace Azazel
             glfwTerminate();
         }
         glfwMakeContextCurrent(window);
-        setVSync(true);
+        setVSync(false);
         glfwSetWindowUserPointer(window, &windowData);
         initialized = true;
 
