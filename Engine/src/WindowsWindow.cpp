@@ -43,6 +43,7 @@ namespace Azazel
             glfwTerminate();
         }
         glfwMakeContextCurrent(window);
+        glfwWindowHint(GLFW_SAMPLES, 16);
         setVSync(false);
         glfwSetWindowUserPointer(window, &windowData);
         initialized = true;
@@ -108,7 +109,6 @@ namespace Azazel
         glfwSetScrollCallback(window, [](GLFWwindow* window, double xOffset, double yOffset)
         {
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
             MouseScrollEvent e((float) xOffset, (float) yOffset);
             data.eventCallback(e);
         });

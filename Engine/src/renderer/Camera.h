@@ -11,7 +11,7 @@ namespace Azazel
     class Camera
     {
     private:
-        glm::vec3 position {0.0f, 0.0f, 1.0f};
+        glm::vec3 position;
         glm::vec3 lookAtPosition {0.0f, 0.0f, 0.0f};
         glm::vec3 rotation;
         glm::vec3 scale;
@@ -26,13 +26,13 @@ namespace Azazel
         
         ~Camera();
 
-        void setPosition(glm::vec3 position);
+        void setPosition(const glm::vec3& position);
         
-        void setScale(glm::vec3 scale);
+        void setScale(const glm::vec3& scale);
         
-        void setRotation(glm::vec3 rotation);
+        void setRotation(const glm::vec3& rotation);
 
-        void setDirection(glm::vec3 direction);
+        void setDirection(const glm::vec3&direction);
 
         void moveForward(float z);
 
@@ -40,10 +40,10 @@ namespace Azazel
 
         void moveUp(float y);
 
-        void setLookAtPosition(glm::vec3 lookAtPosition = glm::vec3(0.0f, 0.0f, 0.0f));
+        void setLookAtPosition(const glm::vec3& lookAtPosition = glm::vec3(0.0f, 0.0f, 0.0f));
 
-        glm::mat4 getViewLookAtMatrix(glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::mat4 getViewLookAtMatrix(const glm::vec3& up = glm::vec3(0.0f, 1.0f, 0.0f));
 
-        glm::vec3& getPosition();
+        const glm::vec3& getPosition();
     };
 }

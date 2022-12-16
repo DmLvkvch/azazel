@@ -9,12 +9,18 @@
 namespace Azazel
 {
 
-    GLESTexture::GLESTexture(std::string path)
+ //  GLESTexture::GLESTexture(std::string path)
+ //  {
+ //      stbi_set_flip_vertically_on_load(true);
+ //      unsigned char* data = stbi_load(path.c_str(), &width, &height, &bpp, 4);
+ //      createTexture(data, width, height, bpp);
+ //      stbi_image_free(data);
+ //  }
+
+    GLESTexture::GLESTexture(const TextureData& textureData)
+    :width(textureData.width), height(textureData.height), bpp(textureData.bpp)
     {
-        stbi_set_flip_vertically_on_load(true);
-        unsigned char* data = stbi_load(path.c_str(), &width, &height, &bpp, 4);
-        createTexture(data, width, height, bpp);
-        stbi_image_free(data);
+        createTexture(textureData.data, width, height, bpp);
     }
 
     GLESTexture::GLESTexture(const unsigned char* data, int width, int height, int bpp)

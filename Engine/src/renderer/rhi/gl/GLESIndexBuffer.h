@@ -11,7 +11,7 @@ namespace Azazel
 		int count;
 
 	public:
-		GLESIndexBuffer(const void* data, int size);
+		GLESIndexBuffer(const void* data, int count);
 
 		~GLESIndexBuffer();
 

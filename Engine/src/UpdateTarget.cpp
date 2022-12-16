@@ -2,5 +2,11 @@
 
 namespace Azazel
 {
+
     
+
+    UpdateTarget::~UpdateTarget()
+    {
+
+    }
 }

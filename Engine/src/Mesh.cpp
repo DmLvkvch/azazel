@@ -16,7 +16,7 @@ namespace Azazel
 
 	}
 
-	Mesh Mesh::genQuadMesh(float x, float y, float z, float width, float height)
+	Mesh Mesh::genQuadMesh(float x, float y, float z, float width, float height, float depth)
 	{
 		std::vector<Vertex> vertices ;
 		
@@ -121,6 +121,6 @@ namespace Azazel
 		textureCoords.push_back(glm::vec2(1.0f, 1.0f));
 		textureCoords.push_back(glm::vec2(0.0f, 1.0f));
 		textureCoords.push_back(glm::vec2(0.0f, 0.0f));
-		return genQuadMesh(1,1,1,1,1);
+		return genQuadMesh(1, 1, 1, 1, 1, 1);
 	}
 }

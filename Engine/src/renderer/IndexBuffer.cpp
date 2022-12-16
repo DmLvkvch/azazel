@@ -1,9 +1,16 @@
 #include "IndexBuffer.h"
 
+#include "rhi/gl/GLESIndexBuffer.h"
+
 namespace Azazel
 {
-    IndexBuffer* IndexBuffer::create(unsigned int* indices, int size)
+    IndexBuffer::~IndexBuffer()
     {
-        return nullptr;
+
+    }
+    
+    IndexBuffer* IndexBuffer::create(unsigned int* indices, int count)
+    {
+        return new GLESIndexBuffer(indices, count);
     }
 }

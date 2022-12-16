@@ -21,7 +21,7 @@ namespace Azazel
 
 		Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
 		~Mesh();
-		static Mesh genQuadMesh(float x, float y, float z, float width, float height);
+		static Mesh genQuadMesh(float x, float y, float z, float width, float height, float depth);
 		static Mesh genCube(float size);
 
 		std::vector<Vertex>& getVertices();

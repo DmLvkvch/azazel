@@ -33,7 +33,7 @@ namespace Azazel
         
 		Texture(int width, int height, const unsigned char* data, ColorFormat colorFormat);
 		
-        Texture(int width, int height, TextureData textureData);
+        Texture(const TextureData& textureData);
         
         virtual ~Texture();
     
@@ -48,7 +48,6 @@ namespace Azazel
         virtual void setTextureFilter(Texture::TextureFilter textureFilter) = 0;
         virtual void setTextureWrap(Texture::TextureWrap textureWrap) = 0;
         virtual unsigned int getRendererId() = 0;
-
-        static Texture* createTexture();
+        static Texture* create(const TextureData& textureData);
     };
 }

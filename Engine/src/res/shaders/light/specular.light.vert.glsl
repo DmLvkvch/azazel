@@ -10,10 +10,16 @@ out vec2 texCoord;
 uniform mat4 u_mvp;
 uniform mat4 u_model;
 
+uniform vec2 offsets[100];
+
 void main()
 {
+    vec2 offset = offsets[gl_InstanceID];
     normal = mat3(transpose(inverse(u_model))) * a_normal;
     fragPos = vec3(u_model * vec4(a_position, 1.0));
     texCoord = a_texture_coord;
-    gl_Position = u_mvp * vec4(a_position, 1.0f);
+    vec4 resPos = u_mvp * vec4(a_position, 1.0f);
+    resPos.x += offset.x;
+    resPos.z -= offset.y;
+    gl_Position = resPos;
 }

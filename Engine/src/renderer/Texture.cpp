@@ -1,5 +1,7 @@
 #include "Texture.h"
 
+#include "rhi/gl/GLESTexture.h"
+
 namespace Azazel
 {
     Texture::Texture(int width, int height, const unsigned char* data, ColorFormat colorFormat)
@@ -7,10 +9,11 @@ namespace Azazel
     
     }
 
-	Texture::Texture(int width, int height, TextureData textureData)
+	Texture::Texture(const TextureData& textureData)
     {
 
     }
+    
     Texture::~Texture()
     {
     }
@@ -30,8 +33,8 @@ namespace Azazel
         return colorFormat;
     }
 
-    static Texture* createTexture()
+    Texture* Texture::create(const TextureData& textureData)
     {
-        return nullptr;
+        return new GLESTexture(textureData);
     }
 }

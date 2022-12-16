@@ -18,7 +18,7 @@ namespace Azazel
 
 	void Application::onEvent(Event& e)
 	{
-		std::cout<<e.toString()<<std::endl;
+		//std::cout<<e.toString()<<std::endl;
 		if (e.getEventType() == EventType::WindowClose)
 		{
 			running = false;
@@ -26,7 +26,7 @@ namespace Azazel
 
 		for (auto it = layerStack.end(); it != layerStack.begin(); )
 		{
-			(*--it)->onEvent(e);
+			(*(--it))->onEvent(e);
 			if (e.handled)
 			{
 				break;

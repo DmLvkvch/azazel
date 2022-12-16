@@ -117,4 +117,10 @@ namespace Azazel
 		glm::vec3 tmp = glm::vec3(f0, f1, f2);
 		glUniform3fv(getUniformLocation(name), 1, &tmp.x);
 	}
+
+	void GLESShader::setVec2f(const std::string& name, float f0, float f1) const
+	{
+		glm::vec2 tmp = glm::vec2(f0, f1);
+		glUniform2fv(getUniformLocation(name), 1, &tmp.x);
+	}
 }

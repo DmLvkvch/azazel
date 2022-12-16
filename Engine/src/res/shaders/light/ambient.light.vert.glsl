@@ -2,10 +2,10 @@
 
 layout (location = 0) in vec3 a_position;
 layout (location = 1) in vec2 a_texture_coord;
-
+layout (location = 2) in vec3 a_normal;
 out vec2 texCoord;
 
-uniform mat4 mvp;
+uniform mat4 u_mvp;
 
 void main()
 {

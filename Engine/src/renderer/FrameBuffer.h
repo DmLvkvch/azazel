@@ -6,7 +6,7 @@ namespace Azazel
 	{
 	public:
         FrameBuffer() = default;
-		virtual ~FrameBuffer() {}
+		virtual ~FrameBuffer();
 		virtual void bind() const = 0;
 		virtual void unbind() const = 0;
 	};

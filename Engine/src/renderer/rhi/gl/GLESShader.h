@@ -37,5 +37,8 @@ namespace Azazel
 		void setVec3f(const std::string& name, const glm::vec3& vec3) const override;
 
 		void setVec3f(const std::string& name, float f0, float f1, float f2) const override;
+
+		void setVec2f(const std::string& name, float f0, float f1) const override;
+
 	};
 }

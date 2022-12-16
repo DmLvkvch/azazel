@@ -25,6 +25,13 @@ namespace Azazel
         static Render* getCurrent();
     
         void clear();
+        
+        void beginScene();
+
+        void endScene();
+
+        void executeCommands();
+
         void drawMesh()
         {
 

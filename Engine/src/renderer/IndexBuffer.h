@@ -5,7 +5,7 @@ namespace Azazel
     class IndexBuffer
     {
     public:
-        virtual ~IndexBuffer(){}
+        virtual ~IndexBuffer();
         virtual void bind() const = 0;
         virtual void unbind() const = 0;
         virtual int getElementCount() const = 0;

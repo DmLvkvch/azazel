@@ -5,34 +5,13 @@
 #include <fstream>
 #include <streambuf>
 
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
-#include <glm/mat4x4.hpp>
-#include <glm/gtx/normal.hpp>
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/ext/matrix_clip_space.hpp>
-
-#include "Mesh.h"
-#include "Camera.h"
-
-#include "events/Event.h"
-#include "events/KeyEvent.h"
-#include "events/ApplicationEvent.h"
-
-#include "renderer/rhi/gl/GLESTexture.h"
-#include "renderer/rhi/gl/GLESShader.h"
-#include "renderer/rhi/gl/GLESIndexBuffer.h"
-#include "renderer/rhi/gl/GLESVertexBuffer.h"
-#include "renderer/rhi/gl/GLESVertexArray.h"
-#include "renderer/rhi/gl/GLESVertexBufferLayout.h"
-
 #include "Application.h"
 
 #include "imgui/ImGuiLayer.h"
 
 #include "GLLayer.h"
-
-#include "Vertex.h"
+#include "TextureUtils.h"
+#include "SceneNode.h"
 
 const unsigned int SCR_WIDTH = 940;
 const unsigned int SCR_HEIGHT = 560;
