@@ -13,6 +13,8 @@
 #include "TextureUtils.h"
 #include "SceneNode.h"
 
+#include "ECS/Coordinator.h"
+
 const unsigned int SCR_WIDTH = 940;
 const unsigned int SCR_HEIGHT = 560;
 

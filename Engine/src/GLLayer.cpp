@@ -185,15 +185,12 @@ namespace Azazel
 
         glm::vec2 translations[10];
         int index = 0;
-        float offset = 0.1f;
-            for(int x = 0; x < 10; x++)
-            {
-                glm::vec2 translation;
-                translation.x = (float)x * 500;
-                translation.y = (float)x * 200;
-   
-                translations[index++] = translation;
-            }
+        for(int x = 0; x < 5; x++)
+        {
+            glm::vec2 translation;
+            translation.x = -(float)x * 500;
+            translations[index++] = translation;
+        }
 
         shader.reset(Shader::create(vertCode, fragCode));
         shader->bind();

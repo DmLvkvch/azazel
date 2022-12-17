@@ -22,10 +22,10 @@ namespace Azazel
     
     bool SceneNode::removeNode(SceneNode* sceneNode)
     {
-        std::remove_if(child.begin(), child.end(), [&](SceneNode* node) {
+        std::vector<SceneNode*>::iterator it = std::remove_if(child.begin(), child.end(), [&](SceneNode* node) {
             return node == sceneNode;
         });
-        return sceneNode;
+        return true;
     }
     
     bool SceneNode::removeNode(int index)
