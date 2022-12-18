@@ -39,43 +39,43 @@ namespace Azazel
         template<typename T>
         void registerComponent()
         {
-            componentManager->RegisterComponent<T>();
+            componentManager->registerComponent<T>();
         }
 
         template<typename T>
         void addComponent(Entity entity, T component)
         {
-            componentManager->AddComponent<T>(entity, component);
+            componentManager->addComponent<T>(entity, component);
 
-            auto signature = entityManager->GetSignature(entity);
-            signature.set(componentManager->GetComponentType<T>(), true);
-            entityManager->SetSignature(entity, signature);
+            auto signature = entityManager->getSignature(entity);
+            signature.set(componentManager->getComponentType<T>(), true);
+            entityManager->setSignature(entity, signature);
 
-            systemManager->EntitySignatureChanged(entity, signature);
+            systemManager->entitySignatureChanged(entity, signature);
         }
 
         template<typename T>
         void removeComponent(Entity entity)
         {
-            componentManager->RemoveComponent<T>(entity);
+            componentManager->removeComponent<T>(entity);
 
-            auto signature = entityManager->GetSignature(entity);
-            signature.set(componentManager->GetComponentType<T>(), false);
-            entityManager->SetSignature(entity, signature);
+            auto signature = entityManager->getSignature(entity);
+            signature.set(componentManager->getComponentType<T>(), false);
+            entityManager->setSignature(entity, signature);
 
-            systemManager->EntitySignatureChanged(entity, signature);
+            systemManager->entitySignatureChanged(entity, signature);
         }
 
         template<typename T>
         T& getComponent(Entity entity)
         {
-            return componentManager->GetComponent<T>(entity);
+            return componentManager->getComponent<T>(entity);
         }
 
         template<typename T>
         ComponentType getComponentType()
         {
-            return componentManager->GetComponentType<T>();
+            return componentManager->getComponentType<T>();
         }
 
 
@@ -83,13 +83,13 @@ namespace Azazel
         template<typename T>
         std::shared_ptr<T> registerSystem()
         {
-            return systemManager->RegisterSystem<T>();
+            return systemManager->registerSystem<T>();
         }
 
         template<typename T>
         void setSystemSignature(Signature signature)
         {
-            systemManager->SetSignature<T>(signature);
+            systemManager->setSignature<T>(signature);
         }
 
     private:
