@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "ComponentManager.h"
 #include "EntityManager.h"
 #include "SystemManager.h"
@@ -11,7 +10,7 @@ namespace Azazel
     class Coordinator
     {
     public:
-        void Init()
+        void init()
         {
             // Create pointers to each manager
             componentManager = std::make_unique<ComponentManager>();
@@ -21,12 +20,12 @@ namespace Azazel
 
 
         // Entity methods
-        Entity CreateEntity()
+        Entity createEntity()
         {
             return entityManager->createEntity();
         }
 
-        void DestroyEntity(Entity entity)
+        void destroyEntity(Entity entity)
         {
             entityManager->destroyEntity(entity);
 
@@ -38,13 +37,13 @@ namespace Azazel
 
         // Component methods
         template<typename T>
-        void RegisterComponent()
+        void registerComponent()
         {
             componentManager->RegisterComponent<T>();
         }
 
         template<typename T>
-        void AddComponent(Entity entity, T component)
+        void addComponent(Entity entity, T component)
         {
             componentManager->AddComponent<T>(entity, component);
 
@@ -56,7 +55,7 @@ namespace Azazel
         }
 
         template<typename T>
-        void RemoveComponent(Entity entity)
+        void removeComponent(Entity entity)
         {
             componentManager->RemoveComponent<T>(entity);
 
@@ -68,13 +67,13 @@ namespace Azazel
         }
 
         template<typename T>
-        T& GetComponent(Entity entity)
+        T& getComponent(Entity entity)
         {
             return componentManager->GetComponent<T>(entity);
         }
 
         template<typename T>
-        ComponentType GetComponentType()
+        ComponentType getComponentType()
         {
             return componentManager->GetComponentType<T>();
         }
@@ -82,13 +81,13 @@ namespace Azazel
 
         // System methods
         template<typename T>
-        std::shared_ptr<T> RegisterSystem()
+        std::shared_ptr<T> registerSystem()
         {
             return systemManager->RegisterSystem<T>();
         }
 
         template<typename T>
-        void SetSystemSignature(Signature signature)
+        void setSystemSignature(Signature signature)
         {
             systemManager->SetSignature<T>(signature);
         }

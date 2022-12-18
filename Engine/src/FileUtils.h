@@ -1,14 +1,22 @@
 #pragma once
 
+#include <string>
+#include <fstream>
+#include <iostream>
+
 namespace Azazel
 {
-    std::string readFile(const std::string& file)
+    class FileUtils
     {
-        std::fstream stream (file);
-        if (!stream.is_open()) 
+    public:
+        static std::string readFile(const std::string& file)
         {
-            std::cout << "Could not open the file - '" << file << "'" << std::endl;
+            std::fstream stream (file);
+            if (!stream.is_open()) 
+            {
+                std::cout << "Could not open the file - '" << file << "'" << std::endl;
+            }
+            return std::string((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
         }
-        return std::string((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
-    }
+    };
 }

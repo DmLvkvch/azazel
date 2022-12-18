@@ -12,6 +12,8 @@
 
 #include <iostream>
 
+#include "../events/ApplicationEvent.h"
+
 namespace Azazel
 {
 	ImGuiLayer::ImGuiLayer()
@@ -57,5 +59,11 @@ namespace Azazel
 	void ImGuiLayer::onEvent(Event& e)
 	{
 		std::cout<<"imgui "<<e.toString()<<std::endl;
+		 if (e.getEventType() == EventType::WindowResize)
+        {
+            const WindowResizeEvent& k = *(WindowResizeEvent*)&e;
+            ImGuiIO& io = ImGui::GetIO();
+			io.DisplaySize = ImVec2(k.getWidth(), k.getHeight());
+        }
 	}
 }

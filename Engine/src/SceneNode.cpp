@@ -41,7 +41,7 @@ namespace Azazel
     
     bool SceneNode::removeAll()
     {
-
+        return true;
     }
 
     void SceneNode::setScale(glm::vec2 scale)

@@ -11,10 +11,11 @@ namespace Azazel
 	{
 	private:
 		unsigned int rendererId;
+		int lastIndex;
 	public:
 		GLESVertexArray();
 		~GLESVertexArray();
-		void addBuffer(VertexBuffer& vb, const GLESVertexBufferLayout& layout, int attribOffset = 0);
+		void addBuffer(VertexBuffer& vb, const GLESVertexBufferLayout& layout);
 		void bind() const;
 		void unbind() const;
 	};

@@ -26,6 +26,16 @@ namespace Azazel
         {
             return "Window resize: " + std::to_string(width) + "height: " + std::to_string(height);
         }
+
+        inline int getWidth() const
+        {
+            return width;
+        }
+
+        inline int getHeight() const
+        {
+            return height;
+        }
     };
 
     class WindowCloseEvent : public Event

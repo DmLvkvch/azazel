@@ -7,6 +7,7 @@
 namespace Azazel
 {
     GLESVertexArray::GLESVertexArray()
+    : lastIndex(0)
     {
         glGenVertexArrays(1, &rendererId);
     }
@@ -16,7 +17,7 @@ namespace Azazel
         glDeleteVertexArrays(1, &rendererId);
     }
 
-    void GLESVertexArray::addBuffer(VertexBuffer& vertexBuffer, const GLESVertexBufferLayout& layout, int attribOffset)
+    void GLESVertexArray::addBuffer(VertexBuffer& vertexBuffer, const GLESVertexBufferLayout& layout)
     {
         bind();
         vertexBuffer.bind();
@@ -25,9 +26,10 @@ namespace Azazel
         for (unsigned int i = 0; i < elements.size(); i++)
         {
             const GLESVertexBufferElement& element = elements[i];
-            glEnableVertexAttribArray(i + attribOffset);
-            glVertexAttribPointer(i + attribOffset, element.count, element.type, element.normalized,
+            glEnableVertexAttribArray(lastIndex);
+            glVertexAttribPointer(lastIndex, element.count, element.type, element.normalized,
                                     layout.getStride(), reinterpret_cast<const void *>(offset));
+            lastIndex++;
             offset += element.count * element.getSizeOfType();
         }
         vertexBuffer.unbind();

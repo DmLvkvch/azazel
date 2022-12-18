@@ -33,7 +33,7 @@ namespace Azazel
             return EventType::KeyPressed;
         }
 
-        int getRepeatCount()
+        inline int getRepeatCount() const
         {
             return this->repeatCount;
         }
