@@ -11,7 +11,7 @@ namespace Azazel
     public:
         GLESRenderBuffer(int width, int height);
         ~GLESRenderBuffer();
-        void bind();
-        void unbind();
+        void bind() const override;
+        void unbind() const override;
     };
 }

@@ -5,7 +5,7 @@
 
 namespace Azazel
 {
-	Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices)
+	Mesh::Mesh(const std::vector<float>& vertices, const std::vector<unsigned int>& indices)
 		: vertices(vertices), indices(indices)
 	{
 		
@@ -18,7 +18,7 @@ namespace Azazel
 
 	Mesh Mesh::genQuadMesh(float x, float y, float z, float width, float height, float depth)
 	{
-		std::vector<Vertex> vertices ;
+		std::vector<float> vertices ;
 		
 		std::vector<unsigned int> indices {0, 1, 2, 0, 2, 3};
 

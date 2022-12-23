@@ -9,7 +9,7 @@
 #include "renderer/VertexBuffer.h"
 #include "renderer/IndexBuffer.h"
 #include "renderer/VertexArray.h"
-
+#include "renderer/FrameBuffer.h"
 #include <memory>
 
 namespace Azazel
@@ -41,6 +41,9 @@ namespace Azazel
         std::unique_ptr<IndexBuffer> indexBuffer;
         std::unique_ptr<Texture> texture;
         std::unique_ptr<Texture> face;
+        std::unique_ptr<Texture> fb;
+
+        std::unique_ptr<FrameBuffer> frameBuffer;
 
         std::unique_ptr<Shader> gridShader;
         std::unique_ptr<VertexArray> gridVertexArray;

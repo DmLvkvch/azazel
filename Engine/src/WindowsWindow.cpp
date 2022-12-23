@@ -12,11 +12,6 @@ namespace Azazel
 {
     static bool initialized = false;
 
-    Window* Window::create(const WindowProps& props)
-    {
-        return new WindowsWindow(props);
-    }
-
     WindowsWindow::WindowsWindow(const WindowProps& props)
     {
         if (initialized)
@@ -44,7 +39,7 @@ namespace Azazel
         }
         glfwMakeContextCurrent(window);
         glfwWindowHint(GLFW_SAMPLES, 16);
-        setVSync(false);
+        setVSync(true);
         glfwSetWindowUserPointer(window, &windowData);
         initialized = true;
 
@@ -63,11 +58,12 @@ namespace Azazel
         glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
         {
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+            std::cout<<"key "<<key<<std::endl;
             switch(action)
             {
                 case GLFW_PRESS:
                 {
-                    KeyPressedEvent e(key, 0);
+                    KeyPressedEvent e(key, 1);
                     data.eventCallback(e);
                     break;
                 }

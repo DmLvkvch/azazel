@@ -21,6 +21,7 @@ namespace Azazel
 		};
 
 		Shader(std::string vertexShader, std::string fragmentShader);
+
 		virtual ~Shader();
 
 		virtual int getShaderType(const ShaderType& shaderType) = 0;
@@ -47,6 +48,6 @@ namespace Azazel
 	
 		virtual void setVec2f(const std::string& name, float x, float y) const = 0;
 
-		static Shader* create(std::string v, std::string f);
+		static Shader* create(std::string vertexShader, std::string fragmentShader);
 	};
 }

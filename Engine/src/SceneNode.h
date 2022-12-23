@@ -9,6 +9,8 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 
+#include <memory>
+
 namespace Azazel
 {
     class SceneNode
@@ -16,8 +18,8 @@ namespace Azazel
     public:
         SceneNode(float width = 0, float height = 0);
         virtual ~SceneNode();
-        void addNode(SceneNode* sceneNode);
-        bool removeNode(SceneNode* sceneNode);
+        void addNode(std::shared_ptr<SceneNode> sceneNode);
+        bool removeNode(std::shared_ptr<SceneNode> sceneNode);
         bool removeNode(int index);
         bool removeAll();
         void setScale(glm::vec2 scale);
@@ -25,7 +27,7 @@ namespace Azazel
         void setPosition(glm::vec2 position);
         void draw();
     private:
-        std::vector<SceneNode*> child;
+        std::vector<std::shared_ptr<SceneNode>> child;
         SceneNode* parent;
         glm::vec3 position;
         glm::vec3 rotation;

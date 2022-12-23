@@ -14,29 +14,28 @@ namespace Azazel
 
     }
     
-    void SceneNode::addNode(SceneNode* sceneNode)
+    void SceneNode::addNode(std::shared_ptr<SceneNode> sceneNode)
     {
         child.push_back(sceneNode);
-
     }
     
-    bool SceneNode::removeNode(SceneNode* sceneNode)
+    bool SceneNode::removeNode(std::shared_ptr<SceneNode> sceneNode)
     {
-        std::vector<SceneNode*>::iterator it = std::remove_if(child.begin(), child.end(), [&](SceneNode* node) {
-            return node == sceneNode;
+        std::vector<std::shared_ptr<SceneNode>>::iterator it = std::remove_if(child.begin(), child.end(), [&](std::shared_ptr<SceneNode> node) {
+            return node.get() == sceneNode.get();
         });
         return true;
     }
     
     bool SceneNode::removeNode(int index)
     {
-        SceneNode* node = nullptr;
+        std::shared_ptr<SceneNode> node = nullptr;
         if (index >= 0 && index < child.size())
         {
             node = child[index];
             child.erase(child.begin() + index);
         }
-        return node;
+        return true;
     }
     
     bool SceneNode::removeAll()

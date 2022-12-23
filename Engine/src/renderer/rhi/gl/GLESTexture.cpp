@@ -131,7 +131,7 @@ namespace Azazel
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
     }
 
-    unsigned int GLESTexture::getRendererId()
+    unsigned int GLESTexture::getRendererId() const
     {
         return rendererId;
     }

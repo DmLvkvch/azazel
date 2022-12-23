@@ -23,10 +23,10 @@ namespace Azazel
 		GLESTexture(int width, int height, int color);
 		GLESTexture(const unsigned char* data, int width, int height, int bpp);
 		~GLESTexture();
-		void bind(unsigned int slot = 0) const;
-		void unbind() const;
-		void setTextureFilter(Texture::TextureFilter textureFilter);
-		void setTextureWrap(Texture::TextureWrap textureWrap);
-		unsigned int getRendererId();
+		void bind(unsigned int slot = 0) const override;
+		void unbind() const override;
+		void setTextureFilter(Texture::TextureFilter textureFilter) override;
+		void setTextureWrap(Texture::TextureWrap textureWrap) override;
+		unsigned int getRendererId() const override;
 	};
 }

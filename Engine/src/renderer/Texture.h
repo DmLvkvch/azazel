@@ -13,6 +13,7 @@ namespace Azazel
         int height;
         ColorFormat colorFormat;
         TextureData textureData;
+        std::string label = "DEFAULT_TEXTURE";
     public:
 
         enum TextureFilter
@@ -47,7 +48,15 @@ namespace Azazel
 
         virtual void setTextureFilter(Texture::TextureFilter textureFilter) = 0;
         virtual void setTextureWrap(Texture::TextureWrap textureWrap) = 0;
-        virtual unsigned int getRendererId() = 0;
+        virtual unsigned int getRendererId() const = 0;
+
+        inline std::string getLabel() const
+        {
+            return label;
+        }
+
         static Texture* create(const TextureData& textureData);
+        static Texture* create(int width, int height, int color);
+
     };
 }

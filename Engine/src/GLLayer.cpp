@@ -24,6 +24,7 @@
 #include "renderer/rhi/gl/GLESIndexBuffer.h"
 #include "renderer/rhi/gl/GLESVertexArray.h"
 #include "renderer/rhi/gl/GLESVertexBufferLayout.h"
+#include "renderer/VertexBuffer.h"
 
 #include "TextureUtils.h"
 #include "FileUtils.h"
@@ -178,23 +179,11 @@ namespace Azazel
 
         std::string fragCode = FileUtils::readFile("shaders/light/specular.light.frag.glsl");
 
-        glm::vec2 translations[10];
-        int index = 0;
-        for(int x = 0; x < 5; x++)
-        {
-            glm::vec2 translation;
-            translation.x = -(float)x * 500;
-            translations[index++] = translation;
-        }
-
         shader.reset(Shader::create(vertCode, fragCode));
         shader->bind();
         shader->setInt("u_texture_0", 0);
         shader->setInt("face", 1);
-        for(unsigned int i = 0; i < 10; i++)
-        {
-            shader->setVec2f(std::string(("offsets[" + std::to_string(i) + "]")), translations[i].x, translations[i].y);
-        }  
+
         shader->setVec3f("material.ambient", 1.0f, 0.5f, 0.31f);
         shader->setVec3f("material.diffuse", 1.0f, 0.5f, 0.31f);
         shader->setVec3f("material.specular", 0.5f, 0.5f, 0.5f);
@@ -202,17 +191,13 @@ namespace Azazel
         shader->setVec3f("light.ambient",  0.2f, 0.2f, 0.2f);
         shader->setVec3f("light.diffuse",  0.5f, 0.5f, 0.5f);
         shader->setVec3f("light.specular", 1.0f, 1.0f, 1.0f); 
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
-        glEnable(GL_BLEND);
-        glEnable(GL_MULTISAMPLE);
 
         gridShader.reset(Shader::create(FileUtils::readFile("shaders/grid.vert.glsl"), FileUtils::readFile("shaders/grid.frag.glsl")));
         std::vector<glm::vec3> gridVerts;
-        gridVerts.push_back(glm::vec3(0.0f, 0.0f, -1000.0f));
-        gridVerts.push_back(glm::vec3(0.0f, 0.0f, 1000.0f));
-        gridVerts.push_back(glm::vec3(1000.0f, 0.0f, 1000.0f));
-        gridVerts.push_back(glm::vec3(1000.0f, 0.0f, -1000.0f));
+        gridVerts.push_back(glm::vec3(0.0f, 0.0f, 0.0f));
+        gridVerts.push_back(glm::vec3(0.0f, 0.0f, 500.0f));
+        gridVerts.push_back(glm::vec3(1000.0f, 0.0f, 500.0f));
+        gridVerts.push_back(glm::vec3(1000.0f, 0.0f, 0.0f));
         std::vector<glm::vec2> gridTexCoords;
         gridTexCoords.push_back(glm::vec2(0.0, 0.0));
         gridTexCoords.push_back(glm::vec2(1.0, 0.0));
@@ -230,8 +215,26 @@ namespace Azazel
         vbo11.addFloat(3);
         gridVertexArray->addBuffer(vertexBuffer1, vbo11);
         GLESVertexBufferLayout vbo111;
-        vbo111.addFloat (2);
+        vbo111.addFloat(2);
         gridVertexArray->addBuffer(vertexBufferT1, vbo111);
+
+        glm::vec3 camPos = glm::vec3(0.0f, 500.0f, 1500.0f);
+        camera.setPosition(camPos);
+
+        glEnable(GL_DEPTH_TEST);
+        // glEnable(GL_CULL_FACE);
+        // glCullFace(GL_BACK);
+        // glFrontFace( GL_CCW );
+        BufferLayout bl = {
+            { ShaderDataType::Float3, "position" },
+            { ShaderDataType::Float3, "normal" },
+            { ShaderDataType::Float2, "texCoord" }
+        };
+        this->fb.reset(Texture::create(400, 400, 0xff00ff00));
+        this->frameBuffer.reset(FrameBuffer::create(fb.get(), nullptr));
+        // glEnable(GL_BLEND);
+        // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
+        // glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
     }
 
     void GLLayer::onDetach()
@@ -245,9 +248,9 @@ namespace Azazel
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glm::vec3 lightPos {0.0f, 500.0f, 0.0f};
         glm::vec3 lightColor;
-        lightColor.x = sin(glfwGetTime() * 2.0f);
-        lightColor.y = sin(glfwGetTime() * 0.7f);
-        lightColor.z = sin(glfwGetTime() * 1.3f);
+        lightColor.x = glm::sin(glfwGetTime() * 2.0f + 0.2f);
+        lightColor.y = glm::sin(glfwGetTime() * 0.7f + 0.2f);
+        lightColor.z = glm::sin(glfwGetTime() * 1.3f  + 0.2f);
         
         glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); 
         glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); 
@@ -256,16 +259,13 @@ namespace Azazel
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.5f, 0.1f, 5000.0f);
         glm::vec3 scale {1.0f, 1.0f, 1.0f};
 
-        glm::vec3 camPos = glm::vec3(0.0f, 0.0f, 1000.0f);
-        glm::mat4 view = glm::lookAt(camPos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         glm::mat4 rotX = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-        glm::mat4 rotZ = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-        glm::mat4 rotY = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::mat4 rotZ = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(0.0f, 0.0f, 1.0f));
+        glm::mat4 rotY = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(0.0f, 1.0f, 0.0f));
 
-        glm::mat4 model = glm::scale(glm::mat4(1.0f), scale) * rotX * rotY * rotZ * glm::translate(glm::mat4(1.0f), camera.getPosition());
+        glm::mat4 model = glm::scale(glm::mat4(1.0f), scale) * rotX * rotY * rotZ;
 
-        glm::mat4 mvp = projection * view * camera.getViewLookAtMatrix(glm::vec3(0.0f, 1.0f, 0.0f)) * model;
-
+        glm::mat4 mvp = projection * camera.getViewLookAtMatrix()  * model;
         gridShader->bind();
         gridShader->setMatrix4f("u_mvp", mvp);
         gridVertexArray->bind();
@@ -274,8 +274,8 @@ namespace Azazel
 
         texture->bind();
         face->bind(1);
-
         shader->bind();
+        glm::mat4 mvp2 = projection * camera.getViewLookAtMatrix()  * glm::scale(glm::mat4(1.0f), glm::vec3(10.0f, 10.0f, 10.0f)) * model;
         shader->setMatrix4f("u_mvp", mvp);
         shader->setMatrix4f("u_model", model);        
         shader->setVec3f("light.ambient", ambientColor);
@@ -284,7 +284,8 @@ namespace Azazel
         shader->setVec3f("u_lightPos", lightPos);
         vertexArray->bind();
         indexBuffer->bind();
-        glDrawElementsInstanced(GL_TRIANGLES, indexBuffer->getElementCount() * sizeof(unsigned int), GL_UNSIGNED_INT, 0, 10);
+        glDrawElements(GL_TRIANGLES, indexBuffer->getElementCount() * sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+
     }
     
     void GLLayer::onEvent(Event& e)
@@ -302,12 +303,12 @@ namespace Azazel
             {
                 case 87:
                 {
-                    camera.moveForward(k.getRepeatCount() * 10.0f);
+                    camera.moveForward(-k.getRepeatCount() * 10.0f);
                     break;
                 }
                 case 83:
                 {
-                    camera.moveForward(k.getRepeatCount() * -10.0f);
+                    camera.moveForward(k.getRepeatCount() * 10.0f);
                     break;
                 }
                 case 68:
@@ -317,7 +318,7 @@ namespace Azazel
                 }
                 case 65:
                 {
-                    camera.moveRight(k.getRepeatCount() * -10.0);
+                    camera.moveRight(-k.getRepeatCount() * 10.0);
                     break;
                 }
                 case 90:
@@ -333,8 +334,14 @@ namespace Azazel
             }
             std::cout<<k.getKeyCode()<<" keycode"<<std::endl;
         }
+        if (e.getEventType() == EventType::MouseScrolled)
+        {
+             const MouseScrollEvent& k = *(MouseScrollEvent*)(Event*)&e;
 
-        if (e.getEventType() == EventType::MousePressed)
+            glm::vec3 dir = glm::normalize(-camera.getPosition() - glm::vec3(0.0, 0.0, 0.0)) * 10.0f * k.getY();
+            camera.move(dir);
+        }
+        if (e.getEventType() == EventType::MouseMoved)
         {
             const MouseMovedEvent& k = *(MouseMovedEvent*)(Event*)&e;
         }

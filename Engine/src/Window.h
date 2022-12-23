@@ -25,7 +25,7 @@ namespace Azazel
     {
     public:
         using EventCallbackFn = std::function<void(Event&)>;
-
+        Window() {}
         virtual ~Window(){}
 
         virtual void onUpdate() = 0;
@@ -37,5 +37,7 @@ namespace Azazel
         virtual bool isVSync() const = 0;
         virtual void* getNativeWindow() = 0;
         static Window* create(const WindowProps& props = WindowProps());
+    private:
+        static Window* window;
     };
 }

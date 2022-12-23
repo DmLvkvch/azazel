@@ -16,10 +16,11 @@ namespace Azazel
         glm::vec3 rotation;
         glm::vec3 scale;
         glm::vec3 direction;
+		glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+		glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 
-        glm::vec3 right = glm::vec3(0.0f, 0.0f, 0.0f);
-        glm::vec3 up = glm::vec3(0.0f, 0.0f, 0.0f);
-        glm::vec3 front = glm::vec3(0.0f, 0.0f, 0.0f);
+        float Yaw;
+        float Pitch;
     public:
 
         Camera();
@@ -45,5 +46,7 @@ namespace Azazel
         glm::mat4 getViewLookAtMatrix(const glm::vec3& up = glm::vec3(0.0f, 1.0f, 0.0f));
 
         const glm::vec3& getPosition();
+
+        void move(const glm::vec3& move);
     };
 }

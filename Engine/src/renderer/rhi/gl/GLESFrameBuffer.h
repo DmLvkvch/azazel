@@ -4,7 +4,7 @@
 
 #include <renderer/FrameBuffer.h>
 #include <renderer/Texture.h>
-#include "GLESFrameBufferTarget.h"
+#include <renderer/FrameBufferTarget.h>
 
 namespace Azazel
 {
@@ -17,12 +17,11 @@ namespace Azazel
 	public:
 
 		GLESFrameBuffer(const std::vector<Texture*>& colorAttachments);
-		GLESFrameBuffer(Texture* texture);
+		GLESFrameBuffer(Texture* texture, FrameBufferTarget* frameBufferTarget);
 		~GLESFrameBuffer();
 		void bind() const override;
 		void unbind() const override;
-		void setTextureTarget(Texture* texture, int slot = 0);
-		void setFrameBufferDepthTarget(FrameBufferTarget* frameBufferTarget);
-		void addColorAttachment(Texture* texture);
+		void setDepthTarget(FrameBufferTarget* frameBufferTarget) override;
+		void addColorAttachment(const Texture* texture, int slot = 0) override;
 	};
 }

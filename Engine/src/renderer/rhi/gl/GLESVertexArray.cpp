@@ -30,7 +30,7 @@ namespace Azazel
             glVertexAttribPointer(lastIndex, element.count, element.type, element.normalized,
                                     layout.getStride(), reinterpret_cast<const void *>(offset));
             lastIndex++;
-            offset += element.count * element.getSizeOfType();
+           // offset += element.count * element.getSizeOfType();
         }
         vertexBuffer.unbind();
         unbind();

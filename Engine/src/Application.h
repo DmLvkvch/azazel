@@ -23,7 +23,6 @@ namespace Azazel
 		std::unique_ptr<Window> window;
 		LayerStack layerStack;
 		bool running = true;
-
 		static Application* app;
 	};
 }

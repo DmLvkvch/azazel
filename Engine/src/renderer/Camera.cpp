@@ -17,7 +17,7 @@ namespace Azazel
 
 	void Camera::setPosition(const glm::vec3& position)
 	{
-
+		this->position = position;
 	}
 
 	void Camera::setScale(const glm::vec3& scale)
@@ -52,16 +52,24 @@ namespace Azazel
 
 	void Camera::setLookAtPosition(const glm::vec3& lookAtPosition)
 	{
-		
+		this->lookAtPosition = lookAtPosition;
 	}
 
 	glm::mat4 Camera::getViewLookAtMatrix(const glm::vec3& up)
 	{
-		return glm::lookAt(glm::vec3{1.0f, 1.0f, 1.0f}, lookAtPosition, up);
+		//return glm::lookAt(position, lookAtPosition, up);
+
+		return glm::lookAt(position, position + cameraFront, cameraUp);
 	}
 
 	const glm::vec3& Camera::getPosition()
 	{
 		return this->position;
+	}
+
+	void Camera::move(const glm::vec3& move)
+	{
+		std::cout<<position.x<<" "<<position.y<<" "<<position.z<<" "<<std::endl;
+		this->position = this->position + move;
 	}
 }

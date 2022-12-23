@@ -30,6 +30,6 @@ namespace Azazel
 
     RenderBuffer* RenderBuffer::create(int width, int height)
     {
-        return nullptr;
+        return new GLESRenderBuffer(width, height);
     }
 }

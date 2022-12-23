@@ -11,7 +11,9 @@ namespace Azazel
 	public:
 		GLESVertexBuffer(const void* data, int size);
 		~GLESVertexBuffer();
-		void bind() const;
-		void unbind() const;
+		void bind() const override;
+		void unbind() const override;
+        virtual void setLayout(const BufferLayout& bufferlayout) override;
+        virtual const BufferLayout& getBufferlayout() const override;
 	};
 }

@@ -1,9 +1,19 @@
 #include "Application.h"
 #include "events/ApplicationEvent.h"
 #include <iostream>
+
 namespace Azazel
 {
 	Application* Application::app = nullptr;
+
+	Application* Application::createApplication()
+	{
+		if (!Application::app)
+		{
+			Application::app = new Application();
+		}
+		return Application::app;
+	}
 
 	Application::Application()
 	{
@@ -18,7 +28,6 @@ namespace Azazel
 
 	void Application::onEvent(Event& e)
 	{
-		//std::cout<<e.toString()<<std::endl;
 		if (e.getEventType() == EventType::WindowClose)
 		{
 			running = false;
@@ -64,15 +73,6 @@ namespace Azazel
 
 	Application* Application::get()
 	{
-		return Application::app;
-	}
-
-	Application* Application::createApplication()
-	{
-		if (Application::app == nullptr)
-		{
-			Application::app = new Application();
-		}
 		return Application::app;
 	}
 }

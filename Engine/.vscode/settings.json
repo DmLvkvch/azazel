@@ -94,7 +94,8 @@
     "bitset": "cpp",
     "ranges": "cpp",
     "shared_mutex": "cpp",
-    "span": "cpp"
+    "span": "cpp",
+    "*.inc": "cpp"
   },
   "cmake.configureOnOpen": true,
   "C_Cpp_Runner.cCompilerPath": "gcc",

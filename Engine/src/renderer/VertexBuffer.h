@@ -4,6 +4,8 @@
 #include <stdexcept>
 #include <string>
 
+
+
 namespace Azazel
 {
     enum class ShaderDataType
@@ -18,18 +20,18 @@ namespace Azazel
     {
         switch(type)
         {
-            case ShaderDataType::Float: return 4;
+            case ShaderDataType::Float:  return 4;
             case ShaderDataType::Float2: return 4 * 2;
             case ShaderDataType::Float3: return 4 * 3;
             case ShaderDataType::Float4: return 4 * 4;
-            case ShaderDataType::Mat3: return 4 * 3 * 3;
-            case ShaderDataType::Mat4: return 4 * 4 * 4;
-            case ShaderDataType::Int: return 4;
-            case ShaderDataType::Int2: return 4 * 2;
-            case ShaderDataType::Int3: return 4 * 3;
-            case ShaderDataType::Int4: return 4 * 4;
-            case ShaderDataType::Bool: return 1;
-            case ShaderDataType::None: throw std::invalid_argument("Invalid type None");
+            case ShaderDataType::Mat3:   return 4 * 3 * 3;
+            case ShaderDataType::Mat4:   return 4 * 4 * 4;
+            case ShaderDataType::Int:    return 4;
+            case ShaderDataType::Int2:   return 4 * 2;
+            case ShaderDataType::Int3:   return 4 * 3;
+            case ShaderDataType::Int4:   return 4 * 4;
+            case ShaderDataType::Bool:   return 1;
+            case ShaderDataType::None:   throw std::invalid_argument("Invalid type None");
         }
         return 0;
     }
@@ -46,17 +48,46 @@ namespace Azazel
         {
 
         }
+
+        int getElementCount() const
+        {
+            switch(type)
+            {
+                case ShaderDataType::Float3:
+                    return 3;
+            }
+        }
     };
 
     class BufferLayout
     {
     public:
+        
+        BufferLayout(const std::initializer_list<BufferElement>& elements)
+        : elements(elements)
+        {
+            calculateOffsetAndStride();
+        }
+        
         inline const std::vector<BufferElement>& getElements() const
         {
             return elements;
         }
     private:
+        void calculateOffsetAndStride()
+        {
+            int offset = 0;
+            stride = 0;
+            for (auto& element : elements)
+            {
+                element.offset = offset;
+                offset += element.size;
+                stride += element.size;
+            }
+        }
+    private:
         std::vector<BufferElement> elements;
+        int stride = 0;
     };
 
     class VertexBuffer
@@ -65,6 +96,10 @@ namespace Azazel
         virtual ~VertexBuffer() {}
         virtual void bind() const = 0;
         virtual void unbind() const = 0;
+
+        virtual void setLayout(const BufferLayout& bufferlayout) = 0;
+        virtual const BufferLayout& getBufferlayout() const = 0;
+
         static VertexBuffer* create(float* vertices, int size);
     };
 }
