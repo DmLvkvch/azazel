@@ -30,9 +30,4 @@ namespace Azazel
     {
 
     }
-
-    void TextureData::fillData(unsigned char* data, int width, int height, ColorFormat colorFormat, int color)
-    {
-
-    }
 }

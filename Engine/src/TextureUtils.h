@@ -1,7 +1,6 @@
 #pragma once
 
 #include <stb_image/stb_image.h>
-
 #include "renderer/TextureData.h"
 
 namespace Azazel
@@ -18,7 +17,6 @@ namespace Azazel
             unsigned char* data = stbi_load(path.c_str(), &width, &height, &bpp, 0);
             TextureData textureData(width, height, bpp, data);
             return textureData;
-    
         }
     };
 }

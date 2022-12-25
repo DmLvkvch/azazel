@@ -16,7 +16,7 @@ namespace Azazel
 		FrameBufferTarget* frameBufferDepthTarget;
 	public:
 
-		GLESFrameBuffer(const std::vector<Texture*>& colorAttachments);
+		GLESFrameBuffer(std::shared_ptr<Texture> texture);
 		GLESFrameBuffer(Texture* texture, FrameBufferTarget* frameBufferTarget);
 		~GLESFrameBuffer();
 		void bind() const override;

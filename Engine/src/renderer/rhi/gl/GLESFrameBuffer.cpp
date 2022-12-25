@@ -12,14 +12,10 @@ namespace Azazel
         addColorAttachment(texture);
     }
 
-    GLESFrameBuffer::GLESFrameBuffer(const std::vector<Texture*>& colorAttachments) : frameBufferDepthTarget(nullptr)
+    GLESFrameBuffer::GLESFrameBuffer(std::shared_ptr<Texture> texture) : frameBufferDepthTarget(nullptr)
     {
         glGenFramebuffers(1, &rendererId);
-        this->colorAttachments.insert(this->colorAttachments.end(), colorAttachments.begin(), colorAttachments.end());
-        for (int i = 0; i < colorAttachments.size(); i++)
-        {
-            addColorAttachment(colorAttachments[i], i);
-        }
+        addColorAttachment(texture.get());
     }
 
     GLESFrameBuffer::~GLESFrameBuffer()

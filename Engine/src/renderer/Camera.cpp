@@ -34,20 +34,20 @@ namespace Azazel
 	{
 
 	}
-	
-	void Camera::moveForward(float z)
-	{
-		this->position = this->position + glm::vec3(0.0f, 0.0f, z);
-	}
 
 	void Camera::moveRight(float x)
 	{
-		this->position = this->position + glm::vec3(x, 0.0f, 0.0f);
+		this->position += glm::vec3(x, 0.0f, 0.0f);
 	}
 
 	void Camera::moveUp(float y)
 	{
-		this->position = this->position + glm::vec3(0.0f, y, 0.0f);
+		this->position += glm::vec3(0.0f, y, 0.0f);
+	}
+
+	void Camera::moveForward(float z)
+	{
+		this->position += glm::vec3(0.0f, 0.0f, z);
 	}
 
 	void Camera::setLookAtPosition(const glm::vec3& lookAtPosition)
@@ -57,8 +57,6 @@ namespace Azazel
 
 	glm::mat4 Camera::getViewLookAtMatrix(const glm::vec3& up)
 	{
-		//return glm::lookAt(position, lookAtPosition, up);
-
 		return glm::lookAt(position, position + cameraFront, cameraUp);
 	}
 
@@ -69,7 +67,6 @@ namespace Azazel
 
 	void Camera::move(const glm::vec3& move)
 	{
-		std::cout<<position.x<<" "<<position.y<<" "<<position.z<<" "<<std::endl;
 		this->position = this->position + move;
 	}
 }

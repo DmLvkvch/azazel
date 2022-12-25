@@ -7,6 +7,7 @@
 #include <renderer/Texture.h>
 
 #include <glm/glm.hpp>
+#include <renderer/Shader.h>
 
 namespace Azazel
 {
@@ -27,5 +28,6 @@ namespace Azazel
 		std::vector<Vertex>& getVertices();
 		std::vector<unsigned int> getIndices();
 		std::vector<Texture*> getTextures();
+		void draw(const Shader& shader);
 	};
 }

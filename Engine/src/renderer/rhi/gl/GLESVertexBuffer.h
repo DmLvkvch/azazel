@@ -8,6 +8,7 @@ namespace Azazel
 	{
 	private:
 		unsigned int rendererId;
+		BufferLayout bufferLayout;
 	public:
 		GLESVertexBuffer(const void* data, int size);
 		~GLESVertexBuffer();

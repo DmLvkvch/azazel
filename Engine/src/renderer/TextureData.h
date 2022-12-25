@@ -12,7 +12,6 @@ namespace Azazel
         TextureData(int width, int height, int bpp, unsigned char* data);
         ~TextureData();
 
-        void fillData(unsigned char* data, int width, int height, ColorFormat colorFormat, int color);
         unsigned char* data;
         int width;
         int height;

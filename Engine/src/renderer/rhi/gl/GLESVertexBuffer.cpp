@@ -29,11 +29,11 @@ namespace Azazel
 
     void GLESVertexBuffer::setLayout(const BufferLayout& bufferlayout)
     {
-         
+         this->bufferLayout = bufferLayout;
     }
 
     const BufferLayout& GLESVertexBuffer::getBufferlayout() const
     {
-
+        return bufferLayout;
     }
 }
