@@ -32,14 +32,6 @@ namespace Azazel
 
         void executeCommands();
 
-        void drawMesh()
-        {
-
-        }
-
-        void drawRect()
-        {
-
-        }
+        void drawMesh();
     };
 }
