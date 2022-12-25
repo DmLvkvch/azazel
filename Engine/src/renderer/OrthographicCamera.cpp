@@ -16,6 +16,7 @@ namespace Azazel
             glm::mat4 transform = glm::translate(glm::mat4(1.0), position);
             transform = glm::rotate(transform, rotation, glm::vec3{0.0f, 0.0f, 1.0f});
             glm::vec3 tmp = 1.0f / scale;
+            
             transform = glm::scale(transform , tmp);
             viewMatrix = glm::inverse(transform);
             viewProjectionMatrix = projectionMatrix * viewMatrix;
