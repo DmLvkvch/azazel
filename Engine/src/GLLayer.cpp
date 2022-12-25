@@ -218,7 +218,7 @@ namespace Azazel
         vbo111.addFloat(2);
         gridVertexArray->addBuffer(vertexBufferT1, vbo111);
 
-        glm::vec3 camPos = glm::vec3(0.0f, 500.0f, 1500.0f);
+        glm::vec3 camPos = glm::vec3(0.0f, 0.0f, 1500.0f);
         camera.setPosition(camPos);
 
         glEnable(GL_DEPTH_TEST);
@@ -235,6 +235,9 @@ namespace Azazel
         // glEnable(GL_BLEND);
         // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
         // glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+        orthographicCamera = OrthographicCamera(0, 1200, 0, 700);
+        glm::vec2 tmp {0, 0};
+        orthographicCamera.setPosition(tmp);
     }
 
     void GLLayer::onDetach()
@@ -265,7 +268,7 @@ namespace Azazel
 
         glm::mat4 model = glm::scale(glm::mat4(1.0f), scale) * rotX * rotY * rotZ;
 
-        glm::mat4 mvp = projection * camera.getViewLookAtMatrix()  * model;
+        glm::mat4 mvp = orthographicCamera.getViewProjectionMatrix()  * model;
         gridShader->bind();
         gridShader->setMatrix4f("u_mvp", mvp);
         gridVertexArray->bind();
@@ -275,7 +278,6 @@ namespace Azazel
         texture->bind();
         face->bind(1);
         shader->bind();
-        glm::mat4 mvp2 = projection * camera.getViewLookAtMatrix()  * glm::scale(glm::mat4(1.0f), glm::vec3(10.0f, 10.0f, 10.0f)) * model;
         shader->setMatrix4f("u_mvp", mvp);
         shader->setMatrix4f("u_model", model);        
         shader->setVec3f("light.ambient", ambientColor);
@@ -304,31 +306,42 @@ namespace Azazel
                 case 87:
                 {
                     camera.moveForward(-k.getRepeatCount() * 10.0f);
+                    orthographicCamera.move(0.0f, k.getRepeatCount() * 10.0f);
+
                     break;
                 }
                 case 83:
                 {
                     camera.moveForward(k.getRepeatCount() * 10.0f);
+                    orthographicCamera.move(0.0f,-k.getRepeatCount() * 10.0f);
+
                     break;
                 }
                 case 68:
                 {
                     camera.moveRight(k.getRepeatCount() * 10.0f);
+                    orthographicCamera.move(k.getRepeatCount() * 10.0f, 0.0f);
                     break;
                 }
                 case 65:
                 {
                     camera.moveRight(-k.getRepeatCount() * 10.0);
+                    orthographicCamera.move(-k.getRepeatCount() * 10.0f, 0.0f);
+
                     break;
                 }
                 case 90:
                 {
                     camera.moveUp(k.getRepeatCount() * 10.0f);
+
+                    orthographicCamera.move(0.0f, k.getRepeatCount() * 10.0f);
+
                     break;
                 }
                 case 88:
                 {
-                    camera.moveUp(k.getRepeatCount() * -10.0f);
+                    orthographicCamera.move(0.0f,-k.getRepeatCount() * 10.0f);
+                    camera.moveUp(-k.getRepeatCount() * 10.0f);
                     break;
                 }
             }
@@ -339,7 +352,7 @@ namespace Azazel
              const MouseScrollEvent& k = *(MouseScrollEvent*)(Event*)&e;
 
             glm::vec3 dir = glm::normalize(-camera.getPosition() - glm::vec3(0.0, 0.0, 0.0)) * 10.0f * k.getY();
-            camera.move(dir);
+            orthographicCamera.setScale(k.getY() / 10.0f, k.getY() / 10.0f);
         }
         if (e.getEventType() == EventType::MouseMoved)
         {

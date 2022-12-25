@@ -43,13 +43,15 @@ namespace Azazel
         glfwSetWindowUserPointer(window, &windowData);
         initialized = true;
 
-        glfwSetWindowCloseCallback(window, [](GLFWwindow* window){
+        glfwSetWindowCloseCallback(window, [](GLFWwindow* window) 
+        {
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
             WindowCloseEvent e;
             data.eventCallback(e);
         });
 
-        glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int w, int h){
+        glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int w, int h) 
+        {
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
             WindowResizeEvent e(w, h);
             data.eventCallback(e);

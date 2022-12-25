@@ -3,6 +3,7 @@
 #include "Layer.h"
 
 #include "renderer/Camera.h"
+#include "renderer/OrthographicCamera.h"
 
 #include "renderer/Shader.h"
 #include "renderer/Texture.h"
@@ -18,6 +19,7 @@ namespace Azazel
     {
     public:
         Camera camera;
+        OrthographicCamera orthographicCamera;
 
         GLLayer()
         : Layer("ImGuiLayer")
