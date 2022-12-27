@@ -11,18 +11,16 @@ namespace Azazel
     class OrthographicCamera
     {
     public:
-        OrthographicCamera() = default;
+        OrthographicCamera();
         OrthographicCamera(float left, float right, float bottom, float top);
         ~OrthographicCamera();
 
-        void setPosition(glm::vec2& position);
-        void setPosition(float x, float y);
-        void setRotation(float a);
-        void setScale(glm::vec2& scale);
-        void setScale(float x, float y);
+        void setPosition(const glm::vec2& position);
+        void setRotation(float rotation);
+        void rotate(float deltaAngle);
 
-        void move(float x, float y);
-        void move(glm::vec2& dist);
+        void setScale(const glm::vec2& scale);
+        void move(const glm::vec2& dist);
         const glm::mat4& getViewMatrix() const { return viewMatrix; }
         const glm::mat4& getProjectionMatrix() const { return projectionMatrix; }
         const glm::mat4& getViewProjectionMatrix() const { return viewProjectionMatrix; }

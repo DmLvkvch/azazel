@@ -40,6 +40,8 @@ file(GLOB_RECURSE ENGINE_HEADERS
 
 add_executable(${PROJECT_NAME} "main.cpp" ${ENGINE_HEADERS} ${ENGINE_SRC})
 
+set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_WARNING_AS_ERROR ON)
+
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glfw stb_image glad glm::glm freetype IMGUI)
 
 file(REMOVE ${CMAKE_BINARY_DIR}/shaders)

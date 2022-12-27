@@ -9,9 +9,9 @@ namespace Azazel
 	public:
 		ImGuiLayer();
 		~ImGuiLayer();
-		void onAttach();
-		void onDetach();
-		void onUpdate();
-		void onEvent(Event& e);
+		void onAttach() override;
+		void onDetach() override;
+		void onUpdate(float delta) override;
+		void onEvent(Event& e) override;
 	};
 }

@@ -6,7 +6,9 @@
 #include "events/MouseEvent.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 
 namespace Azazel
 {
@@ -42,6 +44,20 @@ namespace Azazel
         setVSync(true);
         glfwSetWindowUserPointer(window, &windowData);
         initialized = true;
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+        {
+            std::cout << "Failed to initialize GLAD" << std::endl;
+        }
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO();
+		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
+		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
+		ImGui::StyleColorsDark();
+;
+		io.DisplaySize = ImVec2((float)width, (float)height);
+		ImGui_ImplGlfw_InitForOpenGL(window, true);
+		ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
 
         glfwSetWindowCloseCallback(window, [](GLFWwindow* window) 
         {
@@ -59,6 +75,7 @@ namespace Azazel
 
         glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
         {
+            ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
             std::cout<<"key "<<key<<std::endl;
             switch(action)
@@ -86,6 +103,7 @@ namespace Azazel
 
         glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int mods)
         {
+            ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
             switch (action)
             {
@@ -106,6 +124,8 @@ namespace Azazel
 
         glfwSetScrollCallback(window, [](GLFWwindow* window, double xOffset, double yOffset)
         {
+            ImGui_ImplGlfw_ScrollCallback(window, xOffset, yOffset);
+
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
             MouseScrollEvent e((float) xOffset, (float) yOffset);
             data.eventCallback(e);
@@ -113,15 +133,13 @@ namespace Azazel
 
         glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xPos, double yPos)
         {
+            ImGui_ImplGlfw_CursorPosCallback(window, xPos, yPos);
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
             MouseMovedEvent e((float) xPos, (float) yPos);
             data.eventCallback(e);
         });
 
-        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-        {
-            std::cout << "Failed to initialize GLAD" << std::endl;
-        }
+
     }
 
     WindowsWindow::~WindowsWindow()
@@ -134,7 +152,7 @@ namespace Azazel
         glfwDestroyWindow(window);
     }
 
-    void WindowsWindow::onUpdate()
+    void WindowsWindow::onUpdate(float delta)
     {
         glfwPollEvents();
         glfwSwapBuffers(window);

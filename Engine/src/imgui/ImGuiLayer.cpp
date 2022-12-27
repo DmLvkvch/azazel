@@ -27,16 +27,7 @@ namespace Azazel
 
 	void ImGuiLayer::onAttach()
 	{
-		IMGUI_CHECKVERSION();
-		ImGui::CreateContext();
-		ImGuiIO& io = ImGui::GetIO();
-		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
-		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
-		ImGui::StyleColorsDark();
-		GLFWwindow* w = (GLFWwindow*)Application::get()->getWindow()->getNativeWindow();
-		io.DisplaySize = ImVec2((float)Application::get()->getWindow()->getWidth(), (float)Application::get()->getWindow()->getHeight());
-		ImGui_ImplGlfw_InitForOpenGL(w, true);
-		ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
+
 	}
 
 	void ImGuiLayer::onDetach()
@@ -44,16 +35,12 @@ namespace Azazel
 
 	}
 
-	void ImGuiLayer::onUpdate()
+	void ImGuiLayer::onUpdate(float delta)
 	{
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui::NewFrame();
-		static bool show = true;
-
-		ImGui::ShowDemoWindow(&show);
-
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		float x = 0.0f;
+        ImGui::SliderFloat("translation", &x, -1.0f, 1.0f);
+        ImGui::SliderFloat("rotation", &x, 0.0f, 360.0f);
+        ImGui::SliderFloat("scale", &x, 0.0f, 10.0f);
 	}
 
 	void ImGuiLayer::onEvent(Event& e)

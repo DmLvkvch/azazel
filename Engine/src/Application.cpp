@@ -1,6 +1,10 @@
 #include "Application.h"
 #include "events/ApplicationEvent.h"
 #include <iostream>
+#include <GLFW/glfw3.h>
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 
 namespace Azazel
 {
@@ -17,6 +21,7 @@ namespace Azazel
 
 	Application::Application()
 	{
+		lastFrameTime = 0.0f;
 		window = std::unique_ptr<Window>(Window::create());
 		window->setEventCallback(std::bind(&Application::onEvent, this, std::placeholders::_1));
 	}
@@ -47,11 +52,20 @@ namespace Azazel
 	{
 		while (running)
 		{
+			float t = (float) (glfwGetTime() * 1000);
+			float delta = t - lastFrameTime;
+			lastFrameTime = t;
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        	glClearColor(0.3f, 0.25f, 0.5f, 1.0f);
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui::NewFrame();
 			for (Layer* layer : layerStack)
 			{
-				layer->onUpdate();
+				layer->onUpdate(delta);
 			}
-			window->onUpdate();
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+			window->onUpdate(delta);
 		}
 	}
 

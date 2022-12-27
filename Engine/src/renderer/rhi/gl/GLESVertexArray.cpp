@@ -17,20 +17,19 @@ namespace Azazel
         glDeleteVertexArrays(1, &rendererId);
     }
 
-    void GLESVertexArray::addBuffer(VertexBuffer& vertexBuffer, const GLESVertexBufferLayout& layout)
+    void GLESVertexArray::addBuffer(VertexBuffer& vertexBuffer, const BufferLayout& layout)
     {
         bind();
         vertexBuffer.bind();
-        const std::vector<GLESVertexBufferElement>& elements = layout.getElements();
+        const std::vector<BufferElement>& elements = layout.getElements();
         unsigned int offset = 0;
         for (unsigned int i = 0; i < elements.size(); i++)
         {
-            const GLESVertexBufferElement& element = elements[i];
-            glEnableVertexAttribArray(lastIndex);
-            glVertexAttribPointer(lastIndex, element.count, element.type, element.normalized,
+            const BufferElement& element = elements[i];
+            glEnableVertexAttribArray(i);
+            offset = element.offset;
+            glVertexAttribPointer(i, element.getComponentCount(), shaderTypeToGLType(element.type), element.normalized ? GL_TRUE : GL_FALSE,
                                     layout.getStride(), reinterpret_cast<const void *>(offset));
-            lastIndex++;
-           // offset += element.count * element.getSizeOfType();
         }
         vertexBuffer.unbind();
         unbind();

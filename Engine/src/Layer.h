@@ -12,7 +12,7 @@ namespace Azazel
         virtual ~Layer();
         virtual void onAttach();
         virtual void onDetach();
-        virtual void onUpdate();
+        virtual void onUpdate(float delta);
         virtual void onEvent(Event& e);
         inline std::string getName() const
         {

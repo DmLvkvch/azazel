@@ -3,7 +3,6 @@
 #include "GLESVertexBufferLayout.h"
 #include <renderer/VertexArray.h>
 #include <renderer/VertexBuffer.h>
-#include <renderer/VertexBufferLayout.h>
 
 namespace Azazel
 {
@@ -15,8 +14,8 @@ namespace Azazel
 	public:
 		GLESVertexArray();
 		~GLESVertexArray();
-		void addBuffer(VertexBuffer& vb, const GLESVertexBufferLayout& layout);
-		void bind() const;
-		void unbind() const;
+		void addBuffer(VertexBuffer& vb, const BufferLayout& layout) override;
+		void bind() const override;
+		void unbind() const override;
 	};
 }

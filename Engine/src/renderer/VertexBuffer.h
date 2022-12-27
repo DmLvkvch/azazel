@@ -3,6 +3,7 @@
 #include <vector>
 #include <stdexcept>
 #include <string>
+#include "rhi/gl/gl_headers.h"
 
 namespace Azazel
 {
@@ -29,6 +30,26 @@ namespace Azazel
             case ShaderDataType::Int3:   return 4 * 3;
             case ShaderDataType::Int4:   return 4 * 4;
             case ShaderDataType::Bool:   return 1;
+            case ShaderDataType::None:   throw std::invalid_argument("Invalid type None");
+        }
+        return 0;
+    }
+
+    static int shaderTypeToGLType(ShaderDataType type)
+    {
+        switch(type)
+        {
+            case ShaderDataType::Float:  return GL_FLOAT;
+            case ShaderDataType::Float2: return GL_FLOAT;
+            case ShaderDataType::Float3: return GL_FLOAT;
+            case ShaderDataType::Float4: return GL_FLOAT;
+            case ShaderDataType::Mat3:   return GL_FLOAT;
+            case ShaderDataType::Mat4:   return GL_FLOAT;
+            case ShaderDataType::Int:    return GL_INT;
+            case ShaderDataType::Int2:   return GL_INT;
+            case ShaderDataType::Int3:   return GL_INT;
+            case ShaderDataType::Int4:   return GL_INT;
+            case ShaderDataType::Bool:   return GL_BOOL;
             case ShaderDataType::None:   throw std::invalid_argument("Invalid type None");
         }
         return 0;
@@ -63,6 +84,7 @@ namespace Azazel
                 case ShaderDataType::Int3:   return 3;
                 case ShaderDataType::Int4:   return 4;
                 case ShaderDataType::Bool:   return 1;
+                case ShaderDataType::None:   return 0;
             }
             return 0;
         }

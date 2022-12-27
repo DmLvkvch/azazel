@@ -14,7 +14,7 @@ namespace Azazel
             int width;
             int height;
             int bpp;
-            unsigned char* data = stbi_load(path.c_str(), &width, &height, &bpp, 0);
+            unsigned char* data = stbi_load(path.c_str(), &width, &height, &bpp, 4);
             TextureData textureData(width, height, bpp, data);
             return textureData;
         }

@@ -12,7 +12,7 @@ namespace Azazel
         WindowsWindow(const WindowProps& props);
         virtual ~WindowsWindow();
         void shutDown();
-        void onUpdate() override;
+        void onUpdate(float delta) override;
         unsigned int getWidth() const override;
         unsigned int getHeight() const override;
         virtual void setEventCallback(const EventCallbackFn& callback) override;

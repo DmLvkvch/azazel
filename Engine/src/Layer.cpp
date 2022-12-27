@@ -23,7 +23,7 @@ namespace Azazel
 
     }
 
-    void Layer::onUpdate()
+    void Layer::onUpdate(float delta)
     {
 
     }

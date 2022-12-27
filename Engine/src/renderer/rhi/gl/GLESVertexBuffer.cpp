@@ -27,7 +27,7 @@ namespace Azazel
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
-    void GLESVertexBuffer::setLayout(const BufferLayout& bufferlayout)
+    void GLESVertexBuffer::setLayout(const BufferLayout& bufferLayout)
     {
          this->bufferLayout = bufferLayout;
     }

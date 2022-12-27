@@ -24,7 +24,13 @@ namespace Azazel
         RenderApi* getRenderApi();
         static Render* getCurrent();
     
-        void clear();
+        void clear(bool color = true, bool depth = false, bool stencil = false);
+
+        void setClearColor(const glm::vec4& color);
+
+        void setBlendFunc();
+
+        void setBlendEquation();
         
         void beginScene();
 

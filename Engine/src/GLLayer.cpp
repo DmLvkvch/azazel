@@ -18,14 +18,6 @@
 
 #include <vector>
 
-#include "renderer/rhi/gl/GLESShader.h"
-#include "renderer/rhi/gl/GLESTexture.h"
-#include "renderer/rhi/gl/GLESVertexBuffer.h"
-#include "renderer/rhi/gl/GLESIndexBuffer.h"
-#include "renderer/rhi/gl/GLESVertexArray.h"
-#include "renderer/rhi/gl/GLESVertexBufferLayout.h"
-#include "renderer/VertexBuffer.h"
-
 #include "TextureUtils.h"
 #include "FileUtils.h"
 #include "renderer/TextureData.h"
@@ -160,20 +152,18 @@ namespace Azazel
         this->face.reset(Texture::create(td));
 
         this->indexBuffer.reset(IndexBuffer::create(indices.data(), indices.size()));
-        GLESVertexBuffer vertexBuffer(vertices.data(), sizeof(float) * vertices.size() * 3);
-        GLESVertexBuffer vertexBufferT(texCoords.data(), sizeof(float) * texCoords.size() * 2);
-        GLESVertexBuffer vertexBufferN(normals.data(), sizeof(float) * normals.size() * 3);
-
+        VertexBuffer* vertexBuffer = (VertexBuffer::create((float*)vertices.data(), sizeof(float) * vertices.size() * 3));
+        VertexBuffer* vertexBufferT = (VertexBuffer::create((float*)texCoords.data(), sizeof(float) * texCoords.size() * 2));
+        VertexBuffer* vertexBufferN = (VertexBuffer::create((float*)normals.data(), sizeof(float) * normals.size() * 3));
         this->vertexArray.reset(VertexArray::create());
-        GLESVertexBufferLayout vbo;
-        vbo.addFloat(3);
-        vertexArray->addBuffer(vertexBuffer, vbo);
-        GLESVertexBufferLayout vbo1;
-        vbo1.addFloat (2);
-        vertexArray->addBuffer(vertexBufferT, vbo1);
-        GLESVertexBufferLayout vbo2;
-        vbo2.addFloat (3);
-        vertexArray->addBuffer(vertexBufferN, vbo2);
+        BufferLayout vbo = {{
+            ShaderDataType::Float3, "position"
+        }};
+        vertexArray->addBuffer(*vertexBuffer, vbo);
+        BufferLayout vbo1 = {{ ShaderDataType::Float2, "texCoord" }};
+        vertexArray->addBuffer(*vertexBufferT, vbo1);
+        BufferLayout vbo2 = {{ ShaderDataType::Float3, "normals" }};
+        vertexArray->addBuffer(*vertexBufferN, vbo2);
 
         std::string vertCode = FileUtils::readFile("shaders/light/specular.light.vert.glsl");
 
@@ -207,24 +197,19 @@ namespace Azazel
         unsigned int gridInds[6] = {0, 1, 2, 0, 2, 3};
 
         this->gridIndexBuffer.reset(IndexBuffer::create(gridInds, 6));
-        GLESVertexBuffer vertexBuffer1(gridVerts.data(), sizeof(float) * vertices.size() * 3);
-        GLESVertexBuffer vertexBufferT1(gridTexCoords.data(), sizeof(float) * texCoords.size() * 2);
+        std::unique_ptr<VertexBuffer> vertexBuffer1 (VertexBuffer::create((float*) gridVerts.data(), sizeof(float) * vertices.size() * 3));
+        std::unique_ptr<VertexBuffer> vertexBufferT1 (VertexBuffer::create((float*) gridTexCoords.data(), sizeof(float) * texCoords.size() * 2));
 
         this->gridVertexArray.reset(VertexArray::create());
-        GLESVertexBufferLayout vbo11;
-        vbo11.addFloat(3);
-        gridVertexArray->addBuffer(vertexBuffer1, vbo11);
-        GLESVertexBufferLayout vbo111;
-        vbo111.addFloat(2);
-        gridVertexArray->addBuffer(vertexBufferT1, vbo111);
+        BufferLayout vbo11 = {{ ShaderDataType::Float3, "positions" }};
+        gridVertexArray->addBuffer(*vertexBuffer1.get(), vbo11);
+        BufferLayout vbo111 = {{ShaderDataType::Float2, "texCoord"}};
+        gridVertexArray->addBuffer(*vertexBufferT1.get(), vbo111);
 
         glm::vec3 camPos = glm::vec3(0.0f, 0.0f, 1500.0f);
         camera.setPosition(camPos);
 
         glEnable(GL_DEPTH_TEST);
-        // glEnable(GL_CULL_FACE);
-        // glCullFace(GL_BACK);
-        // glFrontFace( GL_CCW );
         BufferLayout bl = {
             { ShaderDataType::Float3, "position" },
             { ShaderDataType::Float3, "normal" },
@@ -232,9 +217,6 @@ namespace Azazel
         };
         this->fb.reset(Texture::create(400, 400, 0xff00ff00));
         this->frameBuffer.reset(FrameBuffer::create(fb.get(), nullptr));
-        // glEnable(GL_BLEND);
-        // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
-        // glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
         orthographicCamera = OrthographicCamera(0, 1200, 0, 700);
         glm::vec2 tmp {0, 0};
         orthographicCamera.setPosition(tmp);
@@ -245,10 +227,10 @@ namespace Azazel
 
     }
     
-    void GLLayer::onUpdate()
+    void GLLayer::onUpdate(float delta)
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClearColor(0.3f, 0.25f, 0.5f, 1.0f);
         glm::vec3 lightPos {0.0f, 500.0f, 0.0f};
         glm::vec3 lightColor;
         lightColor.x = glm::sin(glfwGetTime() * 2.0f + 0.2f);
@@ -306,27 +288,27 @@ namespace Azazel
                 case 87:
                 {
                     camera.moveForward(-k.getRepeatCount() * 10.0f);
-                    orthographicCamera.move(0.0f, k.getRepeatCount() * 10.0f);
+                    orthographicCamera.move({0.0f, k.getRepeatCount() * 10.0f});
 
                     break;
                 }
                 case 83:
                 {
                     camera.moveForward(k.getRepeatCount() * 10.0f);
-                    orthographicCamera.move(0.0f,-k.getRepeatCount() * 10.0f);
+                    orthographicCamera.move({0.0f,-k.getRepeatCount() * 10.0f});
 
                     break;
                 }
                 case 68:
                 {
                     camera.moveRight(k.getRepeatCount() * 10.0f);
-                    orthographicCamera.move(k.getRepeatCount() * 10.0f, 0.0f);
+                    orthographicCamera.move({k.getRepeatCount() * 10.0f, 0.0f});
                     break;
                 }
                 case 65:
                 {
                     camera.moveRight(-k.getRepeatCount() * 10.0);
-                    orthographicCamera.move(-k.getRepeatCount() * 10.0f, 0.0f);
+                    orthographicCamera.move({-k.getRepeatCount() * 10.0f, 0.0f});
 
                     break;
                 }
@@ -334,13 +316,13 @@ namespace Azazel
                 {
                     camera.moveUp(k.getRepeatCount() * 10.0f);
 
-                    orthographicCamera.move(0.0f, k.getRepeatCount() * 10.0f);
+                    orthographicCamera.move({0.0f, k.getRepeatCount() * 10.0f});
 
                     break;
                 }
                 case 88:
                 {
-                    orthographicCamera.move(0.0f,-k.getRepeatCount() * 10.0f);
+                    orthographicCamera.move({0.0f,-k.getRepeatCount() * 10.0f});
                     camera.moveUp(-k.getRepeatCount() * 10.0f);
                     break;
                 }
@@ -350,9 +332,6 @@ namespace Azazel
         if (e.getEventType() == EventType::MouseScrolled)
         {
              const MouseScrollEvent& k = *(MouseScrollEvent*)(Event*)&e;
-
-            glm::vec3 dir = glm::normalize(-camera.getPosition() - glm::vec3(0.0, 0.0, 0.0)) * 10.0f * k.getY();
-            orthographicCamera.setScale(k.getY() / 10.0f, k.getY() / 10.0f);
         }
         if (e.getEventType() == EventType::MouseMoved)
         {

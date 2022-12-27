@@ -27,8 +27,7 @@ namespace Azazel
         using EventCallbackFn = std::function<void(Event&)>;
         Window() {}
         virtual ~Window(){}
-
-        virtual void onUpdate() = 0;
+        virtual void onUpdate(float delta) = 0;
         virtual unsigned int getWidth() const = 0;
         virtual unsigned int getHeight() const = 0;
 
