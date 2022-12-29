@@ -19,7 +19,7 @@ namespace Azazel
 		return this->renderApi;
 	}
 
-	Render* Render::getCurrent()
+	Render* Render::getRenderer()
 	{
 		return render;
 	}
@@ -34,4 +34,14 @@ namespace Azazel
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
+
+	void Render::drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture)
+	{
+		texture.bind();
+        shader.bind();
+		vertexArray.bind();
+        indexBuffer.bind();
+        glDrawElements(GL_TRIANGLES, indexBuffer.getElementCount() * sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+	}
+
 }

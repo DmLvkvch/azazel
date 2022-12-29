@@ -32,7 +32,7 @@ namespace Azazel
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
+        glfwWindowHint(GLFW_RESIZABLE, 1);
         window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
         if (window == NULL)
         {
@@ -40,7 +40,6 @@ namespace Azazel
             glfwTerminate();
         }
         glfwMakeContextCurrent(window);
-        glfwWindowHint(GLFW_SAMPLES, 16);
         setVSync(true);
         glfwSetWindowUserPointer(window, &windowData);
         initialized = true;
@@ -189,6 +188,7 @@ namespace Azazel
     {
         return true;
     }
+
     void* WindowsWindow::getNativeWindow()
     {
         return (void*) window;

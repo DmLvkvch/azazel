@@ -21,14 +21,17 @@ namespace Azazel
         glm::vec3 rotation {0.0f, 0.0f, 0.0f};
         glm::vec3 scale    {1.0f, 1.0f, 1.0f};
         glm::mat4 modelMatrix;
-        const glm::mat4& getTransformMatrix()
+
+        glm::mat4 getTransformMatrix()
         {
-            modelMatrix = glm::scale(glm::mat4(1.0f), scale);
-            modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-            modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-            modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, -1.0f));
-            modelMatrix = glm::translate(modelMatrix, position);
-            return modelMatrix;
+            glm::mat4 S = glm::scale(glm::mat4(1.0f), scale);
+            glm::mat4 R (1.0f);
+            R = glm::rotate(R, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+            R = glm::rotate(R, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+            R = glm::rotate(R, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, -1.0f));
+            glm::mat4 T (1.0f);
+            T = glm::translate(T, position);
+            return T * R * S;
         }
     };
 
@@ -48,8 +51,12 @@ namespace Azazel
         void onEvent(Event& e) override;
     private:
         void drawImgui();
+        void updateBlendFunc();
+        void updateBlendEquation();
+    private:
         OrthographicCamera camera;
         std::unique_ptr<Texture> texture;
+        std::unique_ptr<Texture> texture1;
         std::unique_ptr<Shader> shader;
         std::unique_ptr<IndexBuffer> indexBuffer;
         std::unique_ptr<VertexBuffer> vertexBuffer;

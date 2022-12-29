@@ -1,10 +1,10 @@
 #include "Application.h"
 #include "events/ApplicationEvent.h"
 #include <iostream>
-#include <GLFW/glfw3.h>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <renderer/Render.h>
 
 namespace Azazel
 {
@@ -55,8 +55,8 @@ namespace Azazel
 			float t = (float) (glfwGetTime() * 1000);
 			float delta = t - lastFrameTime;
 			lastFrameTime = t;
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        	glClearColor(0.3f, 0.25f, 0.5f, 1.0f);
+			Render::getRenderer()->setClearColor({0.0f, 0.0f, 0.0f, 1.0f});
+			Render::getRenderer()->clear();
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui::NewFrame();
 			for (Layer* layer : layerStack)

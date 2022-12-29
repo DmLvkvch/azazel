@@ -3,8 +3,10 @@
 #include "RenderApi.h"
 #include <renderer/Texture.h>
 
-#include <renderer/rhi/gl/gl_headers.h>
-
+#include <renderer/IndexBuffer.h>
+#include <renderer/VertexArray.h>
+#include <renderer/Shader.h>
+#include <renderer/Texture.h>
 #include "Camera.h"
 
 namespace Azazel
@@ -22,11 +24,13 @@ namespace Azazel
         virtual ~Render();
 
         RenderApi* getRenderApi();
-        static Render* getCurrent();
+        static Render* getRenderer();
     
         void clear(bool color = true, bool depth = false, bool stencil = false);
 
-        void setClearColor(const glm::vec4& color);
+        void setClearColor(const glm::vec4& color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+        void drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture);
 
         void setBlendFunc();
 

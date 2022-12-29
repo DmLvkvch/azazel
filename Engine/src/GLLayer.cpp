@@ -230,7 +230,7 @@ namespace Azazel
     void GLLayer::onUpdate(float delta)
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClearColor(0.3f, 0.25f, 0.5f, 1.0f);
+      //  glClearColor(0.3f, 0.25f, 0.5f, 1.0f);
         glm::vec3 lightPos {0.0f, 500.0f, 0.0f};
         glm::vec3 lightColor;
         lightColor.x = glm::sin(glfwGetTime() * 2.0f + 0.2f);
