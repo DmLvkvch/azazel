@@ -15,7 +15,7 @@ int main()
 {
     Azazel::Application* p = Azazel::Application::createApplication();
     p->pushLayer(new Azazel::ImGuiLayer());
-    //p->pushLayer(new Azazel::TestLayer());
+    p->pushLayer(new Azazel::TestLayer());
    // p->pushLayer(new Azazel::GLLayer());
     Azazel::Layer* l = new Azazel::BaseLayer();
     p->pushLayer(l);

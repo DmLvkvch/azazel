@@ -10,7 +10,7 @@ namespace Azazel
 		unsigned int rendererId;
 		BufferLayout bufferLayout;
 	public:
-		GLESVertexBuffer(const void* data, int size);
+		GLESVertexBuffer(const void* data, size_t size);
 		~GLESVertexBuffer();
 		void bind() const override;
 		void unbind() const override;

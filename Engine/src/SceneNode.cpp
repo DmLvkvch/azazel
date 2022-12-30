@@ -22,7 +22,7 @@ namespace Azazel
     bool SceneNode::removeNode(std::shared_ptr<SceneNode> sceneNode)
     {
         std::vector<std::shared_ptr<SceneNode>>::iterator it = std::remove_if(child.begin(), child.end(), [&](std::shared_ptr<SceneNode> node) {
-            return node.get() == sceneNode.get();
+            return false;
         });
         return true;
     }

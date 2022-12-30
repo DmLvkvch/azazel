@@ -9,6 +9,6 @@ namespace Azazel
         virtual void bind() const = 0;
         virtual void unbind() const = 0;
         virtual int getElementCount() const = 0;
-        static IndexBuffer* create(unsigned int* indices, int size);
+        static IndexBuffer* create(unsigned int* indices, size_t size);
     };
 }

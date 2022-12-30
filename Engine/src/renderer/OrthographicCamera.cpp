@@ -9,12 +9,13 @@ namespace Azazel
         }
 
         OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top)
-        : position(0.0f, 0.0f, 0.0f), rotation(0.0f), scale(0.0f) 
+        : position(0.0f, 0.0f, 0.0f), rotation(0.0f)
         {
-            this->projectionMatrix = glm::ortho(left, right, bottom, top, -1000.0f, 1000.0f);
+            this->projectionMatrix = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
             this->rotation = 0.0;
             this->position = glm::vec3 {0.0f, 0.0f, 0.0f};
-            this->scale = glm::vec3 {1.0f, 1.0f, 1.0f};
+            this->ortho = {left, right, bottom, top};
+            this->scale = {1.0, 1.0, 1.0};
             updateMatrix();
         }
         
@@ -23,6 +24,7 @@ namespace Azazel
             glm::mat4 transform = glm::translate(glm::mat4(1.0), position);
             transform = glm::rotate(transform, rotation, glm::vec3{0.0f, 0.0f, 1.0f});
             viewMatrix = glm::inverse(transform);
+
             viewProjectionMatrix = projectionMatrix * viewMatrix;
         }
 
@@ -55,10 +57,10 @@ namespace Azazel
             setPosition({position.x + dist.x, position.y + dist.y});
         }
 
-        void OrthographicCamera::setScale(const glm::vec2& scale)
+        void OrthographicCamera::zoom(const glm::vec2& zoom, const glm::vec2& origin)
         {
-            this->scale.x += scale.x;
-            this->scale.y += scale.y;
+            scale.x += zoom.x / 10.0f;
+            scale.y += zoom.y / 10.0f;
             updateMatrix();
         }
 }

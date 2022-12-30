@@ -8,10 +8,10 @@ namespace Azazel
 	{
 	private:
 		unsigned int rendererId;
-		int count;
+		size_t count;
 
 	public:
-		GLESIndexBuffer(const void* data, int count);
+		GLESIndexBuffer(const void* data, size_t count);
 
 		~GLESIndexBuffer();
 

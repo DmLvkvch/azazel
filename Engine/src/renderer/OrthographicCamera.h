@@ -19,11 +19,12 @@ namespace Azazel
         void setRotation(float rotation);
         void rotate(float deltaAngle);
 
-        void setScale(const glm::vec2& scale);
         void move(const glm::vec2& dist);
         const glm::mat4& getViewMatrix() const { return viewMatrix; }
         const glm::mat4& getProjectionMatrix() const { return projectionMatrix; }
         const glm::mat4& getViewProjectionMatrix() const { return viewProjectionMatrix; }
+
+        void zoom(const glm::vec2& zoom, const glm::vec2& origin = glm::vec2 {0.0f, 0.0f});
 
     private:
         void updateMatrix();
@@ -32,8 +33,9 @@ namespace Azazel
         glm::mat4 projectionMatrix;
         glm::mat4 viewProjectionMatrix;
 
-        glm::vec3 position;
         glm::vec3 scale;
+        glm::vec4 ortho;
+        glm::vec3 position;
         float rotation;
     };
 }

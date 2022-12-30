@@ -6,7 +6,6 @@ namespace Azazel
 
 	Render::Render()
 	{
-
 	}
 
 	Render::~Render()
@@ -42,6 +41,20 @@ namespace Azazel
 		vertexArray.bind();
         indexBuffer.bind();
         glDrawElements(GL_TRIANGLES, indexBuffer.getElementCount() * sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+	}
+
+	void Render::reset()
+	{
+		glEnable(GL_BLEND);
+	}
+
+	void Render::setBlendFunc()
+	{
+
+	}
+
+	void Render::setBlendEquation()
+	{
 	}
 
 }

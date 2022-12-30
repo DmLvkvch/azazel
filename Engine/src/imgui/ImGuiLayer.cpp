@@ -37,20 +37,16 @@ namespace Azazel
 
 	void ImGuiLayer::onUpdate(float delta)
 	{
-		float x = 0.0f;
-        ImGui::SliderFloat("translation", &x, -1.0f, 1.0f);
-        ImGui::SliderFloat("rotation", &x, 0.0f, 360.0f);
-        ImGui::SliderFloat("scale", &x, 0.0f, 10.0f);
+
 	}
 
 	void ImGuiLayer::onEvent(Event& e)
 	{
-		std::cout<<"imgui "<<e.toString()<<std::endl;
-		 if (e.getEventType() == EventType::WindowResize)
+		if (e.getEventType() == EventType::WindowResize)
         {
             const WindowResizeEvent& k = *(WindowResizeEvent*)&e;
             ImGuiIO& io = ImGui::GetIO();
-			io.DisplaySize = ImVec2(k.getWidth(), k.getHeight());
+			io.DisplaySize = ImVec2((float) k.getWidth(), (float) k.getHeight());
         }
 	}
 }

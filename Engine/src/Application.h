@@ -18,7 +18,7 @@ namespace Azazel
 		Window* getWindow();
 		
 		static Application* createApplication();
-		static Application* get();
+		static Application* getApplication();
 	private:
 		std::unique_ptr<Window> window;
 		LayerStack layerStack;

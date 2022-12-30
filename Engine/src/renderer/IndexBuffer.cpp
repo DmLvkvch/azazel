@@ -9,7 +9,7 @@ namespace Azazel
 
     }
     
-    IndexBuffer* IndexBuffer::create(unsigned int* indices, int count)
+    IndexBuffer* IndexBuffer::create(unsigned int* indices, size_t count)
     {
         return new GLESIndexBuffer(indices, count);
     }

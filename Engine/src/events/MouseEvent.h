@@ -75,6 +75,11 @@ namespace Azazel
 
     class MouseButtonEvent : public Event
     {
+    public:
+        int getButton() const
+        {
+            return button;
+        }
     protected:
         MouseButtonEvent(int button) : button(button)
         {}

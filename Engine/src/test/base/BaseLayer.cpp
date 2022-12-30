@@ -38,15 +38,14 @@ namespace Azazel
         vertexArray->addBuffer(*vertexBuffer, bf);
 
         shader.reset(Shader::create(FileUtils::readFile("shaders/default.vert.glsl"), FileUtils::readFile("shaders/default.frag.glsl")));
-        TextureData q = TextureUtils::loadTexture("images/awesomeface.png");
-        texture.reset(Texture::create(q));
+        texture.reset(Texture::create(TextureUtils::loadTexture("images/awesomeface.png")));
         shader->bind();
         shader->setMatrix4f("u_mvp", glm::mat4(1.0f));
-        camera = OrthographicCamera(0, 1200, 0, 600);
+        camera = OrthographicCamera(0, 960 * 2, 0, 540 * 2);
         texture.reset(Texture::create(TextureData(500, 500, ColorFormat(), 0xff0000ff)));
-        texture1.reset(Texture::create(TextureData(500, 500, ColorFormat(), 0x00ff00c0)));
+        texture1.reset(Texture::create(TextureData(500, 500, ColorFormat(), 0xfffffff0)));
 
-        transform.scale.x = transform.scale.y = 200;
+        transform.scale = { 200.0f, 200.0f, 0.0f };
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
@@ -158,53 +157,48 @@ namespace Azazel
             const WindowResizeEvent& k = *(WindowResizeEvent*)&e;
             glViewport(0, 0, k.getWidth(), k.getHeight());
         }
+        if (e.getEventType() == EventType::MouseScrolled)
+        {
+            const MouseScrollEvent& k = *(MouseScrollEvent*)&e;
+            camera.zoom({k.getY() * 10.0f, k.getY() * 10.0f}, mousePos);
+        }
         if (e.getEventType() == EventType::KeyPressed)
         {
             const KeyPressedEvent& k = *(KeyPressedEvent*)&e;
-            switch(k.getKeyCode())
-            {
-                case 87:
+            int keycode = k.getKeyCode();
+            
+                if (keycode == 87)
                 {
-                    camera.move({0.0f, k.getRepeatCount() * 10.0f / 1.0f});
-                    break;
+                    camera.move({0.0f, k.getRepeatCount() * 20.0f});
                 }
-                case 83:
+                if (keycode == 83)
                 {
-                    camera.move({0.0f,-k.getRepeatCount() * 10.0f / 0.0f});
-                    break;
+                    camera.move({0.0f, -k.getRepeatCount() * 20.0f});
                 }
-                case 68:
+                if (keycode == 68)
                 {
-                    camera.move({k.getRepeatCount() * 10.0f / 1.0f, 0.0f});
-                    break;
+                    camera.move({k.getRepeatCount() * 20.0f, 0.0f});
                 }
-                case 65:
+                if (keycode == 65)
                 {
-                    camera.move({-k.getRepeatCount() * 10.0f / 1.0f, 0.0f});
-
-                    break;
+                    camera.move({-k.getRepeatCount() * 20.0f, 0.0f});
                 }
-                case 90:
+                if (keycode == 90)
                 {
-                    camera.move({0.0f, k.getRepeatCount() * 10.0f / 1.0f});
-                    break;
+                    camera.move({0.0f, k.getRepeatCount() * 20.0f});
                 }
-                case 88:
+                if (keycode == 88)
                 {
-                    camera.move({0.0f,-k.getRepeatCount() * 10.0f / 1.0f});
-                    break;
+                    camera.move({0.0f,-k.getRepeatCount() * 20.0f});
                 }
-                case 69:
+                if (keycode == 69)
                 {
                     camera.rotate(glm::radians(1.0f));
-                    break;
                 }
-                case 81:
+                if (keycode == 81)
                 {
                     camera.rotate(glm::radians(-1.0f));
-                    break;
                 }
-            }
         }
     }
 }

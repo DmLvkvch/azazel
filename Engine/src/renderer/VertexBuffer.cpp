@@ -4,7 +4,7 @@
 
 namespace Azazel
 {
-    VertexBuffer* VertexBuffer::create(float* vertices, int size)
+    VertexBuffer* VertexBuffer::create(float* vertices, size_t size)
     {
         return new GLESVertexBuffer(vertices, size);
     }

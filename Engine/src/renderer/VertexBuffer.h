@@ -138,6 +138,6 @@ namespace Azazel
         virtual void setLayout(const BufferLayout& bufferlayout) = 0;
         virtual const BufferLayout& getBufferlayout() const = 0;
 
-        static VertexBuffer* create(float* vertices, int size);
+        static VertexBuffer* create(float* vertices, size_t size);
     };
 }

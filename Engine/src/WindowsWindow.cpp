@@ -137,8 +137,6 @@ namespace Azazel
             MouseMovedEvent e((float) xPos, (float) yPos);
             data.eventCallback(e);
         });
-
-
     }
 
     WindowsWindow::~WindowsWindow()

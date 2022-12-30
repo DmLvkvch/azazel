@@ -152,9 +152,9 @@ namespace Azazel
         this->face.reset(Texture::create(td));
 
         this->indexBuffer.reset(IndexBuffer::create(indices.data(), indices.size()));
-        VertexBuffer* vertexBuffer = (VertexBuffer::create((float*)vertices.data(), sizeof(float) * vertices.size() * 3));
-        VertexBuffer* vertexBufferT = (VertexBuffer::create((float*)texCoords.data(), sizeof(float) * texCoords.size() * 2));
-        VertexBuffer* vertexBufferN = (VertexBuffer::create((float*)normals.data(), sizeof(float) * normals.size() * 3));
+        VertexBuffer* vertexBuffer = (VertexBuffer::create((float*) vertices.data(), sizeof(float) * vertices.size() * 3));
+        VertexBuffer* vertexBufferT = (VertexBuffer::create((float*) texCoords.data(), sizeof(float) * texCoords.size() * 2));
+        VertexBuffer* vertexBufferN = (VertexBuffer::create((float*) normals.data(), sizeof(float) * normals.size() * 3));
         this->vertexArray.reset(VertexArray::create());
         BufferLayout vbo = {{
             ShaderDataType::Float3, "position"
@@ -215,8 +215,6 @@ namespace Azazel
             { ShaderDataType::Float3, "normal" },
             { ShaderDataType::Float2, "texCoord" }
         };
-        this->fb.reset(Texture::create(400, 400, 0xff00ff00));
-        this->frameBuffer.reset(FrameBuffer::create(fb.get(), nullptr));
         orthographicCamera = OrthographicCamera(0, 1200, 0, 700);
         glm::vec2 tmp {0, 0};
         orthographicCamera.setPosition(tmp);
@@ -229,19 +227,16 @@ namespace Azazel
     
     void GLLayer::onUpdate(float delta)
     {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      //  glClearColor(0.3f, 0.25f, 0.5f, 1.0f);
         glm::vec3 lightPos {0.0f, 500.0f, 0.0f};
         glm::vec3 lightColor;
-        lightColor.x = glm::sin(glfwGetTime() * 2.0f + 0.2f);
-        lightColor.y = glm::sin(glfwGetTime() * 0.7f + 0.2f);
-        lightColor.z = glm::sin(glfwGetTime() * 1.3f  + 0.2f);
+        lightColor.x = (float) glm::sin(glfwGetTime() * 2.0f + 0.2f);
+        lightColor.y = (float) glm::sin(glfwGetTime() * 0.7f + 0.2f);
+        lightColor.z = (float) glm::sin(glfwGetTime() * 1.3f  + 0.2f);
         
         glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); 
         glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); 
         
         glm::vec3 rotation{};
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1.5f, 0.1f, 5000.0f);
         glm::vec3 scale {1.0f, 1.0f, 1.0f};
 
         glm::mat4 rotX = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));

@@ -4,7 +4,7 @@
 
 namespace Azazel
 {
-    GLESVertexBuffer::GLESVertexBuffer(const void* data, int size)
+    GLESVertexBuffer::GLESVertexBuffer(const void* data, size_t size)
     {
         glGenBuffers(1, &rendererId);
         glBindBuffer(GL_ARRAY_BUFFER, rendererId);

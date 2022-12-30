@@ -5,6 +5,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <renderer/Render.h>
+#include <GLFW/glfw3.h>
 
 namespace Azazel
 {
@@ -41,10 +42,6 @@ namespace Azazel
 		for (auto it = layerStack.end(); it != layerStack.begin(); )
 		{
 			(*(--it))->onEvent(e);
-			if (e.handled)
-			{
-				break;
-			}
 		}
 	}
 
@@ -56,7 +53,7 @@ namespace Azazel
 			float delta = t - lastFrameTime;
 			lastFrameTime = t;
 			Render::getRenderer()->setClearColor({0.0f, 0.0f, 0.0f, 1.0f});
-			Render::getRenderer()->clear();
+			Render::getRenderer()->clear(true, true, false);
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui::NewFrame();
 			for (Layer* layer : layerStack)
@@ -85,7 +82,7 @@ namespace Azazel
 		return this->window.get();
 	}
 
-	Application* Application::get()
+	Application* Application::getApplication()
 	{
 		return Application::app;
 	}
