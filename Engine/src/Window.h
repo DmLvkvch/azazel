@@ -3,6 +3,7 @@
 #include <functional>
 #include <string>
 #include "events/Event.h"
+#include <memory>
 
 namespace Azazel
 {
@@ -37,6 +38,6 @@ namespace Azazel
         virtual void* getNativeWindow() = 0;
         static Window* create(const WindowProps& props = WindowProps());
     private:
-        static Window* window;
+        static std::unique_ptr<Window> window;
     };
 }

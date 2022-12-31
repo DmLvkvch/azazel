@@ -76,7 +76,6 @@ namespace Azazel
         {
             ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-            std::cout<<"key "<<key<<std::endl;
             switch(action)
             {
                 case GLFW_PRESS:

@@ -1,21 +1,21 @@
 #include "GLESFrameBuffer.h"
-#include "GLESTexture.h"
 #include "gl_headers.h"
 
 #include <iostream>
 namespace Azazel
 {
-	GLESFrameBuffer::GLESFrameBuffer(Texture* texture, FrameBufferTarget* frameBufferTarget)
+	GLESFrameBuffer::GLESFrameBuffer(std::shared_ptr<Texture> texture, std::shared_ptr<FrameBufferTarget> depthTarget)
     {
         glGenFramebuffers(1, &rendererId);
-        this->colorAttachments.push_back(texture);
         addColorAttachment(texture);
+        setDepthTarget(depthTarget);
     }
 
-    GLESFrameBuffer::GLESFrameBuffer(std::shared_ptr<Texture> texture) : frameBufferDepthTarget(nullptr)
+    GLESFrameBuffer::GLESFrameBuffer(std::shared_ptr<Texture> texture)
     {
         glGenFramebuffers(1, &rendererId);
-        addColorAttachment(texture.get());
+        addColorAttachment(texture);
+        depthTarget = std::shared_ptr<FrameBufferTarget>(nullptr);
     }
 
     GLESFrameBuffer::~GLESFrameBuffer()
@@ -33,9 +33,10 @@ namespace Azazel
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    void GLESFrameBuffer::addColorAttachment(const Texture* texture, int slot)
+    void GLESFrameBuffer::addColorAttachment(std::shared_ptr<Texture> texture, int slot)
     {
         unsigned int textureId = texture->getRendererId();
+        colorTextureTarget = texture;
         bind();
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + slot, GL_TEXTURE_2D, textureId, 0);
         if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -45,7 +46,7 @@ namespace Azazel
         unbind();
     }
 
-    void GLESFrameBuffer::setDepthTarget(FrameBufferTarget* frameBufferTarget)
+    void GLESFrameBuffer::setDepthTarget(std::shared_ptr<FrameBufferTarget> depthTarget)
     {
         bind();
         // TODO
