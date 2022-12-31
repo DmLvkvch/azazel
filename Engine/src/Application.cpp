@@ -12,76 +12,76 @@
 
 namespace Azazel
 {
-	Application* Application::app = nullptr;
+    Application* Application::app = nullptr;
 
-	Application* Application::getApplication()
-	{
-		if (!Application::app)
-		{
-			Application::app = new Application();
-		}
-		return Application::app;
-	}
+    Application* Application::getApplication()
+    {
+        if (!Application::app)
+        {
+            Application::app = new Application();
+        }
+        return Application::app;
+    }
 
-	Application::Application()
-	{
-		lastFrameTime = 0.0f;
-		window = std::unique_ptr<Window>(Window::create());
-		window->setEventCallback(std::bind(&Application::onEvent, this, std::placeholders::_1));
-	}
+    Application::Application()
+    {
+        lastFrameTime = 0.0f;
+        window = std::unique_ptr<Window>(Window::create());
+        window->setEventCallback(std::bind(&Application::onEvent, this, std::placeholders::_1));
+    }
 
-	Application::~Application()
-	{
-		
-	}
+    Application::~Application()
+    {
+        
+    }
 
-	void Application::onEvent(Event& e)
-	{
-		if (e.getEventType() == EventType::WindowClose)
-		{
-			running = false;
-		}
+    void Application::onEvent(Event& e)
+    {
+        if (e.getEventType() == EventType::WindowClose)
+        {
+            running = false;
+        }
 
-		for (auto it = layerStack.end(); it != layerStack.begin(); )
-		{
-			(*(--it))->onEvent(e);
-		}
-	}
+        for (auto it = layerStack.end(); it != layerStack.begin(); )
+        {
+            (*(--it))->onEvent(e);
+        }
+    }
 
-	void Application::run()
-	{
-		while (running)
-		{
-			float t = (float) (glfwGetTime() * 1000);
-			float delta = t - lastFrameTime;
-			lastFrameTime = t;
-			Render::getRenderer()->setClearColor({0.0f, 0.0f, 0.0f, 1.0f});
-			Render::getRenderer()->clear(true, true, false);
-			ImGui_ImplOpenGL3_NewFrame();
-			ImGui::NewFrame();
-			for (Layer* layer : layerStack)
-			{
-				layer->onUpdate(delta);
-			}
-			ImGui::Render();
-			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-			window->onUpdate(delta);
-		}
-	}
+    void Application::run()
+    {
+        while (running)
+        {
+            float t = (float) (glfwGetTime() * 1000);
+            float delta = t - lastFrameTime;
+            lastFrameTime = t;
+            Render::getRenderer()->setClearColor({0.0f, 0.0f, 0.0f, 1.0f});
+            Render::getRenderer()->clear(true, true, false);
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui::NewFrame();
+            for (Layer* layer : layerStack)
+            {
+                layer->onUpdate(delta);
+            }
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            window->onUpdate(delta);
+        }
+    }
 
-	void Application::pushLayer(Layer* layer)
-	{
-		layerStack.pushLayer(layer);
-		layer->onAttach();
-	}
+    void Application::pushLayer(Layer* layer)
+    {
+        layerStack.pushLayer(layer);
+        layer->onAttach();
+    }
 
-	void Application::pushOverlay(Layer* layer)
-	{
-		layerStack.pushOverlay(layer);
-	}
+    void Application::pushOverlay(Layer* layer)
+    {
+        layerStack.pushOverlay(layer);
+    }
 
-	Window* Application::getWindow()
-	{
-		return this->window.get();
-	}
+    Window* Application::getWindow()
+    {
+        return this->window.get();
+    }
 }

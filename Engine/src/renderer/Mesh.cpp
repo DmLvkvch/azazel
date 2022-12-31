@@ -5,122 +5,122 @@
 
 namespace Azazel
 {
-	Mesh::Mesh(const std::vector<float>& vertices, const std::vector<unsigned int>& indices)
-		: vertices(vertices), indices(indices)
-	{
-		
-	}
+    Mesh::Mesh(const std::vector<float>& vertices, const std::vector<unsigned int>& indices)
+        : vertices(vertices), indices(indices)
+    {
+        
+    }
 
-	Mesh::~Mesh()
-	{
+    Mesh::~Mesh()
+    {
 
-	}
+    }
 
-	Mesh Mesh::genCubeMesh(float x, float y, float z, float width, float height, float depth)
-	{
-		std::vector<float> vertices ;
-		
-		std::vector<unsigned int> indices {0, 1, 2, 0, 2, 3};
+    Mesh Mesh::genCubeMesh(float x, float y, float z, float width, float height, float depth)
+    {
+        std::vector<float> vertices ;
+        
+        std::vector<unsigned int> indices {0, 1, 2, 0, 2, 3};
 
-		return Mesh(vertices, indices);
-	}
+        return Mesh(vertices, indices);
+    }
 
-	Mesh Mesh::genCube(float size)
-	{
-		float left = 1; 
-		float top = 1; 
-		float front = 1; 
-		float bottom = 1; 
-		float back = 1; 
-		float right = 1; 
+    Mesh Mesh::genCube(float size)
+    {
+        float left = 1; 
+        float top = 1; 
+        float front = 1; 
+        float bottom = 1; 
+        float back = 1; 
+        float right = 1; 
 
-		std::vector<glm::vec3> positions = {
-			glm::vec3(-left, top, front),
-			glm::vec3(-left, -bottom, front),
-			glm::vec3(-left, top, -back),
-			glm::vec3(-left, -bottom, -back),
-			glm::vec3(right, top, front),
-			glm::vec3(right, -bottom, front),
-			glm::vec3(right, top, -back),
-			glm::vec3(right, -bottom, -back),
-		};
+        std::vector<glm::vec3> positions = {
+            glm::vec3(-left, top, front),
+            glm::vec3(-left, -bottom, front),
+            glm::vec3(-left, top, -back),
+            glm::vec3(-left, -bottom, -back),
+            glm::vec3(right, top, front),
+            glm::vec3(right, -bottom, front),
+            glm::vec3(right, top, -back),
+            glm::vec3(right, -bottom, -back),
+        };
 
-		std::vector<glm::vec3> vertices;
-		vertices.push_back(positions[4]);
-		vertices.push_back(positions[2]);
-		vertices.push_back(positions[0]);
-		vertices.push_back(positions[2]);
-		vertices.push_back(positions[7]);
-		vertices.push_back(positions[3]);
-		vertices.push_back(positions[6]);
-		vertices.push_back(positions[5]);
-		vertices.push_back(positions[7]);
-		vertices.push_back(positions[1]);
-		vertices.push_back(positions[7]);
-		vertices.push_back(positions[5]);
-		vertices.push_back(positions[0]);
-		vertices.push_back(positions[3]);
-		vertices.push_back(positions[1]);
-		vertices.push_back(positions[4]);
-		vertices.push_back(positions[1]);
-		vertices.push_back(positions[5]);
-		vertices.push_back(positions[4]);
-		vertices.push_back(positions[6]);
-		vertices.push_back(positions[2]);
-		vertices.push_back(positions[2]);
-		vertices.push_back(positions[6]);
-		vertices.push_back(positions[7]);
-		vertices.push_back(positions[6]);
-		vertices.push_back(positions[4]);
-		vertices.push_back(positions[5]);
-		vertices.push_back(positions[1]);
-		vertices.push_back(positions[3]);
-		vertices.push_back(positions[7]);
-		vertices.push_back(positions[0]);
-		vertices.push_back(positions[2]);
-		vertices.push_back(positions[3]);
-		vertices.push_back(positions[4]);
-		vertices.push_back(positions[0]);
-		vertices.push_back(positions[1]);
+        std::vector<glm::vec3> vertices;
+        vertices.push_back(positions[4]);
+        vertices.push_back(positions[2]);
+        vertices.push_back(positions[0]);
+        vertices.push_back(positions[2]);
+        vertices.push_back(positions[7]);
+        vertices.push_back(positions[3]);
+        vertices.push_back(positions[6]);
+        vertices.push_back(positions[5]);
+        vertices.push_back(positions[7]);
+        vertices.push_back(positions[1]);
+        vertices.push_back(positions[7]);
+        vertices.push_back(positions[5]);
+        vertices.push_back(positions[0]);
+        vertices.push_back(positions[3]);
+        vertices.push_back(positions[1]);
+        vertices.push_back(positions[4]);
+        vertices.push_back(positions[1]);
+        vertices.push_back(positions[5]);
+        vertices.push_back(positions[4]);
+        vertices.push_back(positions[6]);
+        vertices.push_back(positions[2]);
+        vertices.push_back(positions[2]);
+        vertices.push_back(positions[6]);
+        vertices.push_back(positions[7]);
+        vertices.push_back(positions[6]);
+        vertices.push_back(positions[4]);
+        vertices.push_back(positions[5]);
+        vertices.push_back(positions[1]);
+        vertices.push_back(positions[3]);
+        vertices.push_back(positions[7]);
+        vertices.push_back(positions[0]);
+        vertices.push_back(positions[2]);
+        vertices.push_back(positions[3]);
+        vertices.push_back(positions[4]);
+        vertices.push_back(positions[0]);
+        vertices.push_back(positions[1]);
 
-		std::vector<glm::vec2> textureCoords;
+        std::vector<glm::vec2> textureCoords;
 
-		textureCoords.push_back(glm::vec2(1.0f, 0.0f));
-		textureCoords.push_back(glm::vec2(0.0f, 1.0f));
-		textureCoords.push_back(glm::vec2(0.0f, 0.0f));
-		textureCoords.push_back(glm::vec2(1.0f, 1.0f));
-		textureCoords.push_back(glm::vec2(0.0f, 0.0f));
-		textureCoords.push_back(glm::vec2(1.0f, 0.0f));
-		textureCoords.push_back(glm::vec2(1.0f, 1.0f));
-		textureCoords.push_back(glm::vec2(0.0f, 0.0f));
-		textureCoords.push_back(glm::vec2(1.0f, 0.0f));
-		textureCoords.push_back(glm::vec2(0.0f, 1.0f));
-		textureCoords.push_back(glm::vec2(1.0f, 0.0f));
-		textureCoords.push_back(glm::vec2(1.0f, 1.0f));
-		textureCoords.push_back(glm::vec2(1.0f, 1.0f));
-		textureCoords.push_back(glm::vec2(0.0f, 0.0f));
-		textureCoords.push_back(glm::vec2(1.0f, 0.0f));
-		textureCoords.push_back(glm::vec2(1.0f, 1.0f));
-		textureCoords.push_back(glm::vec2(0.0f, 0.0f));
-		textureCoords.push_back(glm::vec2(1.0f, 0.0f));
-		textureCoords.push_back(glm::vec2(1.0f, 0.0f));
-		textureCoords.push_back(glm::vec2(1.0f, 1.0f));
-		textureCoords.push_back(glm::vec2(0.0f, 1.0f));
-		textureCoords.push_back(glm::vec2(1.0f, 1.0f));
-		textureCoords.push_back(glm::vec2(0.0f, 1.0f));
-		textureCoords.push_back(glm::vec2(0.0f, 0.0f));
-		textureCoords.push_back(glm::vec2(1.0f, 1.0f));
-		textureCoords.push_back(glm::vec2(0.0f, 1.0f));
-		textureCoords.push_back(glm::vec2(0.0f, 0.0f));
-		textureCoords.push_back(glm::vec2(0.0f, 1.0f));
-		textureCoords.push_back(glm::vec2(0.0f, 0.0f));
-		textureCoords.push_back(glm::vec2(1.0f, 0.0f));
-		textureCoords.push_back(glm::vec2(1.0f, 1.0f));
-		textureCoords.push_back(glm::vec2(0.0f, 1.0f));
-		textureCoords.push_back(glm::vec2(0.0f, 0.0f));
-		textureCoords.push_back(glm::vec2(1.0f, 1.0f));
-		textureCoords.push_back(glm::vec2(0.0f, 1.0f));
-		textureCoords.push_back(glm::vec2(0.0f, 0.0f));
-		return genCubeMesh(1, 1, 1, 1, 1, 1);
-	}
+        textureCoords.push_back(glm::vec2(1.0f, 0.0f));
+        textureCoords.push_back(glm::vec2(0.0f, 1.0f));
+        textureCoords.push_back(glm::vec2(0.0f, 0.0f));
+        textureCoords.push_back(glm::vec2(1.0f, 1.0f));
+        textureCoords.push_back(glm::vec2(0.0f, 0.0f));
+        textureCoords.push_back(glm::vec2(1.0f, 0.0f));
+        textureCoords.push_back(glm::vec2(1.0f, 1.0f));
+        textureCoords.push_back(glm::vec2(0.0f, 0.0f));
+        textureCoords.push_back(glm::vec2(1.0f, 0.0f));
+        textureCoords.push_back(glm::vec2(0.0f, 1.0f));
+        textureCoords.push_back(glm::vec2(1.0f, 0.0f));
+        textureCoords.push_back(glm::vec2(1.0f, 1.0f));
+        textureCoords.push_back(glm::vec2(1.0f, 1.0f));
+        textureCoords.push_back(glm::vec2(0.0f, 0.0f));
+        textureCoords.push_back(glm::vec2(1.0f, 0.0f));
+        textureCoords.push_back(glm::vec2(1.0f, 1.0f));
+        textureCoords.push_back(glm::vec2(0.0f, 0.0f));
+        textureCoords.push_back(glm::vec2(1.0f, 0.0f));
+        textureCoords.push_back(glm::vec2(1.0f, 0.0f));
+        textureCoords.push_back(glm::vec2(1.0f, 1.0f));
+        textureCoords.push_back(glm::vec2(0.0f, 1.0f));
+        textureCoords.push_back(glm::vec2(1.0f, 1.0f));
+        textureCoords.push_back(glm::vec2(0.0f, 1.0f));
+        textureCoords.push_back(glm::vec2(0.0f, 0.0f));
+        textureCoords.push_back(glm::vec2(1.0f, 1.0f));
+        textureCoords.push_back(glm::vec2(0.0f, 1.0f));
+        textureCoords.push_back(glm::vec2(0.0f, 0.0f));
+        textureCoords.push_back(glm::vec2(0.0f, 1.0f));
+        textureCoords.push_back(glm::vec2(0.0f, 0.0f));
+        textureCoords.push_back(glm::vec2(1.0f, 0.0f));
+        textureCoords.push_back(glm::vec2(1.0f, 1.0f));
+        textureCoords.push_back(glm::vec2(0.0f, 1.0f));
+        textureCoords.push_back(glm::vec2(0.0f, 0.0f));
+        textureCoords.push_back(glm::vec2(1.0f, 1.0f));
+        textureCoords.push_back(glm::vec2(0.0f, 1.0f));
+        textureCoords.push_back(glm::vec2(0.0f, 0.0f));
+        return genCubeMesh(1, 1, 1, 1, 1, 1);
+    }
 }

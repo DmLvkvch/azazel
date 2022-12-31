@@ -7,15 +7,15 @@
 
 namespace Azazel
 {
-	class FrameBuffer
-	{
-	public:
+    class FrameBuffer
+    {
+    public:
         FrameBuffer() = default;
-		virtual ~FrameBuffer();
-		virtual void bind() const = 0;
-		virtual void unbind() const = 0;
-		virtual void setDepthTarget(std::shared_ptr<FrameBufferTarget> depthTarget) = 0;
-		virtual void addColorAttachment(std::shared_ptr<Texture> texture, int slot = 0) = 0;
-		static FrameBuffer* create(std::shared_ptr<Texture> texture, std::shared_ptr<FrameBufferTarget> depthTarget);
-	};
+        virtual ~FrameBuffer();
+        virtual void bind() const = 0;
+        virtual void unbind() const = 0;
+        virtual void setDepthTarget(std::shared_ptr<FrameBufferTarget> depthTarget) = 0;
+        virtual void addColorAttachment(std::shared_ptr<Texture> texture, int slot = 0) = 0;
+        static FrameBuffer* create(std::shared_ptr<Texture> texture, std::shared_ptr<FrameBufferTarget> depthTarget);
+    };
 }

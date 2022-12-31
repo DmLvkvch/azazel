@@ -7,112 +7,112 @@
 
 namespace Azazel
 {
-	enum Semantic
-	{
-		POSITION,
-		COLOR,
-		TEX_COORD,
-		NORMAL,
-		TANGENT,
-		BINORMAL,
-		ASHIFT,
-		AGAMMA
-	};
+    enum Semantic
+    {
+        POSITION,
+        COLOR,
+        TEX_COORD,
+        NORMAL,
+        TANGENT,
+        BINORMAL,
+        ASHIFT,
+        AGAMMA
+    };
 
-	enum ElementType
-	{
-		FLOAT,
-		HALF,
-		BYTE,
-		UNSIGNED_BYTE,
-		INT,
-		UNSIGNED_INT,
-		SHORT,
-		UNSIGNED_SHORT
-	};
+    enum ElementType
+    {
+        FLOAT,
+        HALF,
+        BYTE,
+        UNSIGNED_BYTE,
+        INT,
+        UNSIGNED_INT,
+        SHORT,
+        UNSIGNED_SHORT
+    };
 
-	// inline or static somewhere
-	// int sizeOfElement(const ElementType& el)
-	// {
-	// 	switch (el)
-	// 	{
-	// 		case FLOAT:
-	// 		case INT:
-	// 		case UNSIGNED_INT:
-	// 			return 4;
-	// 		case BYTE:
-	// 		case UNSIGNED_BYTE:
-	// 			return 1;
-	// 		case SHORT:
-	// 		case UNSIGNED_SHORT:
-	// 			return 2;
-	// 		default:
-	// 			return -1;
-	// 	}
-	// 	return -1;
-	// }
+    // inline or static somewhere
+    // int sizeOfElement(const ElementType& el)
+    // {
+    // 	switch (el)
+    // 	{
+    // 		case FLOAT:
+    // 		case INT:
+    // 		case UNSIGNED_INT:
+    // 			return 4;
+    // 		case BYTE:
+    // 		case UNSIGNED_BYTE:
+    // 			return 1;
+    // 		case SHORT:
+    // 		case UNSIGNED_SHORT:
+    // 			return 2;
+    // 		default:
+    // 			return -1;
+    // 	}
+    // 	return -1;
+    // }
 
-	class Element
-	{
-	public:
-		Semantic semantic;
-		ElementType elementType;
-		int dimension;
-		int size;
-		int offset;
-		int id;
+    class Element
+    {
+    public:
+        Semantic semantic;
+        ElementType elementType;
+        int dimension;
+        int size;
+        int offset;
+        int id;
 
-		Element(Semantic& semantic, int dimension, ElementType& elementType)
-		{
-			this->semantic = semantic;
-			this->dimension = dimension;
-			this->elementType = elementType;
-		}
-	};
+        Element(Semantic& semantic, int dimension, ElementType& elementType)
+        {
+            this->semantic = semantic;
+            this->dimension = dimension;
+            this->elementType = elementType;
+        }
+    };
 
-	class Vertex
-	{
-	public:
-		std::vector<Element>& elements;
-		int size;
+    class Vertex
+    {
+    public:
+        std::vector<Element>& elements;
+        int size;
 
-		Vertex(std::vector<Element>& elements)
-		: elements(elements)
-		{
-			this->size = computeSize(elements);
-		}
-		virtual ~Vertex()
-		{
-			
-		}
-	private:
-		int computeSize(const std::vector<Element>& elements)
-		{
-			int size = 0;
-			for (auto& element : elements)
-			{
-				size += element.size;
-			}
-			return size;
-		}
-	};
+        Vertex(std::vector<Element>& elements)
+        : elements(elements)
+        {
+            this->size = computeSize(elements);
+        }
+        virtual ~Vertex()
+        {
+            
+        }
+    private:
+        int computeSize(const std::vector<Element>& elements)
+        {
+            int size = 0;
+            for (auto& element : elements)
+            {
+                size += element.size;
+            }
+            return size;
+        }
+    };
 
-	class SimpleVertex3D
-	{
-	public:
-		glm::vec3 position;
-		glm::vec3 normal;
-		glm::vec2 texCoord;
-	};
+    class SimpleVertex3D
+    {
+    public:
+        glm::vec3 position;
+        glm::vec3 normal;
+        glm::vec2 texCoord;
+    };
 
-	class Vertex3D
-	{
-	public:
-		glm::vec3 position;
-		glm::vec3 normal;
-		glm::vec2 texCoord;
-		glm::vec3 tangent = glm::vec3(0.0f);
+    class Vertex3D
+    {
+    public:
+        glm::vec3 position;
+        glm::vec3 normal;
+        glm::vec2 texCoord;
+        glm::vec3 tangent = glm::vec3(0.0f);
         glm::vec3 bitangent = glm::vec3(0.0f);
         glm::vec3 color = glm::vec3(0.0f);
-	};
+    };
 }

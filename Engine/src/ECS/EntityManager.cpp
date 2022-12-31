@@ -17,7 +17,7 @@ namespace Azazel
     Entity EntityManager::createEntity()
     {
         assert(EntityManager::id < MAX_ENTITIES && "Too many entities in existence.");
-        Entity id = availableEntities.front();		
+        Entity id = availableEntities.front();
         availableEntities.pop();
         ++EntityManager::id;
         return id;

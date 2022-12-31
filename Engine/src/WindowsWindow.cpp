@@ -48,16 +48,16 @@ namespace Azazel
         {
             std::cout << "Failed to initialize GLAD" << std::endl;
         }
-		IMGUI_CHECKVERSION();
-		ImGui::CreateContext();
-		ImGuiIO& io = ImGui::GetIO();
-		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
-		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
-		ImGui::StyleColorsDark();
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO();
+        io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
+        io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
+        ImGui::StyleColorsDark();
 ;
-		io.DisplaySize = ImVec2((float)width, (float)height);
-		ImGui_ImplGlfw_InitForOpenGL(window, true);
-		ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
+        io.DisplaySize = ImVec2((float)width, (float)height);
+        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
         glfwSetWindowCloseCallback(window, [](GLFWwindow* window) 
         {
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);

@@ -2,15 +2,15 @@
 
 namespace Azazel
 {
-	RenderApi::API api = RenderApi::API::OpenGL;
+    RenderApi::API api = RenderApi::API::OpenGL;
 
-	RenderApi::RenderApi()
-	{
+    RenderApi::RenderApi()
+    {
 
-	}
+    }
 
-	RenderApi::~RenderApi()
-	{
-	
-	}
+    RenderApi::~RenderApi()
+    {
+    
+    }
 }

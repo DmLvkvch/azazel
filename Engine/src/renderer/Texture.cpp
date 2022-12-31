@@ -9,7 +9,7 @@ namespace Azazel
     
     }
 
-	Texture::Texture(const TextureData& textureData)
+    Texture::Texture(const TextureData& textureData)
     {
 
     }

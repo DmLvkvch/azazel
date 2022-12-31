@@ -16,37 +16,37 @@
 
 namespace Azazel
 {
-	ImGuiLayer::ImGuiLayer()
-	: Layer("ImGuiLayer")
-	{
-	}
+    ImGuiLayer::ImGuiLayer()
+    : Layer("ImGuiLayer")
+    {
+    }
 
-	ImGuiLayer::~ImGuiLayer()
-	{
-	}
+    ImGuiLayer::~ImGuiLayer()
+    {
+    }
 
-	void ImGuiLayer::onAttach()
-	{
+    void ImGuiLayer::onAttach()
+    {
 
-	}
+    }
 
-	void ImGuiLayer::onDetach()
-	{
+    void ImGuiLayer::onDetach()
+    {
 
-	}
+    }
 
-	void ImGuiLayer::onUpdate(float delta)
-	{
+    void ImGuiLayer::onUpdate(float delta)
+    {
 
-	}
+    }
 
-	void ImGuiLayer::onEvent(Event& e)
-	{
-		if (e.getEventType() == EventType::WindowResize)
+    void ImGuiLayer::onEvent(Event& e)
+    {
+        if (e.getEventType() == EventType::WindowResize)
         {
             const WindowResizeEvent& k = *(WindowResizeEvent*)&e;
             ImGuiIO& io = ImGui::GetIO();
-			io.DisplaySize = ImVec2((float) k.getWidth(), (float) k.getHeight());
+            io.DisplaySize = ImVec2((float) k.getWidth(), (float) k.getHeight());
         }
-	}
+    }
 }

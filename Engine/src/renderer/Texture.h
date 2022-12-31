@@ -32,8 +32,8 @@ namespace Azazel
 
         Texture() = default;
         
-		Texture(int width, int height, const unsigned char* data, ColorFormat colorFormat);
-		
+        Texture(int width, int height, const unsigned char* data, ColorFormat colorFormat);
+        
         Texture(const TextureData& textureData);
         
         virtual ~Texture();

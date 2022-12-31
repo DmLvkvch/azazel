@@ -20,7 +20,7 @@ namespace Azazel
     public:
         void insertData(Entity entity, T component)
         {
-		    assert(entityToIndexMap.find(entity) == entityToIndexMap.end() && "Component added to same entity more than once.");
+            assert(entityToIndexMap.find(entity) == entityToIndexMap.end() && "Component added to same entity more than once.");
             // Put new entry at end and update the maps
             size_t newIndex = size;
             entityToIndexMap[entity] = newIndex;
@@ -31,7 +31,7 @@ namespace Azazel
 
         void removeData(Entity entity)
         {
-    		assert(entityToIndexMap.find(entity) != entityToIndexMap.end() && "Removing non-existent component.");
+            assert(entityToIndexMap.find(entity) != entityToIndexMap.end() && "Removing non-existent component.");
             // Copy element at end into deleted element's place to maintain density
             size_t indexOfRemovedEntity = entityToIndexMap[entity];
             size_t indexOfLastElement = size - 1;

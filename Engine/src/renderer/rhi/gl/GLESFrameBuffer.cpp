@@ -4,7 +4,7 @@
 #include <iostream>
 namespace Azazel
 {
-	GLESFrameBuffer::GLESFrameBuffer(std::shared_ptr<Texture> texture, std::shared_ptr<FrameBufferTarget> depthTarget)
+    GLESFrameBuffer::GLESFrameBuffer(std::shared_ptr<Texture> texture, std::shared_ptr<FrameBufferTarget> depthTarget)
     {
         glGenFramebuffers(1, &rendererId);
         addColorAttachment(texture);
@@ -23,11 +23,11 @@ namespace Azazel
         glDeleteFramebuffers(1, &rendererId);  
     }
 
-	void GLESFrameBuffer::bind() const
+    void GLESFrameBuffer::bind() const
     {
         glBindFramebuffer(GL_FRAMEBUFFER, rendererId);
     }
-	
+    
     void GLESFrameBuffer::unbind() const
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -41,7 +41,7 @@ namespace Azazel
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + slot, GL_TEXTURE_2D, textureId, 0);
         if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
-	        std::cout << "ERROR::FRAMEBUFFER. Framebuffer is not complete attachment!" << std::endl;
+            std::cout << "ERROR::FRAMEBUFFER. Framebuffer is not complete attachment!" << std::endl;
         }
         unbind();
     }

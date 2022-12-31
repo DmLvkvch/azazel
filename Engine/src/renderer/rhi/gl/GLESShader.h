@@ -5,40 +5,40 @@
 
 namespace Azazel
 {
-	class GLESShader : public Shader
-	{
-	private:
-		unsigned int rendererId;
-		std::unordered_map<std::string, int> uniformLocationMap;
-	public:
+    class GLESShader : public Shader
+    {
+    private:
+        unsigned int rendererId;
+        std::unordered_map<std::string, int> uniformLocationMap;
+    public:
 
-		GLESShader(std::string vertexShader, std::string fragmentShader);
+        GLESShader(std::string vertexShader, std::string fragmentShader);
 
-		~GLESShader();
+        ~GLESShader();
 
-		int getShaderType(const ShaderType& shaderType) override;
+        int getShaderType(const ShaderType& shaderType) override;
 
-		unsigned int compile(const std::string& programCode, const ShaderType& shaderType) override;
+        unsigned int compile(const std::string& programCode, const ShaderType& shaderType) override;
 
-		void bind() const override;
+        void bind() const override;
 
-		void unbind() const override;
-		
-		int getUniformLocation(const std::string& name) const override;
+        void unbind() const override;
+        
+        int getUniformLocation(const std::string& name) const override;
 
-		void setFloat(const std::string& name, float value) const override;
+        void setFloat(const std::string& name, float value) const override;
 
-		void setInt(const std::string& name, int value) const override;
+        void setInt(const std::string& name, int value) const override;
 
-		void setVec4f(const std::string& name, float f0, float f1, float f2, float f3) const override;
+        void setVec4f(const std::string& name, float f0, float f1, float f2, float f3) const override;
 
-		void setMatrix4f(const std::string& name, const glm::mat4& mvp) const override;
+        void setMatrix4f(const std::string& name, const glm::mat4& mvp) const override;
 
-		void setVec3f(const std::string& name, const glm::vec3& vec3) const override;
+        void setVec3f(const std::string& name, const glm::vec3& vec3) const override;
 
-		void setVec3f(const std::string& name, float f0, float f1, float f2) const override;
+        void setVec3f(const std::string& name, float f0, float f1, float f2) const override;
 
-		void setVec2f(const std::string& name, float f0, float f1) const override;
+        void setVec2f(const std::string& name, float f0, float f1) const override;
 
-	};
+    };
 }
