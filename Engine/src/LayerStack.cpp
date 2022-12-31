@@ -1,4 +1,5 @@
 #include "LayerStack.h"
+#define _CRTDBG_MAP_ALLOC
 
 #include <algorithm>
 

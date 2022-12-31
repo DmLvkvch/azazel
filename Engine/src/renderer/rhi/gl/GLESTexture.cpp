@@ -35,7 +35,6 @@ namespace Azazel
             data[i + 3] = a;
         }
         createTexture(data, width, height, 4);
-        delete[] data;
     }
 
     void GLESTexture::createTexture(const unsigned char* data, int width, int height, int bpp)
@@ -55,6 +54,7 @@ namespace Azazel
         {
             std::cout << "Failed to load texture" << std::endl;
         }
+        delete[] data;
         unbind();
     }
 

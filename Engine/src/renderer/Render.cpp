@@ -2,10 +2,11 @@
 
 namespace Azazel
 {
-	Render* Render::render = new Render();
+	std::unique_ptr<Render> Render::render(new Render());
 
 	Render::Render()
 	{
+
 	}
 
 	Render::~Render()
@@ -15,12 +16,12 @@ namespace Azazel
 	
 	RenderApi* Render::getRenderApi()
 	{
-		return this->renderApi;
+		return nullptr;
 	}
 
 	Render* Render::getRenderer()
 	{
-		return render;
+		return render.get();
 	}
 	
 

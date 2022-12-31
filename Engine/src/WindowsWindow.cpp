@@ -1,4 +1,5 @@
 #include "WindowsWindow.h"
+#define _CRTDBG_MAP_ALLOC
 
 #include <iostream>
 #include "events/ApplicationEvent.h"
@@ -57,7 +58,6 @@ namespace Azazel
 		io.DisplaySize = ImVec2((float)width, (float)height);
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
-
         glfwSetWindowCloseCallback(window, [](GLFWwindow* window) 
         {
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -146,7 +146,12 @@ namespace Azazel
 
     void WindowsWindow::shutDown()
     {
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
+
         glfwDestroyWindow(window);
+        glfwTerminate();
     }
 
     void WindowsWindow::onUpdate(float delta)

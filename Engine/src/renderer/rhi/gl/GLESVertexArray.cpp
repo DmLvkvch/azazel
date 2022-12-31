@@ -2,7 +2,6 @@
 
 #include "gl_headers.h"
 #include <vector>
-#include "renderer/rhi/gl/GLESVertexBufferLayout.h"
 
 namespace Azazel
 {
@@ -17,10 +16,10 @@ namespace Azazel
         glDeleteVertexArrays(1, &rendererId);
     }
 
-    void GLESVertexArray::addBuffer(VertexBuffer& vertexBuffer, const BufferLayout& layout)
+    void GLESVertexArray::addBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, const BufferLayout& layout)
     {
         bind();
-        vertexBuffer.bind();
+        vertexBuffer->bind();
         const std::vector<BufferElement>& elements = layout.getElements();
         unsigned int offset = 0;
         for (unsigned int i = 0; i < elements.size(); i++)
@@ -31,8 +30,9 @@ namespace Azazel
             glVertexAttribPointer(i, element.getComponentCount(), shaderTypeToGLType(element.type), element.normalized ? GL_TRUE : GL_FALSE,
                                     layout.getStride(), reinterpret_cast<const void *>(offset));
         }
-        vertexBuffer.unbind();
+        vertexBuffer->unbind();
         unbind();
+        vertexBuffers.push_back(vertexBuffer);
     }
 
     void GLESVertexArray::bind() const

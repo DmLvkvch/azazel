@@ -1,4 +1,5 @@
 #include "GLLayer.h"
+#define _CRTDBG_MAP_ALLOC
 
 #include "renderer/rhi/gl/gl_headers.h"
 #include <glm/vec3.hpp>
@@ -21,19 +22,19 @@
 #include "TextureUtils.h"
 #include "FileUtils.h"
 #include "renderer/TextureData.h"
+#include <renderer/Render.h>
 
 namespace Azazel
 {
-
     
     void GLLayer::onAttach()
     {
-        float left = 1 * 200.0f;
-        float top = 1 * 200.0f;
-        float front = 1 * 200.0f;
+        float left =   1 * 200.0f;
+        float top =    1 * 200.0f;
+        float front =  1 * 200.0f;
         float bottom = 1 * 200.0f;
-        float back = 1 * 200.0f;
-        float right = 1 * 200.0f;
+        float back =   1 * 200.0f;
+        float right =  1 * 200.0f;
 
         std::vector<glm::vec3> positions = {
             glm::vec3(-left, top, front),
@@ -46,7 +47,10 @@ namespace Azazel
             glm::vec3(right, -bottom, -back),
         };
 
-        std::vector<glm::vec3> vertices;
+        std::vector<glm::vec3> vertices
+        {
+
+        };
         vertices.push_back(positions[4]);
         vertices.push_back(positions[2]);
         vertices.push_back(positions[0]);
@@ -123,7 +127,6 @@ namespace Azazel
         texCoords.push_back(glm::vec2(0.0f, 1.0f));
         texCoords.push_back(glm::vec2(0.0f, 0.0f));
 
-
         std::vector<glm::vec3> normals;
 
         for (int i = 0; i < vertices.size(); i+=3)
@@ -142,28 +145,25 @@ namespace Azazel
         {
             indices.push_back(i);
         }
-        
-        TextureData td = TextureUtils::loadTexture("images/container2.png");
 
-        this->texture.reset(Texture::create(td));
+        this->texture.reset(Texture::create(TextureData(500, 500, ColorFormat(), 0xaaff00ff)));
 
-        td = TextureUtils::loadTexture("images/awesomeface.png");
-
-        this->face.reset(Texture::create(td));
+        this->face.reset(Texture::create(TextureData(500, 500, ColorFormat(), 0xaaff00ff)));
 
         this->indexBuffer.reset(IndexBuffer::create(indices.data(), indices.size()));
-        VertexBuffer* vertexBuffer = (VertexBuffer::create((float*) vertices.data(), sizeof(float) * vertices.size() * 3));
-        VertexBuffer* vertexBufferT = (VertexBuffer::create((float*) texCoords.data(), sizeof(float) * texCoords.size() * 2));
-        VertexBuffer* vertexBufferN = (VertexBuffer::create((float*) normals.data(), sizeof(float) * normals.size() * 3));
+        // leak
+        std::shared_ptr<VertexBuffer> vertexBuffer (VertexBuffer::create((float*)vertices.data(), sizeof(float) * vertices.size() * 3));
+        std::shared_ptr<VertexBuffer> vertexBufferT (VertexBuffer::create((float*)texCoords.data(), sizeof(float) * texCoords.size() * 2));
+        std::shared_ptr<VertexBuffer> vertexBufferN (VertexBuffer::create((float*)normals.data(), sizeof(float) * normals.size() * 3));
         this->vertexArray.reset(VertexArray::create());
         BufferLayout vbo = {{
             ShaderDataType::Float3, "position"
         }};
-        vertexArray->addBuffer(*vertexBuffer, vbo);
+        vertexArray->addBuffer(vertexBuffer, vbo);
         BufferLayout vbo1 = {{ ShaderDataType::Float2, "texCoord" }};
-        vertexArray->addBuffer(*vertexBufferT, vbo1);
+        vertexArray->addBuffer(vertexBufferT, vbo1);
         BufferLayout vbo2 = {{ ShaderDataType::Float3, "normals" }};
-        vertexArray->addBuffer(*vertexBufferN, vbo2);
+        vertexArray->addBuffer(vertexBufferN, vbo2);
 
         std::string vertCode = FileUtils::readFile("shaders/light/specular.light.vert.glsl");
 
@@ -183,41 +183,25 @@ namespace Azazel
         shader->setVec3f("light.specular", 1.0f, 1.0f, 1.0f); 
 
         gridShader.reset(Shader::create(FileUtils::readFile("shaders/grid.vert.glsl"), FileUtils::readFile("shaders/grid.frag.glsl")));
-        std::vector<glm::vec3> gridVerts;
-        gridVerts.push_back(glm::vec3(0.0f, 0.0f, 0.0f));
-        gridVerts.push_back(glm::vec3(0.0f, 0.0f, 500.0f));
-        gridVerts.push_back(glm::vec3(1000.0f, 0.0f, 500.0f));
-        gridVerts.push_back(glm::vec3(1000.0f, 0.0f, 0.0f));
-        std::vector<glm::vec2> gridTexCoords;
-        gridTexCoords.push_back(glm::vec2(0.0, 0.0));
-        gridTexCoords.push_back(glm::vec2(1.0, 0.0));
-        gridTexCoords.push_back(glm::vec2(1.0, 1.0));
-        gridTexCoords.push_back(glm::vec2(0.0, 1.0));
+        
+        std::vector<float> gridVerts = 
+        {
+            0.0f,    0.0f, 0.0f,   0.0f, 0.0f,
+            0.0f,    50.0f, 0.0f, 1.0f, 0.0f,
+            100.0f, 50.0f, 0.0f, 1.0f, 1.0f,
+            100.0f, 0.0f, 0.0f,   0.0f, 1.0f
+        };
 
         unsigned int gridInds[6] = {0, 1, 2, 0, 2, 3};
 
-        this->gridIndexBuffer.reset(IndexBuffer::create(gridInds, 6));
-        std::unique_ptr<VertexBuffer> vertexBuffer1 (VertexBuffer::create((float*) gridVerts.data(), sizeof(float) * vertices.size() * 3));
-        std::unique_ptr<VertexBuffer> vertexBufferT1 (VertexBuffer::create((float*) gridTexCoords.data(), sizeof(float) * texCoords.size() * 2));
+        gridIndexBuffer.reset(IndexBuffer::create(gridInds, 6));
+        std::shared_ptr<VertexBuffer> vertexBuffer1 (VertexBuffer::create((float*) gridVerts.data(), sizeof(float) * gridVerts.size() * 5));
 
-        this->gridVertexArray.reset(VertexArray::create());
-        BufferLayout vbo11 = {{ ShaderDataType::Float3, "positions" }};
-        gridVertexArray->addBuffer(*vertexBuffer1.get(), vbo11);
-        BufferLayout vbo111 = {{ShaderDataType::Float2, "texCoord"}};
-        gridVertexArray->addBuffer(*vertexBufferT1.get(), vbo111);
+        gridVertexArray.reset(VertexArray::create());
+        BufferLayout vbo11 = { { ShaderDataType::Float3, "positions" }, { ShaderDataType::Float2, "texCoord"}};
+        gridVertexArray->addBuffer(vertexBuffer1, vbo11);
 
-        glm::vec3 camPos = glm::vec3(0.0f, 0.0f, 1500.0f);
-        camera.setPosition(camPos);
-
-        glEnable(GL_DEPTH_TEST);
-        BufferLayout bl = {
-            { ShaderDataType::Float3, "position" },
-            { ShaderDataType::Float3, "normal" },
-            { ShaderDataType::Float2, "texCoord" }
-        };
         orthographicCamera = OrthographicCamera(0, 1200, 0, 700);
-        glm::vec2 tmp {0, 0};
-        orthographicCamera.setPosition(tmp);
     }
 
     void GLLayer::onDetach()
@@ -235,36 +219,22 @@ namespace Azazel
         
         glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); 
         glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); 
-        
-        glm::vec3 rotation{};
-        glm::vec3 scale {1.0f, 1.0f, 1.0f};
 
-        glm::mat4 rotX = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-        glm::mat4 rotZ = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(0.0f, 0.0f, 1.0f));
-        glm::mat4 rotY = glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), glm::vec3(0.0f, 1.0f, 0.0f));
-
-        glm::mat4 model = glm::scale(glm::mat4(1.0f), scale) * rotX * rotY * rotZ;
-
-        glm::mat4 mvp = orthographicCamera.getViewProjectionMatrix()  * model;
+        glm::mat4 mvp = orthographicCamera.getViewProjectionMatrix()  * glm::mat4(1.0f);
         gridShader->bind();
         gridShader->setMatrix4f("u_mvp", mvp);
-        gridVertexArray->bind();
-        gridIndexBuffer->bind();
-        glDrawElements(GL_TRIANGLES, gridIndexBuffer->getElementCount() * sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+        Render::getRenderer()->drawIndexed(*gridVertexArray, *gridIndexBuffer, *gridShader, *texture);
 
         texture->bind();
         face->bind(1);
         shader->bind();
         shader->setMatrix4f("u_mvp", mvp);
-        shader->setMatrix4f("u_model", model);        
+        shader->setMatrix4f("u_model", glm::mat4(1.0f));        
         shader->setVec3f("light.ambient", ambientColor);
-        shader->setVec3f("light.diffuse", diffuseColor);
-
-        shader->setVec3f("u_lightPos", lightPos);
+        shader->setVec3f("light.diffuse", diffuseColor)       ;        shader->setVec3f("u_lightPos", lightPos);
         vertexArray->bind();
         indexBuffer->bind();
         glDrawElements(GL_TRIANGLES, indexBuffer->getElementCount() * sizeof(unsigned int), GL_UNSIGNED_INT, 0);
-
     }
     
     void GLLayer::onEvent(Event& e)

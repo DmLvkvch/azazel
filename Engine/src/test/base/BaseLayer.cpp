@@ -1,4 +1,5 @@
 #include "BaseLayer.h"
+#define _CRTDBG_MAP_ALLOC
 
 #include <TextureUtils.h>
 #include <FileUtils.h>
@@ -27,7 +28,7 @@ namespace Azazel
                             };
 
         std::vector<unsigned int> indices = {0, 1, 3, 1, 2, 3};
-        vertexBuffer.reset(VertexBuffer::create((float*) vertices.data(), sizeof(float) * vertices.size()));
+        std::shared_ptr<VertexBuffer> vertexBuffer (VertexBuffer::create((float*) vertices.data(), sizeof(float) * vertices.size()));
         indexBuffer.reset(IndexBuffer::create(indices.data(), 6));
         vertexArray.reset(VertexArray::create());
         BufferLayout bf = 
@@ -35,7 +36,7 @@ namespace Azazel
             { ShaderDataType::Float3, "pos" },
             { ShaderDataType::Float2, "texCoord"}
         };
-        vertexArray->addBuffer(*vertexBuffer, bf);
+        vertexArray->addBuffer(vertexBuffer, bf);
 
         shader.reset(Shader::create(FileUtils::readFile("shaders/default.vert.glsl"), FileUtils::readFile("shaders/default.frag.glsl")));
         texture.reset(Texture::create(TextureUtils::loadTexture("images/awesomeface.png")));

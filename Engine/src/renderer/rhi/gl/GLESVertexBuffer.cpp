@@ -32,7 +32,7 @@ namespace Azazel
          this->bufferLayout = bufferLayout;
     }
 
-    const BufferLayout& GLESVertexBuffer::getBufferlayout() const
+    const BufferLayout& GLESVertexBuffer::getBufferLayout() const
     {
         return bufferLayout;
     }

@@ -8,6 +8,7 @@
 #include <renderer/Shader.h>
 #include <renderer/Texture.h>
 #include "Camera.h"
+#include <memory>
 
 namespace Azazel
 {
@@ -15,7 +16,7 @@ namespace Azazel
     {
     private:
         RenderApi* renderApi;
-        static Render* render;
+        static std::unique_ptr<Render> render;
 
         Camera camera;
 

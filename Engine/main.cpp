@@ -1,3 +1,10 @@
+#define _CRTDBG_MAP_ALLOC
+#include<iostream>
+#include <crtdbg.h>
+#ifdef _DEBUG
+#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#define new DEBUG_NEW
+#endif
 #include <iostream>
 #include <fstream>
 #include <streambuf>
@@ -10,16 +17,20 @@
 #include "test/base/BaseLayer.h"
 const unsigned int SCR_WIDTH = 940;
 const unsigned int SCR_HEIGHT = 560;
+#include <renderer/Render.h>
+#include <Input.h>
 
 int main()
 {
-    Azazel::Application* p = Azazel::Application::createApplication();
+    // mem leak here
+    Azazel::Application* p = Azazel::Application::getApplication();
     p->pushLayer(new Azazel::ImGuiLayer());
     p->pushLayer(new Azazel::TestLayer());
-   // p->pushLayer(new Azazel::GLLayer());
-    Azazel::Layer* l = new Azazel::BaseLayer();
-    p->pushLayer(l);
+    p->pushLayer(new Azazel::GLLayer());
+    p->pushLayer(new Azazel::BaseLayer());
     p->run();
     delete p;
+    delete Azazel::Input::getInput();
+    _CrtDumpMemoryLeaks();
     return 0;
 }

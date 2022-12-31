@@ -39,17 +39,12 @@ namespace Azazel
     private:
         std::unique_ptr<Shader> shader;
         std::unique_ptr<VertexArray> vertexArray;
-        std::unique_ptr<VertexBuffer> vertexBuffer;
         std::unique_ptr<IndexBuffer> indexBuffer;
         std::unique_ptr<Texture> texture;
         std::unique_ptr<Texture> face;
-        std::unique_ptr<Texture> fb;
-
-        std::unique_ptr<FrameBuffer> frameBuffer;
 
         std::unique_ptr<Shader> gridShader;
         std::unique_ptr<VertexArray> gridVertexArray;
-        std::unique_ptr<VertexBuffer> gridVertexBuffer;
         std::unique_ptr<IndexBuffer> gridIndexBuffer;
     };
 }

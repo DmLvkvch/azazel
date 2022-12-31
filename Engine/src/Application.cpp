@@ -6,12 +6,15 @@
 #include <imgui_impl_opengl3.h>
 #include <renderer/Render.h>
 #include <GLFW/glfw3.h>
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
 
 namespace Azazel
 {
 	Application* Application::app = nullptr;
 
-	Application* Application::createApplication()
+	Application* Application::getApplication()
 	{
 		if (!Application::app)
 		{
@@ -29,7 +32,7 @@ namespace Azazel
 
 	Application::~Application()
 	{
-
+		
 	}
 
 	void Application::onEvent(Event& e)
@@ -80,10 +83,5 @@ namespace Azazel
 	Window* Application::getWindow()
 	{
 		return this->window.get();
-	}
-
-	Application* Application::getApplication()
-	{
-		return Application::app;
 	}
 }

@@ -14,7 +14,7 @@ namespace Azazel
 		~GLESVertexBuffer();
 		void bind() const override;
 		void unbind() const override;
-        virtual void setLayout(const BufferLayout& bufferlayout) override;
-        virtual const BufferLayout& getBufferlayout() const override;
+        void setLayout(const BufferLayout& bufferlayout) override;
+        const BufferLayout& getBufferLayout() const override;
 	};
 }

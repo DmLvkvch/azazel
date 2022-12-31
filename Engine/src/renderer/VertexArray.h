@@ -1,7 +1,7 @@
 #pragma once
 
-#include "rhi/gl/GLESVertexBufferLayout.h"
 #include "VertexBuffer.h"
+#include <memory>
 
 namespace Azazel
 {
@@ -11,8 +11,10 @@ namespace Azazel
 		virtual ~VertexArray() {}
 		virtual void bind() const = 0;
 		virtual void unbind() const = 0;
-		virtual void addBuffer(VertexBuffer& vertexBuffer, const BufferLayout& layout) = 0;
+		virtual void addBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, const BufferLayout& layout) = 0;
 
 		static VertexArray* create();
+	protected:
+		std::vector<std::shared_ptr<VertexBuffer>> vertexBuffers;
 	};
 }
