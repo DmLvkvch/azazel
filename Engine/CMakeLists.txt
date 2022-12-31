@@ -37,7 +37,6 @@ file(GLOB_RECURSE ENGINE_HEADERS
     ${CMAKE_SOURCE_DIR}/src/*.hpp
 )
 
-
 add_executable(${PROJECT_NAME} "main.cpp" ${ENGINE_HEADERS} ${ENGINE_SRC})
 
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glfw stb_image glad glm::glm freetype IMGUI)

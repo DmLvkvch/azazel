@@ -38,6 +38,6 @@ namespace Azazel
         virtual void* getNativeWindow() = 0;
         static Window* create(const WindowProps& props = WindowProps());
     private:
-        static std::unique_ptr<Window> window;
+        static Window* window;
     };
 }
