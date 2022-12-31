@@ -3,6 +3,7 @@
 #include "Texture.h"
 
 #include "FrameBufferTarget.h"
+#include <memory>
 
 namespace Azazel
 {
@@ -13,8 +14,8 @@ namespace Azazel
 		virtual ~FrameBuffer();
 		virtual void bind() const = 0;
 		virtual void unbind() const = 0;
-		virtual void setDepthTarget(FrameBufferTarget* frameBufferTarget) = 0;
-		virtual void addColorAttachment(const Texture* texture, int slot = 0) = 0;
-		static FrameBuffer* create(Texture* texture, FrameBufferTarget* frameBufferTarget);
+		virtual void setDepthTarget(std::shared_ptr<FrameBufferTarget> depthTarget) = 0;
+		virtual void addColorAttachment(std::shared_ptr<Texture> texture, int slot = 0) = 0;
+		static FrameBuffer* create(std::shared_ptr<Texture> texture, std::shared_ptr<FrameBufferTarget> depthTarget);
 	};
 }

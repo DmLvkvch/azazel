@@ -9,9 +9,9 @@ namespace Azazel
 
     }
 
-    FrameBuffer* FrameBuffer::create(Texture* texture, FrameBufferTarget* frameBufferTarget)
+    FrameBuffer* FrameBuffer::create(std::shared_ptr<Texture> texture, std::shared_ptr<FrameBufferTarget> depthTarget)
     {
-        return new GLESFrameBuffer(texture, frameBufferTarget);
+        return new GLESFrameBuffer(texture, depthTarget);
     }
 
 }

@@ -5,14 +5,14 @@
 namespace Azazel
 {
 
-    Window* Window::window = nullptr;
+    std::unique_ptr<Window> Window::window = nullptr;
 
     Window* Window::create(const WindowProps& props)
     {
         if (!Window::window)
         {
-            Window::window = new WindowsWindow(props);
+            Window::window.reset(new WindowsWindow(props));
         }
-        return Window::window;
+        return Window::window.get();
     }
 }

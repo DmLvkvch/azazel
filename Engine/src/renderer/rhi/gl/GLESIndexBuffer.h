@@ -19,6 +19,6 @@ namespace Azazel
 
 		void unbind() const override;
 
-		int getElementCount() const override;
+		size_t getElementCount() const override;
 	};
 }
