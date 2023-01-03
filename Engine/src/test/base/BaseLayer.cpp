@@ -44,7 +44,7 @@ namespace Azazel
         shader->setMatrix4f("u_mvp", glm::mat4(1.0f));
         camera = OrthographicCamera(0, 960 * 2, 0, 540 * 2);
         texture.reset(Texture::create(TextureData(500, 500, ColorFormat(), 0xff0000ff)));
-        texture1.reset(Texture::create(TextureData(500, 500, ColorFormat(), 0xfffffff0)));
+        texture1.reset(Texture::create(TextureData(500, 500, ColorFormat(), 0x0000fff0)));
 
         transform.scale = { 200.0f, 200.0f, 0.0f };
         glEnable(GL_BLEND);

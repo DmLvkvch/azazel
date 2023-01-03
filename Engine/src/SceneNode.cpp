@@ -17,24 +17,18 @@ namespace Azazel
     void SceneNode::addNode(std::shared_ptr<SceneNode> sceneNode)
     {
         child.push_back(sceneNode);
+        sceneNode->parent = this;
     }
     
     bool SceneNode::removeNode(std::shared_ptr<SceneNode> sceneNode)
     {
-        std::vector<std::shared_ptr<SceneNode>>::iterator it = std::remove_if(child.begin(), child.end(), [&](std::shared_ptr<SceneNode> node) {
-            return false;
-        });
+
         return true;
     }
     
     bool SceneNode::removeNode(int index)
     {
         std::shared_ptr<SceneNode> node = nullptr;
-        if (index >= 0 && index < child.size())
-        {
-            node = child[index];
-            child.erase(child.begin() + index);
-        }
         return true;
     }
     
@@ -58,5 +52,28 @@ namespace Azazel
     {
         this->position.x = position.x;
         this->position.y = position.y;
+    }
+
+    glm::mat4 SceneNode::getLocalMatrix()
+    {
+        glm::mat4 localMatrix(1.0f);
+        localMatrix = glm::translate(glm::mat4(1.0f), position);
+        localMatrix *= glm::rotate(glm::mat4(1.0f), rotation.x, glm::vec3(0.0f, 0.0f, 1.0f));
+        localMatrix *= glm::scale(glm::mat4(1.0f), scale);
+        return localMatrix;
+    }
+
+    glm::mat4 SceneNode::updateMatrix()
+    {
+        glm::mat4 globalMatrix(1.0f);
+        if (parent != nullptr)
+        {
+            globalMatrix = parent->updateMatrix() * getLocalMatrix();
+        }
+        else
+        {
+            globalMatrix = getLocalMatrix();
+        }
+        return globalMatrix;
     }
 }

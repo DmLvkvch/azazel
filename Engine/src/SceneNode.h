@@ -1,8 +1,6 @@
 #pragma once
-#define _CRTDBG_MAP_ALLOC
 
 #include <vector>
-
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
@@ -27,6 +25,8 @@ namespace Azazel
         void setRotation(float rotation);
         void setPosition(glm::vec2 position);
         void draw();
+        glm::mat4 getLocalMatrix();
+        glm::mat4 updateMatrix();
     private:
         std::vector<std::shared_ptr<SceneNode>> child;
         SceneNode* parent;

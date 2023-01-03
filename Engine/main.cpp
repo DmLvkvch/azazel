@@ -1,6 +1,5 @@
 #define _CRTDBG_MAP_ALLOC
 #include<iostream>
-#include <crtdbg.h>
 #ifdef _DEBUG
 #define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
 #define new DEBUG_NEW
@@ -17,7 +16,6 @@
 #include "test/base/BaseLayer.h"
 const unsigned int SCR_WIDTH = 940;
 const unsigned int SCR_HEIGHT = 560;
-#include <renderer/Render.h>
 #include <Input.h>
 
 int main()
@@ -31,6 +29,5 @@ int main()
     p->run();
     delete p;
     delete Azazel::Input::getInput();
-    _CrtDumpMemoryLeaks();
     return 0;
 }

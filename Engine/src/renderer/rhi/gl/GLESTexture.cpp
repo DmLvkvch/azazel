@@ -31,7 +31,7 @@ namespace Azazel
         {
             data[i + 0] = r;
             data[i + 1] = g;
-            data[i + 2] = g;
+            data[i + 2] = b;
             data[i + 3] = a;
         }
         createTexture(data, width, height, 4);
@@ -46,14 +46,27 @@ namespace Azazel
         this->bpp = bpp;
         setTextureFilter(Texture::NEAREST);
         setTextureWrap(Texture::REPEAT);
-        if (data)
+
+        int format = 0;
+        int internalFormat = 0;
+        if (bpp == 3)
         {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            format = GL_RGB;
+            internalFormat = GL_RGB8;
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         }
         else
         {
-            std::cout << "Failed to load texture" << std::endl;
+            format = GL_RGBA;
+            internalFormat = GL_RGBA8;
         }
+        if (data == nullptr)
+        {
+            std::cout<<"Warning. Creating texture with no data provided"<<std::endl;
+        }
+        
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+
         delete[] data;
         unbind();
     }
