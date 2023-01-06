@@ -16,8 +16,6 @@ namespace Azazel
         void pushLayer(Layer* layer);
         void pushOverlay(Layer* layer);
         Window* getWindow();
-        
-        static Application* createApplication();
         static Application* getApplication();
     private:
         std::unique_ptr<Window> window;

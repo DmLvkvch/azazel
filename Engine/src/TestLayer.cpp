@@ -34,8 +34,7 @@ namespace Azazel
         vertexArray->addBuffer(vertexBuffer, bf);
 
         shader.reset(Shader::create(FileUtils::readFile("shaders/default.vert.glsl"), FileUtils::readFile("shaders/default.frag.glsl")));
-        texture1.reset(Texture::create(TextureUtils::loadTexture("images/awesomeface.png")));
-        texture2.reset(Texture::create(TextureData(500, 500, ColorFormat(), 0xff00ffff)));
+        texture.reset(Texture::create(TextureUtils::loadTexture("images/awesomeface.png")));
 
         shader->bind();
         shader->setMatrix4f("u_mvp", glm::mat4(1.0f));
@@ -51,14 +50,22 @@ namespace Azazel
     {
         shader->bind();
         shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * glm::scale(glm::mat4(1.0f), glm::vec3(200.0f, 200.0f, 0.0f)));
-        Render::getRenderer()->drawIndexed(*vertexArray, *indexBuffer, *shader, *texture1);
+        Render::getRenderer()->drawIndexed(*vertexArray, *indexBuffer, *shader, *texture);
         if (Input::getInput()->isKeyPressed(65))
         {
-            camera.move({ -1.0f, 0.0f });
+            camera.move({ -10.0f, 0.0f });
         }
         if (Input::getInput()->isKeyPressed(68))
         {
-            camera.move({ 1.0f, 0.0f });
+            camera.move({ 10.0f, 0.0f });
+        }
+        if (Input::getInput()->isKeyPressed(87))
+        {
+            camera.move({ 0.0f, 10.0f });
+        }
+        if (Input::getInput()->isKeyPressed(83))
+        {
+            camera.move({ 0.0f, -10.0f });
         }
     }
 

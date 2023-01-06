@@ -35,7 +35,6 @@ namespace Azazel
     std::pair<float, float> Input::getMousePosition()
     {
         auto window = static_cast<GLFWwindow*>(Application::getApplication()->getWindow()->getNativeWindow());
-        
         double x, y;
         glfwGetCursorPos(window, &x, &y);
         return { (float)x, (float)y };

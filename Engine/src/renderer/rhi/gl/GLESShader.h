@@ -12,7 +12,7 @@ namespace Azazel
         std::unordered_map<std::string, int> uniformLocationMap;
     public:
 
-        GLESShader(std::string vertexShader, std::string fragmentShader);
+        GLESShader(const std::string& vertexShader, const std::string& fragmentShader);
 
         ~GLESShader();
 
@@ -30,15 +30,13 @@ namespace Azazel
 
         void setInt(const std::string& name, int value) const override;
 
-        void setVec4f(const std::string& name, float f0, float f1, float f2, float f3) const override;
+	    void setVec4f(const std::string& name, const glm::vec4& vec4) const override;
 
         void setMatrix4f(const std::string& name, const glm::mat4& mvp) const override;
 
         void setVec3f(const std::string& name, const glm::vec3& vec3) const override;
 
-        void setVec3f(const std::string& name, float f0, float f1, float f2) const override;
-
-        void setVec2f(const std::string& name, float f0, float f1) const override;
+        void setVec2f(const std::string& name, const glm::vec2& vec2) const override;
 
     };
 }

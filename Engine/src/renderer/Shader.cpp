@@ -4,7 +4,7 @@
 
 namespace Azazel
 {
-    Shader::Shader(std::string vertexShader, std::string fragmentShader)
+    Shader::Shader(const std::string& vertexShader, const std::string& fragmentShader)
     {
 
     }
@@ -14,7 +14,7 @@ namespace Azazel
 
     }
 
-    Shader* Shader::create(std::string vertex, std::string fragment)
+    Shader* Shader::create(const std::string& vertex, const std::string& fragment)
     {
         return new GLESShader(vertex, fragment);
     }

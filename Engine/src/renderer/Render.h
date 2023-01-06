@@ -15,17 +15,16 @@ namespace Azazel
     class Render
     {
     private:
-        RenderApi* renderApi;
         static std::unique_ptr<Render> render;
-
         Camera camera;
-
+        int drawCalls;
     public:
         Render();
         virtual ~Render();
 
-        RenderApi* getRenderApi();
         static Render* getRenderer();
+
+        void init();
     
         void clear(bool color = true, bool depth = false, bool stencil = false);
 

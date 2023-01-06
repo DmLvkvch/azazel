@@ -49,6 +49,7 @@ namespace Azazel
         void onDetach() override;
         void onUpdate(float delta) override;
         void onEvent(Event& e) override;
+        void onImguiRender(float delta) override;
     private:
         void drawImgui();
         void updateBlendFunc();
@@ -61,7 +62,6 @@ namespace Azazel
         std::unique_ptr<IndexBuffer> indexBuffer;
         std::unique_ptr<VertexArray> vertexArray;
         Transform transform;
-        glm::vec2 mousePos;
-        bool rightButtonClicked = false;
+        glm::vec4 color;
     };
 }

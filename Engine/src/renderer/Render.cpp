@@ -1,8 +1,15 @@
 #include "Render.h"
 
+#include <iostream>
+
 namespace Azazel
 {
     std::unique_ptr<Render> Render::render(new Render());
+
+    Render* Render::getRenderer()
+    {
+        return render.get();
+    }
 
     Render::Render()
     {
@@ -13,17 +20,19 @@ namespace Azazel
     {
 
     }
-    
-    RenderApi* Render::getRenderApi()
-    {
-        return nullptr;
-    }
 
-    Render* Render::getRenderer()
+    void Render::init()
     {
-        return render.get();
+        const GLubyte* renderer = glGetString(GL_RENDERER );
+        const GLubyte* vendor = glGetString( GL_VENDOR );
+        const GLubyte* version = glGetString( GL_VERSION );
+        const GLubyte* glslVersion = glGetString( GL_SHADING_LANGUAGE_VERSION );
+
+        std::cout<<"GL Vendor: "<<vendor<<std::endl;
+        std::cout<<"GL Renderer: "<<renderer<<std::endl;
+        std::cout<<"GL Version: "<<version<<std::endl;
+        std::cout<<"GLSL Version: "<<glslVersion<<std::endl;
     }
-    
 
     void Render::setClearColor(const glm::vec4& color)
     {
@@ -42,6 +51,16 @@ namespace Azazel
         vertexArray.bind();
         indexBuffer.bind();
         glDrawElements(GL_TRIANGLES, indexBuffer.getElementCount() * sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+        drawCalls++;
+    }
+
+    void Render::beginScene()
+    {
+        drawCalls = 0;
+    }
+
+    void Render::endScene()
+    {
     }
 
     void Render::reset()

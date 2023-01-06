@@ -6,7 +6,6 @@
 #include <imgui_impl_opengl3.h>
 #include <renderer/Render.h>
 #include <GLFW/glfw3.h>
-#define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 
 namespace Azazel
@@ -27,6 +26,7 @@ namespace Azazel
         lastFrameTime = 0.0f;
         window = std::unique_ptr<Window>(Window::create());
         window->setEventCallback(std::bind(&Application::onEvent, this, std::placeholders::_1));
+        Render::getRenderer()->init();
     }
 
     Application::~Application()
@@ -54,17 +54,20 @@ namespace Azazel
             float t = (float) (glfwGetTime() * 1000);
             float delta = t - lastFrameTime;
             lastFrameTime = t;
+            Render::getRenderer()->beginScene();
             Render::getRenderer()->setClearColor({0.0f, 0.0f, 0.0f, 1.0f});
             Render::getRenderer()->clear(true, true, false);
             ImGui_ImplOpenGL3_NewFrame();
             ImGui::NewFrame();
-            for (Layer* layer : layerStack)
+            for (auto layer : layerStack)
             {
                 layer->onUpdate(delta);
+                layer->onImguiRender(delta);
             }
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             window->onUpdate(delta);
+            Render::getRenderer()->endScene();
         }
     }
 

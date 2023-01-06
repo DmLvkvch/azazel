@@ -20,7 +20,7 @@ namespace Azazel
             GEOMETRY
         };
 
-        Shader(std::string vertexShader, std::string fragmentShader);
+        Shader(const std::string& vertexShader, const std::string& fragmentShader);
 
         virtual ~Shader();
 
@@ -38,16 +38,14 @@ namespace Azazel
 
         virtual void setInt(const std::string& name, int value) const = 0;
 
-        virtual void setVec4f(const std::string& name, float f0, float f1, float f2, float f3) const = 0;
+	    virtual void setVec4f(const std::string& name, const glm::vec4& vec4) const  = 0;
 
         virtual void setMatrix4f(const std::string& name, const glm::mat4& mvp) const = 0;
 
         virtual void setVec3f(const std::string& name, const glm::vec3& vec3) const = 0;
 
-        virtual void setVec3f(const std::string& name, float f0, float f1, float f2) const = 0;
-    
-        virtual void setVec2f(const std::string& name, float x, float y) const = 0;
+        virtual void setVec2f(const std::string& name, const glm::vec2& vec2) const = 0;
 
-        static Shader* create(std::string vertexShader, std::string fragmentShader);
+        static Shader* create(const std::string& vertexShader, const std::string& fragmentShader);
     };
 }

@@ -174,13 +174,13 @@ namespace Azazel
         shader->setInt("u_texture_0", 0);
         shader->setInt("face", 1);
 
-        shader->setVec3f("material.ambient", 1.0f, 0.5f, 0.31f);
-        shader->setVec3f("material.diffuse", 1.0f, 0.5f, 0.31f);
-        shader->setVec3f("material.specular", 0.5f, 0.5f, 0.5f);
+        shader->setVec3f("material.ambient", {1.0f, 0.5f, 0.31f});
+        shader->setVec3f("material.diffuse", {1.0f, 0.5f, 0.31f});
+        shader->setVec3f("material.specular", {0.5f, 0.5f, 0.5f});
         shader->setFloat("material.shininess", 32.0f);
-        shader->setVec3f("light.ambient",  0.2f, 0.2f, 0.2f);
-        shader->setVec3f("light.diffuse",  0.5f, 0.5f, 0.5f);
-        shader->setVec3f("light.specular", 1.0f, 1.0f, 1.0f); 
+        shader->setVec3f("light.ambient",  {0.2f, 0.2f, 0.2f});
+        shader->setVec3f("light.diffuse",  {0.5f, 0.5f, 0.5f});
+        shader->setVec3f("light.specular", {1.0f, 1.0f, 1.0f}); 
 
         gridShader.reset(Shader::create(FileUtils::readFile("shaders/grid.vert.glsl"), FileUtils::readFile("shaders/grid.frag.glsl")));
         
@@ -212,10 +212,7 @@ namespace Azazel
     void GLLayer::onUpdate(float delta)
     {
         glm::vec3 lightPos {0.0f, 500.0f, 0.0f};
-        glm::vec3 lightColor;
-        lightColor.x = (float) glm::sin(glfwGetTime() * 2.0f + 0.2f);
-        lightColor.y = (float) glm::sin(glfwGetTime() * 0.7f + 0.2f);
-        lightColor.z = (float) glm::sin(glfwGetTime() * 1.3f  + 0.2f);
+        glm::vec3 lightColor {(float) glm::sin(glfwGetTime() * 2.0f + 0.2f), (float) glm::sin(glfwGetTime() * 2.0f + 0.2f), (float) glm::sin(glfwGetTime() * 1.3f  + 0.2f)};
         
         glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); 
         glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); 
@@ -231,7 +228,8 @@ namespace Azazel
         shader->setMatrix4f("u_mvp", mvp);
         shader->setMatrix4f("u_model", glm::mat4(1.0f));        
         shader->setVec3f("light.ambient", ambientColor);
-        shader->setVec3f("light.diffuse", diffuseColor)       ;        shader->setVec3f("u_lightPos", lightPos);
+        shader->setVec3f("light.diffuse", diffuseColor);
+        shader->setVec3f("u_lightPos", lightPos);
         vertexArray->bind();
         indexBuffer->bind();
         glDrawElements(GL_TRIANGLES, indexBuffer->getElementCount() * sizeof(unsigned int), GL_UNSIGNED_INT, 0);
@@ -239,15 +237,9 @@ namespace Azazel
     
     void GLLayer::onEvent(Event& e)
     {
-        std::cout<<e.toString()<<std::endl;
-        if (e.getEventType() == EventType::WindowResize)
-        {
-            const WindowResizeEvent& k = *(WindowResizeEvent*)&e;
-            glViewport(0, 0, k.getWidth(), k.getHeight());
-        }
         if (e.getEventType() == EventType::KeyPressed)
         {
-           const KeyPressedEvent& k = *(KeyPressedEvent*)&e;
+            auto& k = *(KeyPressedEvent*)&e;
             switch(k.getKeyCode())
             {
                 case 87:
@@ -293,14 +285,6 @@ namespace Azazel
                 }
             }
             std::cout<<k.getKeyCode()<<" keycode"<<std::endl;
-        }
-        if (e.getEventType() == EventType::MouseScrolled)
-        {
-             const MouseScrollEvent& k = *(MouseScrollEvent*)(Event*)&e;
-        }
-        if (e.getEventType() == EventType::MouseMoved)
-        {
-            const MouseMovedEvent& k = *(MouseMovedEvent*)(Event*)&e;
         }
     }
 }

@@ -13,6 +13,7 @@ namespace Azazel
         virtual void onAttach();
         virtual void onDetach();
         virtual void onUpdate(float delta);
+        virtual void onImguiRender(float delta);
         virtual void onEvent(Event& e);
         inline std::string getName() const
         {

@@ -42,11 +42,11 @@ namespace Azazel
         texture.reset(Texture::create(TextureUtils::loadTexture("images/awesomeface.png")));
         shader->bind();
         shader->setMatrix4f("u_mvp", glm::mat4(1.0f));
-        camera = OrthographicCamera(0, 960 * 2, 0, 540 * 2);
+        camera = OrthographicCamera(0, 960 * 1, 0, 540 );
         texture.reset(Texture::create(TextureData(500, 500, ColorFormat(), 0xff0000ff)));
         texture1.reset(Texture::create(TextureData(500, 500, ColorFormat(), 0x0000fff0)));
 
-        transform.scale = { 200.0f, 200.0f, 0.0f };
+        transform.scale = { 100.0f, 100.0f, 0.0f };
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
@@ -58,23 +58,33 @@ namespace Azazel
 
     void BaseLayer::onUpdate(float delta)
     {
-        drawImgui();
         shader->bind();
         shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * transform.getTransformMatrix());
-        Render::getRenderer()->drawIndexed(*vertexArray, *indexBuffer, *shader, *texture);        
+        Render::getRenderer()->drawIndexed(*vertexArray, *indexBuffer, *shader, *texture);
+
         shader->bind();
+        shader->setVec4f("u_color", color);
         shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * glm::translate(glm::mat4(1.0f), glm::vec3(400.0f, 400.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(200.0f, 200.0f, 1.0f)));
         Render::getRenderer()->drawIndexed(*vertexArray, *indexBuffer, *shader, *texture1);
+    }
+
+    void BaseLayer::onImguiRender(float delta)
+    {
+        drawImgui();
     }
 
     void BaseLayer::drawImgui()
     {
         ImGui::Begin("Transform");
+     
+     
+        ImGui::ColorEdit4("Texture Color", &color.x);
+
         ImGui::SliderFloat2("translation", &transform.position.x, 0, 600.0f);
         ImGui::SliderFloat("rotation", &transform.rotation.z, 0.0f, 360.0f);
         ImGui::SliderFloat2("scale", &transform.scale.x, 0.0f, 200.0f);
 
-        std::vector<std::string> listbox_items { "images/awesomeface.png", "images/cat.png", "images/grass.png", "images/flower.jpg", "images/small_image.png" };
+        std::vector<std::string> listbox_items { "images/awesomeface.png", "images/cat.png", "images/grass.png", "images/flower.jpg", "images/small_image.png", "images/blending_transparent_window.png"  };
         if (ImGui::ListBoxHeader("Textures", listbox_items.size()))
         {
             for (auto& item : listbox_items)
@@ -114,7 +124,7 @@ namespace Azazel
     void BaseLayer::updateBlendEquation()
     {
         std::vector<std::string> equations { "GL_FUNC_ADD", "GL_FUNC_SUBTRACT", "GL_FUNC_REVERSE_SUBTRACT", "GL_MIN", "GL_MAX"};
-        if (ImGui::ListBoxHeader("Blend euation", equations.size()))
+        if (ImGui::ListBoxHeader("Blend equation", equations.size()))
         {
             for (auto& item : equations)
             {
@@ -157,11 +167,6 @@ namespace Azazel
         {
             const WindowResizeEvent& k = *(WindowResizeEvent*)&e;
             glViewport(0, 0, k.getWidth(), k.getHeight());
-        }
-        if (e.getEventType() == EventType::MouseScrolled)
-        {
-            const MouseScrollEvent& k = *(MouseScrollEvent*)&e;
-            camera.zoom({k.getY() * 10.0f, k.getY() * 10.0f}, mousePos);
         }
         if (e.getEventType() == EventType::KeyPressed)
         {
