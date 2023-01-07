@@ -61,9 +61,14 @@ namespace Azazel
             ImGui::NewFrame();
             for (auto layer : layerStack)
             {
+                layer->onInputUpdate(delta);
                 layer->onUpdate(delta);
+            }
+            for (auto layer : layerStack)
+            {
                 layer->onImguiRender(delta);
             }
+
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             window->onUpdate(delta);

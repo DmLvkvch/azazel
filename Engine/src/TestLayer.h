@@ -28,6 +28,7 @@ namespace Azazel
 
         void onAttach() override;
         void onDetach() override;
+        void onInputUpdate(float delta) override;
         void onUpdate(float delta) override;
         void onEvent(Event& e) override;
  

@@ -23,10 +23,10 @@ namespace Azazel
 
     void Render::init()
     {
-        const GLubyte* renderer = glGetString(GL_RENDERER );
-        const GLubyte* vendor = glGetString( GL_VENDOR );
-        const GLubyte* version = glGetString( GL_VERSION );
-        const GLubyte* glslVersion = glGetString( GL_SHADING_LANGUAGE_VERSION );
+        const GLubyte* renderer = glGetString(GL_RENDERER);
+        const GLubyte* vendor = glGetString(GL_VENDOR);
+        const GLubyte* version = glGetString(GL_VERSION);
+        const GLubyte* glslVersion = glGetString(GL_SHADING_LANGUAGE_VERSION);
 
         std::cout<<"GL Vendor: "<<vendor<<std::endl;
         std::cout<<"GL Renderer: "<<renderer<<std::endl;
@@ -61,6 +61,7 @@ namespace Azazel
 
     void Render::endScene()
     {
+        std::cout << "DrawCalls: " << drawCalls << std::endl;
     }
 
     void Render::reset()

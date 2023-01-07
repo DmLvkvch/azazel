@@ -97,6 +97,14 @@ namespace Azazel
         }
     };
 
+#pragma pack(push, 1)
+    class Vertex2D
+    {
+        glm::vec2 position;
+        glm::vec4 color;
+        glm::vec2 texCoord;
+    };
+
     class SimpleVertex3D
     {
     public:
@@ -111,8 +119,9 @@ namespace Azazel
         glm::vec3 position;
         glm::vec3 normal;
         glm::vec2 texCoord;
-        glm::vec3 tangent = glm::vec3(0.0f);
-        glm::vec3 bitangent = glm::vec3(0.0f);
-        glm::vec3 color = glm::vec3(0.0f);
+        glm::vec3 tangent;
+        glm::vec3 bitangent;
+        glm::vec4 color;
     };
+#pragma pack(pop)
 }

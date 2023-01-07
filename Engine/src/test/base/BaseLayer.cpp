@@ -20,21 +20,21 @@ namespace Azazel
 
     void BaseLayer::onAttach()
     {
-        std::vector<float> vertices = {
+        std::vector<float> vertices {
                             0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
                             0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
                             -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
                             -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
                             };
 
-        std::vector<unsigned int> indices = {0, 1, 3, 1, 2, 3};
+        std::vector<unsigned int> indices {0, 1, 3, 1, 2, 3};
         std::shared_ptr<VertexBuffer> vertexBuffer (VertexBuffer::create((float*) vertices.data(), sizeof(float) * vertices.size()));
         indexBuffer.reset(IndexBuffer::create(indices.data(), 6));
         vertexArray.reset(VertexArray::create());
         BufferLayout bf = 
         {
             { ShaderDataType::Float3, "pos" },
-            { ShaderDataType::Float2, "texCoord"}
+            { ShaderDataType::Float2, "texCoord" }
         };
         vertexArray->addBuffer(vertexBuffer, bf);
 
@@ -156,55 +156,8 @@ namespace Azazel
         }
     }
 
-    void BaseLayer::updateBlendFunc()
-    {
-
-    }
-
     void BaseLayer::onEvent(Event& e)
     {
-        if (e.getEventType() == EventType::WindowResize)
-        {
-            const WindowResizeEvent& k = *(WindowResizeEvent*)&e;
-            glViewport(0, 0, k.getWidth(), k.getHeight());
-        }
-        if (e.getEventType() == EventType::KeyPressed)
-        {
-            const KeyPressedEvent& k = *(KeyPressedEvent*)&e;
-            int keycode = k.getKeyCode();
-            
-                if (keycode == 87)
-                {
-                    camera.move({0.0f, k.getRepeatCount() * 20.0f});
-                }
-                if (keycode == 83)
-                {
-                    camera.move({0.0f, -k.getRepeatCount() * 20.0f});
-                }
-                if (keycode == 68)
-                {
-                    camera.move({k.getRepeatCount() * 20.0f, 0.0f});
-                }
-                if (keycode == 65)
-                {
-                    camera.move({-k.getRepeatCount() * 20.0f, 0.0f});
-                }
-                if (keycode == 90)
-                {
-                    camera.move({0.0f, k.getRepeatCount() * 20.0f});
-                }
-                if (keycode == 88)
-                {
-                    camera.move({0.0f,-k.getRepeatCount() * 20.0f});
-                }
-                if (keycode == 69)
-                {
-                    camera.rotate(glm::radians(1.0f));
-                }
-                if (keycode == 81)
-                {
-                    camera.rotate(glm::radians(-1.0f));
-                }
-        }
+       
     }
 }

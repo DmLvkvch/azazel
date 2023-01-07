@@ -129,7 +129,7 @@ namespace Azazel
 
         std::vector<glm::vec3> normals;
 
-        for (int i = 0; i < vertices.size(); i+=3)
+        for (int i = 0; i < vertices.size(); i += 3)
         {
             glm::vec3& p1 = vertices[i + 0];
             glm::vec3& p2 = vertices[i + 1];
@@ -156,9 +156,9 @@ namespace Azazel
         std::shared_ptr<VertexBuffer> vertexBufferT (VertexBuffer::create((float*)texCoords.data(), sizeof(float) * texCoords.size() * 2));
         std::shared_ptr<VertexBuffer> vertexBufferN (VertexBuffer::create((float*)normals.data(), sizeof(float) * normals.size() * 3));
         this->vertexArray.reset(VertexArray::create());
-        BufferLayout vbo = {{
-            ShaderDataType::Float3, "position"
-        }};
+        BufferLayout vbo = {
+            { ShaderDataType::Float3, "position" }
+        };
         vertexArray->addBuffer(vertexBuffer, vbo);
         BufferLayout vbo1 = {{ ShaderDataType::Float2, "texCoord" }};
         vertexArray->addBuffer(vertexBufferT, vbo1);
@@ -184,7 +184,7 @@ namespace Azazel
 
         gridShader.reset(Shader::create(FileUtils::readFile("shaders/grid.vert.glsl"), FileUtils::readFile("shaders/grid.frag.glsl")));
         
-        std::vector<float> gridVerts = 
+        std::vector<float> gridVerts
         {
             0.0f,    0.0f, 0.0f,   0.0f, 0.0f,
             0.0f,    50.0f, 0.0f, 1.0f, 0.0f,
@@ -198,7 +198,7 @@ namespace Azazel
         std::shared_ptr<VertexBuffer> vertexBuffer1 (VertexBuffer::create((float*) gridVerts.data(), sizeof(float) * gridVerts.size() * 5));
 
         gridVertexArray.reset(VertexArray::create());
-        BufferLayout vbo11 = { { ShaderDataType::Float3, "positions" }, { ShaderDataType::Float2, "texCoord"}};
+        BufferLayout vbo11 = { { ShaderDataType::Float3, "positions" }, { ShaderDataType::Float2, "texCoord"} };
         gridVertexArray->addBuffer(vertexBuffer1, vbo11);
 
         orthographicCamera = OrthographicCamera(0, 1200, 0, 700);
@@ -220,7 +220,7 @@ namespace Azazel
         glm::mat4 mvp = orthographicCamera.getViewProjectionMatrix()  * glm::mat4(1.0f);
         gridShader->bind();
         gridShader->setMatrix4f("u_mvp", mvp);
-        Render::getRenderer()->drawIndexed(*gridVertexArray, *gridIndexBuffer, *gridShader, *texture);
+        Render::getRenderer()->drawIndexed(*gridVertexArray, *gridIndexBuffer, *gridShader, { *texture });
 
         texture->bind();
         face->bind(1);
@@ -237,54 +237,6 @@ namespace Azazel
     
     void GLLayer::onEvent(Event& e)
     {
-        if (e.getEventType() == EventType::KeyPressed)
-        {
-            auto& k = *(KeyPressedEvent*)&e;
-            switch(k.getKeyCode())
-            {
-                case 87:
-                {
-                    camera.moveForward(-k.getRepeatCount() * 10.0f);
-                    orthographicCamera.move({0.0f, k.getRepeatCount() * 10.0f});
 
-                    break;
-                }
-                case 83:
-                {
-                    camera.moveForward(k.getRepeatCount() * 10.0f);
-                    orthographicCamera.move({0.0f,-k.getRepeatCount() * 10.0f});
-
-                    break;
-                }
-                case 68:
-                {
-                    camera.moveRight(k.getRepeatCount() * 10.0f);
-                    orthographicCamera.move({k.getRepeatCount() * 10.0f, 0.0f});
-                    break;
-                }
-                case 65:
-                {
-                    camera.moveRight(-k.getRepeatCount() * 10.0);
-                    orthographicCamera.move({-k.getRepeatCount() * 10.0f, 0.0f});
-
-                    break;
-                }
-                case 90:
-                {
-                    camera.moveUp(k.getRepeatCount() * 10.0f);
-
-                    orthographicCamera.move({0.0f, k.getRepeatCount() * 10.0f});
-
-                    break;
-                }
-                case 88:
-                {
-                    orthographicCamera.move({0.0f,-k.getRepeatCount() * 10.0f});
-                    camera.moveUp(-k.getRepeatCount() * 10.0f);
-                    break;
-                }
-            }
-            std::cout<<k.getKeyCode()<<" keycode"<<std::endl;
-        }
     }
 }
