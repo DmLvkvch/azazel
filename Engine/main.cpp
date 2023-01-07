@@ -26,7 +26,7 @@ int main()
     p->pushLayer(new Azazel::TestLayer());
     p->pushLayer(new Azazel::GLLayer());
     p->pushLayer(new Azazel::BaseLayer());
-    p->run()
+    p->run();
     delete p;
     delete Azazel::Input::getInput();
     return 0;
