@@ -59,8 +59,5 @@ namespace Azazel
 
         void OrthographicCamera::zoom(const glm::vec2& zoom, const glm::vec2& origin)
         {
-            scale.x += zoom.x / 10.0f;
-            scale.y += zoom.y / 10.0f;
-            updateMatrix();
         }
 }

@@ -1,7 +1,3 @@
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-
 #include <iostream>
 #include <fstream>
 #include <streambuf>
@@ -28,7 +24,5 @@ int main()
     p->run();
     delete p;
     delete Azazel::Input::getInput();
-    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
-    _CrtDumpMemoryLeaks();
     return 0;
 }

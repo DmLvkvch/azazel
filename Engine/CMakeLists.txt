@@ -44,7 +44,10 @@ target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glfw stb_image glad gl
 file(REMOVE ${CMAKE_BINARY_DIR}/shaders)
 file(REMOVE ${CMAKE_BINARY_DIR}/images)
 file(REMOVE ${CMAKE_BINARY_DIR}/textures)
+file(REMOVE ${CMAKE_BINARY_DIR}/fonts)
+
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/res/shaders/ DESTINATION ${CMAKE_BINARY_DIR}/shaders)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/res/images/ DESTINATION ${CMAKE_BINARY_DIR}/images)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/res/textures/ DESTINATION ${CMAKE_BINARY_DIR}/textures)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/res/fonts/ DESTINATION ${CMAKE_BINARY_DIR}/fonts)
