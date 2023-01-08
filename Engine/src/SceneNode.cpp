@@ -57,7 +57,7 @@ namespace Azazel
     glm::mat4 SceneNode::getLocalMatrix()
     {
         glm::mat4 localMatrix(1.0f);
-        localMatrix = glm::translate(glm::mat4(1.0f), position);
+        localMatrix *= glm::translate(glm::mat4(1.0f), position);
         localMatrix *= glm::rotate(glm::mat4(1.0f), rotation.x, glm::vec3(0.0f, 0.0f, 1.0f));
         localMatrix *= glm::scale(glm::mat4(1.0f), scale);
         return localMatrix;

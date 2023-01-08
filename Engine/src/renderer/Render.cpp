@@ -54,6 +54,14 @@ namespace Azazel
         drawCalls++;
     }
 
+    void Render::drawArrays(const VertexArray& vertexArray, const Shader& shader, const Texture& texture)
+    {
+        texture.bind();
+        shader.bind();
+        vertexArray.bind();
+    }
+
+
     void Render::beginScene()
     {
         drawCalls = 0;

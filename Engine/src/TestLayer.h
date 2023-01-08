@@ -42,7 +42,7 @@ struct Character {
 };
 std::map<GLchar, Character> Characters;
 
-unsigned int VAO, VBO;
+    unsigned int VAO, VBO;
         OrthographicCamera camera;
         std::unique_ptr<Shader> shader;
         std::unique_ptr<VertexArray> vertexArray;

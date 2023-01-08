@@ -1,5 +1,4 @@
 #include "BaseLayer.h"
-#define _CRTDBG_MAP_ALLOC
 
 #include <TextureUtils.h>
 #include <FileUtils.h>

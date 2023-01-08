@@ -1,11 +1,15 @@
 #version 330 core
-layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>
-out vec2 TexCoords;
+layout (location = 0) in vec2 a_position;
+layout (location = 2) in vec2 a_texture_coord;
+
+out vec2 texCoord;
+out vec4 color;
 
 uniform mat4 u_mvp;
 
 void main()
 {
-    gl_Position = u_mvp * vec4(vertex.xy, 0.0, 1.0);
-    TexCoords = vertex.zw;
+    texCoord = a_texture_coord;
+    color = vec4(0.102, 0.8745, 0.7961, 1.0);
+    gl_Position = u_mvp * vec4(a_position, 0.0, 1.0);
 }

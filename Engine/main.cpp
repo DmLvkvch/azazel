@@ -8,6 +8,8 @@
 #include "GLLayer.h"
 #include "TestLayer.h"
 #include "test/base/BaseLayer.h"
+#include "test/base/TextLayerExample.h"
+
 #include <Input.h>
 
 const unsigned int SCR_WIDTH = 940;
@@ -21,6 +23,8 @@ int main()
     p->pushLayer(new Azazel::TestLayer());
     p->pushLayer(new Azazel::GLLayer());
     p->pushLayer(new Azazel::BaseLayer());
+    p->pushLayer(new Azazel::TextLayerExample());
+
     p->run();
     delete p;
     delete Azazel::Input::getInput();
