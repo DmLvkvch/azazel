@@ -28,7 +28,6 @@ namespace Azazel
             return;
         }
 
-	
         FT_Face face;
         if (FT_New_Face(ft, "fonts/Arial.ttf", 0, &face)) {
             std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
@@ -70,7 +69,9 @@ namespace Azazel
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*) 8);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
     }
@@ -103,7 +104,6 @@ namespace Azazel
     void TextLayerExample::onUpdate(float delta)
     {
         shader->bind();
-        shader->setVec3f("textColor", {glm::sin((float) glfwGetTime()), glm::sin((float) glfwGetTime()), 1.0f});
         shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 0.0f)));
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -111,7 +111,8 @@ namespace Azazel
         glBindVertexArray(VAO);
 
         std::string text = "DIMA DIMA DIMA";
-        float x = 0.0f, y = 0.0f;
+        float x = 0.0f;
+        float y = 0.0f;
         float scale = 1.0f;
         for (auto c : text) 
         {
@@ -134,7 +135,6 @@ namespace Azazel
             glBindTexture(GL_TEXTURE_2D, ch.textureID);
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
             glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
             glDrawArrays(GL_TRIANGLES, 0, 6);
             x += (ch.advance >> 6) * scale;
         }

@@ -71,7 +71,7 @@ namespace Azazel
 
         int getComponentCount() const
         {
-            switch(type)
+            switch (type)
             {
                 case ShaderDataType::Float:  return 1;
                 case ShaderDataType::Float2: return 2;

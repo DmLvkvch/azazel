@@ -6,7 +6,6 @@
 namespace Azazel
 {
     GLESVertexArray::GLESVertexArray()
-    : lastIndex(0)
     {
         glGenVertexArrays(1, &rendererId);
     }
@@ -27,7 +26,8 @@ namespace Azazel
             const BufferElement& element = elements[i];
             glEnableVertexAttribArray(i);
             offset = element.offset;
-            glVertexAttribPointer(i, element.getComponentCount(), shaderTypeToGLType(element.type), element.normalized ? GL_TRUE : GL_FALSE,
+            glVertexAttribPointer(i, element.getComponentCount(), shaderTypeToGLType(element.type), 
+                                    element.normalized ? GL_TRUE : GL_FALSE,
                                     layout.getStride(), reinterpret_cast<const void *>(offset));
         }
         vertexBuffer->unbind();

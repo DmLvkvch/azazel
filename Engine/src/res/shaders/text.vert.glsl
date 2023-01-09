@@ -1,6 +1,6 @@
 #version 330 core
 layout (location = 0) in vec2 a_position;
-layout (location = 2) in vec2 a_texture_coord;
+layout (location = 1) in vec2 a_texture_coord;
 
 out vec2 texCoord;
 out vec4 color;
