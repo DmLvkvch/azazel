@@ -16,3 +16,7 @@
 [submodule "Engine/vendor/SDL"]
 	path = Engine/vendor/SDL
 	url = https://github.com/libsdl-org/SDL
+
+[submodule "Engine/vendor/assimp"]
+	path = Engine/vendor/assimp
+	url = https://github.com/assimp/assimp

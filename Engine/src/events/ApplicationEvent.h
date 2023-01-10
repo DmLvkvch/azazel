@@ -6,9 +6,6 @@ namespace Azazel
 {
     class WindowResizeEvent : public Event
     {
-    private:
-        int width;
-        int height;
     public:
         WindowResizeEvent(int width, int height)
         :width(width), height(height)
@@ -36,6 +33,9 @@ namespace Azazel
         {
             return height;
         }
+    private:
+        int width;
+        int height;
     };
 
     class WindowCloseEvent : public Event

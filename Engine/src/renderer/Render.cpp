@@ -28,9 +28,9 @@ namespace Azazel
         const GLubyte* version = glGetString(GL_VERSION);
         const GLubyte* glslVersion = glGetString(GL_SHADING_LANGUAGE_VERSION);
 
-        std::cout<<"GL Vendor: "<<vendor<<std::endl;
-        std::cout<<"GL Renderer: "<<renderer<<std::endl;
-        std::cout<<"GL Version: "<<version<<std::endl;
+        std::cout<<"GL Vendor:    "<<vendor<<std::endl;
+        std::cout<<"GL Renderer:  "<<renderer<<std::endl;
+        std::cout<<"GL Version:   "<<version<<std::endl;
         std::cout<<"GLSL Version: "<<glslVersion<<std::endl;
     }
 
@@ -41,7 +41,7 @@ namespace Azazel
 
     void Render::clear(bool color, bool depth, bool stencil)
     {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 
     void Render::drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture)

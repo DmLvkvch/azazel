@@ -12,6 +12,7 @@ include_directories ("vendor/glad/include"
                      "vendor/glm"
                      "vendor/freetype"
                      "vendor/imgui"
+                     "vendor/assimp"
                      "vendor/imgui/backends"
                      "vendor"
                      "src")
@@ -21,6 +22,7 @@ add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/glm)
 add_subdirectory(vendor/stb_image)
 add_subdirectory(vendor/freetype)
+add_subdirectory(vendor/assimp)
 add_subdirectory(vendor)
 
 if(MSVC)
@@ -39,7 +41,7 @@ file(GLOB_RECURSE ENGINE_HEADERS
 
 add_executable(${PROJECT_NAME} "main.cpp" ${ENGINE_HEADERS} ${ENGINE_SRC})
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glfw stb_image glad glm::glm freetype IMGUI)
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glfw stb_image glad glm::glm freetype IMGUI assimp)
 
 file(REMOVE ${CMAKE_BINARY_DIR}/shaders)
 file(REMOVE ${CMAKE_BINARY_DIR}/images)

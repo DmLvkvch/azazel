@@ -15,12 +15,12 @@ namespace Azazel
             this->eventType = EventType::MouseMoved;
         }
 
-        inline float getX() const
+        const inline float getX() const
         {
             return mouseX;
         }
 
-        inline float getY() const
+        const inline float getY() const
         {
             return mouseY;
         }
@@ -59,12 +59,12 @@ namespace Azazel
             return "Mouse scroll: " + std::to_string(offsetX) + "offsetY: " + std::to_string(offsetY);
         }
 
-        inline float getX() const
+        const inline float getX() const
         {
             return offsetX;
         }
 
-        inline float getY() const
+        const inline float getY() const
         {
             return offsetY;
         }

@@ -18,7 +18,7 @@ namespace Azazel
     void TextLayerExample::onAttach()
     {
 
-        camera = OrthographicCamera(0, 940, 0, 560);
+        camera = OrthographicCamera(0, 940 / 2, 0, 560 / 2);
         shader.reset(Shader::create(FileUtils::readFile("shaders/text.vert.glsl"), FileUtils::readFile("shaders/text.frag.glsl")));
 
         FT_Library ft;
