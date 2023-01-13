@@ -1,5 +1,4 @@
 #include "WindowsWindow.h"
-#define _CRTDBG_MAP_ALLOC
 
 #include <iostream>
 #include "events/ApplicationEvent.h"

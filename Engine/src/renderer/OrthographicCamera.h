@@ -12,7 +12,8 @@ namespace Azazel
     {
     public:
         OrthographicCamera();
-        OrthographicCamera(float left, float right, float bottom, float top);
+        OrthographicCamera(float width, float height);
+        OrthographicCamera(float left, float right, float bottom, float top, float near = -1.0f, float far = 1.0f);
         ~OrthographicCamera();
 
         void setPosition(const glm::vec2& position);
@@ -33,6 +34,7 @@ namespace Azazel
         glm::mat4 projectionMatrix;
         glm::mat4 viewProjectionMatrix;
 
+        float zoomFactor;
         glm::vec3 scale;
         glm::vec4 ortho;
         glm::vec3 position;

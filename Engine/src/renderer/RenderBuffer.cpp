@@ -11,16 +11,7 @@ namespace Azazel
 
     RenderBuffer::~RenderBuffer()
     {
-    }
-
-    int RenderBuffer::getWidth() const
-    {
-        return 0;
-    }
-
-    int RenderBuffer::getHeight() const
-    {
-        return 0;
+        
     }
 
     int RenderBuffer::getRendererId() const

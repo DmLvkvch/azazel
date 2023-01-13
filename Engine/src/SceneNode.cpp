@@ -54,6 +54,16 @@ namespace Azazel
         this->position.y = position.y;
     }
 
+    void SceneNode::onUpdate(float delta)
+    {
+        
+    }
+
+    void SceneNode::draw()
+    {
+
+    }
+
     glm::mat4 SceneNode::getLocalMatrix()
     {
         glm::mat4 localMatrix(1.0f);

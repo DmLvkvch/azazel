@@ -186,10 +186,10 @@ namespace Azazel
         
         std::vector<float> gridVerts
         {
-            0.0f,    0.0f, 0.0f,   0.0f, 0.0f,
-            0.0f,    50.0f, 0.0f, 1.0f, 0.0f,
+            0.0f,   0.0f,  0.0f, 0.0f, 0.0f,
+            0.0f,   50.0f, 0.0f, 1.0f, 0.0f,
             100.0f, 50.0f, 0.0f, 1.0f, 1.0f,
-            100.0f, 0.0f, 0.0f,   0.0f, 1.0f
+            100.0f, 0.0f,  0.0f, 0.0f, 1.0f
         };
 
         unsigned int gridInds[6] = {0, 1, 2, 0, 2, 3};

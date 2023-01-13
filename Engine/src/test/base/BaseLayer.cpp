@@ -48,6 +48,7 @@ namespace Azazel
         transform.scale = { 100.0f, 100.0f, 0.0f };
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        color = {0.0f, 0.0f, 0.0f, 1.0f};
     }
 
     void BaseLayer::onDetach()
@@ -62,7 +63,6 @@ namespace Azazel
         Render::getRenderer()->drawIndexed(*vertexArray, *indexBuffer, *shader, *texture);
 
         shader->bind();
-        shader->setVec4f("u_color", color);
         shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * glm::translate(glm::mat4(1.0f), glm::vec3(400.0f, 400.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(200.0f, 200.0f, 1.0f)));
         Render::getRenderer()->drawIndexed(*vertexArray, *indexBuffer, *shader, *texture1);
     }
@@ -75,7 +75,6 @@ namespace Azazel
     void BaseLayer::drawImgui()
     {
         ImGui::Begin("Transform");
-     
      
         ImGui::ColorEdit4("Texture Color", &color.x);
 
@@ -95,27 +94,6 @@ namespace Azazel
             }
             ImGui::ListBoxFooter();
         }
-
-        std::vector<std::string> textures_items { "Linear", "Nearest"};
-        if (ImGui::ListBoxHeader("Texture params", listbox_items.size()))
-        {
-            for (auto& item : textures_items)
-            {
-                if (ImGui::Selectable(item.c_str()))
-                {
-                    if (item == "Linear")
-                    {
-                        texture->setTextureFilter(Texture::TextureFilter::LINEAR);
-                    }
-                    else
-                    {
-                        texture->setTextureFilter(Texture::TextureFilter::NEAREST);
-                    }
-                }
-            }
-            ImGui::ListBoxFooter();
-        }
-
         updateBlendEquation();
         ImGui::End();
     }
@@ -131,23 +109,23 @@ namespace Azazel
                 {
                     if (item == "GL_FUNC_ADD")
                     {
-                        glBlendEquation(GL_FUNC_ADD);
+                        Render::getRenderer()->setBlendEquation(BlendEquation::Add);
                     }
                     else if (item == "GL_FUNC_SUBTRACT")
                     {
-                        glBlendEquation(GL_FUNC_SUBTRACT);
+                        Render::getRenderer()->setBlendEquation(BlendEquation::Subtract);
                     }
                     else if (item == "GL_FUNC_REVERSE_SUBTRACT")
                     {
-                        glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
+                        Render::getRenderer()->setBlendEquation(BlendEquation::ReverseSubtract);
                     }
                     else if (item == "GL_MIN")
                     {
-                        glBlendEquation(GL_MIN);
+                        Render::getRenderer()->setBlendEquation(BlendEquation::Min);
                     }
                     else if (item == "GL_MAX")
                     {
-                        glBlendEquation(GL_MAX);
+                        Render::getRenderer()->setBlendEquation(BlendEquation::Max);
                     }
                 }
             }

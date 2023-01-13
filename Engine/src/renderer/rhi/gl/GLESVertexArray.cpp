@@ -33,6 +33,7 @@ namespace Azazel
         vertexBuffer->unbind();
         unbind();
         vertexBuffers.push_back(vertexBuffer);
+        size += vertexBuffer->getBufferLayout().getSize();
     }
 
     void GLESVertexArray::bind() const

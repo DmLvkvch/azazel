@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "ConvertUtils.h"
+
 namespace Azazel
 {
     std::unique_ptr<Render> Render::render(new Render());
@@ -23,9 +25,9 @@ namespace Azazel
 
     void Render::init()
     {
-        const GLubyte* renderer = glGetString(GL_RENDERER);
-        const GLubyte* vendor = glGetString(GL_VENDOR);
-        const GLubyte* version = glGetString(GL_VERSION);
+        const GLubyte* renderer    = glGetString(GL_RENDERER);
+        const GLubyte* vendor      = glGetString(GL_VENDOR);
+        const GLubyte* version     = glGetString(GL_VERSION);
         const GLubyte* glslVersion = glGetString(GL_SHADING_LANGUAGE_VERSION);
 
         std::cout<<"GL Vendor:    "<<vendor<<std::endl;
@@ -44,6 +46,76 @@ namespace Azazel
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 
+    void Render::setViewport(int x, int y, int width, int height)
+    {
+        glViewport(x, y, width, height);
+    }
+
+    void Render::setScissor(bool enable)
+    {
+        if (enable)
+        {
+            glEnable(GL_SCISSOR_TEST);
+        }
+        else
+        {
+            glDisable(GL_SCISSOR_TEST);
+        }
+    }
+    
+    void Render::setScissor(int x, int y, int width, int height)
+    {
+        glScissor(x, y, width, height);
+    }
+
+    void Render::setBackFaceCulling(bool enable)
+    {
+        if (enable)
+        {
+            glEnable(GL_CULL_FACE);
+        }
+        else
+        {
+            glDisable(GL_CULL_FACE);
+        }
+    }
+
+    void Render::setDepthTest(bool enable)
+    {
+        if (enable)
+        {
+            glEnable(GL_DEPTH_TEST);
+        }
+        else
+        {
+            glDisable(GL_DEPTH_TEST);
+        }
+    }
+
+    void Render::setStencilTest(bool enable)
+    {
+        if (enable)
+        {
+            glEnable(GL_STENCIL);
+        }
+        else
+        {
+            glDisable(GL_STENCIL);
+        }
+    }
+
+    void Render::setBlend(bool enable)
+    {
+        if (enable)
+        {
+            glEnable(GL_BLEND);
+        }
+        else
+        {
+            glDisable(GL_BLEND);
+        }
+    }
+
     void Render::drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture)
     {
         texture.bind();
@@ -56,9 +128,6 @@ namespace Azazel
 
     void Render::drawArrays(const VertexArray& vertexArray, const Shader& shader, const Texture& texture)
     {
-        texture.bind();
-        shader.bind();
-        vertexArray.bind();
     }
 
 
@@ -69,7 +138,6 @@ namespace Azazel
 
     void Render::endScene()
     {
-        std::cout << "DrawCalls: " << drawCalls << std::endl;
     }
 
     void Render::reset()
@@ -77,13 +145,23 @@ namespace Azazel
         glEnable(GL_BLEND);
     }
 
-    void Render::setBlendFunc()
+    void Render::setBlendFunc(BlendFunction sFactor, BlendFunction dFactor)
+    {
+        glBlendFunc(convertBlendFunction(sFactor), convertBlendFunction(dFactor));
+    }
+
+    void Render::setBlendEquation(BlendEquation blendEquation)
+    {
+        glBlendEquation(convertBlendEquation(blendEquation));
+    }
+
+    void Render::saveState()
     {
 
     }
-
-    void Render::setBlendEquation()
+    
+    void Render::popState()
     {
-    }
 
+    }
 }

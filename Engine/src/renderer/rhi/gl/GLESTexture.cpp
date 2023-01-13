@@ -44,8 +44,8 @@ namespace Azazel
         this->width = width;
         this->height = height;
         this->bpp = bpp;
-        setTextureFilter(Texture::NEAREST);
-        setTextureWrap(Texture::REPEAT);
+        setTextureFilter(Texture::Nearest);
+        setTextureWrap(Texture::Repeat);
 
         int format = 0;
         int internalFormat = 0;
@@ -91,11 +91,11 @@ namespace Azazel
     {
         switch (textureFilter)
         {
-            case Texture::LINEAR:
+            case Texture::Linear:
             {
                 return GL_LINEAR;
             }
-            case Texture::NEAREST:
+            case Texture::Nearest:
             {
                 return GL_NEAREST;
             }
@@ -108,19 +108,19 @@ namespace Azazel
     {
         switch (textureWrap)
         {
-            case Texture::REPEAT:
+            case Texture::Repeat:
             {
                 return GL_REPEAT;
             }
-            case Texture::MIRRORED_REPEAT:
+            case Texture::MirroredRepeat:
             {
                 return GL_MIRRORED_REPEAT;
             }
-            case Texture::CLAMP_TO_EDGE:
+            case Texture::ClampToEdge:
             {
                 return GL_CLAMP_TO_EDGE;
             }
-            case Texture::CLAMP_TO_BORDER:
+            case Texture::ClampToBorder:
             {
                 return GL_CLAMP_TO_BORDER;
             }

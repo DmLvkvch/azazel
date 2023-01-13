@@ -1,5 +1,5 @@
 #include "OrthographicCamera.h"
-
+#include <iostream>
 namespace Azazel
 {
         OrthographicCamera::OrthographicCamera()
@@ -8,14 +8,20 @@ namespace Azazel
 
         }
 
-        OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top)
-        : position(0.0f, 0.0f, 0.0f), rotation(0.0f)
+        OrthographicCamera::OrthographicCamera(float width, float height)
+        : OrthographicCamera(-width / 2.0f, width / 2.0f, -height / 2.0f, height / 2.0f, -1.0f, 1.0f)
         {
-            this->projectionMatrix = glm::ortho(left, right, bottom, top, -1000.0f, 1000.0f);
+
+        }
+
+        OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top, float near, float far)
+        {
+            this->projectionMatrix = glm::ortho(left, right , bottom, top, near, far);
             this->rotation = 0.0;
             this->position = glm::vec3 {0.0f, 0.0f, 0.0f};
             this->ortho = {left, right, bottom, top};
             this->scale = {1.0, 1.0, 1.0};
+            this->zoomFactor = 1.0f;
             updateMatrix();
         }
         
@@ -24,6 +30,7 @@ namespace Azazel
             glm::mat4 transform = glm::translate(glm::mat4(1.0), position);
             transform = glm::rotate(transform, rotation, glm::vec3{0.0f, 0.0f, 1.0f});
             viewMatrix = glm::inverse(transform);
+            this->projectionMatrix = glm::ortho(zoomFactor * ortho.x, zoomFactor * ortho.y, zoomFactor * ortho.z, zoomFactor * ortho.w, -1.0f, 1.0f);
 
             viewProjectionMatrix = projectionMatrix * viewMatrix;
         }
@@ -59,5 +66,7 @@ namespace Azazel
 
         void OrthographicCamera::zoom(const glm::vec2& zoom, const glm::vec2& origin)
         {
+            std::cout<<zoomFactor<<std::endl;
+            updateMatrix();
         }
 }

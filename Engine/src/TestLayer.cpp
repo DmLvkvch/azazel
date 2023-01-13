@@ -43,7 +43,7 @@ namespace Azazel
 
         shader->bind();
         shader->setMatrix4f("u_mvp", glm::mat4(1.0f));
-        camera = OrthographicCamera(0, 940, 0, 560);
+        camera = OrthographicCamera(940, 560);
     }
 
     void TestLayer::onDetach()
@@ -74,10 +74,8 @@ namespace Azazel
     void TestLayer::onUpdate(float delta)
     {
         shader->bind();
-
         shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * glm::scale(glm::mat4(1.0f), glm::vec3(100.0f, 100.0f, 0.0f)));
         Render::getRenderer()->drawIndexed(*vertexArray, *indexBuffer, *shader, *texture);
-        shader->bind();
     }
 
     void TestLayer::onEvent(Event& e)

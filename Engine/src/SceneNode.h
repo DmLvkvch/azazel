@@ -24,6 +24,7 @@ namespace Azazel
         void setScale(glm::vec2 scale);
         void setRotation(float rotation);
         void setPosition(glm::vec2 position);
+        void onUpdate(float delta);
         void draw();
         glm::mat4 getLocalMatrix();
         glm::mat4 updateMatrix();

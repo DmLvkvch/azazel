@@ -22,7 +22,7 @@ namespace Azazel
     {
         auto window = static_cast<GLFWwindow*>(Application::getApplication()->getWindow()->getNativeWindow());
         int state = glfwGetKey(window, keycode);
-        return state == GLFW_PRESS || state == GLFW_REPEAT;
+        return state == GLFW_PRESS;
     }
 
     bool Input::isMouseButtonPressed(int button)
@@ -32,12 +32,21 @@ namespace Azazel
         return state == GLFW_PRESS;
     }
 
+    bool Input::IsIsKeyHeld(int keycode)
+    {
+        auto window   = static_cast<GLFWwindow*>(Application::getApplication()->getWindow()->getNativeWindow());
+        int state = glfwGetKey(window, keycode);
+        return state == GLFW_PRESS || state == GLFW_REPEAT;
+    }
+
+
     std::pair<float, float> Input::getMousePosition()
     {
         auto window = static_cast<GLFWwindow*>(Application::getApplication()->getWindow()->getNativeWindow());
-        double x, y;
+        double x = 0.0;
+        double y = 0.0;
         glfwGetCursorPos(window, &x, &y);
-        return { (float)x, (float)y };
+        return { (float) x, (float) y };
     }
 
     Input* Input::getInput()

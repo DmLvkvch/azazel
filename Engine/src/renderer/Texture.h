@@ -7,27 +7,55 @@ namespace Azazel
 {
     class Texture
     {
-    private:
-        unsigned char* data;
-        int width;
-        int height;
-        ColorFormat colorFormat;
-        TextureData textureData;
-        std::string label = "DEFAULT_TEXTURE";
     public:
 
         enum TextureFilter
         {
-            LINEAR,
-            NEAREST
+            Linear,
+            Nearest
         };
 
         enum TextureWrap
         {
-            REPEAT,
-            MIRRORED_REPEAT,
-            CLAMP_TO_EDGE,
-            CLAMP_TO_BORDER
+            Repeat,
+            MirroredRepeat,
+            ClampToEdge,
+            ClampToBorder
+        };
+
+        enum class Type
+        {
+            COLOR_1D = 0,
+            COLOR_2D,
+            COLOR_3D,
+            COLOR_RT,
+            DEPTH,
+            CUBEMAP
+        };
+
+        enum class Format
+        {
+            R8,
+            R32_INT,
+            R32_UINT,
+            R32F,
+            RG8,
+            RGB8,
+            RGBA8,
+            RGB16,
+            RGBA16,
+            RGB32,
+            RGBA32,
+            RGBA32F,
+            RGB,
+            RGBA,
+            DEPTH16_UNORM,
+            DEPTH32F,
+            STENCIL,
+            DEPTH_STENCIL,
+            SCREEN,
+            BGRA8_UNORM,
+            NONE
         };
 
         Texture() = default;
@@ -38,15 +66,29 @@ namespace Azazel
         
         virtual ~Texture();
     
-        int getWidth();
+        int getWidth()
+        {
+            return width;
+        }
 
-        int getHeight();
+        int getHeight()
+        {
+            return height;
+        }
 
-        ColorFormat getColorFormat();
+        Format getColorFormat()
+        {
+            return Format::RGBA32;
+        }
 
         inline std::string getLabel() const
         {
             return label;
+        }
+
+        inline void setLabel(std::string label)
+        {
+            this->label = label;
         }
 
         // RENDER
@@ -59,6 +101,12 @@ namespace Azazel
         // STATIC
         static Texture* create(const TextureData& textureData);
         static Texture* create(int width, int height, int color);
-
+    private:
+        unsigned char* data;
+        int width;
+        int height;
+        ColorFormat colorFormat;
+        TextureData textureData;
+        std::string label = "DEFAULT_TEXTURE";
     };
 }

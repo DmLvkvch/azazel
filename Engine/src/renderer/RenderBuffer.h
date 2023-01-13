@@ -9,8 +9,17 @@ namespace Azazel
         virtual ~RenderBuffer();
         virtual void bind() const = 0;
         virtual void unbind() const = 0;
-        int getWidth() const;
-        int getHeight() const;
+        
+        int getWidth()
+        {
+            return width;
+        }
+        
+        int getHeight()
+        {
+            return height;
+        }
+
         virtual int getRendererId() const;
         static RenderBuffer* create(int width, int height);
     private:

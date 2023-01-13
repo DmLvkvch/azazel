@@ -18,7 +18,7 @@ namespace Azazel
     void TextLayerExample::onAttach()
     {
 
-        camera = OrthographicCamera(0, 940 / 2, 0, 560 / 2);
+        camera = OrthographicCamera(940, 560);
         shader.reset(Shader::create(FileUtils::readFile("shaders/text.vert.glsl"), FileUtils::readFile("shaders/text.frag.glsl")));
 
         FT_Library ft;
@@ -144,6 +144,10 @@ namespace Azazel
 
     void TextLayerExample::onEvent(Event& e)
     {
-        
+        if (e.getEventType() == EventType::MouseScrolled)
+        {
+            MouseScrollEvent& k = *(MouseScrollEvent*)(&e);
+            camera.zoom({ k.getX(), k.getY() });
+        }
     }
 }

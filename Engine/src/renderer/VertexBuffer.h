@@ -111,6 +111,11 @@ namespace Azazel
             return stride;
         }
 
+        inline const int getSize() const
+        {
+            return size;
+        }
+
     private:
         void calculateOffsetAndStride()
         {
@@ -121,11 +126,13 @@ namespace Azazel
                 element.offset = offset;
                 offset += element.size;
                 stride += element.size;
+                size += element.size;
             }
         }
     private:
         std::vector<BufferElement> elements;
         int stride = 0;
+        int size = 0;
     };
 
     class VertexBuffer
