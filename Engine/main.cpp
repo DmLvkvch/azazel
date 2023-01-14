@@ -1,4 +1,3 @@
-
 #include "Application.h"
 #include "imgui/ImGuiLayer.h"
 #include "GLLayer.h"

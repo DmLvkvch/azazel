@@ -17,6 +17,8 @@ include_directories ("vendor/glad/include"
                      "vendor"
                      "src")
 
+
+OPTION ( ASSIMP_WARNINGS_AS_ERRORS "Treat all warnings as errors." OFF)
 add_subdirectory(vendor/glad)
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/glm)
@@ -41,7 +43,7 @@ file(GLOB_RECURSE ENGINE_HEADERS
 
 add_executable(${PROJECT_NAME} "main.cpp" ${ENGINE_HEADERS} ${ENGINE_SRC})
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glfw stb_image glad glm::glm freetype IMGUI assimp)
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glfw assimp stb_image glad glm::glm freetype IMGUI)
 
 file(REMOVE ${CMAKE_BINARY_DIR}/shaders)
 file(REMOVE ${CMAKE_BINARY_DIR}/images)
