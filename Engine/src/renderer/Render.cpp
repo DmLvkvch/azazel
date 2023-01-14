@@ -8,7 +8,7 @@ namespace Azazel
 {
     std::unique_ptr<Render> Render::render(new Render());
 
-    Render* Render::getRenderer()
+    Render* Render::getRender()
     {
         return render.get();
     }
@@ -34,6 +34,7 @@ namespace Azazel
         std::cout<<"GL Renderer:  "<<renderer<<std::endl;
         std::cout<<"GL Version:   "<<version<<std::endl;
         std::cout<<"GLSL Version: "<<glslVersion<<std::endl;
+        glEnable(GL_MULTISAMPLE);  
     }
 
     void Render::setClearColor(const glm::vec4& color)
@@ -142,7 +143,6 @@ namespace Azazel
 
     void Render::reset()
     {
-        glEnable(GL_BLEND);
     }
 
     void Render::setBlendFunc(BlendFunction sFactor, BlendFunction dFactor)

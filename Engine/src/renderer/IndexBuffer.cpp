@@ -1,6 +1,6 @@
 #include "IndexBuffer.h"
 
-#include "rhi/gl/GLESIndexBuffer.h"
+#include <renderer/rhi/gl/GLESIndexBuffer.h>
 
 namespace Azazel
 {

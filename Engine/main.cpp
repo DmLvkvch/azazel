@@ -12,9 +12,6 @@
 
 #include <Input.h>
 
-const unsigned int SCR_WIDTH = 940;
-const unsigned int SCR_HEIGHT = 560;
-
 int main()
 {
     // mem leak here
@@ -27,6 +24,5 @@ int main()
 
     p->run();
     delete p;
-    delete Azazel::Input::getInput();
     return 0;
 }

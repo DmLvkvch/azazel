@@ -19,10 +19,6 @@ namespace Azazel
         {
             None = 0, OpenGL = 1
         };
-
-        RenderApi();
-
-        virtual ~RenderApi();
         
         const inline static API getAPI()
         {

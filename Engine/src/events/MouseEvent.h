@@ -30,7 +30,7 @@ namespace Azazel
             return EventType::MouseMoved;
         }
         
-        std::string toString()
+        std::string toString() override
         {
             return "Mouse moved: " + std::to_string(getX()) + "y: " + std::to_string(getY());
         }
@@ -54,7 +54,7 @@ namespace Azazel
             return EventType::MouseScrolled;
         }
 
-        std::string toString()
+        std::string toString() override
         {
             return "Mouse scroll: " + std::to_string(offsetX) + "offsetY: " + std::to_string(offsetY);
         }
@@ -102,7 +102,7 @@ namespace Azazel
             return EventType::MousePressed;
         }
         
-        std::string toString()
+        std::string toString() override
         {
             return "Mouse button pressed: " + std::to_string(button);
         }
@@ -123,7 +123,7 @@ namespace Azazel
             return EventType::MouseReleased;
         }
         
-        std::string toString()
+        std::string toString() override
         {
             return "Mouse button released: " + std::to_string(button);
         }

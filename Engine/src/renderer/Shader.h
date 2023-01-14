@@ -24,8 +24,6 @@ namespace Azazel
 
         virtual ~Shader();
 
-        virtual int getShaderType(const ShaderType& shaderType) = 0;
-
         virtual unsigned int compile(const std::string& programCode, const ShaderType& shaderType) = 0;
 
         virtual void bind() const = 0;

@@ -7,7 +7,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
-
+#include <string>
 #include <memory>
 
 namespace Azazel
@@ -36,6 +36,6 @@ namespace Azazel
         glm::vec3 scale;
         float width;
         float height;
-        bool matrixDirty;
+        std::string label;
     };
 }

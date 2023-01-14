@@ -8,8 +8,6 @@ namespace Azazel
     {
     private:
         unsigned int rendererId;
-        std::shared_ptr<Texture> colorTextureTarget;
-        std::shared_ptr<FrameBufferTarget> depthTarget;
     public:
 
         GLESFrameBuffer(std::shared_ptr<Texture> texture);

@@ -9,19 +9,13 @@ namespace Azazel
     {
     private:
         unsigned int rendererId;
-        unsigned char* textureData;
-        int width;
-        int height;
-        int bpp;
-        Texture::TextureFilter textureFilter;
-        Texture::TextureWrap textureWrap;
         unsigned int textureFilterToGLFormat(Texture::TextureFilter textureFilter);
         unsigned int textureWrapToGLFormat(Texture::TextureWrap textureWrap);
-        void createTexture(const unsigned char* data, int width, int height, int bpp);
+        void createTexture(int width, int height, int bpp, const unsigned char* data);
     public:
         GLESTexture (const TextureData& textureData);
         GLESTexture(int width, int height, int color);
-        GLESTexture(const unsigned char* data, int width, int height, int bpp);
+        GLESTexture(int width, int height, int bpp, const unsigned char* data);
         ~GLESTexture();
         void bind(unsigned int slot = 0) const override;
         void unbind() const override;

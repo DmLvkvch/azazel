@@ -1,6 +1,7 @@
 #pragma once
 
 #include <utility>
+#include <memory>
 
 namespace Azazel
 {
@@ -15,6 +16,6 @@ namespace Azazel
         virtual std::pair<float, float> getMousePosition();
         static Input* getInput();
     private:
-        static Input* input;
+        static std::unique_ptr<Input> input;
     };
 }

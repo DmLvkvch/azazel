@@ -73,7 +73,7 @@ namespace Azazel
         Render();
         virtual ~Render();
 
-        static Render* getRenderer();
+        static Render* getRender();
 
         void init();
 

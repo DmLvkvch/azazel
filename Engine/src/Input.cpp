@@ -6,7 +6,7 @@
 
 namespace Azazel
 {
-    Input* Input::input = nullptr;
+    std::unique_ptr<Input> Input::input(new Input());
 
     Input::Input()
     {
@@ -51,10 +51,6 @@ namespace Azazel
 
     Input* Input::getInput()
     {
-        if (!Input::input)
-        {
-            Input::input = new Input();
-        }
-        return Input::input;
+        return Input::input.get();
     }
 }

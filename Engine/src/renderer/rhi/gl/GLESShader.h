@@ -16,7 +16,7 @@ namespace Azazel
 
         ~GLESShader();
 
-        int getShaderType(const ShaderType& shaderType) override;
+        int getShaderType(const ShaderType& shaderType) const;
 
         unsigned int compile(const std::string& programCode, const ShaderType& shaderType) override;
 

@@ -66,7 +66,6 @@ namespace Azazel
 
         void OrthographicCamera::zoom(const glm::vec2& zoom, const glm::vec2& origin)
         {
-            std::cout<<zoomFactor<<std::endl;
             updateMatrix();
         }
 }

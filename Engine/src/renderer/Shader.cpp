@@ -1,6 +1,6 @@
 #include "Shader.h"
 
-#include "rhi/gl/GLESShader.h"
+#include <renderer/rhi/gl/GLESShader.h>
 
 namespace Azazel
 {

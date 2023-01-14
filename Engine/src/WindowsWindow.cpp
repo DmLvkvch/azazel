@@ -33,6 +33,7 @@ namespace Azazel
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_RESIZABLE, 1);
+        glfwWindowHint(GLFW_SAMPLES, 4);
         window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
         if (window == NULL)
         {

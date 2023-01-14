@@ -96,7 +96,9 @@
     "ranges": "cpp",
     "shared_mutex": "cpp",
     "span": "cpp",
-    "*.inc": "cpp"
+    "*.inc": "cpp",
+    "regex": "cpp",
+    "any": "cpp"
   },
   "cmake.configureOnOpen": true,
   "C_Cpp_Runner.cCompilerPath": "gcc",

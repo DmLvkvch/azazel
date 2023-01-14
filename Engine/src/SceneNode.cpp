@@ -22,14 +22,12 @@ namespace Azazel
     
     bool SceneNode::removeNode(std::shared_ptr<SceneNode> sceneNode)
     {
-
-        return true;
+        return false;
     }
     
     bool SceneNode::removeNode(int index)
     {
-        std::shared_ptr<SceneNode> node = nullptr;
-        return true;
+        return false;
     }
     
     bool SceneNode::removeAll()
@@ -76,7 +74,7 @@ namespace Azazel
     glm::mat4 SceneNode::updateMatrix()
     {
         glm::mat4 globalMatrix(1.0f);
-        if (parent != nullptr)
+        if (parent)
         {
             globalMatrix = parent->updateMatrix() * getLocalMatrix();
         }

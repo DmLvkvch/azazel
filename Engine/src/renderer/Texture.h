@@ -60,20 +60,25 @@ namespace Azazel
 
         Texture() = default;
         
-        Texture(int width, int height, const unsigned char* data, ColorFormat colorFormat);
+        Texture(int width, int height, int bpp, const unsigned char* data);
         
         Texture(const TextureData& textureData);
         
         virtual ~Texture();
     
-        int getWidth()
+        const inline int getWidth()
         {
             return width;
         }
 
-        int getHeight()
+        const inline int getHeight()
         {
             return height;
+        }
+
+        const inline int getBpp()
+        {
+            return bpp;
         }
 
         Format getColorFormat()
@@ -102,7 +107,8 @@ namespace Azazel
         static Texture* create(const TextureData& textureData);
         static Texture* create(int width, int height, int color);
     private:
-        unsigned char* data;
+        const unsigned char* data;
+        int bpp;
         int width;
         int height;
         ColorFormat colorFormat;

@@ -33,7 +33,7 @@ namespace Azazel
 		glDeleteProgram(rendererId);
 	}
 
-	int GLESShader::getShaderType(const ShaderType& shaderType)
+	int GLESShader::getShaderType(const ShaderType& shaderType) const
 	{
 		switch (shaderType)
 		{
@@ -61,7 +61,7 @@ namespace Azazel
 		if (status != GL_TRUE) {
 			glGetProgramInfoLog(rendererId, 512, NULL, infoLog);
 			std::cout<<programCode<<std::endl;
-			std::cout << "Shader creation error!\n" << infoLog << std::endl;
+			std::cout << "Shader creation error!\n" << infoLog << std::endl<<programCode<<std::endl;
 		}
 
 		return handle;

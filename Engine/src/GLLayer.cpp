@@ -29,116 +29,50 @@ namespace Azazel
     
     void GLLayer::onAttach()
     {
-        float left =   1 * 200.0f;
-        float top =    1 * 200.0f;
-        float front =  1 * 200.0f;
-        float bottom = 1 * 200.0f;
-        float back =   1 * 200.0f;
-        float right =  1 * 200.0f;
-
-        std::vector<glm::vec3> positions = {
-            glm::vec3(-left, top, front),
-            glm::vec3(-left, -bottom, front),
-            glm::vec3(-left, top, -back),
-            glm::vec3(-left, -bottom, -back),
-            glm::vec3(right, top, front),
-            glm::vec3(right, -bottom, front),
-            glm::vec3(right, top, -back),
-            glm::vec3(right, -bottom, -back),
-        };
-
-        std::vector<glm::vec3> vertices
+        std::vector<float> vertices
         {
+            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f,  
+             0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f,  
+             0.5f, 0.5f,  -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f,  
+             0.5f, 0.5f,  -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f,  
+            -0.5f, 0.5f,  -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f,  
+            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f,  
 
+            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 0.0f, 0.0f,
+             0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 0.0f, 1.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 1.0f, 0.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 1.0f, 0.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 1.0f, 1.0f,
+
+            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f,
+            -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f,
+            -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f,
+            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f,
+
+            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f,
+            0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f,
+            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f,
+            0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f,
+            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f,
+
+            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f,
+             0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f,
+             0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f,
+             0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f,
+
+            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f,
+             0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f
         };
-        vertices.push_back(positions[4]);
-        vertices.push_back(positions[2]);
-        vertices.push_back(positions[0]);
-        vertices.push_back(positions[2]);
-        vertices.push_back(positions[7]);
-        vertices.push_back(positions[3]);
-        vertices.push_back(positions[6]);
-        vertices.push_back(positions[5]);
-        vertices.push_back(positions[7]);
-        vertices.push_back(positions[1]);
-        vertices.push_back(positions[7]);
-        vertices.push_back(positions[5]);
-        vertices.push_back(positions[0]);
-        vertices.push_back(positions[3]);
-        vertices.push_back(positions[1]);
-        vertices.push_back(positions[4]);
-        vertices.push_back(positions[1]);
-        vertices.push_back(positions[5]);
-        vertices.push_back(positions[4]);
-        vertices.push_back(positions[6]);
-        vertices.push_back(positions[2]);
-        vertices.push_back(positions[2]);
-        vertices.push_back(positions[6]);
-        vertices.push_back(positions[7]);
-        vertices.push_back(positions[6]);
-        vertices.push_back(positions[4]);
-        vertices.push_back(positions[5]);
-        vertices.push_back(positions[1]);
-        vertices.push_back(positions[3]);
-        vertices.push_back(positions[7]);
-        vertices.push_back(positions[0]);
-        vertices.push_back(positions[2]);
-        vertices.push_back(positions[3]);
-        vertices.push_back(positions[4]);
-        vertices.push_back(positions[0]);
-        vertices.push_back(positions[1]);
-
-        std::vector<glm::vec2> texCoords;
-
-        texCoords.push_back(glm::vec2(1.0f, 0.0f));
-        texCoords.push_back(glm::vec2(0.0f, 1.0f));
-        texCoords.push_back(glm::vec2(0.0f, 0.0f));
-        texCoords.push_back(glm::vec2(1.0f, 1.0f));
-        texCoords.push_back(glm::vec2(0.0f, 0.0f));
-        texCoords.push_back(glm::vec2(1.0f, 0.0f));
-        texCoords.push_back(glm::vec2(1.0f, 1.0f));
-        texCoords.push_back(glm::vec2(0.0f, 0.0f));
-        texCoords.push_back(glm::vec2(1.0f, 0.0f));
-        texCoords.push_back(glm::vec2(0.0f, 1.0f));
-        texCoords.push_back(glm::vec2(1.0f, 0.0f));
-        texCoords.push_back(glm::vec2(1.0f, 1.0f));
-        texCoords.push_back(glm::vec2(1.0f, 1.0f));
-        texCoords.push_back(glm::vec2(0.0f, 0.0f));
-        texCoords.push_back(glm::vec2(1.0f, 0.0f));
-        texCoords.push_back(glm::vec2(1.0f, 1.0f));
-        texCoords.push_back(glm::vec2(0.0f, 0.0f));
-        texCoords.push_back(glm::vec2(1.0f, 0.0f));
-        texCoords.push_back(glm::vec2(1.0f, 0.0f));
-        texCoords.push_back(glm::vec2(1.0f, 1.0f));
-        texCoords.push_back(glm::vec2(0.0f, 1.0f));
-        texCoords.push_back(glm::vec2(1.0f, 1.0f));
-        texCoords.push_back(glm::vec2(0.0f, 1.0f));
-        texCoords.push_back(glm::vec2(0.0f, 0.0f));
-        texCoords.push_back(glm::vec2(1.0f, 1.0f));
-        texCoords.push_back(glm::vec2(0.0f, 1.0f));
-        texCoords.push_back(glm::vec2(0.0f, 0.0f));
-        texCoords.push_back(glm::vec2(0.0f, 1.0f));
-        texCoords.push_back(glm::vec2(0.0f, 0.0f));
-        texCoords.push_back(glm::vec2(1.0f, 0.0f));
-        texCoords.push_back(glm::vec2(1.0f, 1.0f));
-        texCoords.push_back(glm::vec2(0.0f, 1.0f));
-        texCoords.push_back(glm::vec2(0.0f, 0.0f));
-        texCoords.push_back(glm::vec2(1.0f, 1.0f));
-        texCoords.push_back(glm::vec2(0.0f, 1.0f));
-        texCoords.push_back(glm::vec2(0.0f, 0.0f));
-
-        std::vector<glm::vec3> normals;
-
-        for (int i = 0; i < vertices.size(); i += 3)
-        {
-            glm::vec3& p1 = vertices[i + 0];
-            glm::vec3& p2 = vertices[i + 1];
-            glm::vec3& p3 = vertices[i + 2];
-            glm::vec3 normal = glm::triangleNormal(p1, p2, p3);
-            normals.push_back(normal);
-            normals.push_back(normal);
-            normals.push_back(normal);
-        }
 
         std::vector<unsigned int> indices;
         for (int i = 0; i < vertices.size(); i++)
@@ -148,39 +82,17 @@ namespace Azazel
 
         this->texture.reset(Texture::create(TextureData(500, 500, ColorFormat(), 0xaaff00ff)));
 
-        this->face.reset(Texture::create(TextureData(500, 500, ColorFormat(), 0xaaff00ff)));
+        //this->face.reset(Texture::create(TextureUtils::loadTexture("images/awesomeface.png")));
+        this->face.reset(Texture::create(TextureData(4000, 4000, ColorFormat(), 0xaaff00ff)));
+        face->setTextureFilter(Texture::TextureFilter::Linear);
 
         this->indexBuffer.reset(IndexBuffer::create(indices.data(), indices.size()));
-        // leak
-        std::shared_ptr<VertexBuffer> vertexBuffer (VertexBuffer::create((float*)vertices.data(), sizeof(float) * vertices.size() * 3));
-        std::shared_ptr<VertexBuffer> vertexBufferT (VertexBuffer::create((float*)texCoords.data(), sizeof(float) * texCoords.size() * 2));
-        std::shared_ptr<VertexBuffer> vertexBufferN (VertexBuffer::create((float*)normals.data(), sizeof(float) * normals.size() * 3));
+        std::shared_ptr<VertexBuffer> vertexBuffer (VertexBuffer::create((float*) vertices.data(), sizeof(float) * vertices.size()));
         this->vertexArray.reset(VertexArray::create());
-        BufferLayout vbo = {
-            { ShaderDataType::Float3, "position" }
-        };
+        BufferLayout vbo { { ShaderDataType::Float3, "position" }, { ShaderDataType::Float3, "normal" }, { ShaderDataType::Float2, "normal" } };
         vertexArray->addBuffer(vertexBuffer, vbo);
-        BufferLayout vbo1 = {{ ShaderDataType::Float2, "texCoord" }};
-        vertexArray->addBuffer(vertexBufferT, vbo1);
-        BufferLayout vbo2 = {{ ShaderDataType::Float3, "normals" }};
-        vertexArray->addBuffer(vertexBufferN, vbo2);
 
-        std::string vertCode = FileUtils::readFile("shaders/light/specular.light.vert.glsl");
-
-        std::string fragCode = FileUtils::readFile("shaders/light/specular.light.frag.glsl");
-
-        shader.reset(Shader::create(vertCode, fragCode));
-        shader->bind();
-        shader->setInt("u_texture_0", 0);
-        shader->setInt("face", 1);
-
-        shader->setVec3f("material.ambient", {1.0f, 0.5f, 0.31f});
-        shader->setVec3f("material.diffuse", {1.0f, 0.5f, 0.31f});
-        shader->setVec3f("material.specular", {0.5f, 0.5f, 0.5f});
-        shader->setFloat("material.shininess", 32.0f);
-        shader->setVec3f("light.ambient",  {0.2f, 0.2f, 0.2f});
-        shader->setVec3f("light.diffuse",  {0.5f, 0.5f, 0.5f});
-        shader->setVec3f("light.specular", {1.0f, 1.0f, 1.0f}); 
+        shader.reset(Shader::create(FileUtils::readFile("shaders/solid.vert.glsl"), FileUtils::readFile("shaders/solid.frag.glsl")));
 
         gridShader.reset(Shader::create(FileUtils::readFile("shaders/grid.vert.glsl"), FileUtils::readFile("shaders/grid.frag.glsl")));
         
@@ -201,7 +113,7 @@ namespace Azazel
         BufferLayout vbo11 = { { ShaderDataType::Float3, "positions" }, { ShaderDataType::Float2, "texCoord"} };
         gridVertexArray->addBuffer(vertexBuffer1, vbo11);
 
-        orthographicCamera = OrthographicCamera(0, 1200, 0, 700);
+        orthographicCamera = OrthographicCamera(0, 7, 0, 5, -100.0f, 100.0f);
     }
 
     void GLLayer::onDetach()
@@ -211,32 +123,24 @@ namespace Azazel
     
     void GLLayer::onUpdate(float delta)
     {
-        glm::vec3 lightPos {0.0f, 500.0f, 0.0f};
-        glm::vec3 lightColor {(float) glm::sin(glfwGetTime() * 2.0f + 0.2f), (float) glm::sin(glfwGetTime() * 2.0f + 0.2f), (float) glm::sin(glfwGetTime() * 1.3f  + 0.2f)};
-        
-        glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); 
-        glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); 
+        glm::mat4 mvp = orthographicCamera.getViewProjectionMatrix() * glm::scale(glm::mat4(1.0f), {0.1f, 0.1f, 0.1f});
+        // gridShader->bind();
+        // gridShader->setMatrix4f("u_mvp", mvp);
+        // gridShader->setVec2f("iResolution", {1280, 720});
+        // Render::getRenderer()->drawIndexed(*gridVertexArray, *gridIndexBuffer, *gridShader, *texture);
 
-        glm::mat4 mvp = orthographicCamera.getViewProjectionMatrix()  * glm::mat4(1.0f);
-        gridShader->bind();
-        gridShader->setMatrix4f("u_mvp", mvp);
-        Render::getRenderer()->drawIndexed(*gridVertexArray, *gridIndexBuffer, *gridShader, { *texture });
-
-        texture->bind();
-        face->bind(1);
+        mvp = orthographicCamera.getViewProjectionMatrix()  * glm::translate(glm::mat4(1.0f), glm::vec3{1.0f, 3.0f, 0.0f}) * glm::rotate(glm::mat4(1.0f), glm::radians((float) glfwGetTime()* 10.0f), {1.0f, 0.0f, 1.0f}) * glm::scale(glm::mat4(1.0f), {2.0f, 2.0f, 2.0f});
+        Render::getRender()->setDepthTest(true);
+        face->bind(0);
         shader->bind();
+        shader->setInt("u_texture", 0);
         shader->setMatrix4f("u_mvp", mvp);
-        shader->setMatrix4f("u_model", glm::mat4(1.0f));        
-        shader->setVec3f("light.ambient", ambientColor);
-        shader->setVec3f("light.diffuse", diffuseColor);
-        shader->setVec3f("u_lightPos", lightPos);
-        vertexArray->bind();
-        indexBuffer->bind();
-        glDrawElements(GL_TRIANGLES, indexBuffer->getElementCount() * sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+        Render::getRender()->drawIndexed(*vertexArray, *indexBuffer, *shader, *face);
+        Render::getRender()->setDepthTest(false);
+
     }
     
     void GLLayer::onEvent(Event& e)
     {
-
     }
 }

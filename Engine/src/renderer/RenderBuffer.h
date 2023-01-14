@@ -20,7 +20,7 @@ namespace Azazel
             return height;
         }
 
-        virtual int getRendererId() const;
+        virtual int getRendererId() const = 0;
         static RenderBuffer* create(int width, int height);
     private:
         int width;

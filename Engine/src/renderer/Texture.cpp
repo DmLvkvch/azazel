@@ -4,7 +4,8 @@
 
 namespace Azazel
 {
-    Texture::Texture(int width, int height, const unsigned char* data, ColorFormat colorFormat)
+    Texture::Texture(int width, int height, int bpp, const unsigned char* data)
+    : width(width), height(height), bpp(bpp), data(data)
     {
     }
 

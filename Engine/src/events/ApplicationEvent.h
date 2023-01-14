@@ -8,7 +8,7 @@ namespace Azazel
     {
     public:
         WindowResizeEvent(int width, int height)
-        :width(width), height(height)
+        : width(width), height(height)
         {
             this->eventCategory = EventCategory::EventCategoryApplication;
             this->eventType = EventType::WindowResize;
@@ -17,11 +17,6 @@ namespace Azazel
         static EventType getStaticEventType()
         {
             return EventType::WindowResize;
-        }
-
-        std::string toString()
-        {
-            return "Window resize: " + std::to_string(width) + "height: " + std::to_string(height);
         }
 
         inline int getWidth() const
@@ -33,6 +28,12 @@ namespace Azazel
         {
             return height;
         }
+
+        std::string toString() override
+        {
+            return "Window resize: " + std::to_string(width) + "height: " + std::to_string(height);
+        }
+        
     private:
         int width;
         int height;
@@ -93,7 +94,7 @@ namespace Azazel
             return EventType::AppUpdate;
         }
 
-        std::string toString()
+        std::string toString() override
         {
             return "App update:";
         }

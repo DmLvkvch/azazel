@@ -1,6 +1,6 @@
 #include "RenderBuffer.h"
 
-#include "rhi/gl/GLESRenderBuffer.h"
+#include <renderer/rhi/gl/GLESRenderBuffer.h>
 
 namespace Azazel
 {
@@ -12,11 +12,6 @@ namespace Azazel
     RenderBuffer::~RenderBuffer()
     {
         
-    }
-
-    int RenderBuffer::getRendererId() const
-    {
-        return 0;
     }
 
     RenderBuffer* RenderBuffer::create(int width, int height)

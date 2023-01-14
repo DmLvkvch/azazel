@@ -26,7 +26,7 @@ namespace Azazel
         lastFrameTime = 0.0f;
         window = std::unique_ptr<Window>(Window::create());
         window->setEventCallback(std::bind(&Application::onEvent, this, std::placeholders::_1));
-        Render::getRenderer()->init();
+        Render::getRender()->init();
     }
 
     Application::~Application()
@@ -54,9 +54,9 @@ namespace Azazel
             float t = (float) (glfwGetTime() * 1000);
             float delta = t - lastFrameTime;
             lastFrameTime = t;
-            Render::getRenderer()->beginScene();
-            Render::getRenderer()->setClearColor({0.0f, 0.0f, 0.0f, 1.0f});
-            Render::getRenderer()->clear(true, true, false);
+            Render::getRender()->beginScene();
+            Render::getRender()->setClearColor({0.0f, 0.0f, 0.0f, 1.0f});
+            Render::getRender()->clear(true, true, false);
             ImGui_ImplOpenGL3_NewFrame();
             ImGui::NewFrame();
             for (auto layer : layerStack)
@@ -72,7 +72,7 @@ namespace Azazel
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             window->onUpdate(delta);
-            Render::getRenderer()->endScene();
+            Render::getRender()->endScene();
         }
     }
 

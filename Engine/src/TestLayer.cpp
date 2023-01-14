@@ -40,6 +40,7 @@ namespace Azazel
 
         shader.reset(Shader::create(FileUtils::readFile("shaders/default.vert.glsl"), FileUtils::readFile("shaders/default.frag.glsl")));
         texture.reset(Texture::create(TextureUtils::loadTexture("images/awesomeface.png")));
+        texture->setTextureFilter(Texture::TextureFilter::Linear);
 
         shader->bind();
         shader->setMatrix4f("u_mvp", glm::mat4(1.0f));
@@ -75,7 +76,7 @@ namespace Azazel
     {
         shader->bind();
         shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * glm::scale(glm::mat4(1.0f), glm::vec3(100.0f, 100.0f, 0.0f)));
-        Render::getRenderer()->drawIndexed(*vertexArray, *indexBuffer, *shader, *texture);
+        Render::getRender()->drawIndexed(*vertexArray, *indexBuffer, *shader, *texture);
     }
 
     void TestLayer::onEvent(Event& e)

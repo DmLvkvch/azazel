@@ -1,6 +1,6 @@
 #include "VertexArray.h"
 
-#include "rhi/gl/GLESVertexArray.h"
+#include <renderer/rhi/gl/GLESVertexArray.h>
 
 namespace Azazel
 {
