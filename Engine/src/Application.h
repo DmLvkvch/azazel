@@ -3,6 +3,7 @@
 #include "Window.h"
 #include <memory>
 #include "LayerStack.h"
+#include <functional>
 
 namespace Azazel
 {
@@ -14,9 +15,9 @@ namespace Azazel
         void run();
         void onEvent(Event& e);
         void pushLayer(Layer* layer);
-        void pushOverlay(Layer* layer);
         Window* getWindow();
         static Application* getApplication();
+        std::vector<std::function<void(float)>> subscribers;
     private:
         std::unique_ptr<Window> window;
         LayerStack layerStack;

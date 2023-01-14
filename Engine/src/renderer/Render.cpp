@@ -30,9 +30,9 @@ namespace Azazel
         const GLubyte* version     = glGetString(GL_VERSION);
         const GLubyte* glslVersion = glGetString(GL_SHADING_LANGUAGE_VERSION);
 
-        std::cout<<"GL Vendor:    "<<vendor<<std::endl;
-        std::cout<<"GL Renderer:  "<<renderer<<std::endl;
-        std::cout<<"GL Version:   "<<version<<std::endl;
+        std::cout<<"GL Vendor:    "<<vendor     <<std::endl;
+        std::cout<<"GL Renderer:  "<<renderer   <<std::endl;
+        std::cout<<"GL Version:   "<<version    <<std::endl;
         std::cout<<"GLSL Version: "<<glslVersion<<std::endl;
         glEnable(GL_MULTISAMPLE);  
     }
@@ -50,7 +50,6 @@ namespace Azazel
     void Render::setViewport(int x, int y, int width, int height)
     {
         glViewport(x, y, width, height);
-        viewportStack.push_back({x, y, width, height});
     }
 
     void Render::setScissor(bool enable)

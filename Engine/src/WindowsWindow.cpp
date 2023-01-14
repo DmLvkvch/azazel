@@ -44,7 +44,7 @@ namespace Azazel
         setVSync(true);
         glfwSetWindowUserPointer(window, &windowData);
         initialized = true;
-        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+        if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
         {
             std::cout << "Failed to initialize GLAD" << std::endl;
         }
@@ -102,7 +102,7 @@ namespace Azazel
         glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int mods)
         {
             ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
-            WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+            WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
             switch (action)
             {
                 case GLFW_PRESS:

@@ -12,11 +12,6 @@
 
 namespace Azazel
 {
-    BaseLayer::~BaseLayer()
-    {
-
-    }
-
     void BaseLayer::onAttach()
     {
         std::vector<float> vertices 
@@ -44,8 +39,8 @@ namespace Azazel
         shader->bind();
         shader->setMatrix4f("u_mvp", glm::mat4(1.0f));
         camera = OrthographicCamera(0, 960, 0, 540);
-        texture.reset(Texture::create(TextureData(500, 500, ColorFormat(), 0xff0000ff)));
-        texture1.reset(Texture::create(TextureData(500, 500, ColorFormat(), 0x0000fff0)));
+        texture.reset(Texture::create(TextureData(500, 500, 0xff0000ff)));
+        texture1.reset(Texture::create(TextureData(500, 500, 0x0000fff0)));
 
         transform.scale = { 100.0f, 100.0f, 0.0f };
         color = {0.0f, 0.0f, 0.0f, 1.0f};
@@ -134,6 +129,5 @@ namespace Azazel
 
     void BaseLayer::onEvent(Event& e)
     {
-       
     }
 }

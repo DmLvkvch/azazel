@@ -24,15 +24,8 @@ namespace Azazel
     class TextLayerExample : public Layer
     {
     public:
-        TextLayerExample() : Layer("Text Layer")
-        {
-            
-        }
-
-        ~TextLayerExample()
-        {
-
-        }
+        TextLayerExample() : Layer("Text Layer") {}
+        ~TextLayerExample() {}
 
         void onAttach() override;
         void onDetach() override;

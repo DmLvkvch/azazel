@@ -18,8 +18,7 @@ namespace Azazel
         WindowProps(const std::string& title = "Azazel Title",
                     unsigned int width = 1280,
                     unsigned int height = 720)
-                    : title(title), width(width), height(height)
-        {}
+        : title(title), width(width), height(height) {}
     };
 
     class Window

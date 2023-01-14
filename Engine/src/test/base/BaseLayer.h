@@ -17,13 +17,9 @@ namespace Azazel
     class BaseLayer : public Layer
     {
     public:
-        BaseLayer()
-        : Layer("Base Layer")
-        {
+        BaseLayer() : Layer("Base Layer") {}
+        ~BaseLayer() {}
 
-        }
-
-        ~BaseLayer();
         void onAttach() override;
         void onDetach() override;
         void onUpdate(float delta) override;

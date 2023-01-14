@@ -1,5 +1,4 @@
 #include "TestLayer.h"
-#define _CRTDBG_MAP_ALLOC
 
 #include <vector>
 #include "FileUtils.h"
@@ -7,31 +6,27 @@
 #include "events/KeyEvent.h"
 #include "events/MouseEvent.h"
 #include "events/ApplicationEvent.h"
-#include <fstream>
-#include <sstream>
-#include <iostream>
 #include <Input.h>
 #include <renderer/Render.h>
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
 
 namespace Azazel
 {
     void TestLayer::onAttach()
     {
-        std::vector<float> vertices {
+        std::vector<float> vertices 
+        {
                     0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
                     0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
                     -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
                     -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
          };
 
-        std::vector<unsigned int> indices = {0, 1, 3, 1, 2, 3};
+        std::vector<unsigned int> indices {0, 1, 3, 1, 2, 3};
         std::shared_ptr<VertexBuffer> vertexBuffer (VertexBuffer::create((float*) vertices.data(), sizeof(float) * vertices.size()));
         indexBuffer.reset(IndexBuffer::create(indices.data(), 6));
         vertexArray.reset(VertexArray::create());
-        BufferLayout bf = 
+        BufferLayout bf 
         {
             { ShaderDataType::Float3, "pos" },
             { ShaderDataType::Float2, "texCoord"}

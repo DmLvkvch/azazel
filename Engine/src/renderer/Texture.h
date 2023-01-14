@@ -23,7 +23,7 @@ namespace Azazel
             ClampToBorder
         };
 
-        enum class Type
+        enum Type
         {
             COLOR_1D = 0,
             COLOR_2D,
@@ -33,7 +33,7 @@ namespace Azazel
             CUBEMAP
         };
 
-        enum class Format
+        enum Format
         {
             R8,
             R32_INT,

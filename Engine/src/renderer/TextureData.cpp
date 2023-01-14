@@ -2,8 +2,8 @@
 
 namespace Azazel
 {
-    TextureData::TextureData(int width, int height, const ColorFormat& colorFormat, int color)
-    : width(width), height(height), colorFormat(colorFormat)
+    TextureData::TextureData(int width, int height, int color)
+    : width(width), height(height)
     {
         unsigned char* data = new unsigned char[width * height * 4];
         unsigned char a = (color >> 0)  & 0xff;

@@ -1,15 +1,10 @@
-#include <iostream>
-#include <fstream>
-#include <streambuf>
 
 #include "Application.h"
-
 #include "imgui/ImGuiLayer.h"
 #include "GLLayer.h"
 #include "TestLayer.h"
 #include "test/base/BaseLayer.h"
 #include "test/base/TextLayerExample.h"
-
 #include <Input.h>
 
 int main()

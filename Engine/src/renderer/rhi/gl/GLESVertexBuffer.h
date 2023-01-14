@@ -6,9 +6,6 @@ namespace Azazel
 {
     class GLESVertexBuffer : public VertexBuffer
     {
-    private:
-        unsigned int rendererId;
-        BufferLayout bufferLayout;
     public:
         GLESVertexBuffer(const void* data, size_t size);
         ~GLESVertexBuffer();
@@ -17,5 +14,8 @@ namespace Azazel
         void setLayout(const BufferLayout& bufferlayout) override;
         void updateSubData(int offset, int size, void* data) override;
         const BufferLayout& getBufferLayout() const override;
+    private:
+        unsigned int rendererId;
+        BufferLayout bufferLayout;
     };
 }

@@ -11,26 +11,30 @@ namespace Azazel
     class FrameBufferTarget
     {
     public:
-        FrameBufferTarget(int width, int height, const ColorFormat& colorFormat);
-        FrameBufferTarget();
-        virtual ~FrameBufferTarget();
-        virtual unsigned int getRendererId() = 0;
+        FrameBufferTarget() {}
+        virtual ~FrameBufferTarget() {}
+
+        template<typename T>
+        bool checkTarget()
+        {
+            return dynamic_cast<T*> (this) != nullptr;
+        }
     };
 
-    class FrameBufferTextureTarget
+    class FrameBufferTextureTarget : public FrameBufferTarget
     {
     public:
-        FrameBufferTextureTarget(std::shared_ptr<Texture> textureTarget);
-        virtual ~FrameBufferTextureTarget();    
+        FrameBufferTextureTarget(std::shared_ptr<Texture> textureTarget) {}
+        virtual ~FrameBufferTextureTarget() {}
     private:
         std::shared_ptr<Texture> textureTarget;
     };
 
-    class FrameBufferRenderBufferTarget
+    class FrameBufferRenderBufferTarget : public FrameBufferTarget
     {
     public:
-        FrameBufferRenderBufferTarget(std::shared_ptr<RenderBuffer> renderBufferTarget);
-        virtual ~FrameBufferRenderBufferTarget();    
+        FrameBufferRenderBufferTarget(std::shared_ptr<RenderBuffer> renderBufferTarget) {}
+        virtual ~FrameBufferRenderBufferTarget() {}
     private:
         std::shared_ptr<RenderBuffer> renderBufferTarget;
     };

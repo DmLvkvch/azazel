@@ -54,6 +54,12 @@ namespace Azazel
             float t = (float) (glfwGetTime() * 1000);
             float delta = t - lastFrameTime;
             lastFrameTime = t;
+
+            for (auto& subscriber : subscribers)
+            {
+                subscriber(delta);
+            }
+
             Render::getRender()->beginScene();
             Render::getRender()->setClearColor({0.0f, 0.0f, 0.0f, 1.0f});
             Render::getRender()->clear(true, true, false);
@@ -80,11 +86,6 @@ namespace Azazel
     {
         layerStack.pushLayer(layer);
         layer->onAttach();
-    }
-
-    void Application::pushOverlay(Layer* layer)
-    {
-        layerStack.pushOverlay(layer);
     }
 
     Window* Application::getWindow()

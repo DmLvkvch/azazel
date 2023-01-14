@@ -12,9 +12,7 @@ namespace Azazel
         ~LayerStack();
 
         void pushLayer(Layer* layer);
-        void pushOverlay(Layer* overlay);
         void popLayer(Layer* layer);
-        void popOverlay(Layer* overlay);
 
         std::vector<Layer*>::iterator begin()
         {

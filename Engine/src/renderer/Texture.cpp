@@ -24,7 +24,7 @@ namespace Azazel
 
     Texture* Texture::create(int width, int height, int color)
     {
-        TextureData textureData (width, height, ColorFormat(), color);
+        TextureData textureData (width, height, color);
         return new GLESTexture(textureData);
     }
 }

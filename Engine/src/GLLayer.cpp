@@ -21,11 +21,12 @@
 
 #include "TextureUtils.h"
 #include "FileUtils.h"
-#include "renderer/TextureData.h"
+#include <renderer/TextureData.h>
 #include <renderer/Render.h>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <renderer/FrameBufferTarget.h>
 
 namespace Azazel
 {
@@ -83,10 +84,10 @@ namespace Azazel
             indices.push_back(i);
         }
 
-        this->texture.reset(Texture::create(TextureData(500, 500, ColorFormat(), 0xaaff00ff)));
+        this->texture.reset(Texture::create(TextureData(500, 500, 0xaaff00ff)));
 
         //this->face.reset(Texture::create(TextureUtils::loadTexture("images/awesomeface.png")));
-        this->face.reset(Texture::create(TextureData(4000, 4000, ColorFormat(), 0xaaff00ff)));
+        this->face.reset(Texture::create(TextureData(4000, 4000, 0xaaff00ff)));
         face->setTextureFilter(Texture::TextureFilter::Linear);
 
         this->indexBuffer.reset(IndexBuffer::create(indices.data(), indices.size()));
@@ -101,10 +102,10 @@ namespace Azazel
         
         std::vector<float> gridVerts
         {
-            0.0f,   0.0f,  0.0f, 0.0f, 0.0f,
-            0.0f,   50.0f, 0.0f, 1.0f, 0.0f,
-            100.0f, 50.0f, 0.0f, 1.0f, 1.0f,
-            100.0f, 0.0f,  0.0f, 0.0f, 1.0f
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+            -1.0f,  1.0f, 0.0f, 1.0f, 0.0f,
+             1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+             1.0f, -1.0f, 0.0f, 0.0f, 1.0f
         };
 
         unsigned int gridInds[6] = {0, 1, 2, 0, 2, 3};
@@ -113,10 +114,10 @@ namespace Azazel
         std::shared_ptr<VertexBuffer> vertexBuffer1 (VertexBuffer::create((float*) gridVerts.data(), sizeof(float) * gridVerts.size() * 5));
 
         gridVertexArray.reset(VertexArray::create());
-        BufferLayout vbo11 = { { ShaderDataType::Float3, "positions" }, { ShaderDataType::Float2, "texCoord"} };
-        gridVertexArray->addBuffer(vertexBuffer1, vbo11);
+        vbo = { { ShaderDataType::Float3, "positions" }, { ShaderDataType::Float2, "texCoord"} };
+        gridVertexArray->addBuffer(vertexBuffer1, vbo);
 
-        orthographicCamera = OrthographicCamera(0, 7, 0, 5, -100.0f, 100.0f);
+        orthographicCamera = OrthographicCamera(-2.0f, 2.0f, -2.0f, 2.0f);
     }
 
     void GLLayer::onDetach()
@@ -127,30 +128,27 @@ namespace Azazel
     void GLLayer::onUpdate(float delta)
     {
         ImGui::Begin("Transform");
-
-        ImGui::SliderFloat("r", &r.x, 0.0, 1.0f);
-        ImGui::SliderFloat("t", &t.x, 0.0f, 1.0f);
-
-        
+        ImGui::SliderFloat2("circle", &r.x, 0.0, 1.0f);
         ImGui::End();
 
-        glm::mat4 mvp = orthographicCamera.getViewProjectionMatrix() * glm::scale(glm::mat4(1.0f), {0.1f, 0.1f, 0.1f});
+        glm::mat4 mvp = orthographicCamera.getViewProjectionMatrix();
         gridShader->bind();
         gridShader->setMatrix4f("u_mvp", mvp);
         gridShader->setFloat("radius", r.x);
-        gridShader->setFloat("t", t.x);
+        gridShader->setFloat("thickness", r.y);
+
+        gridShader->setVec3f("color", {glm::sin((float) glfwGetTime()), glm::cos((float)glfwGetTime()) , 0.5f });
 
         Render::getRender()->drawIndexed(*gridVertexArray, *gridIndexBuffer, *gridShader, *texture);
 
-        mvp = orthographicCamera.getViewProjectionMatrix()  * glm::translate(glm::mat4(1.0f), glm::vec3{1.0f, 3.0f, 0.0f}) * glm::rotate(glm::mat4(1.0f), glm::radians((float) glfwGetTime()* 10.0f), {1.0f, 0.0f, 1.0f}) * glm::scale(glm::mat4(1.0f), {2.0f, 2.0f, 2.0f});
+        mvp = orthographicCamera.getViewProjectionMatrix()  * glm::translate(glm::mat4(1.0f), glm::vec3{0.1f, 0.3f, 0.0f}) * glm::rotate(glm::mat4(1.0f), glm::radians((float) glfwGetTime()* 10.0f), {1.0f, 0.0f, 1.0f}) * glm::scale(glm::mat4(1.0f), {0.4f, 0.40f, 0.4f});
         Render::getRender()->setDepthTest(true);
-        face->bind(0);
+        face->bind();
         shader->bind();
         shader->setInt("u_texture", 0);
         shader->setMatrix4f("u_mvp", mvp);
         Render::getRender()->drawIndexed(*vertexArray, *indexBuffer, *shader, *face);
         Render::getRender()->setDepthTest(false);
-
     }
     
     void GLLayer::onEvent(Event& e)

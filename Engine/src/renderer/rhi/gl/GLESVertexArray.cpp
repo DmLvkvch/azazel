@@ -24,8 +24,8 @@ namespace Azazel
         for (unsigned int i = 0; i < elements.size(); i++)
         {
             const BufferElement& element = elements[i];
-            glEnableVertexAttribArray(i);
             offset = element.offset;
+            glEnableVertexAttribArray(i);
             glVertexAttribPointer(i, element.getComponentCount(), shaderTypeToGLType(element.type), 
                                     element.normalized ? GL_TRUE : GL_FALSE,
                                     layout.getStride(), reinterpret_cast<const void *>(offset));

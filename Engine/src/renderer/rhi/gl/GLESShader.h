@@ -7,9 +7,6 @@ namespace Azazel
 {
     class GLESShader : public Shader
     {
-    private:
-        unsigned int rendererId;
-        std::unordered_map<std::string, int> uniformLocationMap;
     public:
 
         GLESShader(const std::string& vertexShader, const std::string& fragmentShader);
@@ -38,5 +35,8 @@ namespace Azazel
 
         void setVec2f(const std::string& name, const glm::vec2& vec2) const override;
 
+    private:
+        unsigned int rendererId;
+        std::unordered_map<std::string, int> uniformLocationMap;
     };
 }
