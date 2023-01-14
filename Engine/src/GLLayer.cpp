@@ -23,6 +23,9 @@
 #include "FileUtils.h"
 #include "renderer/TextureData.h"
 #include <renderer/Render.h>
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 
 namespace Azazel
 {
@@ -94,7 +97,7 @@ namespace Azazel
 
         shader.reset(Shader::create(FileUtils::readFile("shaders/solid.vert.glsl"), FileUtils::readFile("shaders/solid.frag.glsl")));
 
-        gridShader.reset(Shader::create(FileUtils::readFile("shaders/grid.vert.glsl"), FileUtils::readFile("shaders/grid.frag.glsl")));
+        gridShader.reset(Shader::create(FileUtils::readFile("shaders/circle.vert.glsl"), FileUtils::readFile("shaders/circle.frag.glsl")));
         
         std::vector<float> gridVerts
         {
@@ -123,11 +126,21 @@ namespace Azazel
     
     void GLLayer::onUpdate(float delta)
     {
+        ImGui::Begin("Transform");
+
+        ImGui::SliderFloat("r", &r.x, 0.0, 1.0f);
+        ImGui::SliderFloat("t", &t.x, 0.0f, 1.0f);
+
+        
+        ImGui::End();
+
         glm::mat4 mvp = orthographicCamera.getViewProjectionMatrix() * glm::scale(glm::mat4(1.0f), {0.1f, 0.1f, 0.1f});
-        // gridShader->bind();
-        // gridShader->setMatrix4f("u_mvp", mvp);
-        // gridShader->setVec2f("iResolution", {1280, 720});
-        // Render::getRenderer()->drawIndexed(*gridVertexArray, *gridIndexBuffer, *gridShader, *texture);
+        gridShader->bind();
+        gridShader->setMatrix4f("u_mvp", mvp);
+        gridShader->setFloat("radius", r.x);
+        gridShader->setFloat("t", t.x);
+
+        Render::getRender()->drawIndexed(*gridVertexArray, *gridIndexBuffer, *gridShader, *texture);
 
         mvp = orthographicCamera.getViewProjectionMatrix()  * glm::translate(glm::mat4(1.0f), glm::vec3{1.0f, 3.0f, 0.0f}) * glm::rotate(glm::mat4(1.0f), glm::radians((float) glfwGetTime()* 10.0f), {1.0f, 0.0f, 1.0f}) * glm::scale(glm::mat4(1.0f), {2.0f, 2.0f, 2.0f});
         Render::getRender()->setDepthTest(true);

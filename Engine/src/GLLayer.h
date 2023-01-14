@@ -37,6 +37,8 @@ namespace Azazel
         void onEvent(Event& e) override;
  
     private:
+        glm::vec2 r{ 1.0f, 1.0f };
+        glm::vec2 t{ 1.0f, 1.0f };
         std::unique_ptr<Shader> shader;
         std::unique_ptr<VertexArray> vertexArray;
         std::unique_ptr<IndexBuffer> indexBuffer;

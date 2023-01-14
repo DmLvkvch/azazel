@@ -50,6 +50,7 @@ namespace Azazel
     void Render::setViewport(int x, int y, int width, int height)
     {
         glViewport(x, y, width, height);
+        viewportStack.push_back({x, y, width, height});
     }
 
     void Render::setScissor(bool enable)

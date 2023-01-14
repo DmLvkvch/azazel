@@ -65,10 +65,6 @@ namespace Azazel
 
     class Render
     {
-    private:
-        static std::unique_ptr<Render> render;
-        Camera camera;
-        int drawCalls;
     public:
         Render();
         virtual ~Render();
@@ -112,5 +108,9 @@ namespace Azazel
         void beginScene();
 
         void endScene();
+    private:
+        static std::unique_ptr<Render> render;
+        std::vector<glm::ivec4> viewportStack;
+        int drawCalls;
     };
 }
