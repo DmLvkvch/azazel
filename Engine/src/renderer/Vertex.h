@@ -9,7 +9,8 @@ namespace Azazel
 {
     enum Semantic
     {
-        POSITION,
+        POSITION3D,
+        POSITION2D,
         COLOR,
         TEX_COORD,
         NORMAL,
@@ -98,14 +99,22 @@ namespace Azazel
     };
 
 #pragma pack(push, 1)
-    class Vertex2D
+    class Vertex_P3_C4_T2
     {
+    public:
         glm::vec2 position;
         glm::vec4 color;
         glm::vec2 texCoord;
     };
 
-    class SimpleVertex3D
+    class Vertex_P3_T2
+    {
+    public:
+        glm::vec3 position;
+        glm::vec2 texCoord;
+    };
+
+    class Vertex_P3_N3_T2
     {
     public:
         glm::vec3 position;
@@ -113,7 +122,7 @@ namespace Azazel
         glm::vec2 texCoord;
     };
 
-    class Vertex3D
+    class Vertex_P3_N3_T2_TAN3_BTAN_3
     {
     public:
         glm::vec3 position;
@@ -121,7 +130,6 @@ namespace Azazel
         glm::vec2 texCoord;
         glm::vec3 tangent;
         glm::vec3 bitangent;
-        glm::vec4 color;
     };
 #pragma pack(pop)
 }

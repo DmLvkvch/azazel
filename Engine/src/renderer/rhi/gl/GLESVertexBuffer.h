@@ -12,7 +12,7 @@ namespace Azazel
         void bind() const override;
         void unbind() const override;
         void setLayout(const BufferLayout& bufferlayout) override;
-        void updateSubData(int offset, int size, void* data) override;
+        void updateSubData(int offset, void* data, int size) override;
         const BufferLayout& getBufferLayout() const override;
     private:
         unsigned int rendererId;

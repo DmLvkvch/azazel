@@ -6,37 +6,34 @@
 
 #include <glm/glm.hpp>
 #include <renderer/Shader.h>
+#include <renderer/VertexArray.h>
+#include <renderer/IndexBuffer.h>
+
+#include <memory>
 
 namespace Azazel
 {
     namespace MeshData
     {
-        struct Vertex
-        {
-            glm::vec3 Position;
-            glm::vec3 Normal;
-            glm::vec2 TexCoords;
-        };
         struct Texture
         {
             unsigned int id;
             std::string type;
         };
     }
+
+    template<typename T>
     class Mesh
     {
+    public:
+        Mesh(const std::vector<T>& vertices, const std::vector<unsigned int>& indices);
+        ~Mesh();
+        void draw(const Shader& shader);
     private:
-        std::vector<MeshData::Vertex> vertices;
+        std::shared_ptr<IndexBuffer> indexBuffer;
+        std::shared_ptr<VertexArray> vertexArray;
+        std::vector<T> vertices;
         std::vector<unsigned int> indices;
         std::vector<MeshData::Texture> textures;
-        glm::mat4 worldTransform;
-    public:
-
-        Mesh(const std::vector<float>& vertices, const std::vector<unsigned int>& indices);
-        ~Mesh();
-        static Mesh genCubeMesh(float x, float y, float z, float width, float height, float depth);
-        static Mesh genCube(float size);
-
-        void draw(const Shader& shader);
     };
 }

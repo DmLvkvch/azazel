@@ -105,7 +105,7 @@ namespace Azazel
                 { xpos + w, ypos,       1.0f, 1.0f },
                 { xpos + w, ypos + h,   1.0f, 0.0f }           
             };
-            vertexBuffer->updateSubData(offset, 24 * sizeof(float), vertices);
+            vertexBuffer->updateSubData(offset, vertices, 24 * sizeof(float));
             offset += 24 * sizeof(float);
             indices.push_back(i + 0);
             indices.push_back(i + 1);

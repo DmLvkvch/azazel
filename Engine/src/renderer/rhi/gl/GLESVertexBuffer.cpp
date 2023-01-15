@@ -27,7 +27,7 @@ namespace Azazel
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
-    void GLESVertexBuffer::updateSubData(int offset, int size, void* data)
+    void GLESVertexBuffer::updateSubData(int offset, void* data, int size)
     {
         glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
     }

@@ -3,29 +3,26 @@
 #include <vector>
 #include "Vertex.h"
 
+#include <renderer/Render.h>
+
 namespace Azazel
 {
-    Mesh::Mesh(const std::vector<float>& vertices, const std::vector<unsigned int>& indices)
+    
+    template <typename T>
+    Mesh<T>::Mesh(const std::vector<T>& vertices, const std::vector<unsigned int>& indices)
     {
-        
+        this->vertices = vertices;
+        this->indices = indices;
     }
 
-    Mesh::~Mesh()
+    template <typename T>
+    Mesh<T>::~Mesh()
     {
 
     }
 
-    Mesh Mesh::genCubeMesh(float x, float y, float z, float width, float height, float depth)
+    template <typename T>
+    void Mesh<T>::draw(const Shader& shader)
     {
-        std::vector<float> vertices ;
-        
-        std::vector<unsigned int> indices {0, 1, 2, 0, 2, 3};
-
-        return Mesh(vertices, indices);
-    }
-
-    Mesh Mesh::genCube(float size)
-    {
-        return genCubeMesh(1, 1, 1, 1, 1, 1);
     }
 }
