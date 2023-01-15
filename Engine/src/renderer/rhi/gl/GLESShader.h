@@ -23,17 +23,17 @@ namespace Azazel
         
         int getUniformLocation(const std::string& name) const override;
 
-        void setFloat(const std::string& name, float value) const override;
+        Shader* setFloat(const std::string& name, float value) override;
 
-        void setInt(const std::string& name, int value) const override;
+        Shader* setInt(const std::string& name, int value) override;
 
-	    void setVec4f(const std::string& name, const glm::vec4& vec4) const override;
+	    Shader* setVec4f(const std::string& name, const glm::vec4& vec4) override;
 
-        void setMatrix4f(const std::string& name, const glm::mat4& mvp) const override;
+        Shader* setMatrix4f(const std::string& name, const glm::mat4& mvp) override;
 
-        void setVec3f(const std::string& name, const glm::vec3& vec3) const override;
+        Shader* setVec3f(const std::string& name, const glm::vec3& vec3) override;
 
-        void setVec2f(const std::string& name, const glm::vec2& vec2) const override;
+        Shader* setVec2f(const std::string& name, const glm::vec2& vec2) override;
 
     private:
         unsigned int rendererId;

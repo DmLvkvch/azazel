@@ -87,33 +87,39 @@ namespace Azazel
 		return location;
 	}
 
-	void GLESShader::setFloat(const std::string& name, float value) const
+	Shader* GLESShader::setFloat(const std::string& name, float value)
 	{
 		glUniform1f(getUniformLocation(name), value);
+		return this;
 	}
 
-	void GLESShader::setVec4f(const std::string& name, const glm::vec4& vec4) const
+	Shader* GLESShader::setVec4f(const std::string& name, const glm::vec4& vec4)
 	{
 		glUniform4f(getUniformLocation(name), vec4.x, vec4.y, vec4.z, vec4.w);
+		return this;
 	}
 
-	void GLESShader::setInt(const std::string& name, int value) const
+	Shader* GLESShader::setInt(const std::string& name, int value)
 	{
 		glUniform1i(getUniformLocation(name), value);
+		return this;
 	}
 
-	void GLESShader::setMatrix4f(const std::string& name, const glm::mat4& mvp) const
+	Shader* GLESShader::setMatrix4f(const std::string& name, const glm::mat4& mvp)
 	{
 		glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &mvp[0][0]);
+        return this;
 	}
 
-	void GLESShader::setVec3f(const std::string& name, const glm::vec3& vec3) const
+	Shader* GLESShader::setVec3f(const std::string& name, const glm::vec3& vec3)
 	{
 		glUniform3fv(getUniformLocation(name), 1, &vec3.x);
+        return this;
 	}
 
-	void GLESShader::setVec2f(const std::string& name, const glm::vec2& vec2) const
+	Shader* GLESShader::setVec2f(const std::string& name, const glm::vec2& vec2)
 	{
 		glUniform2fv(getUniformLocation(name), 1, &vec2.x);
+        return this;
 	}
 }

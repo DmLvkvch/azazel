@@ -40,7 +40,6 @@ namespace Azazel
         std::unique_ptr<Shader> shader;
         std::unique_ptr<VertexArray> vertexArray;
         std::unique_ptr<IndexBuffer> indexBuffer;
-        std::unique_ptr<Texture> texture;
         std::unique_ptr<Texture> face;
 
         std::unique_ptr<Shader> gridShader;

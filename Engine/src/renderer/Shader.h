@@ -1,8 +1,6 @@
 #pragma once
 
-#include <unordered_map>
 #include <string>
-
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
@@ -32,17 +30,17 @@ namespace Azazel
         
         virtual int getUniformLocation(const std::string& name) const = 0;
 
-        virtual void setFloat(const std::string& name, float value) const = 0;
+        virtual Shader* setFloat(const std::string& name, float value) = 0;
 
-        virtual void setInt(const std::string& name, int value) const = 0;
+        virtual Shader* setInt(const std::string& name, int value) = 0;
 
-	    virtual void setVec4f(const std::string& name, const glm::vec4& vec4) const  = 0;
+	    virtual Shader* setVec4f(const std::string& name, const glm::vec4& vec4) = 0;
 
-        virtual void setMatrix4f(const std::string& name, const glm::mat4& mvp) const = 0;
+        virtual Shader* setMatrix4f(const std::string& name, const glm::mat4& mvp) = 0;
 
-        virtual void setVec3f(const std::string& name, const glm::vec3& vec3) const = 0;
+        virtual Shader* setVec3f(const std::string& name, const glm::vec3& vec3) = 0;
 
-        virtual void setVec2f(const std::string& name, const glm::vec2& vec2) const = 0;
+        virtual Shader* setVec2f(const std::string& name, const glm::vec2& vec2) = 0;
 
         static Shader* create(const std::string& vertexShader, const std::string& fragmentShader);
     };

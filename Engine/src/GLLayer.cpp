@@ -36,46 +36,46 @@ namespace Azazel
         std::vector<float> vertices
         {
             -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f,  
-             0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f,  
-             0.5f, 0.5f,  -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f,  
-             0.5f, 0.5f,  -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f,  
+             0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f,  
+             0.5f, 0.5f,  -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f,  
+             0.5f, 0.5f,  -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f,  
             -0.5f, 0.5f,  -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f,  
-            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f,  
+            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f,  
 
             -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 0.0f, 0.0f,
-             0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 0.0f, 1.0f,
-             0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 1.0f, 0.0f,
-             0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 1.0f, 0.0f,
+             0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 1.0f, 0.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 1.0f, 1.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 1.0f, 1.0f,
             -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 1.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f, 0.0f, 0.0f,
 
             -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f,
-            -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f,
+            -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f,
             -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f,
-            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f,
+            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f,
 
             0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f,
-            0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f,
-            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f,
-            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f,
+            0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f,
+            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f,
+            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f,
             0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f,
-            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f,
+            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f,
 
             -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f,
-             0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f,
-             0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f,
-             0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f,
+             0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f,
+             0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f,
+             0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f,
             -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f,
 
             -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f,
-             0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f,
-             0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f,
-             0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f,
+             0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f,
             -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f
+            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f
         };
 
         std::vector<unsigned int> indices;
@@ -84,10 +84,8 @@ namespace Azazel
             indices.push_back(i);
         }
 
-        this->texture.reset(Texture::create(TextureData(500, 500, 0xaaff00ff)));
-
-        //this->face.reset(Texture::create(TextureUtils::loadTexture("images/awesomeface.png")));
-        this->face.reset(Texture::create(TextureData(4000, 4000, 0xaaff00ff)));
+        this->face.reset(Texture::create(TextureUtils::loadTexture("images/awesomeface.png")));
+        
         face->setTextureFilter(Texture::TextureFilter::Linear);
 
         this->indexBuffer.reset(IndexBuffer::create(indices.data(), indices.size()));
@@ -136,10 +134,7 @@ namespace Azazel
         gridShader->setMatrix4f("u_mvp", mvp);
         gridShader->setFloat("radius", r.x);
         gridShader->setFloat("thickness", r.y);
-
-        gridShader->setVec3f("color", {glm::sin((float) glfwGetTime()), glm::cos((float)glfwGetTime()) , 0.5f });
-
-        Render::getRender()->drawIndexed(*gridVertexArray, *gridIndexBuffer, *gridShader, *texture);
+        Render::getRender()->drawIndexed(*gridVertexArray, *gridIndexBuffer, *gridShader);
 
         mvp = orthographicCamera.getViewProjectionMatrix()  * glm::translate(glm::mat4(1.0f), glm::vec3{0.1f, 0.3f, 0.0f}) * glm::rotate(glm::mat4(1.0f), glm::radians((float) glfwGetTime()* 10.0f), {1.0f, 0.0f, 1.0f}) * glm::scale(glm::mat4(1.0f), {0.4f, 0.40f, 0.4f});
         Render::getRender()->setDepthTest(true);

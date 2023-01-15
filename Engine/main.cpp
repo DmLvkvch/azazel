@@ -4,6 +4,7 @@
 #include "TestLayer.h"
 #include "test/base/BaseLayer.h"
 #include "test/base/TextLayerExample.h"
+#include "test/base/ModelLoadLayer.h"
 #include <Input.h>
 
 int main()
@@ -15,6 +16,7 @@ int main()
     p->pushLayer(new Azazel::GLLayer());
     p->pushLayer(new Azazel::BaseLayer());
     p->pushLayer(new Azazel::TextLayerExample());
+    p->pushLayer(new Azazel::ModelLoadLayer());
 
     p->run();
     delete p;

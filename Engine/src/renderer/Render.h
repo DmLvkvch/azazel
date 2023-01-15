@@ -95,6 +95,8 @@ namespace Azazel
 
         void setBlend(bool enable);
 
+        void drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader);
+
         void drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture);
 
         void drawArrays(const VertexArray& vertexArray, const Shader& shader, const Texture& texture);

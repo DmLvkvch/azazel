@@ -117,6 +117,15 @@ namespace Azazel
         }
     }
 
+    void Render::drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader)
+    {
+        shader.bind();
+        vertexArray.bind();
+        indexBuffer.bind();
+        glDrawElements(GL_TRIANGLES, indexBuffer.getElementCount() * sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+        drawCalls++;
+    }
+
     void Render::drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture)
     {
         texture.bind();

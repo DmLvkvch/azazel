@@ -17,8 +17,8 @@ include_directories ("vendor/glad/include"
                      "vendor"
                      "src")
 
-
-OPTION ( ASSIMP_WARNINGS_AS_ERRORS "Treat all warnings as errors." OFF)
+OPTION (ASSIMP_BUILD_TESTS "If the test suite for Assimp is built in addition to the library." OFF)
+OPTION (ASSIMP_WARNINGS_AS_ERRORS "Treat all warnings as errors." OFF)
 add_subdirectory(vendor/glad)
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/glm)
