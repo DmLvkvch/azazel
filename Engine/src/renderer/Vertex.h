@@ -4,7 +4,7 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
-
+#include "VertexBuffer.h"
 namespace Azazel
 {
     enum Semantic
@@ -105,6 +105,7 @@ namespace Azazel
         glm::vec2 position;
         glm::vec4 color;
         glm::vec2 texCoord;
+        inline static BufferLayout bufferLayout { {ShaderDataType::Float3, "pos"}, {ShaderDataType::Float4, "col"}, {ShaderDataType::Float2, "tex_coord"} };
     };
 
     class Vertex_P3_T2
@@ -112,6 +113,7 @@ namespace Azazel
     public:
         glm::vec3 position;
         glm::vec2 texCoord;
+        inline static BufferLayout bufferLayout { {ShaderDataType::Float3, "pos"}, {ShaderDataType::Float2, "tex_coord"} };
     };
 
     class Vertex_P3_N3_T2
@@ -120,6 +122,8 @@ namespace Azazel
         glm::vec3 position;
         glm::vec3 normal;
         glm::vec2 texCoord;
+        inline static BufferLayout bufferLayout { {ShaderDataType::Float3, "pos"}, {ShaderDataType::Float3, "norm"}, {ShaderDataType::Float2, "tex_coord"} };
+
     };
 
     class Vertex_P3_N3_T2_TAN3_BTAN_3
@@ -130,6 +134,9 @@ namespace Azazel
         glm::vec2 texCoord;
         glm::vec3 tangent;
         glm::vec3 bitangent;
+        inline static BufferLayout bufferLayout { {ShaderDataType::Float3, "pos"}, {ShaderDataType::Float3, "norm"}, {ShaderDataType::Float2, "tex_coord"},
+                                                             {ShaderDataType::Float3, "tangent"}, {ShaderDataType::Float3, "bitangent"} };
     };
+
 #pragma pack(pop)
 }

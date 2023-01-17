@@ -28,7 +28,7 @@ namespace Azazel
         ~TextRenderer();
         void draw(const std::string& text);
     private:
-        std::map<GLchar, Character> Characters;
+        std::map<GLchar, Character> characters;
     
         std::unique_ptr<VertexArray> vertexArray;
         std::unique_ptr<Shader> textShader;

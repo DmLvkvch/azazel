@@ -34,17 +34,7 @@ namespace Azazel
             unsigned int texture;
             glGenTextures(1, &texture);
             glBindTexture(GL_TEXTURE_2D, texture);
-            glTexImage2D(
-                GL_TEXTURE_2D,
-                0,
-                GL_RED,
-                face->glyph->bitmap.width,
-                face->glyph->bitmap.rows,
-                0,
-                GL_RED,
-                GL_UNSIGNED_BYTE,
-                face->glyph->bitmap.buffer
-            );
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, face->glyph->bitmap.width, face->glyph->bitmap.rows, 0, GL_RED, GL_UNSIGNED_BYTE, face->glyph->bitmap.buffer);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -55,16 +45,15 @@ namespace Azazel
                 glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
                 static_cast<unsigned int>(face->glyph->advance.x)
             };
-            Characters.insert(std::pair<char, Character>(c, character));
+            characters.insert(std::pair<char, Character>(c, character));
         }
         glBindTexture(GL_TEXTURE_2D, 0);
         FT_Done_Face(face);
         FT_Done_FreeType(ft);
         vertexArray.reset(VertexArray::create());
-        float x = 100.0f, y = 100.0f;
-        float scale = 1.0f;
         vertexBuffer.reset(VertexBuffer::create(nullptr, text.size() * sizeof(float) * 6 * 4));
-        BufferLayout bf {
+        BufferLayout bf 
+        {
             { ShaderDataType::Float2, "a_position" },
             { ShaderDataType::Float2, "a_tex_coord" }
         };
@@ -88,7 +77,7 @@ namespace Azazel
 
         for (auto c = text.begin(); c != text.end(); c++) 
         {
-            Character ch = Characters[*c];
+            Character ch = characters[*c];
 
             float xpos = x + ch.Bearing.x * scale;
             float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;

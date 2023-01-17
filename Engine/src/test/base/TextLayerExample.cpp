@@ -125,13 +125,13 @@ namespace Azazel
             float w = ch.size.x * scale;
             float h = ch.size.y * scale;
             float vertices[6][4] = {
-                { xpos,     ypos + h,   0.0f, 0.0f },            
-                { xpos,     ypos,       0.0f, 1.0f },
-                { xpos + w, ypos,       1.0f, 1.0f },
+                { xpos,     ypos + h, 0.0f, 0.0f },
+                { xpos,     ypos,     0.0f, 1.0f },
+                { xpos + w, ypos,     1.0f, 1.0f },
 
-                { xpos,     ypos + h,   0.0f, 0.0f },
-                { xpos + w, ypos,       1.0f, 1.0f },
-                { xpos + w, ypos + h,   1.0f, 0.0f }           
+                { xpos,     ypos + h, 0.0f, 0.0f },
+                { xpos + w, ypos,     1.0f, 1.0f },
+                { xpos + w, ypos + h, 1.0f, 0.0f }          
             };
             glBindTexture(GL_TEXTURE_2D, ch.textureID);
             glBindBuffer(GL_ARRAY_BUFFER, VBO);

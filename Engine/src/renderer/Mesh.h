@@ -26,10 +26,12 @@ namespace Azazel
     class Mesh
     {
     public:
+        Mesh();
         Mesh(const std::vector<T>& vertices, const std::vector<unsigned int>& indices);
         ~Mesh();
         void draw(const Shader& shader);
     private:
+        unsigned int VBO, EBO, VAO;
         std::shared_ptr<IndexBuffer> indexBuffer;
         std::shared_ptr<VertexArray> vertexArray;
         std::vector<T> vertices;
