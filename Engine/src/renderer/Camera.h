@@ -39,7 +39,7 @@ namespace Azazel
         void move(const glm::vec3& move);
     private:
         glm::vec3 position;
-        glm::vec3 lookAtPosition{ 0.0f, 0.0f, 0.0f };
+        glm::vec3 lookAtPosition { 0.0f, 0.0f, 0.0f };
         glm::vec3 rotation;
         glm::vec3 scale;
         glm::vec3 direction;

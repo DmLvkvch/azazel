@@ -4,18 +4,18 @@
 #include <iostream>
 namespace Azazel
 {
-    GLESFrameBuffer::GLESFrameBuffer(std::shared_ptr<Texture> texture, std::shared_ptr<FrameBufferTarget> depthTarget)
-    {
-        glGenFramebuffers(1, &rendererId);
-        addColorAttachment(texture);
-        setDepthTarget(depthTarget);
-    }
-
     GLESFrameBuffer::GLESFrameBuffer(std::shared_ptr<Texture> texture)
     {
         glGenFramebuffers(1, &rendererId);
         addColorAttachment(texture);
         depthTarget = std::shared_ptr<FrameBufferTarget>(nullptr);
+    }
+
+    GLESFrameBuffer::GLESFrameBuffer(std::shared_ptr<Texture> texture, std::shared_ptr<FrameBufferTarget> depthTarget)
+    {
+        glGenFramebuffers(1, &rendererId);
+        addColorAttachment(texture);
+        setDepthTarget(depthTarget);
     }
 
     GLESFrameBuffer::~GLESFrameBuffer()

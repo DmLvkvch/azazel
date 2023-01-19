@@ -11,6 +11,7 @@
 #include <renderer/FrameBuffer.h>
 #include <memory>
 #include <Transform.h>
+#include <renderer/Mesh.h>
 
 namespace Azazel
 {
@@ -37,5 +38,6 @@ namespace Azazel
         std::unique_ptr<VertexArray> vertexArray;
         Transform transform;
         glm::vec4 color;
+        Mesh<Vertex_P3_T2> mesh;
     };
 }
