@@ -1,7 +1,6 @@
 #include "GLLayer.h"
-#define _CRTDBG_MAP_ALLOC
 
-#include "renderer/rhi/gl/gl_headers.h"
+#include <renderer/rhi/gl/gl_headers.h>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
@@ -13,9 +12,9 @@
 #include <fstream>
 #include <streambuf>
 
-#include "events/KeyEvent.h"
-#include "events/MouseEvent.h"
-#include "events/ApplicationEvent.h"
+#include <events/KeyEvent.h>
+#include <events/MouseEvent.h>
+#include <events/ApplicationEvent.h>
 
 #include <vector>
 
@@ -84,7 +83,7 @@ namespace Azazel
             indices.push_back(i);
         }
 
-        this->face.reset(Texture::create(TextureUtils::loadTexture("images/awesomeface.png")));
+        this->face.reset(Texture::create(TextureUtils::loadTexture("images/container2.png")));
         
         face->setTextureFilter(Texture::TextureFilter::Linear);
 

@@ -12,9 +12,10 @@ namespace Azazel
     public:
         ModelLoadLayer() : Layer("Model Load Example")
         {
-            Mesh<Vertex_P3_N3_T2> m;
         }
 
         ~ModelLoadLayer() {}
+    private:
+        Model model;
     };
 }

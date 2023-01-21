@@ -29,7 +29,6 @@ namespace Azazel
         friend class Render;
         Mesh()
         {
-            BufferLayout bl = T::bufferLayout;
         }
 
         Mesh(const std::vector<T>& vertices, const std::vector<unsigned int>& indices)
@@ -45,24 +44,6 @@ namespace Azazel
         ~Mesh()
         {
 
-        }
-
-        void draw(const Shader& shader)
-        {
-            shader.bind();
-           // Render::getRender()->drawIndexed(*vertexArray, *indexBuffer, shader);
-        }
-
-        void draw(const Shader& shader, const Texture& texture);
-
-        inline const VertexArray& getVertexArray() const
-        {
-            return *vertexArray;
-        }
-
-        inline const IndexBuffer& getIndexBuffer() const
-        {
-            return *indexBuffer;
         }
 
     private:
