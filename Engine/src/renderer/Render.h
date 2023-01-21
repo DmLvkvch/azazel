@@ -7,6 +7,8 @@
 #include <renderer/VertexArray.h>
 #include <renderer/Shader.h>
 #include <renderer/Texture.h>
+#include <renderer/Mesh.h>
+#include <renderer/Vertex.h>
 #include "Camera.h"
 #include <memory>
 
@@ -101,6 +103,9 @@ namespace Azazel
 
         void drawArrays(const VertexArray& vertexArray, const Shader& shader, const Texture& texture);
 
+        template <typename T>
+        void drawMesh(const Mesh<T>& mesh, const Shader& shader, const Texture& texture);
+
         void reset();
 
         void setBlendFunc(BlendFunction sFactor, BlendFunction dFactor);
@@ -115,4 +120,9 @@ namespace Azazel
         std::vector<glm::ivec4> viewportStack;
         int drawCalls;
     };
+
+    template <typename T> void Render::drawMesh(const Mesh<T>& mesh, const Shader& shader, const Texture& texture)
+    {
+        drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader, texture);
+    }
 }

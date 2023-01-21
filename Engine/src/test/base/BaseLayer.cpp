@@ -16,13 +16,13 @@ namespace Azazel
     void BaseLayer::onAttach()
     {
         std::vector<Vertex_P3_T2> vertices;
-        vertices.push_back(Vertex_P3_T2{glm::vec3{0.5f,  0.5f, 0.0f}, glm::vec2{1.0f, 1.0f}});
-        vertices.push_back(Vertex_P3_T2{glm::vec3{0.5f, -0.5f, 0.0f}, glm::vec2{1.0f, 0.0f}});
-        vertices.push_back(Vertex_P3_T2{glm::vec3{-0.5f, -0.5f, 0.0f}, glm::vec2{0.0f, 0.0f}});
-        vertices.push_back(Vertex_P3_T2{glm::vec3{-0.5f,  0.5f, 0.0f}, glm::vec2{0.0f, 1.0f}});
+        vertices.emplace_back(glm::vec3{0.5f,  0.5f, 0.0f}, glm::vec2{1.0f, 1.0f});
+        vertices.emplace_back(glm::vec3{0.5f, -0.5f, 0.0f}, glm::vec2{1.0f, 0.0f});
+        vertices.emplace_back(glm::vec3{-0.5f, -0.5f, 0.0f}, glm::vec2{0.0f, 0.0f});
+        vertices.emplace_back(glm::vec3{-0.5f,  0.5f, 0.0f}, glm::vec2{0.0f, 1.0f});
 
         std::vector<unsigned int> indices {0, 1, 3, 1, 2, 3};
-        std::shared_ptr<VertexBuffer> vertexBuffer (VertexBuffer::create((float*) vertices.data(), sizeof(float) * vertices.size()));
+        std::shared_ptr<VertexBuffer> vertexBuffer (VertexBuffer::create((float*) vertices.data(), sizeof(float) * vertices.size() * 5));
         indexBuffer.reset(IndexBuffer::create(indices.data(), 6));
         vertexArray.reset(VertexArray::create());
         BufferLayout bf = 
@@ -57,7 +57,8 @@ namespace Azazel
         shader->bind();
         shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * transform.getTransformMatrix());
         //Render::getRender()->drawIndexed(*vertexArray, *indexBuffer, *shader, *texture);
-        mesh.draw(*shader, *texture);
+        Render::getRender()->drawMesh<Vertex_P3_T2>(mesh, *shader, *texture);
+//        mesh.draw(*shader, *texture);
 
         shader->bind();
         shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * glm::translate(glm::mat4(1.0f), glm::vec3(400.0f, 400.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(200.0f, 200.0f, 1.0f)));

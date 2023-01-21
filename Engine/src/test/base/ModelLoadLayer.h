@@ -3,7 +3,6 @@
 #include <Layer.h>
 #include <renderer/Model.h>
 #include <renderer/Mesh.h>
-#include <renderer/Mesh.cpp>
 #include <renderer/Vertex.h>
 
 namespace Azazel

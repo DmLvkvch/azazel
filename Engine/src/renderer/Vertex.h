@@ -106,6 +106,12 @@ namespace Azazel
         glm::vec4 color;
         glm::vec2 texCoord;
         static BufferLayout bufferLayout;
+
+        Vertex_P3_C4_T2(glm::vec2 position, glm::vec4 color, glm::vec2 texCoord)
+        : position(position), color(color), texCoord(texCoord)
+        {
+
+        }
     };
 
     class Vertex_P3_T2
@@ -114,6 +120,12 @@ namespace Azazel
         glm::vec3 position;
         glm::vec2 texCoord;
         static BufferLayout bufferLayout;
+        Vertex_P3_T2() = default;
+        Vertex_P3_T2(glm::vec3 position, glm::vec2 texCoord)
+        : position(position), texCoord(texCoord)
+        {
+
+        }
     };
 
     class Vertex_P3_N3_T2
@@ -123,6 +135,14 @@ namespace Azazel
         glm::vec3 normal;
         glm::vec2 texCoord;
         static BufferLayout bufferLayout;
+        
+        Vertex_P3_N3_T2() = default;
+
+        Vertex_P3_N3_T2(glm::vec3 position, glm::vec3 normal, glm::vec2 texCoord)
+        : position(position), normal(normal), texCoord(texCoord)
+        {
+
+        }
 
     };
 
