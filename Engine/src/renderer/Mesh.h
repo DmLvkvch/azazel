@@ -25,18 +25,23 @@ namespace Azazel
 
         Mesh(const std::vector<T>& vertices, const std::vector<unsigned int>& indices)
         {
-            this->vertices = vertices;
-            this->indices = indices;
             vertexArray.reset(VertexArray::create());
             indexBuffer.reset(IndexBuffer::create(indices.data(), indices.size()));
             std::shared_ptr<VertexBuffer> vb (VertexBuffer::create((float*) vertices.data(), vertices.size() * sizeof(T)));
             vertexArray->addBuffer(vb, T::bufferLayout);
         }
 
+        Mesh(const std::vector<float>& vertices, const std::vector<unsigned int>& indices)
+        {
+            vertexArray.reset(VertexArray::create());
+            indexBuffer.reset(IndexBuffer::create(indices.data(), indices.size()));
+            std::shared_ptr<VertexBuffer> vb (VertexBuffer::create((float*) vertices.data(), vertices.size() * sizeof(float)));
+            vertexArray->addBuffer(vb, T::bufferLayout);
+        }
+
+
         void draw(Shader& shader)
         {
-            shader.bind();
-            shader.setInt("u_texture_0", 0);
             Render::getRender()->drawIndexed(*vertexArray, *indexBuffer, shader);
         }
 
@@ -48,7 +53,5 @@ namespace Azazel
     private:
         std::shared_ptr<VertexArray> vertexArray;
         std::shared_ptr<IndexBuffer> indexBuffer;
-        std::vector<T> vertices;
-        std::vector<unsigned int> indices;
     };
 }

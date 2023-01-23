@@ -5,6 +5,7 @@
 namespace Azazel
 {
     Shader::Shader(const std::string& vertexShader, const std::string& fragmentShader)
+    : vertexCode(vertexShader), fragmentCode(fragmentShader)
     {
 
     }

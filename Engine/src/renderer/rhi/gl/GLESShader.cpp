@@ -83,6 +83,7 @@ namespace Azazel
 		if (location == -1)
 		{
 			std::cout << "No active uniform variable with name " << name << " found" << std::endl;
+			std::cout<<vertexCode<<std::endl<<fragmentCode<<std::endl;
 		}
 		return location;
 	}

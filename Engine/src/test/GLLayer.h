@@ -12,6 +12,7 @@
 #include "renderer/VertexArray.h"
 #include "renderer/FrameBuffer.h"
 #include <memory>
+#include "renderer/Model.h"
 
 namespace Azazel
 {
@@ -35,14 +36,15 @@ namespace Azazel
         void onEvent(Event& e) override;
  
     private:
-        glm::vec2 r{ 0.1f, 0.1f };
-        std::unique_ptr<Shader> shader;
-        std::unique_ptr<VertexArray> vertexArray;
-        std::unique_ptr<IndexBuffer> indexBuffer;
+        glm::vec2 r { 0.1f, 0.1f };
+        
+        Model model;
+        
+        Mesh<Vertex_P3_T2> gridMesh;
+        
         std::unique_ptr<Texture> face;
 
+        std::unique_ptr<Shader> shader;
         std::unique_ptr<Shader> gridShader;
-        std::unique_ptr<VertexArray> gridVertexArray;
-        std::unique_ptr<IndexBuffer> gridIndexBuffer;
     };
 }

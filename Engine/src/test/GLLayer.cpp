@@ -25,74 +25,16 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include <renderer/FrameBufferTarget.h>
 
 namespace Azazel
 {
     
     void GLLayer::onAttach()
     {
-        std::vector<float> vertices
-        {
-            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f,  
-             0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f,  
-             0.5f, 0.5f,  -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f,  
-             0.5f, 0.5f,  -0.5f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f,  
-            -0.5f, 0.5f,  -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f,  
-            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f,  
 
-            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,  0.0f, 0.0f,
-             0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,  1.0f, 0.0f,
-             0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,  1.0f, 1.0f,
-             0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,  1.0f, 1.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,  0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,  0.0f, 0.0f,
- 
-            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f, 0.0f,  0.0f, 0.0f,
-            -0.5f,  0.5f, -0.5f, -1.0f,  0.0f, 0.0f,  1.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f, 0.0f,  1.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f, 0.0f,  1.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f, -1.0f,  0.0f, 0.0f,  0.0f, 1.0f,
-            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f, 0.0f,  0.0f, 0.0f,
- 
-            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
-            0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
-            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
-            0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
- 
-            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f, 0.0f,  0.0f, 0.0f,
-             0.5f, -0.5f, -0.5f,  0.0f, -1.0f, 0.0f,  1.0f, 0.0f,
-             0.5f, -0.5f,  0.5f,  0.0f, -1.0f, 0.0f,  1.0f, 1.0f,
-             0.5f, -0.5f,  0.5f,  0.0f, -1.0f, 0.0f,  1.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, -1.0f, 0.0f,  0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f, 0.0f,  0.0f, 0.0f,
- 
-            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f, 0.0f,  0.0f, 0.0f,
-             0.5f,  0.5f, -0.5f,  0.0f,  1.0f, 0.0f,  1.0f, 0.0f,
-             0.5f,  0.5f,  0.5f,  0.0f,  1.0f, 0.0f,  1.0f, 1.0f,
-             0.5f,  0.5f,  0.5f,  0.0f,  1.0f, 0.0f,  1.0f, 1.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f,  1.0f, 0.0f,  0.0f, 1.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f, 0.0f,  0.0f, 0.0f
-        };
-
-        std::vector<unsigned int> indices;
-        for (int i = 0; i < vertices.size(); i++)
-        {
-            indices.push_back(i);
-        }
-
+        model = Model::cube();
         this->face.reset(Texture::create(TextureUtils::loadTexture("images/container2.png")));
         
-        face->setTextureFilter(Texture::TextureFilter::Linear);
-
-        this->indexBuffer.reset(IndexBuffer::create(indices.data(), indices.size()));
-        std::shared_ptr<VertexBuffer> vertexBuffer (VertexBuffer::create((float*) vertices.data(), sizeof(float) * vertices.size()));
-        this->vertexArray.reset(VertexArray::create());
-        BufferLayout vbo { { ShaderDataType::Float3, "position" }, { ShaderDataType::Float3, "normal" }, { ShaderDataType::Float2, "normal" } };
-        vertexArray->addBuffer(vertexBuffer, vbo);
-
         shader.reset(Shader::create(FileUtils::readFile("shaders/solid.vert.glsl"), FileUtils::readFile("shaders/solid.frag.glsl")));
 
         gridShader.reset(Shader::create(FileUtils::readFile("shaders/circle.vert.glsl"), FileUtils::readFile("shaders/circle.frag.glsl")));
@@ -105,14 +47,9 @@ namespace Azazel
              1.0f, -1.0f, 0.0f, 0.0f, 1.0f
         };
 
-        unsigned int gridInds[6] = {0, 1, 2, 0, 2, 3};
+        std::vector<unsigned int> gridInds {0, 1, 2, 0, 2, 3};
 
-        gridIndexBuffer.reset(IndexBuffer::create(gridInds, 6));
-        std::shared_ptr<VertexBuffer> vertexBuffer1 (VertexBuffer::create((float*) gridVerts.data(), sizeof(float) * gridVerts.size() * 5));
-
-        gridVertexArray.reset(VertexArray::create());
-        vbo = { { ShaderDataType::Float3, "positions" }, { ShaderDataType::Float2, "texCoord"} };
-        gridVertexArray->addBuffer(vertexBuffer1, vbo);
+        gridMesh = Mesh<Vertex_P3_T2>(gridVerts, gridInds);
 
         orthographicCamera = OrthographicCamera(-2.0f, 2.0f, -2.0f, 2.0f);
     }
@@ -131,13 +68,14 @@ namespace Azazel
         glm::mat4 mvp = orthographicCamera.getViewProjectionMatrix();
         gridShader->bind();
         gridShader->setMatrix4f("u_mvp", mvp)->setFloat("u_radius", r.x)->setFloat("u_thickness", r.y);
-        Render::getRender()->drawIndexed(*gridVertexArray, *gridIndexBuffer, *gridShader);
-        mvp = orthographicCamera.getViewProjectionMatrix()  * glm::translate(glm::mat4(1.0f), glm::vec3{0.1f, 0.3f, 0.0f}) * glm::rotate(glm::mat4(1.0f), glm::radians((float) glfwGetTime()* 10.0f), {1.0f, 0.0f, 1.0f}) * glm::scale(glm::mat4(1.0f), {0.4f, 0.40f, 0.4f});
+        gridMesh.draw(*gridShader);
+        mvp = orthographicCamera.getViewProjectionMatrix() * glm::translate(glm::mat4(1.0f), glm::vec3{0.1f, 0.3f, 0.0f}) * glm::rotate(glm::mat4(1.0f), glm::radians((float) glfwGetTime()* 10.0f), {1.0f, 0.0f, 1.0f}) * glm::scale(glm::mat4(1.0f), {0.4f, 0.40f, 0.4f});
        
         Render::getRender()->setDepthTest(true);
         shader->bind();
         shader->setInt("u_texture_0", 0)->setMatrix4f("u_mvp", mvp);
-        Render::getRender()->drawIndexed(*vertexArray, *indexBuffer, *shader, *face);
+        face->bind();
+        model.draw(*shader);
         Render::getRender()->setDepthTest(false);
     }
     

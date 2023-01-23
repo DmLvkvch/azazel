@@ -10,6 +10,8 @@ namespace Azazel
     class Shader
     {
     public:
+        std::string vertexCode;
+        std::string fragmentCode;
 
         enum ShaderType
         {
