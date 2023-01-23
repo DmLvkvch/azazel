@@ -9,19 +9,11 @@
 #include <renderer/VertexArray.h>
 #include <renderer/IndexBuffer.h>
 #include <renderer/Texture.h>
+#include <renderer/Render.h>
 #include <memory>
 
 namespace Azazel
 {
-    namespace MeshData
-    {
-        struct Texture
-        {
-            unsigned int id;
-            std::string type;
-        };
-    }
-
     template<typename T>
     class Mesh
     {
@@ -41,6 +33,13 @@ namespace Azazel
             vertexArray->addBuffer(vb, T::bufferLayout);
         }
 
+        void draw(Shader& shader)
+        {
+            shader.bind();
+            shader.setInt("u_texture_0", 0);
+            Render::getRender()->drawIndexed(*vertexArray, *indexBuffer, shader);
+        }
+
         ~Mesh()
         {
 
@@ -51,6 +50,5 @@ namespace Azazel
         std::shared_ptr<IndexBuffer> indexBuffer;
         std::vector<T> vertices;
         std::vector<unsigned int> indices;
-        std::vector<MeshData::Texture> textures;
     };
 }

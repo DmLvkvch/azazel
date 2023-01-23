@@ -21,8 +21,7 @@ namespace Azazel
         Camera camera;
         OrthographicCamera orthographicCamera;
 
-        GLLayer()
-        : Layer("GL Layer")
+        GLLayer() : Layer("GL Layer")
         {
         }
 

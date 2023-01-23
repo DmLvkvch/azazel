@@ -136,7 +136,7 @@ namespace Azazel
        
         Render::getRender()->setDepthTest(true);
         shader->bind();
-        shader->setInt("u_texture", 0)->setMatrix4f("u_mvp", mvp);
+        shader->setInt("u_texture_0", 0)->setMatrix4f("u_mvp", mvp);
         Render::getRender()->drawIndexed(*vertexArray, *indexBuffer, *shader, *face);
         Render::getRender()->setDepthTest(false);
     }

@@ -7,7 +7,6 @@
 #include <renderer/VertexArray.h>
 #include <renderer/Shader.h>
 #include <renderer/Texture.h>
-#include <renderer/Mesh.h>
 #include <renderer/Vertex.h>
 #include "Camera.h"
 #include <memory>
@@ -65,6 +64,9 @@ namespace Azazel
         Always,
     };
 
+    template <class T>
+    class Mesh;
+
     class Render
     {
     public:
@@ -106,6 +108,9 @@ namespace Azazel
         template <typename T>
         void drawMesh(const Mesh<T>& mesh, const Shader& shader, const Texture& texture);
 
+        template <typename T>
+        void drawMesh(const Mesh<T>& mesh, const Shader& shader);
+
         void reset();
 
         void setBlendFunc(BlendFunction sFactor, BlendFunction dFactor);
@@ -124,5 +129,10 @@ namespace Azazel
     template <typename T> void Render::drawMesh(const Mesh<T>& mesh, const Shader& shader, const Texture& texture)
     {
         drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader, texture);
+    }
+
+    template <typename T> void Render::drawMesh(const Mesh<T>& mesh, const Shader& shader)
+    {
+        drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader);
     }
 }
