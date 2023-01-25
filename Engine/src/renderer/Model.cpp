@@ -1,5 +1,8 @@
 #include "Model.h"
 #include <iostream>
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+#include <TextureUtils.h>
 
 namespace Azazel
 {
@@ -73,24 +76,25 @@ namespace Azazel
         
     }
 
-    void Model::draw(Shader& shader)
-    {
-        for (auto& mesh : meshes)
-        {
-            Render::getRender()->drawMesh(mesh, shader);
-        }
-    }
-
     void Model::loadModel(const std::string& path)
     {
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs);
+        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals);
         if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
             std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
             return;
         }
+        directory = path.substr(0, path.find_last_of('/'));
         processNode(scene->mRootNode, scene);
+    }
+
+    void Model::draw(const Shader& shader)
+    {
+        for (auto& mesh : meshes)
+        {
+            Render::getRender()->drawMesh(mesh, shader);
+        }
     }
 
     void Model::processNode(aiNode* node, const aiScene* scene)
@@ -138,7 +142,20 @@ namespace Azazel
             }
             vertices.push_back(vertex);
         }
-
+        if(mesh->mMaterialIndex >= 0)
+        {
+            aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+            int count = material->GetTextureCount(aiTextureType_DIFFUSE);
+            for(unsigned int i = 0; i < count; i++)
+            {
+                aiString str;
+                material->GetTexture(aiTextureType_DIFFUSE, i, &str);
+                std::shared_ptr<Texture> texture;
+                std::string fullPath = directory +"/"+ str.C_Str();
+                texture.reset(Texture::create(TextureUtils::loadTexture(fullPath)));
+                textures.push_back(texture);
+           }
+        }
         for(unsigned int i = 0; i < mesh->mNumFaces; i++)
         {
             aiFace face = mesh->mFaces[i];

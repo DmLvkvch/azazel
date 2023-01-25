@@ -37,7 +37,7 @@ namespace Azazel
         
         shader.reset(Shader::create(FileUtils::readFile("shaders/solid.vert.glsl"), FileUtils::readFile("shaders/solid.frag.glsl")));
 
-        gridShader.reset(Shader::create(FileUtils::readFile("shaders/circle.vert.glsl"), FileUtils::readFile("shaders/circle.frag.glsl")));
+        testShader.reset(Shader::create(FileUtils::readFile("shaders/circle.vert.glsl"), FileUtils::readFile("shaders/circle.frag.glsl")));
         
         std::vector<float> gridVerts
         {
@@ -66,9 +66,9 @@ namespace Azazel
         ImGui::End();
 
         glm::mat4 mvp = orthographicCamera.getViewProjectionMatrix();
-        gridShader->bind();
-        gridShader->setMatrix4f("u_mvp", mvp)->setFloat("u_radius", r.x)->setFloat("u_thickness", r.y);
-        gridMesh.draw(*gridShader);
+        testShader->bind();
+        testShader->setMatrix4f("u_mvp", mvp)->setFloat("u_radius", r.x)->setFloat("u_thickness", r.y);
+        gridMesh.draw(*testShader);
         mvp = orthographicCamera.getViewProjectionMatrix() * glm::translate(glm::mat4(1.0f), glm::vec3{0.1f, 0.3f, 0.0f}) * glm::rotate(glm::mat4(1.0f), glm::radians((float) glfwGetTime()* 10.0f), {1.0f, 0.0f, 1.0f}) * glm::scale(glm::mat4(1.0f), {0.4f, 0.40f, 0.4f});
        
         Render::getRender()->setDepthTest(true);

@@ -1,35 +1,40 @@
 #pragma once
 
 #include <vector>
-#include "Mesh.h"
-#include <stb_image/stb_image.h>
-#include <assimp/Importer.hpp>
+#include <renderer/Mesh.h>
 #include <assimp/scene.h>
-#include <assimp/postprocess.h>
-#include "Vertex.h"
+#include <renderer/Vertex.h>
 #include <renderer/Shader.h>
+#include <renderer/Transform.h>
+#include <renderer/Texture.h>
+#include <memory>
 
 namespace Azazel
 {
     class Model
     {
-    public:
-        std::vector<Mesh<Vertex_P3_N3_T2>> meshes;
-        
+    public:        
         Model() = default;
 
         Model(std::vector<Mesh<Vertex_P3_N3_T2>> meshes);
 
         Model(const std::string& path);
 
-        void draw(Shader& shader);
+        void draw(const Shader& shader);
+
+        static Model cube();
+
+        Transform transform;
+    private:
 
         void loadModel(const std::string& path);
 
         void processNode(aiNode* node, const aiScene* scene);
 
         Mesh<Vertex_P3_N3_T2> processMesh(aiMesh* mesh, const aiScene* scene);
-
-        static Model cube();
+    private:
+        std::string directory;
+        std::vector<Mesh<Vertex_P3_N3_T2>> meshes;
+        std::vector<std::shared_ptr<Texture>> textures;
     };
 }

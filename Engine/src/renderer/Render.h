@@ -22,6 +22,12 @@ namespace Azazel
         None
     };
 
+    enum class CullFront
+    {
+        Cw,
+        Ccw
+    };
+
     enum class BlendEquation
     {
         Add,
@@ -93,6 +99,10 @@ namespace Azazel
 
         void setBackFaceCulling(bool enable);
 
+        void setCullFace(CullMode cullMode);
+
+        void setFrontFace(CullFront cullFront);
+
         void setDepthTest(bool enable);
 
         void setStencilTest(bool enable);
@@ -122,7 +132,6 @@ namespace Azazel
         void endScene();
     private:
         static std::unique_ptr<Render> render;
-        std::vector<glm::ivec4> viewportStack;
         int drawCalls;
     };
 

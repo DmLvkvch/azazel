@@ -1,9 +1,7 @@
 #include "GLESTexture.h"
 
 #include "gl_headers.h"
-
 #include <stb_image/stb_image.h>
-
 #include <iostream>
 
 namespace Azazel
@@ -57,7 +55,7 @@ namespace Azazel
             format = GL_RGBA;
             internalFormat = GL_RGBA8;
         }
-        if (data == nullptr)
+        if (!data)
         {
             std::cout<<"Warning. Creating texture with no data provided"<<std::endl;
         }

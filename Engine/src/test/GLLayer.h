@@ -45,6 +45,6 @@ namespace Azazel
         std::unique_ptr<Texture> face;
 
         std::unique_ptr<Shader> shader;
-        std::unique_ptr<Shader> gridShader;
+        std::unique_ptr<Shader> testShader;
     };
 }

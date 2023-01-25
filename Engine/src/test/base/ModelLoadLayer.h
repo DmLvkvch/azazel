@@ -14,9 +14,10 @@ namespace Azazel
     public:
         ModelLoadLayer() : Layer("Model Load Example")
         {
-            model = Model("objects/backpack/cottage_fbx.fbx");
+            model = Model("objects/duck/Duck.gltf");
             shader.reset(Shader::create(FileUtils::readFile("shaders/solid.vert.glsl"), FileUtils::readFile("shaders/solid.frag.glsl")));
-            texture.reset(Texture::create(TextureUtils::loadTexture("objects/backpack/cottage_10.jpg")));
+            texture.reset(Texture::create(TextureUtils::loadTexture("objects/duck/DuckCM.png")));
+            model.transform.scale = glm::vec3{0.001f, 0.001f, 0.001f};
         }
 
         void onUpdate(float delta) override
@@ -25,7 +26,8 @@ namespace Azazel
             shader->bind();
             texture->bind();
             shader->setInt("u_texture_0", 0);
-            shader->setMatrix4f("u_mvp", glm::translate(glm::mat4(1.0f), glm::vec3{-0.3f, 0.0f, 0.5f}) * glm::rotate(glm::mat4(1.0f), glm::radians((float) glfwGetTime()* 10.0f), {0.0f, 1.0f, 1.0f}) * glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.1f)));
+            model.transform.rotation.x = model.transform.rotation.y = (float) glfwGetTime() * 30.0f;
+            shader->setMatrix4f("u_mvp", glm::translate(glm::mat4(1.0f), glm::vec3{-0.3f, 0.0f, 0.5f}) * model.transform.getTransformMatrix());
             model.draw(*shader);
             Render::getRender()->setDepthTest(false);
         }

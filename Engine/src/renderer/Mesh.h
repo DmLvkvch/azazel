@@ -49,7 +49,7 @@ namespace Azazel
         {
 
         }
-
+        std::vector<std::shared_ptr<Texture>> textures;
     private:
         std::shared_ptr<VertexArray> vertexArray;
         std::shared_ptr<IndexBuffer> indexBuffer;

@@ -30,6 +30,6 @@ namespace Azazel
 
     TextureData::~TextureData()
     {
-
+       
     }
 }
