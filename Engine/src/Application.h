@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Window.h"
-#include <memory>
 #include "LayerStack.h"
+#include <memory>
 #include <functional>
 
 namespace Azazel

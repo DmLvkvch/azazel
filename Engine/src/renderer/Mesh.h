@@ -39,18 +39,22 @@ namespace Azazel
             vertexArray->addBuffer(vb, T::bufferLayout);
         }
 
+        ~Mesh()
+        {
+
+        }
 
         void draw(Shader& shader)
         {
             Render::getRender()->drawIndexed(*vertexArray, *indexBuffer, shader);
         }
 
-        ~Mesh()
+        std::vector<std::shared_ptr<Texture>>& getTextures()
         {
-
+            return textures;
         }
-        std::vector<std::shared_ptr<Texture>> textures;
     private:
+        std::vector<std::shared_ptr<Texture>> textures;
         std::shared_ptr<VertexArray> vertexArray;
         std::shared_ptr<IndexBuffer> indexBuffer;
     };
