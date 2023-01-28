@@ -1,15 +1,13 @@
 #pragma once
 
 #include <Layer.h>
-
-#include <renderer/OrthographicCamera.h>
+#include <renderer/camera/OrthographicCamera.h>
 #include <renderer/Shader.h>
 #include <renderer/Texture.h>
 #include <renderer/VertexBuffer.h>
 #include <renderer/IndexBuffer.h>
 #include <renderer/VertexArray.h>
 #include <renderer/FrameBuffer.h>
-#include <memory>
 #include <renderer/Transform.h>
 #include <renderer/Mesh.h>
 
@@ -24,6 +22,7 @@ namespace Azazel
         void onAttach() override;
         void onDetach() override;
         void onUpdate(float delta) override;
+        void onRender(float delta) override;
         void onEvent(Event& e) override;
         void onImguiRender(float delta) override;
     private:

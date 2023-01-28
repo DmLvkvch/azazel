@@ -28,6 +28,11 @@ namespace Azazel
 
     }
 
+    void Layer::onRender(float delta)
+    {
+        
+    }
+
     void Layer::onImguiRender(float delta)
     {
 

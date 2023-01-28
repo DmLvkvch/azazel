@@ -8,6 +8,13 @@
 
 namespace Azazel
 {
+    struct CameraLocation
+    {
+        glm::vec3 position { 0.0f, 0.0f, 0.0f };
+        glm::vec3 direction { 0.0f, 0.0f, -1.0f };
+        glm::vec3 up { 0.0f, 1.0f, 0.0f };
+    };
+
     class Camera
     {
     public:
@@ -17,10 +24,6 @@ namespace Azazel
         ~Camera();
 
         void setPosition(const glm::vec3& position);
-
-        void setScale(const glm::vec3& scale);
-
-        void setRotation(const glm::vec3& rotation);
 
         void setDirection(const glm::vec3& direction);
 
@@ -32,18 +35,15 @@ namespace Azazel
 
         void setLookAtPosition(const glm::vec3& lookAtPosition = glm::vec3(0.0f, 0.0f, 0.0f));
 
-        glm::mat4 getViewLookAtMatrix(const glm::vec3& up = glm::vec3(0.0f, 1.0f, 0.0f));
+        glm::mat4 getViewLookAtMatrix(glm::vec3 lookAtPosition = glm::vec3{0.0, 0.0, 0.0});
 
-        const glm::vec3& getPosition();
+        inline const glm::vec3& getImmutablePosition() const
+        {
+            return camera.position;
+        }
 
         void move(const glm::vec3& move);
     private:
-        glm::vec3 position;
-        glm::vec3 lookAtPosition { 0.0f, 0.0f, 0.0f };
-        glm::vec3 rotation;
-        glm::vec3 scale;
-        glm::vec3 direction;
-        glm::vec3 cameraFront { 0.0f, 0.0f, -1.0f };
-        glm::vec3 cameraUp { 0.0f, 1.0f, 0.0f };
+        CameraLocation camera;
     };
 }

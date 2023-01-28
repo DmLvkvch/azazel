@@ -5,9 +5,6 @@
 #include <events/KeyEvent.h>
 #include <events/MouseEvent.h>
 #include <events/ApplicationEvent.h>
-#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
 #include <renderer/Render.h>
 #include <renderer/Mesh.h>
 
@@ -54,6 +51,9 @@ namespace Azazel
 
     void BaseLayer::onUpdate(float delta)
     {
+        Render::getRender()->setBlend(true);
+        Render::getRender()->setBlendFunc(BlendFunction::SrcAlpha, BlendFunction::OneMinusSrcAlpha);
+
         shader->bind();
         shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * transform.getTransformMatrix());
         Render::getRender()->drawMesh<Vertex_P3_T2>(mesh, *shader, *texture);
@@ -61,6 +61,10 @@ namespace Azazel
         shader->bind();
         shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * glm::translate(glm::mat4(1.0f), glm::vec3(400.0f, 400.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(200.0f, 200.0f, 1.0f)));
         Render::getRender()->drawIndexed(*vertexArray, *indexBuffer, *shader, *texture1);
+    }
+
+    void BaseLayer::onRender(float delta)
+    {
     }
 
     void BaseLayer::onImguiRender(float delta)

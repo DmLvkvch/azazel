@@ -1,5 +1,5 @@
 #include "Application.h"
-#include "events/ApplicationEvent.h"
+#include <events/ApplicationEvent.h>
 #include <iostream>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -7,6 +7,9 @@
 #include <renderer/Render.h>
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
+
+#include <chrono>
+#include <thread>
 
 namespace Azazel
 {
@@ -54,7 +57,6 @@ namespace Azazel
             float t = (float) (glfwGetTime() * 1000);
             float delta = t - lastFrameTime;
             lastFrameTime = t;
-
             Render::getRender()->beginScene();
             Render::getRender()->setClearColor({0.0f, 0.0f, 0.0f, 1.0f});
             Render::getRender()->clear(true, true, false);

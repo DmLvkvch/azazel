@@ -10,12 +10,12 @@ namespace Azazel
         virtual void bind() const = 0;
         virtual void unbind() const = 0;
         
-        int getWidth()
+        const inline int getWidth() const
         {
             return width;
         }
         
-        int getHeight()
+        const inline int getHeight() const
         {
             return height;
         }

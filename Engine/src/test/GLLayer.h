@@ -2,8 +2,8 @@
 
 #include "Layer.h"
 
-#include "renderer/Camera.h"
-#include "renderer/OrthographicCamera.h"
+#include "renderer/camera/Camera.h"
+#include "renderer/camera/OrthographicCamera.h"
 
 #include "renderer/Shader.h"
 #include "renderer/Texture.h"
@@ -11,7 +11,6 @@
 #include "renderer/IndexBuffer.h"
 #include "renderer/VertexArray.h"
 #include "renderer/FrameBuffer.h"
-#include <memory>
 #include "renderer/Model.h"
 
 namespace Azazel

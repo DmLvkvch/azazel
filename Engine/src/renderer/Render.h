@@ -1,14 +1,12 @@
 #pragma once
 
-#include "RenderApi.h"
 #include <renderer/Texture.h>
-
 #include <renderer/IndexBuffer.h>
 #include <renderer/VertexArray.h>
 #include <renderer/Shader.h>
 #include <renderer/Texture.h>
 #include <renderer/Vertex.h>
-#include "Camera.h"
+#include "camera/Camera.h"
 #include <memory>
 
 namespace Azazel

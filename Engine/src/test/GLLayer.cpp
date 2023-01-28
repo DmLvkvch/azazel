@@ -22,9 +22,6 @@
 #include "FileUtils.h"
 #include <renderer/TextureData.h>
 #include <renderer/Render.h>
-#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
 
 namespace Azazel
 {
@@ -35,7 +32,7 @@ namespace Azazel
         model = Model::cube();
         this->face.reset(Texture::create(TextureUtils::loadTexture("images/container2.png")));
         
-        shader.reset(Shader::create(FileUtils::readFile("shaders/solid.vert.glsl"), FileUtils::readFile("shaders/solid.frag.glsl")));
+        shader.reset(Shader::create(FileUtils::readFile("shaders/default.vert.glsl"), FileUtils::readFile("shaders/default.frag.glsl")));
 
         testShader.reset(Shader::create(FileUtils::readFile("shaders/circle.vert.glsl"), FileUtils::readFile("shaders/circle.frag.glsl")));
         

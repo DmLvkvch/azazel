@@ -2,7 +2,7 @@
 
 #include <Layer.h>
 
-#include <renderer/OrthographicCamera.h>
+#include <renderer/camera/OrthographicCamera.h>
 #include <renderer/Shader.h>
 #include <renderer/Texture.h>
 #include <renderer/VertexBuffer.h>
@@ -31,6 +31,7 @@ namespace Azazel
         void onDetach() override;
         void onInputUpdate(float delta) override;
         void onUpdate(float delta) override;
+        void onRender(float delta) override;
         void onEvent(Event& e) override;
  
     private:

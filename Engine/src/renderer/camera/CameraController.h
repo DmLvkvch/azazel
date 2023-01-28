@@ -1,6 +1,6 @@
 #pragma once
 
-#include <renderer/OrthographicCamera.h>
+#include "OrthographicCamera.h"
 
 namespace Azazel
 {
