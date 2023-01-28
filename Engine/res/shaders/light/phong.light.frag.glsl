@@ -22,25 +22,25 @@ uniform sampler2D u_texture_0;
 uniform vec3 u_viewPos;
 
 uniform Material u_material;
-uniform Light light;
+uniform Light u_light;
 
 void main()
 {
     // ambient
-    vec3 ambient = light.ambient * material.ambient;
+    vec3 ambient = u_light.ambient * u_material.ambient;
   	
     // diffuse 
     vec3 norm = normalize(normal);
-    vec3 lightDir = normalize(light.position - fragPos);
+    vec3 lightDir = normalize(u_light.position - fragPos);
     float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = light.diffuse * (diff * material.diffuse);
+    vec3 diffuse = u_light.diffuse * diff * u_material.diffuse;
     
     // specular
     vec3 viewDir = normalize(u_viewPos - fragPos);
     vec3 reflectDir = reflect(-lightDir, norm);  
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    vec3 specular = light.specular * (spec * material.specular);  
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_material.shininess);
+    vec3 specular = u_light.specular * spec * u_material.specular;  
         
     vec3 result = ambient + diffuse + specular;
-    gl_FragColor = vec4(result, 1.0) * texture(u_texture_0, texCoord);
+    gl_FragColor = vec4(result, 1.0);
 }
