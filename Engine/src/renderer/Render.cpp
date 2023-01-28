@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "ConvertUtils.h"
+#include "gl_cache.h"
 
 namespace Azazel
 {
@@ -30,11 +31,11 @@ namespace Azazel
         const GLubyte* version     = glGetString(GL_VERSION);
         const GLubyte* glslVersion = glGetString(GL_SHADING_LANGUAGE_VERSION);
 
-        std::cout<<"GL Vendor:    "<<vendor     <<std::endl;
-        std::cout<<"GL Renderer:  "<<renderer   <<std::endl;
-        std::cout<<"GL Version:   "<<version    <<std::endl;
-        std::cout<<"GLSL Version: "<<glslVersion<<std::endl;
-        glEnable(GL_MULTISAMPLE);  
+        std::cout<<"GL Vendor:    "<< vendor      <<std::endl;
+        std::cout<<"GL Renderer:  "<< renderer    <<std::endl;
+        std::cout<<"GL Version:   "<< version     <<std::endl;
+        std::cout<<"GLSL Version: "<< glslVersion <<std::endl;
+        glEnable(GL_MULTISAMPLE);
     }
 
     void Render::setClearColor(const glm::vec4& color)

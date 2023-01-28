@@ -66,6 +66,7 @@ namespace Azazel
             {
                 layer->onInputUpdate(delta);
                 layer->onUpdate(delta);
+                layer->onRender(delta);
             }
             for (auto layer : layerStack)
             {
