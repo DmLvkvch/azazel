@@ -8,14 +8,17 @@ namespace Azazel
 {
     std::unique_ptr<Input> Input::input(new Input());
 
+    Input* Input::getInput()
+    {
+        return Input::input.get();
+    }
+
     Input::Input()
     {
-
     }
 
     Input::~Input()
     {
-
     }
 
     bool Input::isKeyPressed(int keycode)
@@ -32,7 +35,7 @@ namespace Azazel
         return state == GLFW_PRESS;
     }
 
-    bool Input::IsIsKeyHeld(int keycode)
+    bool Input::isKeyHeld(int keycode)
     {
         auto window   = static_cast<GLFWwindow*>(Application::getApplication()->getWindow()->getNativeWindow());
         int state = glfwGetKey(window, keycode);
@@ -47,10 +50,5 @@ namespace Azazel
         double y = 0.0;
         glfwGetCursorPos(window, &x, &y);
         return { (float) x, (float) y };
-    }
-
-    Input* Input::getInput()
-    {
-        return Input::input.get();
     }
 }

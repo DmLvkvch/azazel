@@ -18,7 +18,6 @@ namespace Azazel
             systemManager = std::make_unique<SystemManager>();
         }
 
-
         // Entity methods
         Entity createEntity()
         {
@@ -77,7 +76,6 @@ namespace Azazel
         {
             return componentManager->getComponentType<T>();
         }
-
 
         // System methods
         template<typename T>

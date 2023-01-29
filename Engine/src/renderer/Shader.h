@@ -10,9 +10,6 @@ namespace Azazel
     class Shader
     {
     public:
-        std::string vertexCode;
-        std::string fragmentCode;
-
         enum ShaderType
         {
             VERTEX,
@@ -23,8 +20,6 @@ namespace Azazel
         Shader(const std::string& vertexShader, const std::string& fragmentShader);
 
         virtual ~Shader();
-
-        virtual unsigned int compile(const std::string& programCode, const ShaderType& shaderType) = 0;
 
         virtual void bind() const = 0;
 
@@ -44,6 +39,15 @@ namespace Azazel
 
         virtual Shader* setVec2f(const std::string& name, const glm::vec2& vec2) = 0;
 
+        void setLabel(const std::string& label);
+
+        const inline std::string& getLabel() const
+        {
+            return label;
+        }
+
         static Shader* create(const std::string& vertexShader, const std::string& fragmentShader);
+    private:
+        std::string label;
     };
 }

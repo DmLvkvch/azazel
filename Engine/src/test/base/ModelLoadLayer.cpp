@@ -4,12 +4,11 @@ namespace Azazel
 {
     ModelLoadLayer::ModelLoadLayer() : Layer("Model Load Example")
     {
-        model = Model::cube();
-        shader.reset(Shader::create(FileUtils::readFile("shaders/solid.vert.glsl"), FileUtils::readFile("shaders/solid.frag.glsl")));
+        model = Model("objects/duck/Duck.gltf");
         light.reset(Shader::create(FileUtils::readFile("shaders/light/phong.light.vert.glsl"), FileUtils::readFile("shaders/light/phong.light.frag.glsl")));
         
         texture.reset(Texture::create(TextureUtils::loadTexture("objects/duck/DuckCM.png")));
-        model.transform.scale = glm::vec3 { 0.3f, 0.3f, 0.3f };
+        model.transform.scale = glm::vec3 { 0.003f, 0.003f, 0.003f };
     }
 
     void ModelLoadLayer::onUpdate(float delta)
@@ -44,7 +43,10 @@ namespace Azazel
     void ModelLoadLayer::onRender(float delta)
     {
         Render::getRender()->setDepthTest(true);
+        Render::getRender()->setCullFace(true);
+        Render::getRender()->setCullFaceMode(CullMode::Front);
         model.draw(*light);
+        Render::getRender()->setCullFace(false);
         Render::getRender()->setDepthTest(false);
     }
 }

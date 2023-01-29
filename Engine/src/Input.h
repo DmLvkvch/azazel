@@ -12,7 +12,7 @@ namespace Azazel
         virtual ~Input();
         virtual bool isKeyPressed(int keycode);
         virtual bool isMouseButtonPressed(int button);
-        virtual bool IsIsKeyHeld(int keycode);
+        virtual bool isKeyHeld(int keycode);
         virtual std::pair<float, float> getMousePosition();
         static Input* getInput();
     private:

@@ -24,6 +24,8 @@ namespace Azazel
         width = props.width;
         height = props.height;
         title = props.title;
+
+        // INIT GLFW
         int succes = glfwInit();
         if (succes == GLFW_FALSE)
         {
@@ -44,21 +46,26 @@ namespace Azazel
         setVSync(true);
         glfwSetWindowUserPointer(window, &windowData);
         initialized = true;
+
+        // INIT GLAD
         if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
         {
             std::cout << "Failed to initialize GLAD" << std::endl;
         }
+
+        //INIT IMGUI
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
         io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
         io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
         ImGui::StyleColorsDark();
-;
+
         io.DisplaySize = ImVec2((float)width, (float)height);
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
 
+        // SET GLFW/ImGUi callbacks
         glfwSetWindowCloseCallback(window, [](GLFWwindow* window) 
         {
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);

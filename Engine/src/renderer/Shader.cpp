@@ -5,7 +5,6 @@
 namespace Azazel
 {
     Shader::Shader(const std::string& vertexShader, const std::string& fragmentShader)
-    : vertexCode(vertexShader), fragmentCode(fragmentShader)
     {
 
     }
@@ -13,6 +12,11 @@ namespace Azazel
     Shader::~Shader()
     {
 
+    }
+
+    void Shader::setLabel(const std::string& label)
+    {
+        this->label = label;
     }
 
     Shader* Shader::create(const std::string& vertex, const std::string& fragment)

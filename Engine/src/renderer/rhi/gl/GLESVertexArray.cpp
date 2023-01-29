@@ -3,6 +3,7 @@
 #include "gl_headers.h"
 #include <vector>
 #include <iostream>
+
 namespace Azazel
 {
     GLESVertexArray::GLESVertexArray()

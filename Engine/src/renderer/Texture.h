@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ColorFormat.h"
 #include "TextureData.h"
+#include <string>
 
 namespace Azazel
 {
@@ -91,10 +91,7 @@ namespace Azazel
             return label;
         }
 
-        inline void setLabel(std::string label)
-        {
-            this->label = label;
-        }
+        void setLabel(const std::string& label);
 
         // RENDER
         virtual void bind(unsigned int slot = 0) const = 0;
@@ -111,7 +108,6 @@ namespace Azazel
         int bpp;
         int width;
         int height;
-        ColorFormat colorFormat;
         TextureData textureData;
         std::string label = "DEFAULT_TEXTURE";
     };

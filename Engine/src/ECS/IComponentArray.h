@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include <unordered_map>
 #include <array>
+#include <cassert>
 
 namespace Azazel
 {

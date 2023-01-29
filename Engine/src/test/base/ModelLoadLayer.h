@@ -19,7 +19,6 @@ namespace Azazel
 
         ~ModelLoadLayer() {}
     private:
-        std::unique_ptr<Shader> shader;
         std::unique_ptr<Shader> light;
         std::unique_ptr<Texture> texture;
         Model model;

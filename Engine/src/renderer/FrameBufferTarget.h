@@ -1,7 +1,5 @@
 #pragma once
 
-#include "ColorFormat.h"
-
 #include "Texture.h"
 #include "RenderBuffer.h"
 #include <memory>

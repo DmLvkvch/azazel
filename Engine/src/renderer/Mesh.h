@@ -1,16 +1,14 @@
 #pragma once
 
-#include <vector>
 
 #include "Vertex.h"
-
-#include <glm/glm.hpp>
 #include <renderer/Shader.h>
 #include <renderer/VertexArray.h>
 #include <renderer/IndexBuffer.h>
 #include <renderer/Texture.h>
 #include <renderer/Render.h>
 #include <memory>
+#include <vector>
 
 namespace Azazel
 {
@@ -25,17 +23,19 @@ namespace Azazel
 
         Mesh(const std::vector<T>& vertices, const std::vector<unsigned int>& indices)
         {
-            vertexArray.reset(VertexArray::create());
-            indexBuffer.reset(IndexBuffer::create(indices.data(), indices.size()));
-            std::shared_ptr<VertexBuffer> vb (VertexBuffer::create((float*) vertices.data(), vertices.size() * sizeof(T)));
-            vertexArray->addBuffer(vb, T::bufferLayout);
+            init((float*) vertices.data(), vertices.size() * sizeof(T), indices.data(), indices.size());
         }
 
         Mesh(const std::vector<float>& vertices, const std::vector<unsigned int>& indices)
         {
+            init((float*) vertices.data(), vertices.size() * sizeof(T), indices.data(), indices.size());
+        }
+
+        void init(const float* vertices, int size, const unsigned int* indices, int count)
+        {
             vertexArray.reset(VertexArray::create());
-            indexBuffer.reset(IndexBuffer::create(indices.data(), indices.size()));
-            std::shared_ptr<VertexBuffer> vb (VertexBuffer::create((float*) vertices.data(), vertices.size() * sizeof(float)));
+            indexBuffer.reset(IndexBuffer::create(indices, count));
+            std::shared_ptr<VertexBuffer> vb (VertexBuffer::create(vertices, size));
             vertexArray->addBuffer(vb, T::bufferLayout);
         }
 

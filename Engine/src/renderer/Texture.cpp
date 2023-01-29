@@ -17,6 +17,12 @@ namespace Azazel
     {
     }
 
+    void Texture::setLabel(const std::string& label)
+    {
+        this->label = label;
+    }
+
+
     Texture* Texture::create(const TextureData& textureData)
     {
         return new GLESTexture(textureData);

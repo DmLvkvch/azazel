@@ -35,7 +35,6 @@ namespace Azazel
         std::cout<<"GL Renderer:  "<< renderer    <<std::endl;
         std::cout<<"GL Version:   "<< version     <<std::endl;
         std::cout<<"GLSL Version: "<< glslVersion <<std::endl;
-        glEnable(GL_MULTISAMPLE);
     }
 
     void Render::setClearColor(const glm::vec4& color)
@@ -70,7 +69,19 @@ namespace Azazel
         glScissor(x, y, width, height);
     }
 
-    void Render::setBackFaceCulling(bool enable)
+    void Render::setMultisample(bool enable)
+    {
+        if (true)
+        {
+            glEnable(GL_MULTISAMPLE);
+        }
+        else
+        {
+            glEnable(GL_MULTISAMPLE);
+        }
+    }
+
+    void Render::setCullFace(bool enable)
     {
         if (enable)
         {
@@ -81,6 +92,12 @@ namespace Azazel
             glDisable(GL_CULL_FACE);
         }
     }
+
+    void Render::setCullFaceMode(CullMode cullMode)
+    {
+        glCullFace(convertCullMode(cullMode));
+    }
+
 
     void Render::setDepthTest(bool enable)
     {

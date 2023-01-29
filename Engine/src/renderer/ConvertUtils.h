@@ -1,7 +1,5 @@
 #pragma once
 
-#include <renderer/Render.h>
-
 namespace Azazel
 {
     static int convertBlendEquation(BlendEquation blendEquation)

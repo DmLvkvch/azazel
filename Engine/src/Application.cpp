@@ -56,7 +56,6 @@ namespace Azazel
         {
             auto startTime = std::chrono::high_resolution_clock::now();
             
-            
             Render::getRender()->beginScene();
             Render::getRender()->setClearColor({0.0f, 0.0f, 0.0f, 1.0f});
             Render::getRender()->clear(true, true, false);

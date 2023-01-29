@@ -13,10 +13,6 @@ namespace Azazel
 
         ~GLESShader();
 
-        int getShaderType(const ShaderType& shaderType) const;
-
-        unsigned int compile(const std::string& programCode, const ShaderType& shaderType) override;
-
         void bind() const override;
 
         void unbind() const override;
@@ -35,6 +31,11 @@ namespace Azazel
 
         Shader* setVec2f(const std::string& name, const glm::vec2& vec2) override;
 
+    private:
+        int getShaderType(const ShaderType& shaderType) const;
+
+        unsigned int compile(const std::string& programCode, const ShaderType& shaderType);
+    
     private:
         unsigned int rendererId;
         std::unordered_map<std::string, int> uniformLocationMap;

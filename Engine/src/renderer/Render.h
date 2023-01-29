@@ -95,9 +95,11 @@ namespace Azazel
 
         void setClearColor(const glm::vec4& color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 
-        void setBackFaceCulling(bool enable);
+        void setMultisample(bool enable);
 
-        void setCullFace(CullMode cullMode);
+        void setCullFace(bool enable);
+
+        void setCullFaceMode(CullMode cullMode);
 
         void setFrontFace(CullFront cullFront);
 
