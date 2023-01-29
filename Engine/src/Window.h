@@ -8,14 +8,14 @@
 namespace Azazel
 {
 
-    class WindowProps
+    class WindowProperties
     {
     public:
         std::string title;
         unsigned int width;
         unsigned int height;
 
-        WindowProps(const std::string& title = "Azazel Title",
+        WindowProperties(const std::string& title = "Azazel Title",
                     unsigned int width = 1280,
                     unsigned int height = 720)
         : title(title), width(width), height(height) {}
@@ -35,7 +35,7 @@ namespace Azazel
         virtual void setVSync(bool enabled) = 0;
         virtual bool isVSync() const = 0;
         virtual void* getNativeWindow() = 0;
-        static Window* create(const WindowProps& props = WindowProps());
+        static Window* create(const WindowProperties& props = WindowProperties());
     private:
         static Window* window;
     };

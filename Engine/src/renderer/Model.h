@@ -16,7 +16,7 @@ namespace Azazel
     public:        
         Model() = default;
 
-        Model(std::vector<Mesh<Vertex_P3_N3_T2>> meshes);
+        Model(const std::vector<Mesh<Vertex_P3_N3_T2>>& meshes);
 
         Model(const std::string& path);
 

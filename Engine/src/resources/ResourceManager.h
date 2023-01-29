@@ -7,8 +7,10 @@
 
 namespace Azazel
 {
+    template <typename T>
     class ResourceManager
     {
     private:
+        std::unordered_map<std::string, T> resources;   
     };
 }

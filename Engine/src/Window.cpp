@@ -8,7 +8,7 @@ namespace Azazel
 
     Window* Window::window = nullptr;
 
-    Window* Window::create(const WindowProps& props)
+    Window* Window::create(const WindowProperties& props)
     {
         if (!Window::window)
         {

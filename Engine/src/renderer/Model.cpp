@@ -32,12 +32,12 @@ namespace Azazel
             -0.5f, -0.5f,  0.5f, -1.0f,  0.0f, 0.0f,  0.0f, 1.0f,
             -0.5f,  0.5f,  0.5f, -1.0f,  0.0f, 0.0f,  0.0f, 0.0f,
  
-            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
-            0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
-            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
-            0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+            0.5f,  0.5f,  0.5f,   1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+            0.5f,  0.5f, -0.5f,   1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+            0.5f, -0.5f, -0.5f,   1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+            0.5f, -0.5f, -0.5f,   1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+            0.5f, -0.5f,  0.5f,   1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+            0.5f,  0.5f,  0.5f,   1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
  
             -0.5f, -0.5f, -0.5f,  0.0f, -1.0f, 0.0f,  0.0f, 0.0f,
              0.5f, -0.5f, -0.5f,  0.0f, -1.0f, 0.0f,  1.0f, 0.0f,
@@ -55,9 +55,10 @@ namespace Azazel
         };
         
         std::vector<unsigned int> indices;
+        indices.resize(vertices.size());
         for (int i = 0; i < vertices.size(); i++)
         {
-            indices.push_back(i);
+            indices[i] = i;
         }
 
         Mesh<Vertex_P3_N3_T2> mesh(vertices, indices);
@@ -70,7 +71,7 @@ namespace Azazel
         loadModel(path);
     }
 
-    Model::Model(std::vector<Mesh<Vertex_P3_N3_T2>> meshes)
+    Model::Model(const std::vector<Mesh<Vertex_P3_N3_T2>>& meshes)
     : meshes(meshes)
     {
         
@@ -116,11 +117,8 @@ namespace Azazel
         std::vector<unsigned int> indices;
         for(unsigned int i = 0; i < mesh->mNumVertices; i++)
         {
-            Vertex_P3_N3_T2 vertex;
-            glm::vec3 vector;
-            vector.x = mesh->mVertices[i].x;
-            vector.y = mesh->mVertices[i].y;
-            vector.z = mesh->mVertices[i].z;
+            Vertex_P3_N3_T2 vertex {};
+            glm::vec3 vector { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
             vertex.position = vector;
             if (mesh->HasNormals())
             {
@@ -131,10 +129,7 @@ namespace Azazel
             }
             if(mesh->mTextureCoords[0])
             {
-                glm::vec2 vec;
-                vec.x = mesh->mTextureCoords[0][i].x; 
-                vec.y = mesh->mTextureCoords[0][i].y;
-                vertex.texCoord = vec;
+                vertex.texCoord = glm::vec2 { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
             }
             else
             {
@@ -156,7 +151,7 @@ namespace Azazel
                 textures.push_back(texture);
            }
         }
-        for(unsigned int i = 0; i < mesh->mNumFaces; i++)
+        for (unsigned int i = 0; i < mesh->mNumFaces; i++)
         {
             aiFace face = mesh->mFaces[i];
             for (unsigned int j = 0; j < face.mNumIndices; j++)

@@ -9,7 +9,7 @@ namespace Azazel
     class WindowsWindow : public Window
     {
     public:
-        WindowsWindow(const WindowProps& props);
+        WindowsWindow(const WindowProperties& props);
         virtual ~WindowsWindow();
         void shutDown();
         void onUpdate(float delta) override;

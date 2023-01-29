@@ -23,6 +23,6 @@ namespace Azazel
         LayerStack layerStack;
         bool running = true;
         static Application* app;
-        float lastFrameTime;
+        float delta;
     };
 }
