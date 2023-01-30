@@ -40,6 +40,7 @@ namespace Azazel
 
     void Layer::onInputUpdate(float delta)
     {
+
     }
 
     void Layer::onEvent(Event& event)

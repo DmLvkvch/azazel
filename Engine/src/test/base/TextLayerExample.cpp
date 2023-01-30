@@ -19,7 +19,7 @@ namespace Azazel
     {
 
         camera = OrthographicCamera(940, 560);
-        shader.reset(Shader::create(FileUtils::readFile("shaders/text.vert.glsl"), FileUtils::readFile("shaders/text.frag.glsl")));
+        shader.reset(Shader::create(FileUtils::readFile("shaders/2d/text.vert.glsl"), FileUtils::readFile("shaders/2d/text.frag.glsl")));
 
         FT_Library ft;
         if (FT_Init_FreeType(&ft))
@@ -104,6 +104,8 @@ namespace Azazel
 
     void TextLayerExample::onUpdate(float delta)
     {
+        Render::getRender()->setBlend(true);
+        Render::getRender()->setBlendFunc(BlendFunction::SrcAlpha, BlendFunction::OneMinusSrcAlpha);
         shader->bind();
         shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 0.0f)));
         glActiveTexture(GL_TEXTURE0);
@@ -150,7 +152,6 @@ namespace Azazel
         if (e.getEventType() == EventType::MouseScrolled)
         {
             MouseScrollEvent& k = *(MouseScrollEvent*)(&e);
-            camera.zoom({ k.getX(), k.getY() });
         }
     }
 }
