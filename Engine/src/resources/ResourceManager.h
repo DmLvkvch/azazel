@@ -2,8 +2,8 @@
 
 #include <unordered_map>
 #include <string>
-#include <renderer/Shader.h>
-#include <renderer/Texture.h>
+#include "renderer/Shader.h"
+#include "renderer/Texture.h"
 
 namespace Azazel
 {

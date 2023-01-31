@@ -2,6 +2,7 @@
 #include "gl_headers.h"
 
 #include <iostream>
+
 namespace Azazel
 {
     GLESFrameBuffer::GLESFrameBuffer(std::shared_ptr<Texture> texture)

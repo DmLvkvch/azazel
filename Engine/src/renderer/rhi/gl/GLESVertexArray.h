@@ -1,7 +1,7 @@
 #pragma once
 
-#include <renderer/VertexArray.h>
-#include <renderer/VertexBuffer.h>
+#include "renderer/VertexArray.h"
+#include "renderer/VertexBuffer.h"
 
 namespace Azazel
 {

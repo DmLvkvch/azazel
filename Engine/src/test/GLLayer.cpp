@@ -1,6 +1,13 @@
 #include "GLLayer.h"
 
-#include <renderer/rhi/gl/gl_headers.h>
+#include "events/KeyEvent.h"
+#include "events/MouseEvent.h"
+#include "events/ApplicationEvent.h"
+#include "TextureUtils.h"
+#include "FileUtils.h"
+#include "renderer/TextureData.h"
+#include "renderer/Render.h"
+
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
@@ -11,17 +18,7 @@
 #include <iostream>
 #include <fstream>
 #include <streambuf>
-
-#include <events/KeyEvent.h>
-#include <events/MouseEvent.h>
-#include <events/ApplicationEvent.h>
-
 #include <vector>
-
-#include "TextureUtils.h"
-#include "FileUtils.h"
-#include <renderer/TextureData.h>
-#include <renderer/Render.h>
 
 namespace Azazel
 {

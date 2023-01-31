@@ -5,6 +5,7 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include "VertexBuffer.h"
+
 namespace Azazel
 {
     enum Semantic

@@ -1,13 +1,15 @@
 #pragma once
 
 #include <vector>
-#include <renderer/Mesh.h>
 #include <assimp/scene.h>
-#include <renderer/Vertex.h>
-#include <renderer/Shader.h>
-#include <renderer/Transform.h>
-#include <renderer/Texture.h>
 #include <memory>
+
+
+#include "renderer/Mesh.h"
+#include "renderer/Vertex.h"
+#include "renderer/Shader.h"
+#include "renderer/Transform.h"
+#include "renderer/Texture.h"
 
 namespace Azazel
 {

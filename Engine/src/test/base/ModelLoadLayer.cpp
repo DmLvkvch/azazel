@@ -1,5 +1,8 @@
 #include "ModelLoadLayer.h"
 
+#include "FileUtils.h"
+#include "TextureUtils.h"
+
 namespace Azazel
 {
     ModelLoadLayer::ModelLoadLayer() : Layer("Model Load Example")

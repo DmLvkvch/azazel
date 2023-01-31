@@ -1,13 +1,13 @@
 #include "Application.h"
-#include <events/ApplicationEvent.h>
+#include "events/ApplicationEvent.h"
+#include "renderer/Render.h"
+
 #include <iostream>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include <renderer/Render.h>
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
-
 #include <chrono>
 #include <thread>
 

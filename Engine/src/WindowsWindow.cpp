@@ -1,6 +1,5 @@
 #include "WindowsWindow.h"
 
-#include <iostream>
 #include "events/ApplicationEvent.h"
 #include "events/KeyEvent.h"
 #include "events/MouseEvent.h"
@@ -9,6 +8,7 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <iostream>
 
 namespace Azazel
 {

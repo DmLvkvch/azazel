@@ -1,15 +1,14 @@
 #pragma once
 
-#include <Layer.h>
-#include <renderer/camera/OrthographicCamera.h>
-#include <renderer/Shader.h>
-#include <renderer/Texture.h>
-#include <renderer/VertexBuffer.h>
-#include <renderer/IndexBuffer.h>
-#include <renderer/VertexArray.h>
-#include <renderer/FrameBuffer.h>
-#include <renderer/Transform.h>
-#include <renderer/Mesh.h>
+#include "Layer.h"
+#include "renderer/camera/OrthographicCamera.h"
+#include "renderer/Shader.h"
+#include "renderer/Texture.h"
+#include "renderer/VertexBuffer.h"
+#include "renderer/IndexBuffer.h"
+#include "renderer/VertexArray.h"
+#include "renderer/Transform.h"
+#include "renderer/Mesh.h"
 
 namespace Azazel
 {
@@ -26,7 +25,7 @@ namespace Azazel
         void onEvent(Event& e) override;
         void onImguiRender(float delta) override;
     private:
-        void drawImgui();
+        void drawImgui(float delta);
         void updateBlendEquation();
     private:
         OrthographicCamera camera;

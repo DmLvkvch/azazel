@@ -1,12 +1,12 @@
 #include "BaseLayer.h"
 
-#include <TextureUtils.h>
-#include <FileUtils.h>
-#include <events/KeyEvent.h>
-#include <events/MouseEvent.h>
-#include <events/ApplicationEvent.h>
-#include <renderer/Render.h>
-#include <renderer/Mesh.h>
+#include "TextureUtils.h"
+#include "FileUtils.h"
+#include "events/KeyEvent.h"
+#include "events/MouseEvent.h"
+#include "events/ApplicationEvent.h"
+#include "renderer/Render.h"
+#include "renderer/Mesh.h"
 
 namespace Azazel
 {
@@ -69,13 +69,15 @@ namespace Azazel
 
     void BaseLayer::onImguiRender(float delta)
     {
-        drawImgui();
+        drawImgui(delta);
     }
 
-    void BaseLayer::drawImgui()
+    void BaseLayer::drawImgui(float delta)
     {
         ImGui::Begin("Transform");
      
+        ImGui::Text("FPS %.3f", 1000.0f / delta);
+
         ImGui::ColorEdit4("Texture Color", &color.x);
         ImGui::SliderFloat2("translation", &transform.position.x, 0, 600.0f);
         ImGui::SliderFloat("rotation", &transform.rotation.z, 0.0f, 360.0f);

@@ -1,17 +1,17 @@
 #include "TextLayerExample.h"
 
-#include <vector>
-#include <TextureUtils.h>
-#include <FileUtils.h>
-#include <events/KeyEvent.h>
-#include <events/MouseEvent.h>
-#include <events/ApplicationEvent.h>
-#include <iostream>
-#include <Input.h>
-#include <renderer/Render.h>
+#include "TextureUtils.h"
+#include "FileUtils.h"
+#include "events/KeyEvent.h"
+#include "events/MouseEvent.h"
+#include "events/ApplicationEvent.h"
+#include "Input.h"
+#include "renderer/Render.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
+#include <vector>
+#include <iostream>
 
 namespace Azazel
 {

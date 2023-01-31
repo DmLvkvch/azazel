@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <renderer/Texture.h>
+#include "renderer/Texture.h"
 
 namespace Azazel
 {

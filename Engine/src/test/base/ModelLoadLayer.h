@@ -1,11 +1,7 @@
 #pragma once
 
-#include <Layer.h>
-#include <renderer/Model.h>
-#include <renderer/Mesh.h>
-#include <renderer/Vertex.h>
-#include <FileUtils.h>
-#include <TextureUtils.h>
+#include "Layer.h"
+#include "renderer/Model.h"
 
 namespace Azazel
 {

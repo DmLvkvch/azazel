@@ -6,8 +6,8 @@
 #include "events/KeyEvent.h"
 #include "events/MouseEvent.h"
 #include "events/ApplicationEvent.h"
-#include <Input.h>
-#include <renderer/Render.h>
+#include "Input.h"
+#include "renderer/Render.h"
 
 
 namespace Azazel

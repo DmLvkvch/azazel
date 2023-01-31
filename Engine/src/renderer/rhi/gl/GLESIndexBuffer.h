@@ -1,6 +1,6 @@
 #pragma once
 
-#include <renderer/IndexBuffer.h>
+#include "renderer/IndexBuffer.h"
 
 namespace Azazel
 {

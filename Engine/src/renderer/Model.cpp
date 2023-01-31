@@ -1,8 +1,9 @@
 #include "Model.h"
+
 #include <iostream>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
-#include <TextureUtils.h>
+#include "TextureUtils.h"
 
 namespace Azazel
 {

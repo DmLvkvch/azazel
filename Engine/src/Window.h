@@ -1,8 +1,8 @@
 #pragma once
 
+#include "events/Event.h"
 #include <functional>
 #include <string>
-#include "events/Event.h"
 #include <memory>
 
 namespace Azazel
