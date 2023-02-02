@@ -6,13 +6,13 @@
 namespace Azazel
 {
     GLESTexture::GLESTexture(const TextureData& textureData)
-    : Texture(textureData.width, textureData.height, textureData.bpp, textureData.data)
+    : Texture(textureData.width, textureData.height, textureData.bpp, textureData.data, Format::RGBA32)
     {
         createTexture(getWidth(), getHeight(), getBpp(), textureData.data);
     }
 
     GLESTexture::GLESTexture(int width, int height, int bpp, const unsigned char* data)
-    : Texture(width, height, bpp, data)
+    : Texture(width, height, bpp, data, Format::RGBA32)
     {
         createTexture(width, height, bpp, data);
     }

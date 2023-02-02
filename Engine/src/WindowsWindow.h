@@ -20,6 +20,12 @@ namespace Azazel
         virtual bool isVSync() const override;
         virtual void* getNativeWindow() override;
     private:
+        void destroyGLFW();
+        void destroyImgui();
+
+        GLFWwindow* initGLFW(int width, int height, const std::string& title);
+        void initImgui(GLFWwindow* window, int width, int height);
+    private:
         GLFWwindow* window;
         int width;
         int height;

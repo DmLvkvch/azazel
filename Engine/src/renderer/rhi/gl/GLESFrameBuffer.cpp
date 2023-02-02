@@ -54,4 +54,10 @@ namespace Azazel
         unbind();
     }
 
+    void GLESFrameBuffer::setDepthTarget(std::shared_ptr<Texture> depthTexture)
+    {
+        bind();
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture->getRendererId(), 0);
+        unbind();
+    }
 }

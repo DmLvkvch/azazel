@@ -16,26 +16,20 @@ namespace Azazel
     {
         std::vector<float> vertices 
         {
-                    0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
-                    0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-                    -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-                    -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
+             0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+             0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+            -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
          };
 
         std::vector<unsigned int> indices {0, 1, 3, 1, 2, 3};
         std::shared_ptr<VertexBuffer> vertexBuffer (VertexBuffer::create((float*) vertices.data(), sizeof(float) * vertices.size()));
         indexBuffer.reset(IndexBuffer::create(indices.data(), 6));
         vertexArray.reset(VertexArray::create());
-        BufferLayout bf 
-        {
-            { ShaderDataType::Float3, "pos" },
-            { ShaderDataType::Float2, "texCoord"}
-        };
-        vertexArray->addBuffer(vertexBuffer, bf);
+        vertexArray->addBuffer(vertexBuffer, Vertex_P3_T2::bufferLayout);
 
         shader.reset(Shader::create(FileUtils::readFile("shaders/default.vert.glsl"), FileUtils::readFile("shaders/default.frag.glsl")));
         texture.reset(Texture::create(TextureUtils::loadTexture("images/awesomeface.png")));
-        texture->setTextureFilter(Texture::TextureFilter::Linear);
 
         shader->bind();
         shader->setMatrix4f("u_mvp", glm::mat4(1.0f));

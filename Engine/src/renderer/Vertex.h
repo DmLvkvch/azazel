@@ -8,19 +8,6 @@
 
 namespace Azazel
 {
-    enum Semantic
-    {
-        POSITION3D,
-        POSITION2D,
-        COLOR,
-        TEX_COORD,
-        NORMAL,
-        TANGENT,
-        BINORMAL,
-        ASHIFT,
-        AGAMMA
-    };
-
     enum ElementType
     {
         FLOAT,
@@ -103,12 +90,14 @@ namespace Azazel
     class Vertex_P3_C4_T2
     {
     public:
-        glm::vec2 position;
+        glm::vec3 position;
         glm::vec4 color;
         glm::vec2 texCoord;
         static BufferLayout bufferLayout;
-
-        Vertex_P3_C4_T2(glm::vec2 position, glm::vec4 color, glm::vec2 texCoord)
+        
+        Vertex_P3_C4_T2() = default;
+        
+        Vertex_P3_C4_T2(glm::vec3 position, glm::vec4 color, glm::vec2 texCoord)
         : position(position), color(color), texCoord(texCoord)
         {
 
@@ -121,7 +110,9 @@ namespace Azazel
         glm::vec3 position;
         glm::vec2 texCoord;
         static BufferLayout bufferLayout;
+        
         Vertex_P3_T2() = default;
+
         Vertex_P3_T2(glm::vec3 position, glm::vec2 texCoord)
         : position(position), texCoord(texCoord)
         {
@@ -156,6 +147,14 @@ namespace Azazel
         glm::vec3 tangent;
         glm::vec3 bitangent;
         static BufferLayout bufferLayout;
+
+        Vertex_P3_N3_T2_TAN3_BTAN_3() = default;
+
+        Vertex_P3_N3_T2_TAN3_BTAN_3(glm::vec3 position, glm::vec3 normal, glm::vec2 texCoord, glm::vec3 tangent, glm::vec3 bitangent)
+        : position(position), normal(normal), texCoord(texCoord), tangent(tangent), bitangent(bitangent)
+        {
+
+        }
     };
 
 #pragma pack(pop)

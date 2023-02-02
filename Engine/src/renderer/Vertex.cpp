@@ -3,15 +3,15 @@
 
 namespace Azazel
 {
-    BufferLayout Vertex_P3_N3_T2::bufferLayout             { {ShaderDataType::Float3, "pos"}, {ShaderDataType::Float3, "norm"}, {ShaderDataType::Float2, "tex_coord"} };
+    BufferLayout Vertex_P3_N3_T2::bufferLayout             { {ShaderDataType::Float3, Semantic::Position3D}, {ShaderDataType::Float3, Semantic::Normal}, {ShaderDataType::Float2, Semantic::Tex_Coord} };
 
-    BufferLayout Vertex_P3_C4_T2::bufferLayout             { {ShaderDataType::Float3, "pos"}, {ShaderDataType::Float4, "col"}, {ShaderDataType::Float2, "tex_coord"} };
+    BufferLayout Vertex_P3_C4_T2::bufferLayout             { {ShaderDataType::Float3, Semantic::Position3D}, {ShaderDataType::Float4, Semantic::Color}, {ShaderDataType::Float2, Semantic::Tex_Coord} };
 
-    BufferLayout Vertex_P3_T2::bufferLayout                { {ShaderDataType::Float3, "pos"}, {ShaderDataType::Float2, "tex_coord"} };
+    BufferLayout Vertex_P3_T2::bufferLayout                { {ShaderDataType::Float3, Semantic::Position3D}, {ShaderDataType::Float2, Semantic::Tex_Coord} };
 
-    BufferLayout Vertex_P3_N3_T2_TAN3_BTAN_3::bufferLayout { {ShaderDataType::Float3, "pos"}, 
-                                                             {ShaderDataType::Float3, "norm"}, 
-                                                             {ShaderDataType::Float2, "tex_coord"},
-                                                             {ShaderDataType::Float3, "tangent"}, 
-                                                             {ShaderDataType::Float3, "bitangent"} };
+    BufferLayout Vertex_P3_N3_T2_TAN3_BTAN_3::bufferLayout { {ShaderDataType::Float3, Semantic::Position3D}, 
+                                                             {ShaderDataType::Float3, Semantic::Normal}, 
+                                                             {ShaderDataType::Float2, Semantic::Tex_Coord},
+                                                             {ShaderDataType::Float3, Semantic::Tangent}, 
+                                                             {ShaderDataType::Float3, Semantic::Bitangent} };
 }

@@ -26,26 +26,7 @@ namespace Azazel
         title = props.title;
 
         // INIT GLFW
-        int succes = glfwInit();
-        if (succes == GLFW_FALSE)
-        {
-            std::cout << "Failed to initialize" << std::endl;
-        }
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_RESIZABLE, 1);
-        glfwWindowHint(GLFW_SAMPLES, 4);
-        window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
-        if (window == NULL)
-        {
-            std::cout << "Failed to create GLFW window" << std::endl;
-            glfwTerminate();
-        }
-        glfwMakeContextCurrent(window);
-        setVSync(true);
-        glfwSetWindowUserPointer(window, &windowData);
-        initialized = true;
+        GLFWwindow* window = initGLFW(width, height, title);
 
         // INIT GLAD
         if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
@@ -54,16 +35,7 @@ namespace Azazel
         }
 
         //INIT IMGUI
-        IMGUI_CHECKVERSION();
-        ImGui::CreateContext();
-        ImGuiIO& io = ImGui::GetIO();
-        io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
-        io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
-        ImGui::StyleColorsDark();
-
-        io.DisplaySize = ImVec2((float)width, (float)height);
-        ImGui_ImplGlfw_InitForOpenGL(window, true);
-        ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
+        initImgui(window, width, height);
 
         // SET GLFW/ImGUi callbacks
         glfwSetWindowCloseCallback(window, [](GLFWwindow* window) 
@@ -149,6 +121,45 @@ namespace Azazel
     WindowsWindow::~WindowsWindow()
     {
         shutDown();
+    }
+
+    GLFWwindow* WindowsWindow::initGLFW(int width, int height, const std::string& title)
+    {
+        int succes = glfwInit();
+        if (succes == GLFW_FALSE)
+        {
+            std::cout << "Failed to initialize" << std::endl;
+        }
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_RESIZABLE, 1);
+        glfwWindowHint(GLFW_SAMPLES, 4);
+        window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+        if (window == NULL)
+        {
+            std::cout << "Failed to create GLFW window" << std::endl;
+            glfwTerminate();
+        }
+        glfwMakeContextCurrent(window);
+        setVSync(true);
+        glfwSetWindowUserPointer(window, &windowData);
+        initialized = true;
+        return window;
+    }
+
+    void WindowsWindow::initImgui(GLFWwindow* window, int width, int height)
+    {
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO();
+        io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
+        io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
+        ImGui::StyleColorsDark();
+
+        io.DisplaySize = ImVec2((float)width, (float)height);
+        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
     }
 
     void WindowsWindow::shutDown()

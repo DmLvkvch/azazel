@@ -7,40 +7,34 @@
 #include "events/ApplicationEvent.h"
 #include "renderer/Render.h"
 #include "renderer/Mesh.h"
+#include "resources/ResourceManager.h"
 
 namespace Azazel
 {
     void BaseLayer::onAttach()
     {
-        std::vector<Vertex_P3_T2> vertices;
-        vertices.emplace_back(glm::vec3{0.5f,  0.5f, 0.0f}, glm::vec2{1.0f, 1.0f});
-        vertices.emplace_back(glm::vec3{0.5f, -0.5f, 0.0f}, glm::vec2{1.0f, 0.0f});
-        vertices.emplace_back(glm::vec3{-0.5f, -0.5f, 0.0f}, glm::vec2{0.0f, 0.0f});
-        vertices.emplace_back(glm::vec3{-0.5f,  0.5f, 0.0f}, glm::vec2{0.0f, 1.0f});
+        std::vector<Vertex_P3_C4_T2> vertices;
+        
+        vertices.emplace_back(glm::vec3{-0.5f, -0.5f, 0.0f}, glm::vec4{1.0f, 0.0f, 0.0f, 1.0f}, glm::vec2{1.0f, 1.0f});
+        vertices.emplace_back(glm::vec3{-0.5f,  0.5f, 0.0f}, glm::vec4{1.0f, 0.0f, 0.0f, 1.0f}, glm::vec2{1.0f, 0.0f});
+        vertices.emplace_back(glm::vec3{ 0.5f,  0.5f, 0.0f}, glm::vec4{1.0f, 0.0f, 0.0f, 1.0f}, glm::vec2{0.0f, 0.0f});
+        vertices.emplace_back(glm::vec3{ 0.5f, -0.5f, 0.0f}, glm::vec4{1.0f, 0.0f, 0.0f, 1.0f}, glm::vec2{0.0f, 1.0f});
 
-        std::vector<unsigned int> indices {0, 1, 3, 1, 2, 3};
-        std::shared_ptr<VertexBuffer> vertexBuffer (VertexBuffer::create((float*) vertices.data(), sizeof(float) * vertices.size() * 5));
-        indexBuffer.reset(IndexBuffer::create(indices.data(), 6));
+        std::vector<unsigned int> indices {0, 1, 2, 0, 2, 3};
+
+        std::shared_ptr<VertexBuffer> vertexBuffer (VertexBuffer::create((float*) vertices.data(), vertices.size() * sizeof(Vertex_P3_C4_T2)));
+        indexBuffer.reset(IndexBuffer::create(indices.data(), indices.size()));
         vertexArray.reset(VertexArray::create());
-        BufferLayout bf = 
-        {
-            { ShaderDataType::Float3, "a_position" },
-            { ShaderDataType::Float2, "a_texture_coord" }
-        };
-        vertexArray->addBuffer(vertexBuffer, bf);
+        vertexArray->addBuffer(vertexBuffer, Vertex_P3_C4_T2::bufferLayout);
 
         shader.reset(Shader::create(FileUtils::readFile("shaders/default.vert.glsl"), FileUtils::readFile("shaders/default.frag.glsl")));
-        texture.reset(Texture::create(TextureUtils::loadTexture("images/awesomeface.png")));
-        texture->setTextureFilter(Texture::TextureFilter::Linear);
-        shader->bind();
-        shader->setMatrix4f("u_mvp", glm::mat4(1.0f));
         camera = OrthographicCamera(0, 960, 0, 540);
         texture.reset(Texture::create(TextureData(500, 500, 0xff0000ff)));
         texture1.reset(Texture::create(TextureData(500, 500, 0x0000fff0)));
 
         transform.scale = { 100.0f, 100.0f, 0.0f };
         color = {0.0f, 0.0f, 0.0f, 1.0f};
-        mesh = Mesh<Vertex_P3_T2>(vertices, indices);
+        mesh = Mesh<Vertex_P3_C4_T2>(vertices, indices);
         
     }
 
@@ -56,7 +50,7 @@ namespace Azazel
 
         shader->bind();
         shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * transform.getTransformMatrix());
-        Render::getRender()->drawMesh<Vertex_P3_T2>(mesh, *shader, *texture);
+        Render::getRender()->drawMesh<Vertex_P3_C4_T2>(mesh, *shader, *texture);
 
         shader->bind();
         shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * glm::translate(glm::mat4(1.0f), glm::vec3(400.0f, 400.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(200.0f, 200.0f, 1.0f)));

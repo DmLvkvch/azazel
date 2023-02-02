@@ -36,6 +36,6 @@ namespace Azazel
         std::unique_ptr<VertexArray> vertexArray;
         Transform transform;
         glm::vec4 color;
-        Mesh<Vertex_P3_T2> mesh;
+        Mesh<Vertex_P3_C4_T2> mesh;
     };
 }

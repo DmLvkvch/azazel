@@ -29,7 +29,7 @@ namespace Azazel
                     continue;
                 }
                 particle.position += particle.velocity * delta;
-		        particle.rotation += 0.01f * ts;
+		        particle.rotation += 0.01f * delta;
             }
         }
 

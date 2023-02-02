@@ -11,13 +11,13 @@ namespace Azazel
 
         enum TextureFilter
         {
-            Linear,
+            Linear = 0,
             Nearest
         };
 
         enum TextureWrap
         {
-            Repeat,
+            Repeat = 0,
             MirroredRepeat,
             ClampToEdge,
             ClampToBorder
@@ -35,7 +35,7 @@ namespace Azazel
 
         enum Format
         {
-            R8,
+            R8 = 0,
             R32_INT,
             R32_UINT,
             R32F,
@@ -49,7 +49,10 @@ namespace Azazel
             RGBA32F,
             RGB,
             RGBA,
-            DEPTH16_UNORM,
+            DEPTH16,
+            DEPTH24,
+            DEPTH32,
+            DEPTH24_STENCIL8,
             DEPTH32F,
             STENCIL,
             DEPTH_STENCIL,
@@ -60,30 +63,30 @@ namespace Azazel
 
         Texture() = default;
         
-        Texture(int width, int height, int bpp, const unsigned char* data);
+        Texture(int width, int height, int bpp, const unsigned char* data, Format format);
         
         Texture(const TextureData& textureData);
         
         virtual ~Texture();
     
-        const inline int getWidth()
+        const inline int getWidth() const
         {
             return width;
         }
 
-        const inline int getHeight()
+        const inline int getHeight() const
         {
             return height;
         }
 
-        const inline int getBpp()
+        const inline int getBpp() const
         {
             return bpp;
         }
 
-        Format getColorFormat()
+        const inline Format getColorFormat() const
         {
-            return Format::RGBA32;
+            return format;
         }
 
         inline std::string getLabel() const
@@ -110,5 +113,6 @@ namespace Azazel
         int height;
         TextureData textureData;
         std::string label = "DEFAULT_TEXTURE";
+        Format format;
     };
 }

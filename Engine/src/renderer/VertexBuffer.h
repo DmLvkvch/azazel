@@ -55,16 +55,30 @@ namespace Azazel
         return 0;
     }
 
+    enum Semantic
+    {
+        Position3D,
+        Position2D,
+        Color,
+        Tex_Coord,
+        Normal,
+        Tangent,
+        Bitangent,
+        Ashift,
+        Agamma
+    };
+
+
     struct BufferElement
     {
-        std::string name;
+        Semantic semantic;
         ShaderDataType type;
         int size;
         int offset;
         bool normalized;
 
-        BufferElement(ShaderDataType type,  const std::string& name, bool normalized = false)
-        : name(name), type(type), size(shaderDataTypeSize(type)), offset(0), normalized(normalized)
+        BufferElement(ShaderDataType type, Semantic semantic, bool normalized = false)
+        : semantic(semantic), type(type), size(shaderDataTypeSize(type)), offset(0), normalized(normalized)
         {
 
         }
