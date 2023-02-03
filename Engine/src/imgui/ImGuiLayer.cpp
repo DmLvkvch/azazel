@@ -12,8 +12,7 @@
 
 namespace Azazel
 {
-    ImGuiLayer::ImGuiLayer()
-    : Layer("ImGuiLayer")
+    ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer")
     {
     }
 

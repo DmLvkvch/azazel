@@ -135,12 +135,14 @@ namespace Azazel
         int drawCalls;
     };
 
-    template <typename T> void Render::drawMesh(const Mesh<T>& mesh, const Shader& shader, const Texture& texture)
+    template <typename T> 
+    void Render::drawMesh(const Mesh<T>& mesh, const Shader& shader, const Texture& texture)
     {
         drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader, texture);
     }
 
-    template <typename T> void Render::drawMesh(const Mesh<T>& mesh, const Shader& shader)
+    template <typename T> 
+    void Render::drawMesh(const Mesh<T>& mesh, const Shader& shader)
     {
         drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader);
     }

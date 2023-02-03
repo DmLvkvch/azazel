@@ -16,7 +16,9 @@ namespace Azazel
     class Mesh
     {
     public:
+        
         friend class Render;
+        
         Mesh()
         {
         }

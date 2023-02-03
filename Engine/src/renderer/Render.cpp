@@ -98,6 +98,11 @@ namespace Azazel
         glCullFace(convertCullMode(cullMode));
     }
 
+    void setFrontFace(CullFront cullFront)
+    {
+        glFrontFace(convertCullFront(cullFront));
+    }
+
 
     void Render::setDepthTest(bool enable)
     {

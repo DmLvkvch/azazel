@@ -51,4 +51,14 @@ namespace Azazel
         }
         return 0;
     }
+
+    static int convertCullFront(CullFront cullFront)
+    {
+        switch (cullFront)
+        {
+            case CullFront::Ccw: return GL_FRONT;
+            case CullFront::Cw:  return GL_BACK;
+        }
+        return 0;
+    }
 }
