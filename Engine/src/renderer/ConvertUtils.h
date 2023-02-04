@@ -56,8 +56,8 @@ namespace Azazel
     {
         switch (cullFront)
         {
-            case CullFront::Ccw: return GL_FRONT;
-            case CullFront::Cw:  return GL_BACK;
+            case CullFront::Ccw: return GL_CCW;
+            case CullFront::Cw:  return GL_CW;
         }
         return 0;
     }

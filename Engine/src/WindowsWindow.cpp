@@ -148,6 +148,13 @@ namespace Azazel
         return window;
     }
 
+    void WindowsWindow::destroyGLFW()
+    {
+
+        glfwDestroyWindow(window);
+        glfwTerminate();
+    }
+
     void WindowsWindow::initImgui(GLFWwindow* window, int width, int height)
     {
         IMGUI_CHECKVERSION();
@@ -162,14 +169,17 @@ namespace Azazel
         ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
     }
 
-    void WindowsWindow::shutDown()
+    void WindowsWindow::destroyImgui()
     {
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
+    }
 
-        glfwDestroyWindow(window);
-        glfwTerminate();
+    void WindowsWindow::shutDown()
+    {
+        destroyImgui();
+        destroyGLFW();
     }
 
     void WindowsWindow::onUpdate(float delta)

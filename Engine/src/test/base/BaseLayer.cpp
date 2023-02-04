@@ -45,6 +45,10 @@ namespace Azazel
 
     void BaseLayer::onUpdate(float delta)
     {
+    }
+
+    void BaseLayer::onRender(float delta)
+    {
         Render::getRender()->setBlend(true);
         Render::getRender()->setBlendFunc(BlendFunction::SrcAlpha, BlendFunction::OneMinusSrcAlpha);
 
@@ -55,10 +59,6 @@ namespace Azazel
         shader->bind();
         shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * glm::translate(glm::mat4(1.0f), glm::vec3(400.0f, 400.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(200.0f, 200.0f, 1.0f)));
         Render::getRender()->drawIndexed(*vertexArray, *indexBuffer, *shader, *texture1);
-    }
-
-    void BaseLayer::onRender(float delta)
-    {
     }
 
     void BaseLayer::onImguiRender(float delta)

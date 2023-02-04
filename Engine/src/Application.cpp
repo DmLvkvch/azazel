@@ -44,9 +44,9 @@ namespace Azazel
             running = false;
         }
 
-        for (auto it = layerStack.end(); it != layerStack.begin(); )
+        for (auto layer : layerStack)
         {
-            (*(--it))->onEvent(e);
+            layer->onEvent(e);
         }
     }
 
@@ -59,21 +59,21 @@ namespace Azazel
             Render::getRender()->beginScene();
             Render::getRender()->setClearColor({0.0f, 0.0f, 0.0f, 1.0f});
             Render::getRender()->clear(true, true, false);
+
             ImGui_ImplOpenGL3_NewFrame();
             ImGui::NewFrame();
+
             for (auto layer : layerStack)
             {
                 layer->onInputUpdate(delta);
+                layer->onImguiRender(delta);
                 layer->onUpdate(delta);
                 layer->onRender(delta);
-            }
-            for (auto layer : layerStack)
-            {
-                layer->onImguiRender(delta);
             }
 
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
             window->onUpdate(delta);
             Render::getRender()->endScene();
             auto stopTime = std::chrono::high_resolution_clock::now();

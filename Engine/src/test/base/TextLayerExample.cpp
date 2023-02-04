@@ -104,10 +104,14 @@ namespace Azazel
 
     void TextLayerExample::onUpdate(float delta)
     {
-        Render::getRender()->setBlend(true);
-        Render::getRender()->setBlendFunc(BlendFunction::SrcAlpha, BlendFunction::OneMinusSrcAlpha);
         shader->bind();
         shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 0.0f)));
+    }
+
+    void TextLayerExample::onRender(float delta)
+    {
+        Render::getRender()->setBlend(true);
+        Render::getRender()->setBlendFunc(BlendFunction::SrcAlpha, BlendFunction::OneMinusSrcAlpha);
         glActiveTexture(GL_TEXTURE0);
         glBindVertexArray(VAO);
 
@@ -141,10 +145,6 @@ namespace Azazel
         }
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
-    }
-
-    void TextLayerExample::onRender(float delta)
-    {
     }
 
     void TextLayerExample::onEvent(Event& e)

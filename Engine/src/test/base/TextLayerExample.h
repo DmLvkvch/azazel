@@ -1,8 +1,7 @@
 #pragma once
 
-#include <Layer.h>
-
-#include "renderer/camera/OrthographicCamera.h"
+#include "Layer.h"
+#include "camera/OrthographicCamera.h"
 #include "renderer/Shader.h"
 #include "renderer/Texture.h"
 #include "renderer/VertexBuffer.h"

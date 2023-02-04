@@ -37,7 +37,7 @@ namespace Azazel
 
     bool Input::isKeyHeld(int keycode)
     {
-        auto window   = static_cast<GLFWwindow*>(Application::getApplication()->getWindow()->getNativeWindow());
+        auto window = static_cast<GLFWwindow*>(Application::getApplication()->getWindow()->getNativeWindow());
         int state = glfwGetKey(window, keycode);
         return state == GLFW_PRESS || state == GLFW_REPEAT;
     }

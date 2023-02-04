@@ -17,8 +17,8 @@ namespace Azazel
     void ModelLoadLayer::onUpdate(float delta)
     {
         texture->bind();
-        model.transform.rotation.x = model.transform.rotation.y = (float)glfwGetTime() * 30.0f;
-        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3{ -0.0f, 0.0f, -0.1f }) * model.transform.getTransformMatrix();
+        model.transform.rotation.y = model.transform.rotation.y = (float) glfwGetTime() * 30.0f;
+        glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3{ 0.0f, 0.0f, 0.0f }) * model.transform.getTransformMatrix();
         
         glm::mat4 viewMatrix(1.0f);
         glm::mat4 projectionMatrix(1.0f);

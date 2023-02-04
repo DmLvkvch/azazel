@@ -2,8 +2,8 @@
 
 #include "Layer.h"
 
-#include "renderer/camera/Camera.h"
-#include "renderer/camera/OrthographicCamera.h"
+#include "camera/Camera.h"
+#include "camera/OrthographicCamera.h"
 
 #include "renderer/Shader.h"
 #include "renderer/Texture.h"

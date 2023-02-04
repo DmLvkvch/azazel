@@ -8,6 +8,15 @@
 
 namespace Azazel
 {
+    struct CameraProjection
+    {
+        float fov;
+        float width;
+        float height;
+        float near;
+        float far;
+    };
+
     struct CameraLocation
     {
         glm::vec3 position { 0.0f, 0.0f, 0.0f };
@@ -18,6 +27,14 @@ namespace Azazel
     class Camera
     {
     public:
+
+        float yaw;
+        float pitch;
+        float movementSpeed;
+        float mouseSensitivity;
+        float zoom;
+        glm::vec3 right;
+        glm::vec3 front;
 
         Camera();
 
@@ -37,13 +54,25 @@ namespace Azazel
 
         glm::mat4 getViewLookAtMatrix(glm::vec3 lookAtPosition = glm::vec3{0.0, 0.0, 0.0});
 
+        glm::mat4 getViewMatrix();
+
         inline const glm::vec3& getImmutablePosition() const
         {
-            return camera.position;
+            return cameraLocation.position;
         }
 
         void move(const glm::vec3& move);
+
+        void zoom(float zoom)
+        {
+            zoom -= (float)zoom;
+            if (zoom < 1.0f)
+                zoom = 1.0f;
+            if (zoom > 45.0f)
+                zoom = 45.0f;
+        }
     private:
-        CameraLocation camera;
+        void updateCamera();
+        CameraLocation cameraLocation;
     };
 }
