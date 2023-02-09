@@ -1,83 +1,18 @@
 #pragma once
 
-#include "renderer/Texture.h"
-#include "renderer/IndexBuffer.h"
-#include "renderer/VertexArray.h"
-#include "renderer/Shader.h"
-#include "renderer/Texture.h"
-#include "renderer/Vertex.h"
-#include "camera/Camera.h"
-#include <memory>
+#include "renderer/Render.h"
 
 namespace Azazel
 {
 
-    enum class CullMode
-    {
-        Front,
-        Back,
-        FrontAndBack,
-        None
-    };
-
-    enum class CullFront
-    {
-        Cw,
-        Ccw
-    };
-
-    enum class BlendEquation
-    {
-        Add,
-        Subtract,
-        ReverseSubtract,
-        Min,
-        Max,
-        None
-    };
-
-    enum class BlendFunction
-    {
-        Zero,
-        One,
-        SrcColor,
-        OneMinusSrcColor,
-        DstColor,
-        OneMinusDstColor,
-        SrcAlpha,
-        OneMinusSrcAlpha,
-        DstAlpha,
-        OneMinusDstAlpha,
-        ConstantColor,
-        OneMinusConstantColor,
-        ConstantAlpha,
-        OneMinusConstantAlpha,
-        SrcAlphaSaturate,
-        None
-    };
-
-    enum class CompareFunction
-    {
-        Never,
-        Less,
-        Equal,
-        LessOrEqual,
-        Greater,
-        NotEqual,
-        GreaterOrEqual,
-        Always,
-    };
-
     template <class T>
     class Mesh;
 
-    class Render
+    class GLESRender : public Render
     {
-    public:
-        Render();
-        virtual ~Render();
-
-        static Render* getRender();
+        GLESRender();
+        
+        virtual ~GLESRender();
 
         void init();
 
@@ -133,18 +68,17 @@ namespace Azazel
 
         void setCamera();
     private:
-        static std::unique_ptr<Render> render;
         int drawCalls;
     };
 
     template <typename T> 
-    void Render::drawMesh(const Mesh<T>& mesh, const Shader& shader, const Texture& texture)
+    void GLESRender::drawMesh(const Mesh<T>& mesh, const Shader& shader, const Texture& texture)
     {
         drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader, texture);
     }
 
     template <typename T> 
-    void Render::drawMesh(const Mesh<T>& mesh, const Shader& shader)
+    void GLESRender::drawMesh(const Mesh<T>& mesh, const Shader& shader)
     {
         drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader);
     }

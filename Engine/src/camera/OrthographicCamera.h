@@ -26,17 +26,16 @@ namespace Azazel
         const glm::mat4& getViewProjectionMatrix() const { return viewProjectionMatrix; }
 
         void zoom(const glm::vec2& zoom, const glm::vec2& origin = glm::vec2 {0.0f, 0.0f});
-
-    private:
+    
         void updateMatrix();
     private:
         glm::mat4 viewMatrix;
         glm::mat4 projectionMatrix;
         glm::mat4 viewProjectionMatrix;
 
-        float zoomFactor;
-        glm::vec3 scale;
-        glm::vec4 ortho;
+        float near = -1.0f;
+        float far = 1.0f;
+
         glm::vec3 position;
         float rotation;
     };

@@ -2,6 +2,8 @@
 
 #include "Layer.h"
 #include "renderer/Model.h"
+#include "camera/OrthographicCamera.h"
+#include "camera/Camera.h"
 
 namespace Azazel
 {
@@ -18,5 +20,6 @@ namespace Azazel
         std::unique_ptr<Shader> light;
         std::unique_ptr<Texture> texture;
         Model model;
+        Camera camera;
     };
 }

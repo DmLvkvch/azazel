@@ -56,8 +56,9 @@ namespace Azazel
         };
         
         std::vector<unsigned int> indices;
-        indices.resize(vertices.size());
-        for (int i = 0; i < vertices.size(); i++)
+        int sz = vertices.size() / sizeof(Vertex_P3_N3_T2) * sizeof(float);
+        indices.resize(sz);
+        for (int i = 0; i < indices.size(); i++)
         {
             indices[i] = i;
         }

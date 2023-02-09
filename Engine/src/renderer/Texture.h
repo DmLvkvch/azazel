@@ -61,6 +61,37 @@ namespace Azazel
             NONE
         };
 
+        static bool isDepth(Format format)
+        {
+            switch(format)
+            {
+                case DEPTH16:
+                case DEPTH24:
+                case DEPTH32:
+                case DEPTH24_STENCIL8:
+                case DEPTH32F:
+                case DEPTH_STENCIL:
+                    return true;
+                default:
+                    return false;
+            }
+            return false;
+        }
+
+        static bool isDepthStencil(Format format)
+        {
+            switch(format)
+            {
+                case DEPTH24_STENCIL8:
+                case DEPTH_STENCIL:
+                    return true;
+                default:
+                    return false;
+            }
+            return false;
+        }
+
+
         Texture() = default;
         
         Texture(int width, int height, int bpp, const unsigned char* data, Format format);

@@ -63,13 +63,13 @@ namespace Azazel
 
         void move(const glm::vec3& move);
 
-        void zoom(float zoom)
+        void zoomCamera(float offset)
         {
-            zoom -= (float)zoom;
-            if (zoom < 1.0f)
-                zoom = 1.0f;
-            if (zoom > 45.0f)
-                zoom = 45.0f;
+            this->zoom -= (float)offset;
+            if (this->zoom < 1.0f)
+                this->zoom = 1.0f;
+            if (this->zoom > 45.0f)
+                this->zoom = 45.0f;
         }
     private:
         void updateCamera();

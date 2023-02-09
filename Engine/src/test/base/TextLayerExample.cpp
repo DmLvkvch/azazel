@@ -18,7 +18,7 @@ namespace Azazel
     void TextLayerExample::onAttach()
     {
 
-        camera = OrthographicCamera(940, 560);
+        camera = OrthographicCamera(-400.0f, 400.0f, -400.00f, 400.0f, -1.0f, 1.0f);
         shader.reset(Shader::create(FileUtils::readFile("shaders/2d/text.vert.glsl"), FileUtils::readFile("shaders/2d/text.frag.glsl")));
 
         FT_Library ft;
@@ -105,7 +105,7 @@ namespace Azazel
     void TextLayerExample::onUpdate(float delta)
     {
         shader->bind();
-        shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 0.0f)));
+        shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
     }
 
     void TextLayerExample::onRender(float delta)
