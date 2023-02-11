@@ -8,12 +8,12 @@ namespace Azazel
 {
     GLESVertexArray::GLESVertexArray()
     {
-        glGenVertexArrays(1, &rendererId);
+        glGenVertexArrays(1, &rendererID);
     }
 
     GLESVertexArray::~GLESVertexArray()
     {
-        glDeleteVertexArrays(1, &rendererId);
+        glDeleteVertexArrays(1, &rendererID);
     }
 
     void GLESVertexArray::addBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, const BufferLayout& layout)
@@ -39,7 +39,7 @@ namespace Azazel
 
     void GLESVertexArray::bind() const
     {
-        glBindVertexArray(rendererId);
+        glBindVertexArray(rendererID);
     }
 
     void GLESVertexArray::unbind() const

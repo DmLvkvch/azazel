@@ -11,26 +11,26 @@ namespace Azazel
 		unsigned int vertexShaderHandle = compile(vertexShader, VERTEX);
 		unsigned int fragmentShaderHandle = compile(fragmentShader, FRAGMENT);
 
-		rendererId = glCreateProgram();
+		rendererID = glCreateProgram();
 
-		glAttachShader(rendererId, vertexShaderHandle);
-		glAttachShader(rendererId, fragmentShaderHandle);
-		glLinkProgram(rendererId);
+		glAttachShader(rendererID, vertexShaderHandle);
+		glAttachShader(rendererID, fragmentShaderHandle);
+		glLinkProgram(rendererID);
 		glDeleteShader(vertexShaderHandle);
 		glDeleteShader(fragmentShaderHandle);
 
 		int success;
-		glGetProgramiv(rendererId, GL_LINK_STATUS, &success);
+		glGetProgramiv(rendererID, GL_LINK_STATUS, &success);
 		char infoLog[512];
 		if (!success) {
-			glGetProgramInfoLog(rendererId, 512, NULL, infoLog);
+			glGetProgramInfoLog(rendererID, 512, NULL, infoLog);
 			std::cout << "Shader creation error!\n" << infoLog << std::endl;
 		}
 	}
 
 	GLESShader::~GLESShader()
 	{
-		glDeleteProgram(rendererId);
+		glDeleteProgram(rendererID);
 	}
 
 	int GLESShader::getShaderType(const ShaderType& shaderType) const
@@ -59,7 +59,7 @@ namespace Azazel
 		glGetShaderiv(handle, GL_COMPILE_STATUS, &status);
 
 		if (status != GL_TRUE) {
-			glGetProgramInfoLog(rendererId, 512, NULL, infoLog);
+			glGetProgramInfoLog(rendererID, 512, NULL, infoLog);
 			std::cout<<programCode<<std::endl;
 			std::cout << "Shader creation error!\n" << infoLog << std::endl<<programCode<<std::endl;
 		}
@@ -69,7 +69,7 @@ namespace Azazel
 
 	void GLESShader::bind() const
 	{
-		glUseProgram(rendererId);
+		glUseProgram(rendererID);
 	}
 
 	void GLESShader::unbind() const
@@ -79,7 +79,7 @@ namespace Azazel
 
 	int GLESShader::getUniformLocation(const std::string& name) const
 	{
-		int location = glGetUniformLocation(rendererId, name.c_str());
+		int location = glGetUniformLocation(rendererID, name.c_str());
 		if (location == -1)
 		{
 			std::cout << "No active uniform variable with name " << name << " found" << std::endl;

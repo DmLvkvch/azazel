@@ -66,8 +66,7 @@ namespace Azazel
         front.y = sin(glm::radians(pitch));
         front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
         this->front = glm::normalize(front);
-        // also re-calculate the Right and Up vector
-        right = glm::normalize(glm::cross(this->front, glm::vec3{0.0f, 1.0f, 0.0f}));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+        right = glm::normalize(glm::cross(this->front, glm::vec3{0.0f, 1.0f, 0.0f}));
         cameraLocation.up    = glm::normalize(glm::cross(right, this->front));
     }
 }

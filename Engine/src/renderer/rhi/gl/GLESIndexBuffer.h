@@ -17,7 +17,7 @@ namespace Azazel
 
         size_t getElementCount() const override;
     private:
-        unsigned int rendererId;
+        unsigned int rendererID;
         size_t count;
     };
 }

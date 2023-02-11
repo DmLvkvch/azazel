@@ -28,6 +28,16 @@ namespace Azazel
         static TextureResourceManager* textureManager;
     };
 
+    class TextureDataResourceManager : public ResourceManager<std::shared_ptr<TextureData>>
+    {
+    public:
+        std::shared_ptr<TextureData> loadResource(const std::string& path)
+        {
+            return std::shared_ptr<TextureData>();
+        }
+    private:
+        static TextureDataResourceManager* textureDataManager;
+    };
 
     class ShaderResourceManager : public ResourceManager<std::shared_ptr<Shader>>
     {

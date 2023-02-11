@@ -10,8 +10,9 @@ namespace Azazel
 
     class GLESRender : public Render
     {
+    public:
         GLESRender();
-        
+
         virtual ~GLESRender();
 
         void init();
@@ -50,12 +51,6 @@ namespace Azazel
 
         void drawArrays(const VertexArray& vertexArray, const Shader& shader, const Texture& texture);
 
-        template <typename T>
-        void drawMesh(const Mesh<T>& mesh, const Shader& shader, const Texture& texture);
-
-        template <typename T>
-        void drawMesh(const Mesh<T>& mesh, const Shader& shader);
-
         void reset();
 
         void setBlendFunc(BlendFunction sFactor, BlendFunction dFactor);
@@ -70,16 +65,4 @@ namespace Azazel
     private:
         int drawCalls;
     };
-
-    template <typename T> 
-    void GLESRender::drawMesh(const Mesh<T>& mesh, const Shader& shader, const Texture& texture)
-    {
-        drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader, texture);
-    }
-
-    template <typename T> 
-    void GLESRender::drawMesh(const Mesh<T>& mesh, const Shader& shader)
-    {
-        drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader);
-    }
 }

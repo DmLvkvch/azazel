@@ -19,6 +19,8 @@ namespace Azazel
         static Application* getApplication();
         std::vector<std::function<void(float)>> subscribers;
     private:
+        void update(float delta);
+    private:
         std::unique_ptr<Window> window;
         LayerStack layerStack;
         bool running = true;

@@ -9,9 +9,11 @@ namespace Azazel
     public:
         GLESCubeMap()
         {
-            unsigned int textureID;
             glGenTextures(1, &textureID);
             glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
         }
+        
+    private:
+        unsigned int textureID;
     };
 }

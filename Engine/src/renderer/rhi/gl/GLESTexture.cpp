@@ -36,7 +36,7 @@ namespace Azazel
 
     void GLESTexture::createTexture(int width, int height, int bpp, const unsigned char* data)
     {
-        glGenTextures(1, &rendererId);
+        glGenTextures(1, &rendererID);
         bind();
         setTextureFilter(Texture::Nearest);
         setTextureWrap(Texture::Repeat);
@@ -70,13 +70,13 @@ namespace Azazel
 
     GLESTexture::~GLESTexture()
     {
-        glDeleteTextures(1, &rendererId);
+        glDeleteTextures(1, &rendererID);
     }
 
     void GLESTexture::bind(unsigned int slot) const
     {
         glActiveTexture(GL_TEXTURE0 + slot);
-        glBindTexture(GL_TEXTURE_2D, rendererId);
+        glBindTexture(GL_TEXTURE_2D, rendererID);
     }
 
     void GLESTexture::unbind() const
@@ -140,6 +140,6 @@ namespace Azazel
 
     unsigned int GLESTexture::getRendererId() const
     {
-        return rendererId;
+        return rendererID;
     }
 }

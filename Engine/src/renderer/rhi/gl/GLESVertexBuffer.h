@@ -15,7 +15,7 @@ namespace Azazel
         void updateSubData(int offset, void* data, int size) override;
         const BufferLayout& getBufferLayout() const override;
     private:
-        unsigned int rendererId;
+        unsigned int rendererID;
         BufferLayout bufferLayout;
     };
 }

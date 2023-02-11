@@ -4,6 +4,7 @@
 #include "renderer/Model.h"
 #include "camera/OrthographicCamera.h"
 #include "camera/Camera.h"
+#include "renderer/CubeMap.h"
 
 namespace Azazel
 {
@@ -21,5 +22,6 @@ namespace Azazel
         std::unique_ptr<Texture> texture;
         Model model;
         Camera camera;
+        CubeMap cm;
     };
 }

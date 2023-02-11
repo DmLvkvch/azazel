@@ -33,11 +33,10 @@ namespace Azazel
 
     private:
         int getShaderType(const ShaderType& shaderType) const;
-
         unsigned int compile(const std::string& programCode, const ShaderType& shaderType);
     
     private:
-        unsigned int rendererId;
+        unsigned int rendererID;
         std::unordered_map<std::string, int> uniformLocationMap;
     };
 }

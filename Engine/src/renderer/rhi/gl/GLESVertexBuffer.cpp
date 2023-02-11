@@ -6,20 +6,20 @@ namespace Azazel
 {
     GLESVertexBuffer::GLESVertexBuffer(const void* data, size_t size)
     {
-        glGenBuffers(1, &rendererId);
-        glBindBuffer(GL_ARRAY_BUFFER, rendererId);
+        glGenBuffers(1, &rendererID);
+        glBindBuffer(GL_ARRAY_BUFFER, rendererID);
         glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
     GLESVertexBuffer::~GLESVertexBuffer()
     {
-        glDeleteBuffers(1, &rendererId);
+        glDeleteBuffers(1, &rendererID);
     }
 
     void GLESVertexBuffer::bind() const
     {
-        glBindBuffer(GL_ARRAY_BUFFER, rendererId);
+        glBindBuffer(GL_ARRAY_BUFFER, rendererID);
     }
 
     void GLESVertexBuffer::unbind() const

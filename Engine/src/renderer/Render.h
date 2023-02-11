@@ -75,45 +75,46 @@ namespace Azazel
     {
     public:
         Render();
+        
         virtual ~Render();
 
         static Render* getRender();
 
-        void init();
+        virtual void init() = 0;
 
-        void saveState();
+        virtual void saveState() = 0;
     
-        void popState();
+        virtual void popState() = 0;
 
-        void clear(bool color = true, bool depth = false, bool stencil = false);
+        virtual void clear(bool color = true, bool depth = false, bool stencil = false) = 0;
 
-        void setViewport(int x, int y, int width, int height);
+        virtual void setViewport(int x, int y, int width, int height) = 0;
 
-        void setScissor(bool enable);
+        virtual void setScissor(bool enable) = 0;
     
-        void setScissor(int x, int y, int width, int height);
+        virtual void setScissor(int x, int y, int width, int height) = 0;
 
-        void setClearColor(const glm::vec4& color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+        virtual void setClearColor(const glm::vec4& color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)) = 0;
 
-        void setMultisample(bool enable);
+        virtual void setMultisample(bool enable) = 0;
 
-        void setCullFace(bool enable);
+        virtual void setCullFace(bool enable) = 0;
 
-        void setCullFaceMode(CullMode cullMode);
+        virtual void setCullFaceMode(CullMode cullMode) = 0;
 
-        void setFrontFace(CullFront cullFront);
+        virtual void setFrontFace(CullFront cullFront) = 0;
 
-        void setDepthTest(bool enable);
+        virtual void setDepthTest(bool enable) = 0;
 
-        void setStencilTest(bool enable);
+        virtual void setStencilTest(bool enable) = 0;
 
-        void setBlend(bool enable);
+        virtual void setBlend(bool enable) = 0;
 
-        void drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader);
+        virtual void drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) = 0;
 
-        void drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture);
+        virtual void drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture) = 0;
 
-        void drawArrays(const VertexArray& vertexArray, const Shader& shader, const Texture& texture);
+        virtual void drawArrays(const VertexArray& vertexArray, const Shader& shader, const Texture& texture) = 0;
 
         template <typename T>
         void drawMesh(const Mesh<T>& mesh, const Shader& shader, const Texture& texture);
@@ -121,15 +122,15 @@ namespace Azazel
         template <typename T>
         void drawMesh(const Mesh<T>& mesh, const Shader& shader);
 
-        void reset();
+        virtual void reset() = 0;
 
-        void setBlendFunc(BlendFunction sFactor, BlendFunction dFactor);
+        virtual void setBlendFunc(BlendFunction sFactor, BlendFunction dFactor) = 0;
 
-        void setBlendEquation(BlendEquation blendEquation);
+        virtual void setBlendEquation(BlendEquation blendEquation) = 0;
         
-        void beginScene();
+        virtual void beginScene() = 0;
 
-        void endScene();
+        virtual void endScene() = 0;
 
         void setCamera();
     private:

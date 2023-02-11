@@ -7,7 +7,7 @@ namespace Azazel
     GLESRenderBuffer::GLESRenderBuffer(int width, int height)
     :RenderBuffer(width, height)
     {
-        glGenRenderbuffers(1, &rendererId);
+        glGenRenderbuffers(1, &rendererID);
         bind();
         glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
         unbind();
@@ -15,17 +15,17 @@ namespace Azazel
 
     GLESRenderBuffer::~GLESRenderBuffer()
     {
-        glDeleteRenderbuffers(1, &rendererId);
+        glDeleteRenderbuffers(1, &rendererID);
     }
 
     int GLESRenderBuffer::getRendererId() const
     {
-        return rendererId;
+        return rendererID;
     }
     
     void GLESRenderBuffer::bind() const
     {
-        glBindRenderbuffer(GL_RENDERBUFFER, rendererId);
+        glBindRenderbuffer(GL_RENDERBUFFER, rendererID);
     }
 
     void GLESRenderBuffer::unbind() const

@@ -22,6 +22,6 @@ namespace Azazel
         unsigned int textureWrapToGLFormat(Texture::TextureWrap textureWrap);
         void createTexture(int width, int height, int bpp, const unsigned char* data);
     private:
-        unsigned int rendererId;
+        unsigned int rendererID;
     };
 }

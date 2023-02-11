@@ -7,26 +7,26 @@ namespace Azazel
 {
     GLESFrameBuffer::GLESFrameBuffer(std::shared_ptr<Texture> texture)
     {
-        glGenFramebuffers(1, &rendererId);
+        glGenFramebuffers(1, &rendererID);
         addColorAttachment(texture);
         depthTarget = std::shared_ptr<FrameBufferTarget>(nullptr);
     }
 
     GLESFrameBuffer::GLESFrameBuffer(std::shared_ptr<Texture> texture, std::shared_ptr<FrameBufferTarget> depthTarget)
     {
-        glGenFramebuffers(1, &rendererId);
+        glGenFramebuffers(1, &rendererID);
         addColorAttachment(texture);
         setDepthTarget(depthTarget);
     }
 
     GLESFrameBuffer::~GLESFrameBuffer()
     {
-        glDeleteFramebuffers(1, &rendererId);  
+        glDeleteFramebuffers(1, &rendererID);  
     }
 
     void GLESFrameBuffer::bind() const
     {
-        glBindFramebuffer(GL_FRAMEBUFFER, rendererId);
+        glBindFramebuffer(GL_FRAMEBUFFER, rendererID);
     }
     
     void GLESFrameBuffer::unbind() const

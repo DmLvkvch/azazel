@@ -40,6 +40,8 @@ namespace Azazel
 
         ~Camera();
 
+        void onInputUpdate(float delta);
+
         void setPosition(const glm::vec3& position);
 
         void setDirection(const glm::vec3& direction);
@@ -67,9 +69,13 @@ namespace Azazel
         {
             this->zoom -= (float)offset;
             if (this->zoom < 1.0f)
+            {
                 this->zoom = 1.0f;
+            }
             if (this->zoom > 45.0f)
+            {
                 this->zoom = 45.0f;
+            }
         }
     private:
         void updateCamera();

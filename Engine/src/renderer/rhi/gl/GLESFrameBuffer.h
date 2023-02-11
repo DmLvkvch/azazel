@@ -17,6 +17,6 @@ namespace Azazel
 
         void addColorAttachment(std::shared_ptr<Texture> colorTarget, int slot = 0) override;
     private:
-        unsigned int rendererId;
+        unsigned int rendererID;
     };
 }

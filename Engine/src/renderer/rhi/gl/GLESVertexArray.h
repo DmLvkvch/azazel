@@ -14,7 +14,6 @@ namespace Azazel
         void bind() const override;
         void unbind() const override;
     private:
-        unsigned int rendererId;
-        int lastIndex;
+        unsigned int rendererID;
     };
 }
