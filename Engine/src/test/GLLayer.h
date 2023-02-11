@@ -5,13 +5,13 @@
 #include "camera/Camera.h"
 #include "camera/OrthographicCamera.h"
 
-#include "renderer/Shader.h"
-#include "renderer/Texture.h"
-#include "renderer/VertexBuffer.h"
-#include "renderer/IndexBuffer.h"
-#include "renderer/VertexArray.h"
-#include "renderer/FrameBuffer.h"
-#include "renderer/Model.h"
+#include "render/Shader.h"
+#include "render/Texture.h"
+#include "render/VertexBuffer.h"
+#include "render/IndexBuffer.h"
+#include "render/VertexArray.h"
+#include "render/FrameBuffer.h"
+#include "render/Model.h"
 
 namespace Azazel
 {

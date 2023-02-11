@@ -5,8 +5,8 @@
 #include "events/ApplicationEvent.h"
 #include "TextureUtils.h"
 #include "FileUtils.h"
-#include "renderer/TextureData.h"
-#include "renderer/Render.h"
+#include "render/TextureData.h"
+#include "render/Render.h"
 
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>

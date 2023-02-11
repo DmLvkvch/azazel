@@ -98,7 +98,9 @@
     "span": "cpp",
     "*.inc": "cpp",
     "regex": "cpp",
-    "any": "cpp"
+    "any": "cpp",
+    "coroutine": "cpp",
+    "stack": "cpp"
   },
   "cmake.configureOnOpen": true,
   "C_Cpp_Runner.cCompilerPath": "gcc",

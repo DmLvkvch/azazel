@@ -2,6 +2,7 @@
 
 #include "FileUtils.h"
 #include "TextureUtils.h"
+#include "logging/Log.h"
 
 namespace Azazel
 {
@@ -52,7 +53,6 @@ namespace Azazel
 
     void ModelLoadLayer::onRender(float delta)
     {
-        cm.draw();
         Render::getRender()->setDepthTest(true);
         Render::getRender()->setCullFace(true);
         model.draw(*light);

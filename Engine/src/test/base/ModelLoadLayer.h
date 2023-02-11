@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Layer.h"
-#include "renderer/Model.h"
 #include "camera/OrthographicCamera.h"
 #include "camera/Camera.h"
-#include "renderer/CubeMap.h"
+#include "render/Model.h"
+#include "render/CubeMap.h"
 
 namespace Azazel
 {
@@ -22,6 +22,5 @@ namespace Azazel
         std::unique_ptr<Texture> texture;
         Model model;
         Camera camera;
-        CubeMap cm;
     };
 }

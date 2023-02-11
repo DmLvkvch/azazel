@@ -5,7 +5,6 @@
 #include "test/base/BaseLayer.h"
 #include "test/base/TextLayerExample.h"
 #include "test/base/ModelLoadLayer.h"
-#include "Input.h"
 
 int main()
 {

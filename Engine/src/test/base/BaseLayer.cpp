@@ -5,8 +5,8 @@
 #include "events/KeyEvent.h"
 #include "events/MouseEvent.h"
 #include "events/ApplicationEvent.h"
-#include "renderer/Render.h"
-#include "renderer/Mesh.h"
+#include "render/Render.h"
+#include "render/Mesh.h"
 #include "resources/ResourceManager.h"
 
 namespace Azazel

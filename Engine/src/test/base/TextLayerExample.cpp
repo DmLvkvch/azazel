@@ -6,7 +6,7 @@
 #include "events/MouseEvent.h"
 #include "events/ApplicationEvent.h"
 #include "Input.h"
-#include "renderer/Render.h"
+#include "render/Render.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
