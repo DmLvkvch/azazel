@@ -43,17 +43,17 @@ namespace Azazel
 
         inline void errorLog(const std::string& log) 
         {
-            std::cout<<red<<"Log::Error "<<log<<def<<std::endl;
+            std::cout<<red<<"Log::Error. "<<log<<def<<std::endl;
         }
 
 		inline void warnLog(const std::string& log) 
         { 
-            std::cout<<blue<<"Log::Error "<<log<<def<<std::endl;
+            std::cout<<blue<<"Log::Warn. "<<log<<def<<std::endl;
         }
 
 		inline void infoLog(const std::string& log) 
         {
-            std::cout<<green<<"Log::Error "<<log<<def<<std::endl;
+            std::cout<<green<<"Log::Info. "<<log<<def<<std::endl;
 		}
 
         static Log* getLogger()

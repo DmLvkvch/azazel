@@ -18,8 +18,9 @@ namespace Azazel
         Window* getWindow();
         static Application* getApplication();
         std::vector<std::function<void(float)>> subscribers;
+        void subscribe(std::function<void(float)> func);
     private:
-        void update(float delta);
+        void updateTargets(float delta);
     private:
         std::unique_ptr<Window> window;
         LayerStack layerStack;

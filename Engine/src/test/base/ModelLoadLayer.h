@@ -4,7 +4,7 @@
 #include "camera/OrthographicCamera.h"
 #include "camera/Camera.h"
 #include "render/Model.h"
-#include "render/CubeMap.h"
+#include "render/renderers/SkyboxRenderer.h"
 
 namespace Azazel
 {
@@ -22,5 +22,6 @@ namespace Azazel
         std::unique_ptr<Texture> texture;
         Model model;
         Camera camera;
+        SkyboxRenderer sbr;
     };
 }

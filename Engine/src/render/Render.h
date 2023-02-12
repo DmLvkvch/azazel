@@ -68,6 +68,18 @@ namespace Azazel
         Always,
     };
 
+    enum class StencilFunc
+    {
+        Keep,
+        Zero,
+        Replace,
+        Incr,
+        IncrWrap,
+        Decr,
+        DecrWrap,
+        Invert
+    };
+
     template <class T>
     class Mesh;
 

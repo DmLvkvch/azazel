@@ -3,12 +3,12 @@
 #include "camera/Camera.h"
 #include "camera/OrthographicCamera.h"
 
-#include "Shader.h"
-#include "Texture.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-#include "VertexArray.h"
-#include "FrameBuffer.h"
+#include "render/Shader.h"
+#include "render/Texture.h"
+#include "render/VertexBuffer.h"
+#include "render/IndexBuffer.h"
+#include "render/VertexArray.h"
+#include "render/FrameBuffer.h"
 #include <map>
 #include <memory>
 

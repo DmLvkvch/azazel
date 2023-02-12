@@ -87,7 +87,7 @@ namespace Azazel
     };
 
 #pragma pack(push, 1)
-    class Vertex_P3_C4_T2
+    struct Vertex_P3_C4_T2
     {
     public:
         glm::vec3 position;
@@ -104,7 +104,7 @@ namespace Azazel
         }
     };
 
-    class Vertex_P3_T2
+    struct Vertex_P3_T2
     {
     public:
         glm::vec3 position;
@@ -120,7 +120,7 @@ namespace Azazel
         }
     };
 
-    class Vertex_P3_N3_T2
+    struct Vertex_P3_N3_T2
     {
     public:
         glm::vec3 position;
@@ -138,7 +138,7 @@ namespace Azazel
 
     };
 
-    class Vertex_P3_N3_T2_TAN3_BTAN_3
+    struct Vertex_P3_N3_T2_TAN3_BTAN_3
     {
     public:
         glm::vec3 position;
@@ -152,6 +152,20 @@ namespace Azazel
 
         Vertex_P3_N3_T2_TAN3_BTAN_3(glm::vec3 position, glm::vec3 normal, glm::vec2 texCoord, glm::vec3 tangent, glm::vec3 bitangent)
         : position(position), normal(normal), texCoord(texCoord), tangent(tangent), bitangent(bitangent)
+        {
+
+        }
+    };
+
+    struct Vertex_P3
+    {
+    public:
+        glm::vec3 position;
+        static BufferLayout bufferLayout;
+        
+        Vertex_P3() = default;
+        Vertex_P3(glm::vec3 position) 
+        : position(position)
         {
 
         }

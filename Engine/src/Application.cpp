@@ -24,6 +24,19 @@ namespace Azazel
         return Application::app;
     }
 
+    void Application::subscribe(std::function<void(float)> func)
+    {
+        this->subscribers.push_back(func);
+    }
+
+    void Application::updateTargets(float delta)
+    {
+        for (auto& subscriber : subscribers)
+        {
+            subscriber(delta);
+        }
+    }
+
     Application::Application()
     {
         delta = 0.0f;

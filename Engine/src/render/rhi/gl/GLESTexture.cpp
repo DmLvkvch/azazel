@@ -2,6 +2,7 @@
 
 #include "gl_headers.h"
 #include <iostream>
+#include "logging/Log.h"
 
 namespace Azazel
 {
@@ -49,6 +50,12 @@ namespace Azazel
             internalFormat = GL_RGB8;
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         }
+        else if (bpp == 1)
+        {
+            format = GL_RED;
+            internalFormat = GL_RED;
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        }
         else
         {
             format = GL_RGBA;
@@ -56,7 +63,7 @@ namespace Azazel
         }
         if (!data)
         {
-            std::cout<<"Warning. Creating texture with no data provided"<<std::endl;
+            Log::getLogger()->warnLog("Creating texture with no data provided");
         }
         
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data);

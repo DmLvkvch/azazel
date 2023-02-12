@@ -14,4 +14,6 @@ namespace Azazel
                                                              {ShaderDataType::Float2, Semantic::Tex_Coord},
                                                              {ShaderDataType::Float3, Semantic::Tangent}, 
                                                              {ShaderDataType::Float3, Semantic::Bitangent} };
+                                                             
+    BufferLayout Vertex_P3::bufferLayout                    { {ShaderDataType::Float3, Semantic::Position3D}};
 }
