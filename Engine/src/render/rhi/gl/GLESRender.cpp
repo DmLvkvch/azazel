@@ -63,7 +63,7 @@ namespace Azazel
 
     void GLESRender::setMultisample(bool enable)
     {
-        if (true)
+        if (enable)
         {
             glEnable(GL_MULTISAMPLE);
         }

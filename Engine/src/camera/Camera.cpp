@@ -4,16 +4,6 @@
 
 namespace Azazel
 {
-
-    Camera::Camera()
-    {
-    }
-
-    Camera::~Camera()
-    {
-        
-    }
-
     void Camera::setPosition(const glm::vec3& position)
     {
         cameraLocation.position = position;
@@ -50,7 +40,7 @@ namespace Azazel
 
     glm::mat4 Camera::getViewMatrix()
     {
-        return glm::lookAt(cameraLocation.position, cameraLocation.position + cameraLocation.direction, cameraLocation.up);
+        return glm::lookAt(cameraLocation.position, cameraLocation.position + cameraLocation.front, cameraLocation.up);
     }
 
     void Camera::move(const glm::vec3& move)
@@ -60,13 +50,6 @@ namespace Azazel
 
     void Camera::updateCamera()
     {
-        // calculate the new Front vector
-        glm::vec3 front;
-        front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        front.y = sin(glm::radians(pitch));
-        front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-        this->front = glm::normalize(front);
-        right = glm::normalize(glm::cross(this->front, glm::vec3{0.0f, 1.0f, 0.0f}));
-        cameraLocation.up    = glm::normalize(glm::cross(right, this->front));
+
     }
 }

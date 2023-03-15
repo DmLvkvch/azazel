@@ -42,7 +42,6 @@ namespace Azazel
         return state == GLFW_PRESS || state == GLFW_REPEAT;
     }
 
-
     std::pair<float, float> Input::getMousePosition()
     {
         auto window = static_cast<GLFWwindow*>(Application::getApplication()->getWindow()->getNativeWindow());

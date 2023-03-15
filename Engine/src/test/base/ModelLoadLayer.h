@@ -15,8 +15,9 @@ namespace Azazel
 
         void onUpdate(float delta) override;
         void onRender(float delta) override;
+        void update(float f);
 
-        ~ModelLoadLayer() {}
+        ~ModelLoadLayer();
     private:
         std::unique_ptr<Shader> light;
         std::unique_ptr<Texture> texture;

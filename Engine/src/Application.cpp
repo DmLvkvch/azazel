@@ -3,9 +3,9 @@
 #include "render/Render.h"
 
 #include <iostream>
-#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
+//#include <imgui.h>
+//#include <imgui_impl_glfw.h>
+//#include <imgui_impl_opengl3.h>
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
 #include <chrono>
@@ -24,9 +24,24 @@ namespace Azazel
         return Application::app;
     }
 
-    void Application::subscribe(std::function<void(float)> func)
+    void Application::subscribe(const std::function<void(float)>& func)
     {
         this->subscribers.push_back(func);
+    }
+
+    int Application::subscribe(const std::function<void(Event&)>& func)
+    {
+        this->eventSubscribers[++id] = func;
+        return id;
+    }
+
+    void Application::unsubscribe(long long id)
+    {
+        if (id <= 0)
+        {
+            return;
+        }
+        this->eventSubscribers.erase(id);
     }
 
     void Application::updateTargets(float delta)
@@ -61,6 +76,10 @@ namespace Azazel
         {
             layer->onEvent(e);
         }
+        for (auto& [k, v] : eventSubscribers)
+        {
+            v(e);
+        }
     }
 
     void Application::run()
@@ -75,6 +94,8 @@ namespace Azazel
 
             ImGui_ImplOpenGL3_NewFrame();
             ImGui::NewFrame();
+            
+            updateTargets(delta);
 
             for (auto layer : layerStack)
             {
@@ -91,6 +112,7 @@ namespace Azazel
             Render::getRender()->endScene();
             auto stopTime = std::chrono::high_resolution_clock::now();
             delta = std::chrono::duration<float, std::chrono::milliseconds::period>(stopTime - startTime).count();
+            //std::cout<<delta<<std::endl;
         }
     }
 

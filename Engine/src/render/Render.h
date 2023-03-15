@@ -144,9 +144,20 @@ namespace Azazel
 
         virtual void endScene() = 0;
 
-        void setCamera();
+        const Camera& getCamera() const
+        {
+            return camera;
+        }
+
+        void setCamera(const Camera& camera)
+        {
+            this->camera = camera;
+        }
+
     private:
         static std::unique_ptr<Render> render;
+        
+        Camera camera;
         int drawCalls;
     };
 

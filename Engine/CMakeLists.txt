@@ -3,9 +3,12 @@ cmake_minimum_required( VERSION 3.1 )
 project(Engine VERSION 1.0)
 
 find_package(OpenGL REQUIRED)
+find_package (Vulkan REQUIRED)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL  "GLFW lib only")
 set(GLFW_INSTALL OFF CACHE BOOL  "GLFW lib only")
+
+add_definitions(-DAZAZEL_GL)
 
 include_directories ("vendor/glad/include"
                      "vendor/glfw"
@@ -43,7 +46,7 @@ file(GLOB_RECURSE ENGINE_HEADERS
 
 add_executable(${PROJECT_NAME} "main.cpp" ${ENGINE_HEADERS} ${ENGINE_SRC})
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} glfw assimp stb_image glad glm::glm freetype IMGUI)
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} Vulkan::Vulkan glfw assimp stb_image glad glm::glm freetype IMGUI)
 
 file(REMOVE ${CMAKE_BINARY_DIR}/shaders)
 file(REMOVE ${CMAKE_BINARY_DIR}/images)

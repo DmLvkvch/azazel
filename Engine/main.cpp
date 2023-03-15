@@ -5,24 +5,28 @@
 #include "test/base/BaseLayer.h"
 #include "test/base/TextLayerExample.h"
 #include "test/base/ModelLoadLayer.h"
+#include "resources/LRUCache.h"
+#include <vulkan/vulkan.h>
+
+//#define AZAZEL_VK
 
 int main()
 {
     // mem leak here
-    Azazel::Application* p = Azazel::Application::getApplication();
+    Azazel::Application* application = Azazel::Application::getApplication();
+
+    application->pushLayer(new Azazel::ImGuiLayer());
     
-    p->pushLayer(new Azazel::ImGuiLayer());
-    
-    p->pushLayer(new Azazel::TestLayer());
+    //p->pushLayer(new Azazel::TestLayer());
     
     // p->pushLayer(new Azazel::GLLayer());
     // p->pushLayer(new Azazel::BaseLayer());
     
-    p->pushLayer(new Azazel::TextLayerExample());
+    application->pushLayer(new Azazel::TextLayerExample());
     
-    p->pushLayer(new Azazel::ModelLoadLayer());
+    application->pushLayer(new Azazel::ModelLoadLayer());
 
-    p->run();
-    delete p;
+    application->run();
+    delete application;
     return 0;
 }

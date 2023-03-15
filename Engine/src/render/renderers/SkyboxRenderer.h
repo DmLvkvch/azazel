@@ -58,6 +58,7 @@ namespace Azazel
                 -1.0f, -1.0f,  1.0f,
                  1.0f, -1.0f,  1.0f  
             };
+            
             std::vector<unsigned int> indices;
             for (unsigned int i = 0; i < vertices.size() / 3; i++)
             {
@@ -77,8 +78,6 @@ namespace Azazel
         void draw()
         {
             shader->bind();
-            shader->setMatrix4f("view", glm::mat4(1.0f));
-            shader->setMatrix4f("projection", glm::mat4(1.0f));
             cubeMap->bind();
             Render::getRender()->drawMesh<Vertex_P3>(mesh, *shader);
         }

@@ -41,6 +41,11 @@ namespace Azazel
             vertexArray->addBuffer(vb, T::bufferLayout);
         }
 
+        T getVertex()
+        {
+            return T{}; 
+        }
+
         ~Mesh()
         {
 

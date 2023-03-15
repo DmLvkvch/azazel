@@ -1,6 +1,6 @@
 #include "GLESTextureCubeMap.h"
 
-#include "render/rhi/gl/gl_headers.h"
+#include "gl_headers.h"
 #include "FileUtils.h"
 #include <stb_image/stb_image.h>
 

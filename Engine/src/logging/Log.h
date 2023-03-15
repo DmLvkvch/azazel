@@ -6,28 +6,28 @@
 
 namespace Azazel
 {
+    enum class Code
+    {
+        FG_RED      = 31,
+        FG_GREEN    = 32,
+        FG_BLUE     = 34,
+        FG_DEFAULT  = 39,
+        BG_RED      = 41,
+        BG_GREEN    = 42,
+        BG_BLUE     = 44,
+        BG_DEFAULT  = 49,
+        DEF         = 0
+    };
+
     class Modifier
     {
     public:
-        enum class Code
-        {
-            FG_RED      = 31,
-            FG_GREEN    = 32,
-            FG_BLUE     = 34,
-            FG_DEFAULT  = 39,
-            BG_RED      = 41,
-            BG_GREEN    = 42,
-            BG_BLUE     = 44,
-            BG_DEFAULT  = 49,
-            DEF         = 0
-        };
 
         Modifier(Code code) : code(code) {}
 
         friend std::ostream& operator<<(std::ostream& os, const Modifier& mod) 
         {
-            int color = (int) mod.code;
-            return os <<"\033["<< color <<"m";
+            return os <<"\033["<< (int) mod.code <<"m";
         }
 
     private:
@@ -63,9 +63,9 @@ namespace Azazel
         
     private:
         static std::unique_ptr<Log> logger;
-        Modifier red   {Modifier::Code::FG_RED};
-        Modifier green {Modifier::Code::FG_GREEN};
-        Modifier blue  {Modifier::Code::FG_BLUE};
-        Modifier def   {Modifier::Code::DEF};
+        Modifier red   {Code::FG_RED};
+        Modifier green {Code::FG_GREEN};
+        Modifier blue  {Code::FG_BLUE};
+        Modifier def   {Code::DEF};
     };
 }

@@ -172,4 +172,5 @@ namespace Azazel
     };
 
 #pragma pack(pop)
+
 }

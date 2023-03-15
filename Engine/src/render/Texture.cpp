@@ -1,6 +1,10 @@
 #include "Texture.h"
 
+#ifdef AZAZEL_GL
 #include "rhi/gl/GLESTexture.h"
+#else
+#include "rhi/vulkan/VKTexture.h"
+#endif
 
 namespace Azazel
 {
@@ -25,12 +29,16 @@ namespace Azazel
 
     Texture* Texture::create(const TextureData& textureData)
     {
+        #ifdef AZAZEL_GL
         return new GLESTexture(textureData);
+        #else 
+        return new VKTexture(textureData);
+        #endif
     }
 
     Texture* Texture::create(int width, int height, int color)
     {
         TextureData textureData (width, height, color);
-        return new GLESTexture(textureData);
+        return create(textureData);
     }
 }
