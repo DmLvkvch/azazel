@@ -8,8 +8,6 @@
 #include "resources/LRUCache.h"
 #include <vulkan/vulkan.h>
 
-//#define AZAZEL_VK
-
 int main()
 {
     // mem leak here

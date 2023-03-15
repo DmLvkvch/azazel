@@ -56,12 +56,25 @@ namespace Azazel
 
 		int status;
 		char infoLog[512];
+		for (int i = 0; i < 512; i++)
+		{
+			infoLog[i] = 0;
+		}
 		glGetShaderiv(handle, GL_COMPILE_STATUS, &status);
 
 		if (status != GL_TRUE) {
 			glGetProgramInfoLog(rendererID, 512, NULL, infoLog);
+			std::string log (infoLog);
+
+			for (int i = 0; i < 512; i++)
+			{
+				std::cout<<(char)infoLog[i];
+			}
+			std::cout << "Shader creation error!\n" << log << std::endl<<programCode<<std::endl;
 			std::cout<<programCode<<std::endl;
-			std::cout << "Shader creation error!\n" << infoLog << std::endl<<programCode<<std::endl;
+
+			glGetShaderInfoLog(rendererID, 512, nullptr, infoLog);
+			std::cout<<"LOGG" << infoLog<<std::endl;
 		}
 
 		return handle;

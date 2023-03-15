@@ -9,6 +9,10 @@ set(GLFW_BUILD_DOCS OFF CACHE BOOL  "GLFW lib only")
 set(GLFW_INSTALL OFF CACHE BOOL  "GLFW lib only")
 
 add_definitions(-DAZAZEL_GL)
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++17")
+
+SET(CMAKE_C_ARCHIVE_FINISH   "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
+SET(CMAKE_CXX_ARCHIVE_FINISH "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
 
 include_directories ("vendor/glad/include"
                      "vendor/glfw"
@@ -46,7 +50,13 @@ file(GLOB_RECURSE ENGINE_HEADERS
 
 add_executable(${PROJECT_NAME} "main.cpp" ${ENGINE_HEADERS} ${ENGINE_SRC})
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} Vulkan::Vulkan glfw assimp stb_image glad glm::glm freetype IMGUI)
+if (APPLE)
+    target_link_libraries(${PROJECT_NAME} "-framework Cocoa")
+    target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
+    target_link_libraries(${PROJECT_NAME} "-framework IOKit")
+endif (APPLE)
+
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} Vulkan::Vulkan glfw assimp stb_image glad glm::glm freetype IMGUI ${OPENGL_gl_LIBRARY})
 
 file(REMOVE ${CMAKE_BINARY_DIR}/shaders)
 file(REMOVE ${CMAKE_BINARY_DIR}/images)
