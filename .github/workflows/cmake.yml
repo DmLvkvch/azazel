@@ -25,12 +25,17 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update
-        sudo apt install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev wayland-protocols libwayland-dev libxkbcommon-dev libvulkan1 mesa-vulkan-drivers vulkan-utils
-        
+        sudo apt install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev wayland-protocols libwayland-dev libxkbcommon-dev libvulkan1 mesa-vulkan-drivers
+    - name: Setup Vulkan SDK
+    - uses: humbletim/setup-vulkan-sdk@v1.2.0
+      with:
+        vulkan-query-version: 1.3.204.0
+        vulkan-components: Vulkan-Headers, Vulkan-Loader
+        vulkan-use-cache: true
     - name: Install OpenGl
       run: |
         sudo apt-get install libxrandr-dev libglu1-mesa-dev
-      shell: bash  
+        shell: bash  
 
     - name: Configure CMake
       working-directory: ./Engine
