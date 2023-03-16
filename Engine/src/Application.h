@@ -28,11 +28,11 @@ namespace Azazel
         void updateTargets(float delta);
     private:
         unsigned long long id = 0;
-        std::unordered_map<int, std::function<void(Event&)>> eventSubscribers;
         std::unique_ptr<Window> window;
         LayerStack layerStack;
         bool running = true;
         static Application* app;
         float delta;
+        EventDispatcher<void, Event&> eventSubscribers;
     };
 }

@@ -11,6 +11,8 @@
 #include <chrono>
 #include <thread>
 
+#include "events/Event.h"
+
 namespace Azazel
 {
     Application* Application::app = nullptr;
@@ -26,13 +28,11 @@ namespace Azazel
 
     void Application::subscribe(const std::function<void(float)>& func)
     {
-        this->subscribers.push_back(func);
     }
 
     int Application::subscribe(const std::function<void(Event&)>& func)
     {
-        this->eventSubscribers[++id] = func;
-        return id;
+        return this->eventSubscribers.addListener(func);
     }
 
     void Application::unsubscribe(long long id)
@@ -41,7 +41,7 @@ namespace Azazel
         {
             return;
         }
-        this->eventSubscribers.erase(id);
+        this->eventSubscribers.removeListener(id);
     }
 
     void Application::updateTargets(float delta)
@@ -58,11 +58,15 @@ namespace Azazel
         window = std::unique_ptr<Window>(Window::create());
         window->setEventCallback(std::bind(&Application::onEvent, this, std::placeholders::_1));
         Render::getRender()->init();
+        auto tmp = [](Event& e) {
+            std::cout<<"lambda "<<e.toString()<<std::endl;
+        };
+        eventSubscribers.addListener(tmp);
     }
 
     Application::~Application()
     {
-        
+    
     }
 
     void Application::onEvent(Event& e)
@@ -76,10 +80,7 @@ namespace Azazel
         {
             layer->onEvent(e);
         }
-        for (auto& [k, v] : eventSubscribers)
-        {
-            v(e);
-        }
+        eventSubscribers.dispatch(e);
     }
 
     void Application::run()

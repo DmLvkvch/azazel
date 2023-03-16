@@ -22,7 +22,7 @@ int main()
     // p->pushLayer(new Azazel::GLLayer());
     // p->pushLayer(new Azazel::BaseLayer());
     
-    application->pushLayer(new Azazel::TextLayerExample());
+    //application->pushLayer(new Azazel::TextLayerExample());
     
     application->pushLayer(new Azazel::ModelLoadLayer());
 
