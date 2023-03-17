@@ -94,7 +94,7 @@ namespace Azazel
 
     void Model::draw(const Shader& shader)
     {
-        for (auto& mesh : meshes)
+        for (const auto& mesh : meshes)
         {
             Render::getRender()->drawMesh(mesh, shader);
         }

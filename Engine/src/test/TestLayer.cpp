@@ -6,7 +6,7 @@
 #include "events/KeyEvent.h"
 #include "events/MouseEvent.h"
 #include "events/ApplicationEvent.h"
-#include "Input.h"
+#include "IO/Input.h"
 #include "render/Render.h"
 
 

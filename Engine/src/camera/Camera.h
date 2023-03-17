@@ -9,8 +9,8 @@
 #include "events/KeyEvent.h"
 #include "events/MouseEvent.h"
 #include "events/ApplicationEvent.h"
-#include "Input.h"
-#include "KeyCodes.h"
+#include "IO/Input.h"
+#include "IO/KeyCodes.h"
 #include <iostream>
 #include "Application.h"
 
@@ -197,7 +197,7 @@ namespace Azazel
         void updateCamera();
 
     private:
-        float yaw = 0.0f;
+        float yaw = -90.0f;
         float pitch = 0.0f;
         float lastX = 1280.0f / 2.0f;
         float lastY = 720.0f / 2.0f;
