@@ -30,7 +30,7 @@ jobs:
 
     - name: Install OpenGl
       run: |
-        sudo apt-get install libxrandr-dev libglu1-mesa-dev
+        sudo apt-get install libxrandr-dev libglu1-mesa-dev ca-certificates
       shell: bash
     - name: Install Vulkan SDK
       run: |
