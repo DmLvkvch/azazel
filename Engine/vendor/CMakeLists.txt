@@ -1,3 +1,5 @@
+find_package (Vulkan REQUIRED)
+
 set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/imgui)
 add_library(IMGUI STATIC)
 
@@ -23,4 +25,4 @@ target_include_directories( IMGUI
 find_package(OpenGL REQUIRED)
 target_link_libraries(IMGUI PUBLIC ${OPENGL_LIBRARIES})
 
-target_link_libraries(IMGUI PUBLIC ${CMAKE_DL_LIBS} glfw)
+target_link_libraries(IMGUI PUBLIC ${CMAKE_DL_LIBS} glfw Vulkan::Vulkan)

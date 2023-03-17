@@ -1,10 +1,12 @@
-#version 330 core
+#version 410 core
 
 in vec3 texCoords;
 
 uniform samplerCube skybox;
 
+out vec4 frag_color;
+
 void main()
 {    
-    gl_FragColor = texture(skybox, texCoords);
+    frag_color = texture(skybox, texCoords);
 }

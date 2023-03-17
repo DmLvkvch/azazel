@@ -72,7 +72,10 @@ namespace Azazel
 
         void removeListener(CallbackID id)
         {
-            callbacks.erase(id);
+            if (callbacks.size() > 0)
+            {
+                callbacks.erase(id);
+            }
         }
 
         void dispatch(const TArgs& ... t)

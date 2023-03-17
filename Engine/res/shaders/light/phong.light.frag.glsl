@@ -1,4 +1,4 @@
-#version 330 core
+#version 410 core
 
 in vec2 texCoord;
 in vec3 normal;
@@ -24,6 +24,8 @@ uniform vec3 u_viewPos;
 uniform Material u_material;
 uniform Light u_light;
 
+out vec4 frag_color;
+
 void main()
 {
     // ambient
@@ -42,5 +44,5 @@ void main()
     vec3 specular = u_light.specular * spec * u_material.specular;  
         
     vec3 result = ambient + diffuse + specular;
-    gl_FragColor = texture(u_texture_0, texCoord) * vec4(result, 1.0);
+    frag_color = texture(u_texture_0, texCoord) * vec4(result, 1.0);
 }

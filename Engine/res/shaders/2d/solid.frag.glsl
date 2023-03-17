@@ -1,10 +1,12 @@
-#version 330 core
+#version 410 core
 
 in vec2 texCoord;
 
 uniform vec4 color;
 
+out vec4 frag_color;
+
 void main()
 {
-    gl_FragColor = color;
+    frag_color = color;
 }
