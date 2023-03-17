@@ -34,7 +34,8 @@ jobs:
       shell: bash
     - name: Install Vulkan SDK
       run: |
-        wget -qO - https://packages.lunarg.com/lunarg-signing-key-pub.asc | sudo apt-key add -
+        wget -qO - https://packages.lunarg.com/lunarg-signing-key-pub.asc
+        sudo apt-key add -
         sudo wget -qO /etc/apt/sources.list.d/lunarg-vulkan-$UNIX_VULKAN_VERSION-focal.list https://packages.lunarg.com/vulkan/$UNIX_VULKAN_VERSION/lunarg-vulkan-$UNIX_VULKAN_VERSION-focal.list
         sudo apt update
         sudo apt install -f vulkan-sdk
