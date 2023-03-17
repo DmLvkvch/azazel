@@ -1,6 +1,6 @@
 #include "CameraController.h"
 
-#include <Input.h>
+#include "IO/Input.h"
 
 namespace Azazel
 {

@@ -2,6 +2,7 @@
 
 #include <string>
 #include <functional>
+#include <unordered_map>
 
 namespace Azazel
 {
@@ -26,7 +27,6 @@ namespace Azazel
 
     class Event
     {
-        friend class EventDispatcher;
     public:
         bool handled = false;
     protected:
@@ -57,27 +57,38 @@ namespace Azazel
         virtual std::string toString() = 0;
     };
 
+    template<typename R, typename ... TArgs>
     class EventDispatcher
     {
-        template<typename T>
-        using EventFn = std::function<bool(T&)>;
-    public:
-        EventDispatcher(Event& event)
-        : event(event)
+        using EventCallback = std::function<R(TArgs...)>;
+        using CallbackID = unsigned long long;
+    public:    
+
+        CallbackID addListener(const EventCallback& callback)
         {
+            callbacks[++id] = callback;
+            return id;
         }
 
-        template<typename T>
-        bool dispatch(EventFn<T> func)
+        void removeListener(CallbackID id)
         {
-            if (event.getEventType() == T::getStaticType())
+            callbacks.erase(id);
+        }
+
+        void dispatch(const TArgs& ... t)
+        {
+            for (const auto& [id, handler] : callbacks)
             {
-                event.handled = func(*(T*) &event);
-                return true;
+                handler(t...);
             }
-            return false;
+        }
+
+        void clear()
+        {
+            callbacks.clear();
         }
     private:
-        Event& event;    
+        unsigned long long id;
+        std::unordered_map<CallbackID, EventCallback> callbacks;
     };
 }
