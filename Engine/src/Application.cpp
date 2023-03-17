@@ -26,13 +26,14 @@ namespace Azazel
         return Application::app;
     }
 
-    void Application::subscribe(const std::function<void(float)>& func)
-    {
-    }
-
-    int Application::subscribe(const std::function<void(Event&)>& func)
+    unsigned long long Application::subscribe(const std::function<void(Event&)>& func)
     {
         return this->eventSubscribers.addListener(func);
+    }
+
+    unsigned long long Application::subscribe(const std::function<void(float)>& func)
+    {
+        return this->updateSubscribers.addListener(func);
     }
 
     void Application::unsubscribe(long long id)
@@ -41,15 +42,14 @@ namespace Azazel
         {
             return;
         }
-        this->eventSubscribers.removeListener(id + 10);
+        this->eventSubscribers.removeListener(id);
+        this->updateSubscribers.removeListener(id);
+
     }
 
     void Application::updateTargets(float delta)
     {
-        for (auto& subscriber : subscribers)
-        {
-            subscriber(delta);
-        }
+        updateSubscribers.dispatch(delta);
     }
 
     Application::Application()

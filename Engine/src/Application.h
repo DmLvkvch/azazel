@@ -18,12 +18,11 @@ namespace Azazel
         void pushLayer(Layer* layer);
         Window* getWindow();
         static Application* getApplication();
-        std::vector<std::function<void(float)>> subscribers;
-
-        void subscribe(const std::function<void(float)>& func);
-        int subscribe(const std::function<void(Event&)>& func);
+        unsigned long long subscribe(const std::function<void(Event&)>& func);
+        unsigned long long subscribe(const std::function<void(float)>& func);
 
         void unsubscribe(long long id);
+
     private:
         void updateTargets(float delta);
     private:
@@ -34,5 +33,6 @@ namespace Azazel
         static Application* app;
         float delta;
         EventDispatcher<void, Event&> eventSubscribers;
+        EventDispatcher<void , float> updateSubscribers;
     };
 }

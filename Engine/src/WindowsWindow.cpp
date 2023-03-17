@@ -137,6 +137,10 @@ namespace Azazel
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_SAMPLES, 4);
         window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+        
+        // for retina display support
+        //glfwGetFramebufferSize(window, &width, &height);
+        
         if (window == NULL)
         {
             std::cout << "Failed to create GLFW window" << std::endl;

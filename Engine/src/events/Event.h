@@ -91,7 +91,7 @@ namespace Azazel
             callbacks.clear();
         }
     private:
-        unsigned long long id;
+        inline static unsigned long long id = 0;
         std::unordered_map<CallbackID, EventCallback> callbacks;
     };
 }
