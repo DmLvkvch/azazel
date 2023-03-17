@@ -41,7 +41,7 @@ namespace Azazel
         {
             return;
         }
-        this->eventSubscribers.removeListener(id);
+        this->eventSubscribers.removeListener(id + 10);
     }
 
     void Application::updateTargets(float delta)
@@ -66,7 +66,7 @@ namespace Azazel
 
     Application::~Application()
     {
-    
+        eventSubscribers.clear();
     }
 
     void Application::onEvent(Event& e)

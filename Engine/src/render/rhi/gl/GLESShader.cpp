@@ -22,7 +22,8 @@ namespace Azazel
 		int success;
 		glGetProgramiv(rendererID, GL_LINK_STATUS, &success);
 		char infoLog[512];
-		if (!success) {
+		if (!success) 
+		{
 			glGetProgramInfoLog(rendererID, 512, NULL, infoLog);
 			std::cout << "Shader program creation error!\n" << infoLog << std::endl;
 		}
@@ -62,7 +63,6 @@ namespace Azazel
 		if (status != GL_TRUE) {
 			glGetProgramInfoLog(rendererID, 512, NULL, infoLog);
 			std::cout << "Shader compile error!\n" << infoLog << std::endl<<programCode<<std::endl;
-
 			glGetShaderInfoLog(rendererID, 512, nullptr, infoLog);
 		}
 
