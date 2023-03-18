@@ -11,6 +11,7 @@ namespace Azazel
 
         KeyEvent(int keycode) : keycode(keycode)
         {}
+        
     public:
         int getKeyCode() const
         {

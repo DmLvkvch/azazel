@@ -1,5 +1,7 @@
 #include "ResourceManager.h"
 
+#include "ShaderResourceManager.h"
+
 namespace Azazel
 {
     TextureResourceManager* TextureResourceManager::textureManager = new TextureResourceManager();

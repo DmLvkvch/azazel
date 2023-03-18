@@ -11,9 +11,7 @@
 #include "events/ApplicationEvent.h"
 #include "IO/Input.h"
 #include "IO/KeyCodes.h"
-#include <iostream>
 #include "Application.h"
-
 
 namespace Azazel
 {
