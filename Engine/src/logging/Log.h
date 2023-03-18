@@ -62,10 +62,11 @@ namespace Azazel
         }
         
     private:
-        static std::unique_ptr<Log> logger;
         Modifier red   {Code::FG_RED};
         Modifier green {Code::FG_GREEN};
         Modifier blue  {Code::FG_BLUE};
         Modifier def   {Code::DEF};
+
+        static std::unique_ptr<Log> logger;
     };
 }

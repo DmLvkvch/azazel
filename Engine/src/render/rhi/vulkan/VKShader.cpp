@@ -32,7 +32,7 @@ namespace Azazel
 
 	unsigned int VKShader::compile(const std::string& programCode, const ShaderType& shaderType)
 	{
-		
+		return 0;
 	}
 
 	void VKShader::bind() const
@@ -41,11 +41,6 @@ namespace Azazel
 
 	void VKShader::unbind() const
 	{
-	}
-
-	int VKShader::getUniformLocation(const std::string& name) const
-	{
-
 	}
 
 	Shader* VKShader::setFloat(const std::string& name, float value)

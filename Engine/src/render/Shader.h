@@ -25,8 +25,6 @@ namespace Azazel
 
         virtual void unbind() const = 0;
         
-        virtual int getUniformLocation(const std::string& name) const = 0;
-
         virtual Shader* setFloat(const std::string& name, float value) = 0;
 
         virtual Shader* setInt(const std::string& name, int value) = 0;

@@ -1,7 +1,7 @@
 #include "GLESTextureCubeMap.h"
 
 #include "gl_headers.h"
-#include "FileUtils.h"
+#include "api/file/FileUtils.h"
 #include <stb_image/stb_image.h>
 
 namespace Azazel

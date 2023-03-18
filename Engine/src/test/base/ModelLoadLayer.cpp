@@ -1,6 +1,6 @@
 #include "ModelLoadLayer.h"
 
-#include "FileUtils.h"
+#include "api/file/FileUtils.h"
 #include "TextureUtils.h"
 #include "logging/Log.h"
 #include "render/renderers/SkyboxRenderer.h"
@@ -18,8 +18,6 @@ namespace Azazel
         model.transform.scale = glm::vec3 { 0.0003f, 0.0003f, 0.0003f };
         camera = Camera();
         camera.subscribe();
-        Application::getApplication()->subscribe(std::bind(&ModelLoadLayer::update, this, std::placeholders::_1));
-
     }
 
     ModelLoadLayer::~ModelLoadLayer()
@@ -37,9 +35,9 @@ namespace Azazel
         glm::mat4 modelMatrix = model.transform.getTransformMatrix();
 
         glm::vec3 color (0.2f);
-        float lightX = 2.0f * sin(glfwGetTime());
+        float lightX = 2.0f * (float) sin(glfwGetTime());
         float lightY = -0.3f;
-        float lightZ = 1.5f * cos(glfwGetTime());
+        float lightZ = 1.5f * (float) cos(glfwGetTime());
         glm::vec3 lightPos = glm::vec3(lightX, lightY, lightZ);
 
         glm::mat4 viewMatrix = glm::lookAt(glm::vec3{1.0f, 1.0f, 0.0}, glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3{0.0f, 1.0f, 0.0f});
