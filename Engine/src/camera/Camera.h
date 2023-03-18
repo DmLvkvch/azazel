@@ -14,7 +14,6 @@
 #include <iostream>
 #include "Application.h"
 
-
 namespace Azazel
 {
     struct CameraProjection
@@ -123,7 +122,19 @@ namespace Azazel
 
         void zoomCamera(float offset)
         {
-
+            cameraProjection.fov -= offset;
+            if (cameraProjection.fov < 1.0f)
+            {
+                cameraProjection.fov = 1.0f;
+            }
+            if (cameraProjection.fov > 45.0f)
+            {
+                cameraProjection.fov = 45.0f;
+            }
+            cameraProjection.width = 1280.0f;
+            cameraProjection.height = 720.0f;
+            cameraProjection.near = 0.1f;
+            cameraProjection.far = 100.0f;
         }
 
         void onEvent(Event& e)
@@ -131,19 +142,7 @@ namespace Azazel
             if (e.getEventType() == EventType::MouseScrolled)
             {
                 const MouseScrollEvent& ev = *(MouseScrollEvent*)(&e);
-                cameraProjection.fov -= (float) ev.getY();
-                if (cameraProjection.fov < 1.0f)
-                {
-                    cameraProjection.fov = 1.0f;
-                }
-                if (cameraProjection.fov > 45.0f)
-                {
-                    cameraProjection.fov = 45.0f;
-                }
-                cameraProjection.width = 1280.0f;
-                cameraProjection.height = 720.0f;
-                cameraProjection.near = 0.1f;
-                cameraProjection.far = 100.0f;
+                zoomCamera(ev.getY());
             }
             if (e.getEventType() == EventType::MousePressed)
             {

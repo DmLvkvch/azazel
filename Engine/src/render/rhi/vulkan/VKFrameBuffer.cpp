@@ -5,12 +5,12 @@
 
 namespace Azazel
 {
-    VKFrameBuffer::VKFrameBuffer(std::shared_ptr<Texture> texture)
+    VKFrameBuffer::VKFrameBuffer(Texture* texture)
     {
         
     }
 
-    VKFrameBuffer::VKFrameBuffer(std::shared_ptr<Texture> texture, std::shared_ptr<FrameBufferTarget> depthTarget)
+    VKFrameBuffer::VKFrameBuffer(Texture* texture, FrameBufferTarget* depthTarget)
     {
 
     }
@@ -27,19 +27,19 @@ namespace Azazel
     {
     }
 
-    void VKFrameBuffer::addColorAttachment(std::shared_ptr<Texture> texture, int slot)
+    void VKFrameBuffer::addColorAttachment(Texture* texture, int slot)
     {
         
     }
 
-    void VKFrameBuffer::setDepthTarget(std::shared_ptr<FrameBufferTarget> depthTarget)
+    void VKFrameBuffer::setDepthTarget(FrameBufferTarget* depthTarget)
     {
         bind();
         // TODO
         unbind();
     }
 
-    void VKFrameBuffer::setDepthTarget(std::shared_ptr<Texture> depthTexture)
+    void VKFrameBuffer::setDepthTarget(Texture* depthTexture)
     {
         bind();
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture->getRendererId(), 0);

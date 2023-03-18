@@ -227,6 +227,6 @@ namespace Azazel
 
     void* WindowsWindow::getNativeWindow()
     {
-        return (void*) window;
+        return static_cast<void*>(window);
     }
 }

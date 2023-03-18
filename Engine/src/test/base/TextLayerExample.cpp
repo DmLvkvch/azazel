@@ -1,9 +1,7 @@
 #include "TextLayerExample.h"
 
 #include "TextureUtils.h"
-#include "FileUtils.h"
-#include "events/KeyEvent.h"
-#include "events/MouseEvent.h"
+#include "api/file/FileUtils.h"
 #include "events/ApplicationEvent.h"
 #include "IO/Input.h"
 #include "render/Render.h"

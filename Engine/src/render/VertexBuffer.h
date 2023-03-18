@@ -3,6 +3,8 @@
 #include <vector>
 #include <stdexcept>
 #include <string>
+
+// TODO remove opengl dependency
 #include "rhi/gl/gl_headers.h"
 
 namespace Azazel
@@ -35,6 +37,7 @@ namespace Azazel
         return 0;
     }
 
+    // TODO remove opengl dependency
     static int shaderTypeToGLType(ShaderDataType type)
     {
         switch(type)
