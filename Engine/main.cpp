@@ -15,10 +15,10 @@ int main()
 
     application->pushLayer(new Azazel::ImGuiLayer());
     
-    //p->pushLayer(new Azazel::TestLayer());
+    //application->pushLayer(new Azazel::TestLayer());
     
-    // p->pushLayer(new Azazel::GLLayer());
-    // p->pushLayer(new Azazel::BaseLayer());
+     application->pushLayer(new Azazel::GLLayer());
+    // application->pushLayer(new Azazel::BaseLayer());
     
     //application->pushLayer(new Azazel::TextLayerExample());
     

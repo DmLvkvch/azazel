@@ -1,6 +1,7 @@
 #include "ResourceManager.h"
 
 #include "ShaderResourceManager.h"
+#include "TextureResourceManager.h"
 
 namespace Azazel
 {

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ResourceManager.h"
-
 #include "render/Shader.h"
 
 namespace Azazel
