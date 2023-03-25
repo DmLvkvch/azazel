@@ -36,10 +36,6 @@ namespace Azazel
     {
     }
 
-    void ModelLoadLayer::update(float delta)
-    {
-    }
-
     void ModelLoadLayer::onUpdate(float delta)
     {
         texture->bind();
@@ -101,7 +97,7 @@ namespace Azazel
         //glStencilMask(0x00);
 //
         //model.transform.scale = glm::vec3 { 0.0004f, 0.0004f, 0.0004f };
-        //model.transform.rotation.y = 00.0f;
+        //model.transform.rotation.y = 0.0f
         //
         //textureTest->bind(0);
         //light->bind();
@@ -111,8 +107,8 @@ namespace Azazel
         //glStencilMask(0xFF);
         //glStencilFunc(GL_ALWAYS, 1, 0xFF);
         Render::getRender()->setDepthTest(true);
-        model.draw(*light);
         sbr.draw();
+        model.draw(*light);
         Render::getRender()->setDepthTest(false);
     }
 }

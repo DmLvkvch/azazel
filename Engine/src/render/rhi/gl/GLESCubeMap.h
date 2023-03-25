@@ -7,7 +7,7 @@ namespace Azazel
     class GLESCubeMap : public CubeMap
     {
     public:
-        GLESCubeMap();
+        GLESCubeMap(std::array<TextureData, 6> textures);
         ~GLESCubeMap();
         void bind() override;
         void unbind() override;

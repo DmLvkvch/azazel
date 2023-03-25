@@ -5,38 +5,20 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include "resources/ResourceManager.h"
+
 #include "logging/Log.h"
 
 namespace Azazel
 {
-    GLESCubeMap::GLESCubeMap()
+    GLESCubeMap::GLESCubeMap(std::array<TextureData, 6> textures)
     {
         glGenTextures(1, &textureID);
         glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-        int width, height, bpp;
-        std::vector<std::string> faces
-        {
-            "textures/skybox/right.jpg",
-            "textures/skybox/left.jpg",
-            "textures/skybox/top.jpg",
-            "textures/skybox/bottom.jpg",
-            "textures/skybox/front.jpg",
-            "textures/skybox/back.jpg"
-        };
         
-        for (unsigned int i = 0; i < faces.size(); i++)
+        for (unsigned int i = 0; i < 6; i++)
         {
-            try
-            {
-                auto data = ResourceManagers::textureDataManager->loadResource(faces[i], 0, false);
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, data.width, data.height, 0, GL_RGB, GL_UNSIGNED_BYTE, data.data);
-                delete[] data.data;
-            }
-            catch(...)
-            {
-                Log::getLogger()->errorLog("Could not load cube map texture" + faces[i]);
-            }
+            auto& data = textures[i];
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, data.width, data.height, 0, GL_RGB, GL_UNSIGNED_BYTE, data.data);
         }
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

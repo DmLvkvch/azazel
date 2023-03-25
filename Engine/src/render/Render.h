@@ -12,75 +12,6 @@
 
 namespace Azazel
 {
-
-    enum class CullMode
-    {
-        Front,
-        Back,
-        FrontAndBack,
-        None
-    };
-
-    enum class CullFront
-    {
-        Cw,
-        Ccw
-    };
-
-    enum class BlendEquation
-    {
-        Add,
-        Subtract,
-        ReverseSubtract,
-        Min,
-        Max,
-        None
-    };
-
-    enum class BlendFunction
-    {
-        Zero,
-        One,
-        SrcColor,
-        OneMinusSrcColor,
-        DstColor,
-        OneMinusDstColor,
-        SrcAlpha,
-        OneMinusSrcAlpha,
-        DstAlpha,
-        OneMinusDstAlpha,
-        ConstantColor,
-        OneMinusConstantColor,
-        ConstantAlpha,
-        OneMinusConstantAlpha,
-        SrcAlphaSaturate,
-        None
-    };
-
-    enum class CompareFunction
-    {
-        Never,
-        Less,
-        Equal,
-        LessOrEqual,
-        Greater,
-        NotEqual,
-        GreaterOrEqual,
-        Always,
-    };
-
-    enum class StencilFunc
-    {
-        Keep,
-        Zero,
-        Replace,
-        Incr,
-        IncrWrap,
-        Decr,
-        DecrWrap,
-        Invert
-    };
-
     struct RenderStats
     {
         int drawCalls = 0;
@@ -133,9 +64,17 @@ namespace Azazel
 
         virtual void setDepthTest(bool enable) = 0;
 
-        virtual void setDepthFunc() = 0;
+        virtual void setDepthMask(bool enable) = 0;
+
+        virtual void setDepthFunc(CompareFunction compareFunction) = 0;
 
         virtual void setStencilTest(bool enable) = 0;
+
+        virtual void setStencilMask(unsigned int mask) = 0;
+
+        virtual void setStencilFunc(CompareFunction compareFunction, int ref, unsigned int mask) = 0;
+
+        virtual void setStencilOp(StencilOperation sfail, StencilOperation dpfail, StencilOperation dppass) = 0;
 
         virtual void setBlend(bool enable) = 0;
 
@@ -157,7 +96,7 @@ namespace Azazel
             drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader);
         }
 
-        virtual void drawLine()
+        virtual void drawRect()
         {
             
         }

@@ -1,4 +1,4 @@
-#include "WindowsWindow.h"
+#include "GLWindow.h"
 
 #include "events/ApplicationEvent.h"
 #include "events/KeyEvent.h"
@@ -14,7 +14,7 @@ namespace Azazel
 {
     static bool initialized = false;
 
-    WindowsWindow::WindowsWindow(const WindowProperties& props)
+    GLWindow::GLWindow(const WindowProperties& props)
     {
         if (initialized)
         {
@@ -118,12 +118,12 @@ namespace Azazel
         });
     }
 
-    WindowsWindow::~WindowsWindow()
+    GLWindow::~GLWindow()
     {
         shutDown();
     }
 
-    GLFWwindow* WindowsWindow::initGLFW(int width, int height, const std::string& title)
+    GLFWwindow* GLWindow::initGLFW(int width, int height, const std::string& title)
     {
         int succes = glfwInit();
         if (succes == GLFW_FALSE)
@@ -150,14 +150,14 @@ namespace Azazel
         return window;
     }
 
-    void WindowsWindow::destroyGLFW()
+    void GLWindow::destroyGLFW()
     {
 
         glfwDestroyWindow(window);
         glfwTerminate();
     }
 
-    void WindowsWindow::initImgui(GLFWwindow* window, int width, int height)
+    void GLWindow::initImgui(GLFWwindow* window, int width, int height)
     {
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
@@ -171,41 +171,41 @@ namespace Azazel
         ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
     }
 
-    void WindowsWindow::destroyImgui()
+    void GLWindow::destroyImgui()
     {
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
     }
 
-    void WindowsWindow::shutDown()
+    void GLWindow::shutDown()
     {
         destroyImgui();
         destroyGLFW();
     }
 
-    void WindowsWindow::onUpdate(float delta)
+    void GLWindow::onUpdate(float delta)
     {
         glfwPollEvents();
         glfwSwapBuffers(window);
     }
 
-    unsigned int WindowsWindow::getWidth() const
+    unsigned int GLWindow::getWidth() const
     {
         return width;
     }
 
-    unsigned int WindowsWindow::getHeight() const
+    unsigned int GLWindow::getHeight() const
     {
         return height;
     }
 
-    void WindowsWindow::setEventCallback(const EventCallbackFn& callback)
+    void GLWindow::setEventCallback(const EventCallbackFn& callback)
     {
         this->windowData.eventCallback = callback;
     }
 
-    void WindowsWindow::setVSync(bool enable)
+    void GLWindow::setVSync(bool enable)
     {
         if (enable)
         {
@@ -217,12 +217,12 @@ namespace Azazel
         }
     }
 
-    bool WindowsWindow::isVSync() const
+    bool GLWindow::isVSync() const
     {
         return true;
     }
 
-    void* WindowsWindow::getNativeWindow()
+    void* GLWindow::getNativeWindow()
     {
         return static_cast<void*>(window);
     }

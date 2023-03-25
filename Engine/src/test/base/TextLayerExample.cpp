@@ -110,7 +110,7 @@ namespace Azazel
     void TextLayerExample::onRender(float delta)
     {
         Render::getRender()->setBlend(true);
-        Render::getRender()->setBlendFunc(BlendFunction::SrcAlpha, BlendFunction::OneMinusSrcAlpha);
+        Render::getRender()->setBlendFunc(BlendFunction::SRC_ALPHA, BlendFunction::ONE_MINUS_SRC_ALPHA);
         glActiveTexture(GL_TEXTURE0);
         glBindVertexArray(VAO);
 

@@ -4,6 +4,7 @@
 
 namespace Azazel
 {
+
     class GLESVertexBuffer : public VertexBuffer
     {
     public:

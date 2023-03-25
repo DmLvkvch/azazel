@@ -33,12 +33,12 @@ namespace Azazel
             init((float*) vertices.data(), vertices.size() * sizeof(T), indices.data(), indices.size());
         }
 
-        void init(const float* vertices, int size, const unsigned int* indices, int count)
+        void init(const float* vertices, size_t size, const unsigned int* indices, size_t count)
         {
             vertexArray.reset(VertexArray::create());
             indexBuffer.reset(IndexBuffer::create(indices, count));
-            std::shared_ptr<VertexBuffer> vb (VertexBuffer::create(vertices, size));
-            vertexArray->addBuffer(vb, T::bufferLayout);
+            std::shared_ptr<VertexBuffer> vertexBuffer (VertexBuffer::create(vertices, size));
+            vertexArray->addBuffer(vertexBuffer, T::bufferLayout);
         }
 
         T getVertex()

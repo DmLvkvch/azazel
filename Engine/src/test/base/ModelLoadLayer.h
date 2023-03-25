@@ -17,7 +17,6 @@ namespace Azazel
 
         void onUpdate(float delta) override;
         void onRender(float delta) override;
-        void update(float f);
 
         ~ModelLoadLayer();
     private:

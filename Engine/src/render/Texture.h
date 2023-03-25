@@ -1,10 +1,22 @@
 #pragma once
 
 #include "TextureData.h"
+#include "Types.h"
 #include <string>
 
 namespace Azazel
 {
+    struct TextureDescriptor
+    {
+        TextureType textureType = TextureType::TEXTURE_2D;
+        PixelFormat textureFormat = PixelFormat::RGBA8888;
+        TextureUsage textureUsage = TextureUsage::READ;
+        uint32_t width = 0;
+        uint32_t height = 0;
+        uint32_t depth = 0;
+        SamplerDescriptor samplerDescriptor;
+    };
+
     class Texture
     {
     public:
@@ -136,6 +148,7 @@ namespace Azazel
         static Texture* create(const TextureData& textureData);
         static Texture* create(int width, int height, int color);
         static Texture* createDepthTexture(const TextureData& textureData);
+        static Texture* createDepthTexture(int width, int height);
 
     protected:
         const unsigned char* data;

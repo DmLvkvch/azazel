@@ -13,10 +13,10 @@ namespace Azazel
     {
     }
     
-    CubeMap *CubeMap::create()
+    CubeMap *CubeMap::create(std::array<TextureData, 6> textures)
     {
         #ifdef AZAZEL_GL
-        return new GLESCubeMap();
+        return new GLESCubeMap(textures);
         #else 
         return new VKCubeMap();
         #endif

@@ -1,7 +1,7 @@
 #include "Window.h"
 
 #ifdef AZAZEL_GL
-#include "WindowsWindow.h"
+#include "GLWindow.h"
 #else
 #include "VkWindow.h"
 #endif
@@ -16,7 +16,7 @@ namespace Azazel
         if (!Window::window)
         {
             #ifdef AZAZEL_GL
-            Window::window = new WindowsWindow(props);
+            Window::window = new GLWindow(props);
             #else
             Window::window = new VkWindow(props);
             #endif

@@ -6,11 +6,11 @@ struct GLFWwindow;
 
 namespace Azazel
 {
-    class WindowsWindow : public Window
+    class GLWindow : public Window
     {
     public:
-        WindowsWindow(const WindowProperties& props);
-        virtual ~WindowsWindow();
+        GLWindow(const WindowProperties& props);
+        virtual ~GLWindow();
         void shutDown();
         void onUpdate(float delta) override;
         unsigned int getWidth() const override;

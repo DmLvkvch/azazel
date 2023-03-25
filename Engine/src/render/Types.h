@@ -166,7 +166,7 @@ namespace Azazel
     {
         ADD,
         SUBTRACT,
-        RESERVE_SUBTRACT
+        REVERSE_SUBTRACT
     };
 
     enum class BlendFactor : uint32_t
@@ -195,6 +195,72 @@ namespace Azazel
         BLUE = 0x00000004,
         ALPHA = 0x00000008,
         ALL = 0x0000000F
+    };
+
+    enum class CullMode
+    {
+        FRONT,
+        BACK,
+        FRONT_AND_BACK
+    };
+
+    enum class CullFront
+    {
+        CW,
+        CCW
+    };
+
+    enum class BlendEquation
+    {
+        ADD,
+        SUBTRACT,
+        REVERSE_SUBTRACT,
+        MIN,
+        MAX
+    };
+
+    enum class BlendFunction
+    {
+        ZERO,
+        ONE,
+        SRC_COLOR,
+        ONE_MINUS_SRC_COLOR,
+        SRC_ALPHA,
+        ONE_MINUS_SRC_ALPHA,
+        DST_COLOR,
+        ONE_MINUS_DST_COLOR,
+        DST_ALPHA,
+        ONE_MINUS_DST_ALPHA,
+        CONSTANT_ALPHA,
+        SRC_ALPHA_SATURATE,
+        ONE_MINUS_CONSTANT_ALPHA,
+        BLEND_COLOR,
+        CONSTANT_COLOR,
+        ONE_MINUS_CONSTANT_COLOR
+    };
+
+    enum class CompareFunction : uint32_t
+    {
+        NEVER,
+        LESS,
+        LESS_EQUAL,
+        GREATER,
+        GREATER_EQUAL,
+        EQUAL,
+        NOT_EQUAL,
+        ALWAYS
+    };
+
+    enum class StencilFunc
+    {
+        KEEP,
+        ZERO,
+        REPLACE,
+        INCR,
+        INCR_WRAP,
+        DECR,
+        DECR_WRAP,
+        INVERT
     };
 
     struct SamplerDescriptor

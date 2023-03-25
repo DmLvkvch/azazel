@@ -36,7 +36,7 @@ namespace Azazel
 
     void GLESRender::clear(bool color, bool depth, bool stencil)
     {
-        GLbitfield clear = 0;
+        unsigned int clear = 0;
         if (color)
         {
             clear |= GL_COLOR_BUFFER_BIT;
@@ -120,11 +120,21 @@ namespace Azazel
         }
     }
 
-    void GLESRender::setDepthFunc()
+    void GLESRender::setDepthMask(bool enable)
     {
-        
+        if (enable)
+        {
+            glDepthMask(GL_TRUE);
+        }
+        else
+        {
+            glDepthMask(GL_FALSE);
+        }
     }
 
+    void GLESRender::setDepthFunc(CompareFunction compareFunction)
+    {
+    }
 
     void GLESRender::setStencilTest(bool enable)
     {
@@ -136,6 +146,26 @@ namespace Azazel
         {
             glDisable(GL_STENCIL);
         }
+    }
+
+    void GLESRender::setStencilMask(unsigned int mask)
+    {
+        glStencilMask(mask);
+    }
+
+    void GLESRender::setStencilFunc(CompareFunction stencilFunction, int ref, unsigned int mask)
+    {
+        unsigned int stencilFunc = convertCompareFunction(stencilFunction);
+        glStencilFunc(stencilFunc, ref, mask);
+    }
+
+    void GLESRender::setStencilOp(StencilOperation sfail, StencilOperation dpfail, StencilOperation dppass)
+    {
+        unsigned int gl_sfail = convertStencilOp(sfail);
+        unsigned int gl_dpfail = convertStencilOp(dpfail);
+        unsigned int gl_dppass = convertStencilOp(dppass);
+
+        glStencilOp(gl_sfail, gl_dpfail, gl_dppass);
     }
 
     void GLESRender::setBlend(bool enable)

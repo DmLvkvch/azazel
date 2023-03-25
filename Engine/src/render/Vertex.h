@@ -8,7 +8,7 @@
 
 namespace Azazel
 {
-    enum ElementType
+    enum class ElementType
     {
         FLOAT,
         HALF,

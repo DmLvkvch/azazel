@@ -4,6 +4,12 @@
 
 namespace Azazel
 {
+    enum class IndexBufferElementType
+    {
+        UNSIGNED_INT,
+        UNSIGNED_SHORT
+    };
+
     class IndexBuffer
     {
     public:

@@ -200,7 +200,7 @@ namespace Azazel
         float lastX = 1280.0f / 2.0f;
         float lastY = 720.0f / 2.0f;
         
-        int index = -1;
+        size_t index = -1;
         bool lock = false;
         
         CameraLocation cameraLocation;

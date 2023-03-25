@@ -2,7 +2,7 @@
 
 #include "Texture.h"
 #include "FrameBufferTarget.h"
-#include <vector>
+#include <array>
 
 namespace Azazel
 {
@@ -19,7 +19,7 @@ namespace Azazel
         static FrameBuffer* create(Texture* texture, FrameBufferTarget* depthTarget);
         static FrameBuffer* create(Texture* texture, Texture* depthTarget);
     protected:
-        std::vector<Texture*> colorTextureTarget;
+        std::array<Texture*, 16> colorTextureTarget;
         FrameBufferTarget* depthTarget;
     };
 }

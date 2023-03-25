@@ -1,4 +1,6 @@
 #pragma once
+#include <array>
+#include "TextureData.h"
 
 namespace Azazel
 {
@@ -11,6 +13,6 @@ namespace Azazel
         virtual void bind() = 0;
         virtual void unbind() = 0;
 
-        static CubeMap* create();
+        static CubeMap* create(std::array<TextureData, 6> textures);
     };
 }

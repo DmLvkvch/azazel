@@ -51,4 +51,14 @@ namespace Azazel
         return nullptr;
         #endif
     }
+
+    Texture* Texture::createDepthTexture(int width, int height)
+    {
+        TextureData textureData(width, height, 4, nullptr);
+    #ifdef AZAZEL_GL
+            return new GLESDepthTexture(textureData);
+    #else
+            return nullptr;
+    #endif
+    }
 }

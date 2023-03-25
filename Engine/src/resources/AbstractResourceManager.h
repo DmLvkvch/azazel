@@ -35,7 +35,7 @@ namespace Azazel
             {
                 return lruCache.get(path)->second;
             }
-            throw std::invalid_argument(std::string("No such resource for key: ") + path);
+            throw std::invalid_argument("No such resource for key: " + path);
         }
 
     private:

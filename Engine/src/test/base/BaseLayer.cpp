@@ -52,7 +52,7 @@ namespace Azazel
     void BaseLayer::onRender(float delta)
     {
         Render::getRender()->setBlend(true);
-        Render::getRender()->setBlendFunc(BlendFunction::SrcAlpha, BlendFunction::OneMinusSrcAlpha);
+        Render::getRender()->setBlendFunc(BlendFunction::SRC_ALPHA, BlendFunction::ONE_MINUS_SRC_ALPHA);
 
         shader->bind();
         shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * transform.getTransformMatrix());
@@ -106,23 +106,23 @@ namespace Azazel
                 {
                     if (item == "GL_FUNC_ADD")
                     {
-                        Render::getRender()->setBlendEquation(BlendEquation::Add);
+                        Render::getRender()->setBlendEquation(BlendEquation::ADD);
                     }
                     else if (item == "GL_FUNC_SUBTRACT")
                     {
-                        Render::getRender()->setBlendEquation(BlendEquation::Subtract);
+                        Render::getRender()->setBlendEquation(BlendEquation::SUBTRACT);
                     }
                     else if (item == "GL_FUNC_REVERSE_SUBTRACT")
                     {
-                        Render::getRender()->setBlendEquation(BlendEquation::ReverseSubtract);
+                        Render::getRender()->setBlendEquation(BlendEquation::REVERSE_SUBTRACT);
                     }
                     else if (item == "GL_MIN")
                     {
-                        Render::getRender()->setBlendEquation(BlendEquation::Min);
+                        Render::getRender()->setBlendEquation(BlendEquation::MIN);
                     }
                     else if (item == "GL_MAX")
                     {
-                        Render::getRender()->setBlendEquation(BlendEquation::Max);
+                        Render::getRender()->setBlendEquation(BlendEquation::MAX);
                     }
                 }
             }

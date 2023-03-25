@@ -1,7 +1,6 @@
 #pragma once
 
 #include "render/Texture.h"
-
 #include "gl_headers.h"
 
 namespace Azazel
@@ -9,30 +8,13 @@ namespace Azazel
     class GLESDepthTexture : public Texture
     {
     public:
-        GLESDepthTexture(const TextureData& textureData)
-        {
-            glGenTextures(1, &rendererID);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, textureData.width, textureData.height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);  
-        }
+        GLESDepthTexture(const TextureData& textureData);
 
-        ~GLESDepthTexture()
-        {
-            glDeleteTextures(1, &rendererID);
-        }
+        ~GLESDepthTexture();
 
-        void bind(unsigned int slot = 0) const override
-        {
-            glBindTexture(GL_TEXTURE_2D, rendererID);
-        }
+        void bind(unsigned int slot = 0) const override;
 
-        void unbind() const override
-        {
-            glBindTexture(GL_TEXTURE_2D, 0);
-        }
+        void unbind() const override;
 
         void setTextureFilter(Texture::TextureFilter textureFilter) override
         {

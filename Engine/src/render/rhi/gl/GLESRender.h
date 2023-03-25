@@ -41,9 +41,17 @@ namespace Azazel
 
         void setDepthTest(bool enable) override;
 
-        void setDepthFunc() override;
+        void setDepthMask(bool enable) override;
+
+        void setDepthFunc(CompareFunction compareFunction) override;
 
         void setStencilTest(bool enable) override;
+
+        void setStencilMask(unsigned int mask) override;
+
+        void setStencilFunc(CompareFunction compareFunction, int ref, unsigned int mask) override;
+
+        void setStencilOp(StencilOperation sfail, StencilOperation dpfail, StencilOperation dppass) override;
 
         void setBlend(bool enable) override;
 
