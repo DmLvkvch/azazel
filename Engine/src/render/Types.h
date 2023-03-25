@@ -189,12 +189,12 @@ namespace Azazel
 
     enum class ColorWriteMask : uint32_t
     {
-        NONE = 0x00000000,
-        RED = 0x00000001,
-        GREEN = 0x00000002,
-        BLUE = 0x00000004,
-        ALPHA = 0x00000008,
-        ALL = 0x0000000F
+        NONE   = 0x00000000,
+        RED    = 0x00000001,
+        GREEN  = 0x00000002,
+        BLUE   = 0x00000004,
+        ALPHA  = 0x00000008,
+        ALL    = 0x0000000F
     };
 
     enum class CullMode

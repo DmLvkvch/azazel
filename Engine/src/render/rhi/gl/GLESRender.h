@@ -17,6 +17,8 @@ namespace Azazel
 
         void init() override;
 
+        void reset() override;
+
         void saveState() override;
     
         void popState() override;
@@ -60,8 +62,6 @@ namespace Azazel
         void drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture) override;
 
         void drawArrays(const VertexArray& vertexArray, const Shader& shader, const Texture& texture) override;
-
-        void reset() override;
 
         void setBlendFunc(BlendFunction sFactor, BlendFunction dFactor) override;
 

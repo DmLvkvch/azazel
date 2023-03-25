@@ -17,12 +17,12 @@ namespace Azazel
     {
     }
 
-    void VKCubeMap::bind()
+    void VKCubeMap::bind() const
     {
 
     }
 
-    void VKCubeMap::unbind()
+    void VKCubeMap::unbind() const
     {
 
     }

@@ -32,12 +32,12 @@ namespace Azazel
         glDeleteTextures(1, &textureID);
     }
 
-    void GLESCubeMap::bind()
+    void GLESCubeMap::bind() const
     {
 
     }
 
-    void GLESCubeMap::unbind()
+    void GLESCubeMap::unbind() const
     {
 
     }

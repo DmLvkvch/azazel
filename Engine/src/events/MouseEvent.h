@@ -32,7 +32,7 @@ namespace Azazel
         
         std::string toString() override
         {
-            return "Mouse moved event. x:" + std::to_string(getX()) + "y: " + std::to_string(getY());
+            return "Mouse moved event. x: " + std::to_string(getX()) + "y: " + std::to_string(getY());
         }
     private:
         float mouseX;

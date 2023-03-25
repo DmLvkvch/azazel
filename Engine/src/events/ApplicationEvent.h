@@ -76,7 +76,7 @@ namespace Azazel
 
         std::string toString()
         {
-            return "App tick event";
+            return "App tick event.";
         }
     };
 

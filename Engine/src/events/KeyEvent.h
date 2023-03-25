@@ -41,7 +41,7 @@ namespace Azazel
 
         std::string toString() override
         {
-            return "Key pressed event" + std::to_string(keycode);
+            return "Key pressed event. KeyCode: " + std::to_string(keycode);
         }
     private:
         int repeatCount;
