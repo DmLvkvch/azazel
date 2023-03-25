@@ -20,3 +20,6 @@
 [submodule "Engine/vendor/assimp"]
 	path = Engine/vendor/assimp
 	url = https://github.com/assimp/assimp
+[submodule "Engine/vendor/stb_image/stb_image"]
+	path = Engine/vendor/stb_image/stb_image
+	url = https://github.com/nothings/stb

@@ -81,6 +81,11 @@ namespace Azazel
         }
     }
 
+    SkyboxRenderer::~SkyboxRenderer()
+    {
+        
+    }
+
     void SkyboxRenderer::draw()
     {
         shader->bind();

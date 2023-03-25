@@ -13,12 +13,7 @@ namespace Azazel
     {
     public:
         SkyboxRenderer();
-        
-        ~SkyboxRenderer()
-        {
-
-        }
-
+        ~SkyboxRenderer();
         void draw();
     public:
         std::unique_ptr<Shader> shader;

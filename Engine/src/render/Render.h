@@ -126,7 +126,7 @@ namespace Azazel
     private:
         static std::unique_ptr<Render> render;
         
+        RenderStats renderStats;
         Camera camera;
-        int drawCalls;
     };
 }
