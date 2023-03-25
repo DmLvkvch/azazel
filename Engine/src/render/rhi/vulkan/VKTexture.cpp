@@ -72,7 +72,7 @@ namespace Azazel
     {
     }
 
-    unsigned int VKTexture::getRendererId() const
+    const unsigned int VKTexture::getRendererId() const
     {
         return rendererID;
     }

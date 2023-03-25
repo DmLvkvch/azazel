@@ -17,6 +17,7 @@ namespace Azazel
         virtual void setDepthTarget(Texture* depthTexture) = 0;
         virtual void setDepthTarget(FrameBufferTarget* depthTarget) = 0;
         static FrameBuffer* create(Texture* texture, FrameBufferTarget* depthTarget);
+        static FrameBuffer* create(Texture* texture, Texture* depthTarget);
     protected:
         std::vector<Texture*> colorTextureTarget;
         FrameBufferTarget* depthTarget;

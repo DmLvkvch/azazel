@@ -1,10 +1,13 @@
 #pragma once
+
+#include "render/CubeMap.h"
+
 #include <vector>
 #include <string>
 
 namespace Azazel
 {
-    class GLESTextureCubeMap
+    class GLESTextureCubeMap : public CubeMap
     {
     public:
         GLESTextureCubeMap(std::vector<std::string> textures);

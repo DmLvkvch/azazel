@@ -16,8 +16,6 @@
 #include <glm/ext/matrix_clip_space.hpp>
 
 #include <iostream>
-#include <fstream>
-#include <streambuf>
 #include <vector>
 
 namespace Azazel
@@ -27,7 +25,9 @@ namespace Azazel
     {
 
         model = Model::cube();
-        this->face.reset(Texture::create(TextureUtils::loadTexture("images/container2.png")));
+        auto textureData = TextureUtils::loadTexture("images/container2.png");
+        this->face.reset(Texture::create(textureData));
+        delete[] textureData.data;
         
         shader.reset(Shader::create(FileUtils::readFile("shaders/default.vert.glsl"), FileUtils::readFile("shaders/default.frag.glsl")));
 

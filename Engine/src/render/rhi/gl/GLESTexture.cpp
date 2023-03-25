@@ -10,12 +10,14 @@ namespace Azazel
     : Texture(textureData.width, textureData.height, textureData.bpp, textureData.data, Format::RGBA32)
     {
         createTexture(getWidth(), getHeight(), getBpp(), textureData.data);
+        data = nullptr;
     }
 
     GLESTexture::GLESTexture(int width, int height, int bpp, const unsigned char* data)
     : Texture(width, height, bpp, data, Format::RGBA32)
     {
         createTexture(width, height, bpp, data);
+        data = nullptr;
     }
 
     GLESTexture::GLESTexture(int width, int height, int color)
@@ -33,6 +35,8 @@ namespace Azazel
             data[i + 3] = a;
         }
         createTexture(width, height, 4, data);
+        delete[] data;
+        data = nullptr;
     }
 
     void GLESTexture::createTexture(int width, int height, int bpp, const unsigned char* data)
@@ -67,11 +71,7 @@ namespace Azazel
         }
         
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        if (data)
-        {
-            delete[] data;
-            data = nullptr;
-        }
+
         unbind();
     }
 
@@ -145,7 +145,7 @@ namespace Azazel
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
     }
 
-    unsigned int GLESTexture::getRendererId() const
+    const unsigned int GLESTexture::getRendererId() const
     {
         return rendererID;
     }

@@ -2,6 +2,7 @@
 
 #ifdef AZAZEL_GL
 #include "rhi/gl/GLESTexture.h"
+#include "rhi/gl/GLESDepthTexture.h"
 #else
 #include "rhi/vulkan/VKTexture.h"
 #endif
@@ -40,5 +41,14 @@ namespace Azazel
     {
         TextureData textureData (width, height, color);
         return create(textureData);
+    }
+
+    Texture* Texture::createDepthTexture(const TextureData& textureData)
+    {
+        #ifdef AZAZEL_GL
+        return new GLESDepthTexture(textureData);
+        #else
+        return nullptr;
+        #endif
     }
 }

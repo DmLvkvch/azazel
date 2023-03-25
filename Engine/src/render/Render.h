@@ -7,6 +7,7 @@
 #include "render/Texture.h"
 #include "render/Vertex.h"
 #include "camera/Camera.h"
+#include "Types.h"
 #include <memory>
 
 namespace Azazel
@@ -80,6 +81,20 @@ namespace Azazel
         Invert
     };
 
+    struct RenderStats
+    {
+        int drawCalls = 0;
+        int gpuMemoryUsage = 0;
+        int trianglesCount = 0;
+
+        void reset()
+        {
+            drawCalls = 0;
+            gpuMemoryUsage = 0;
+            trianglesCount = 0;
+        }
+    };
+
     template <class T>
     class Mesh;
 
@@ -118,6 +133,8 @@ namespace Azazel
 
         virtual void setDepthTest(bool enable) = 0;
 
+        virtual void setDepthFunc() = 0;
+
         virtual void setStencilTest(bool enable) = 0;
 
         virtual void setBlend(bool enable) = 0;
@@ -129,10 +146,21 @@ namespace Azazel
         virtual void drawArrays(const VertexArray& vertexArray, const Shader& shader, const Texture& texture) = 0;
 
         template <typename T>
-        void drawMesh(const Mesh<T>& mesh, const Shader& shader, const Texture& texture);
+        void drawMesh(const Mesh<T>& mesh, const Shader& shader, const Texture& texture)
+        {
+            drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader, texture);
+        }
 
         template <typename T>
-        void drawMesh(const Mesh<T>& mesh, const Shader& shader);
+        void drawMesh(const Mesh<T>& mesh, const Shader& shader)
+        {
+            drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader);
+        }
+
+        virtual void drawLine()
+        {
+            
+        }
 
         virtual void reset() = 0;
 
@@ -140,6 +168,8 @@ namespace Azazel
 
         virtual void setBlendEquation(BlendEquation blendEquation) = 0;
         
+        virtual void setFramebufferSRGB(bool enable) = 0;
+
         virtual void beginScene() = 0;
 
         virtual void endScene() = 0;
@@ -160,16 +190,4 @@ namespace Azazel
         Camera camera;
         int drawCalls;
     };
-
-    template <typename T> 
-    void Render::drawMesh(const Mesh<T>& mesh, const Shader& shader, const Texture& texture)
-    {
-        drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader, texture);
-    }
-
-    template <typename T> 
-    void Render::drawMesh(const Mesh<T>& mesh, const Shader& shader)
-    {
-        drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader);
-    }
 }

@@ -120,6 +120,11 @@ namespace Azazel
         createInstance();
     }
 
+    void VkWindow::initVulkan()
+    {
+        createInstance();
+    }
+
     void VkWindow::createInstance()
     {
         VkApplicationInfo appInfo {};
@@ -143,9 +148,214 @@ namespace Azazel
 
         createInfo.enabledLayerCount = 0;
 
-        if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
+        VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
+
+        if (result != VK_SUCCESS)
+        {
             throw std::runtime_error("failed to create instance!");
         }
+    }
+
+	void VkWindow::createDebugCallback()
+    {
+        // TODO
+    }
+
+	void VkWindow::findPhysicalDevice()
+    {
+        VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+        uint32_t deviceCount = 0;
+        vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+        if (deviceCount == 0)
+        {
+            std::cout<<"vulkan doesnt support!"<<std::endl;
+        }
+        std::vector<VkPhysicalDevice> devices(deviceCount);
+        vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
+        physicalDevice = devices[0];
+        VkPhysicalDeviceFeatures deviceFeatures;
+        vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
+    }
+
+	void VkWindow::findQueueFamilies()
+    {
+        uint32_t queueFamilyCount = 0;
+		vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
+
+		if (queueFamilyCount == 0)
+        {
+			std::cout << "physical device has no queue families!" << std::endl;
+			exit(1);
+		}
+
+		// Find queue family with graphics support
+		// Note: is a transfer queue necessary to copy vertices to the gpu or can a graphics queue handle that?
+		std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+		vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilies.data());
+
+		std::cout << "physical device has " << queueFamilyCount << " queue families" << std::endl;
+
+		bool foundGraphicsQueueFamily = false;
+		bool foundPresentQueueFamily = false;
+
+		for (uint32_t i = 0; i < queueFamilyCount; i++)
+        {
+			VkBool32 presentSupport = false;
+			vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, windowSurface, &presentSupport);
+
+			if (queueFamilies[i].queueCount > 0 && queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+            {
+				graphicsQueueFamily = i;
+				foundGraphicsQueueFamily = true;
+
+				if (presentSupport)
+                {
+					presentQueueFamily = i;
+					foundPresentQueueFamily = true;
+					break;
+				}
+			}
+
+			if (!foundPresentQueueFamily && presentSupport)
+            {
+				presentQueueFamily = i;
+				foundPresentQueueFamily = true;
+			}
+		}
+
+		if (foundGraphicsQueueFamily)
+        {
+			std::cout << "queue family #" << graphicsQueueFamily << " supports graphics" << std::endl;
+
+			if (foundPresentQueueFamily) 
+            {
+				std::cout << "queue family #" << presentQueueFamily << " supports presentation" << std::endl;
+			} else
+            {
+				std::cerr << "could not find a valid queue family with present support" << std::endl;
+				exit(1);
+			}
+		}
+        else
+        {
+			std::cerr << "could not find a valid queue family with graphics support" << std::endl;
+			exit(1);
+		}
+    }
+
+    void VkWindow::createLogicalDevice() {
+		// Greate one graphics queue and optionally a separate presentation queue
+		float queuePriority = 1.0f;
+
+		VkDeviceQueueCreateInfo queueCreateInfo[2] = {};
+
+		queueCreateInfo[0].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+		queueCreateInfo[0].queueFamilyIndex = graphicsQueueFamily;
+		queueCreateInfo[0].queueCount = 1;
+		queueCreateInfo[0].pQueuePriorities = &queuePriority;
+
+		queueCreateInfo[0].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+		queueCreateInfo[0].queueFamilyIndex = presentQueueFamily;
+		queueCreateInfo[0].queueCount = 1;
+		queueCreateInfo[0].pQueuePriorities = &queuePriority;
+
+		// Create logical device from physical device
+		// Note: there are separate instance and device extensions!
+		VkDeviceCreateInfo deviceCreateInfo = {};
+		deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+		deviceCreateInfo.pQueueCreateInfos = queueCreateInfo;
+
+		if (graphicsQueueFamily == presentQueueFamily) {
+			deviceCreateInfo.queueCreateInfoCount = 1;
+		} else {
+			deviceCreateInfo.queueCreateInfoCount = 2;
+		}
+
+		// Necessary for shader (for some reason)
+		VkPhysicalDeviceFeatures enabledFeatures = {};
+		enabledFeatures.shaderClipDistance = VK_TRUE;
+		enabledFeatures.shaderCullDistance = VK_TRUE;
+
+		const char* deviceExtensions = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
+		deviceCreateInfo.enabledExtensionCount = 1;
+		deviceCreateInfo.ppEnabledExtensionNames = &deviceExtensions;
+		deviceCreateInfo.pEnabledFeatures = &enabledFeatures;
+
+		if (vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device) != VK_SUCCESS) {
+			std::cerr << "failed to create logical device" << std::endl;
+			exit(1);
+		}
+
+		std::cout << "created logical device" << std::endl;
+
+		// Get graphics and presentation queues (which may be the same)
+		vkGetDeviceQueue(device, graphicsQueueFamily, 0, &graphicsQueue);
+		vkGetDeviceQueue(device, presentQueueFamily, 0, &presentQueue);
+
+		std::cout << "acquired graphics and presentation queues" << std::endl;
+
+		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &deviceMemoryProperties);
+
+        {
+            VkDescriptorPoolSize pool_sizes[] =
+            {
+                { VK_DESCRIPTOR_TYPE_SAMPLER, 1000 },
+                { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000 },
+                { VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1000 },
+                { VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000 },
+                { VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000 },
+                { VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000 },
+                { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000 },
+                { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000 },
+                { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000 },
+                { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000 },
+                { VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 1000 }
+            };
+            VkDescriptorPoolCreateInfo pool_info = {};
+            pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+            pool_info.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+            pool_info.maxSets = 1000 * IM_ARRAYSIZE(pool_sizes);
+            pool_info.poolSizeCount = (uint32_t)IM_ARRAYSIZE(pool_sizes);
+            pool_info.pPoolSizes = pool_sizes;
+            VkResult err = vkCreateDescriptorPool(device, &pool_info, nullptr, &descriptorPool);
+        }
+	}
+
+	void VkWindow::createSemaphores() {
+		VkSemaphoreCreateInfo createInfo = {};
+		createInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+		if (vkCreateSemaphore(device, &createInfo, nullptr, &imageAvailableSemaphore) != VK_SUCCESS ||
+			vkCreateSemaphore(device, &createInfo, nullptr, &renderingFinishedSemaphore) != VK_SUCCESS) {
+			std::cerr << "failed to create semaphores" << std::endl;
+			exit(1);
+		} else {
+			std::cout << "created semaphores" << std::endl;
+		}
+	}
+
+	void VkWindow::createCommandPool() {
+		// Create graphics command pool
+		VkCommandPoolCreateInfo poolCreateInfo = {};
+		poolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+		poolCreateInfo.queueFamilyIndex = graphicsQueueFamily;
+
+		if (vkCreateCommandPool(device, &poolCreateInfo, nullptr, &commandPool) != VK_SUCCESS) {
+			std::cerr << "failed to create command queue for graphics queue family" << std::endl;
+			exit(1);
+		} else {
+			std::cout << "created command pool for graphics queue family" << std::endl;
+		}
+	}
+	
+
+    bool isDeviceSutable(VkPhysicalDevice device)
+    {
+        VkPhysicalDeviceProperties deviceProperties;
+        VkPhysicalDeviceFeatures deviceFeatures;
+        vkGetPhysicalDeviceProperties(device, &deviceProperties);
+        vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+        return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && deviceFeatures.geometryShader;
     }
 
     VkWindow::~VkWindow()
@@ -259,6 +469,7 @@ namespace Azazel
 
     void VkWindow::shutDown()
     {
+        vkDestroyInstance(instance, nullptr);
         destroyImgui();
         destroyGLFW();
     }

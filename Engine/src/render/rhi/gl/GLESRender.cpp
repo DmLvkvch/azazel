@@ -36,7 +36,20 @@ namespace Azazel
 
     void GLESRender::clear(bool color, bool depth, bool stencil)
     {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        GLbitfield clear = 0;
+        if (color)
+        {
+            clear |= GL_COLOR_BUFFER_BIT;
+        }
+        if (depth)
+        {
+            clear |= GL_DEPTH_BUFFER_BIT;
+        }
+        if (stencil)
+        {
+            clear |= GL_STENCIL_BUFFER_BIT;
+        }
+        glClear(clear);
     }
 
     void GLESRender::setViewport(int x, int y, int width, int height)
@@ -107,6 +120,12 @@ namespace Azazel
         }
     }
 
+    void GLESRender::setDepthFunc()
+    {
+        
+    }
+
+
     void GLESRender::setStencilTest(bool enable)
     {
         if (enable)
@@ -176,6 +195,11 @@ namespace Azazel
     void GLESRender::setBlendEquation(BlendEquation blendEquation)
     {
         glBlendEquation(convertBlendEquation(blendEquation));
+    }
+
+    void GLESRender::setFramebufferSRGB(bool enable)
+    {
+        glEnable(GL_FRAMEBUFFER_SRGB);
     }
 
     void GLESRender::saveState()

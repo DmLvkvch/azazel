@@ -25,11 +25,14 @@ namespace Azazel
         void destroyImgui();
         void createInstance();
 
+        void initVulkan();
+
 		void createDebugCallback();
-		void createWindowSurface();
 		void findPhysicalDevice();
-		void checkSwapChainSupport();
 		void findQueueFamilies();
+
+		void createWindowSurface();
+		void checkSwapChainSupport();
 		void createLogicalDevice();
 		void createSemaphores();
 		void createCommandPool();
@@ -41,7 +44,6 @@ namespace Azazel
         int width;
         int height;
         std::string title;
-        VkInstance instance;
 
         struct WindowData
         {
@@ -49,5 +51,49 @@ namespace Azazel
         };
 
         WindowData windowData;
+
+        VkInstance instance;
+        VkSurfaceKHR windowSurface;
+        VkPhysicalDevice physicalDevice;
+        VkDevice device;
+        VkDebugReportCallbackEXT callback;
+        VkQueue graphicsQueue;
+        VkQueue presentQueue;
+        VkPhysicalDeviceMemoryProperties deviceMemoryProperties;
+        VkSemaphore imageAvailableSemaphore;
+        VkSemaphore renderingFinishedSemaphore;
+
+        VkBuffer vertexBuffer;
+        VkDeviceMemory vertexBufferMemory;
+        VkBuffer indexBuffer;
+        VkDeviceMemory indexBufferMemory;
+        VkVertexInputBindingDescription vertexBindingDescription;
+        std::vector<VkVertexInputAttributeDescription> vertexAttributeDescriptions;
+
+
+        VkBuffer uniformBuffer;
+        VkDeviceMemory uniformBufferMemory;
+        VkDescriptorSetLayout descriptorSetLayout;
+        VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
+        VkDescriptorSet descriptorSet;
+
+        VkExtent2D swapChainExtent;
+        VkFormat swapChainFormat;
+        VkSwapchainKHR oldSwapChain;
+        VkSwapchainKHR swapChain;
+        std::vector<VkImage> swapChainImages;
+        std::vector<VkImageView> swapChainImageViews;
+        std::vector<VkFramebuffer> swapChainFramebuffers;
+
+        VkRenderPass renderPass;
+        VkPipeline graphicsPipeline;
+        VkPipelineLayout pipelineLayout;
+
+        VkCommandPool commandPool;
+        std::vector<VkCommandBuffer> graphicsCommandBuffers;
+
+        uint32_t graphicsQueueFamily;
+        uint32_t presentQueueFamily;
+
     };
 }

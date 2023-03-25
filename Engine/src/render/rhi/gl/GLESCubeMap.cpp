@@ -5,6 +5,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include "resources/ResourceManager.h"
+#include "logging/Log.h"
 
 namespace Azazel
 {
@@ -23,19 +25,17 @@ namespace Azazel
             "textures/skybox/back.jpg"
         };
         
-        stbi_set_flip_vertically_on_load(false);
         for (unsigned int i = 0; i < faces.size(); i++)
         {
-            unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &bpp, 4);
-            if (data)
+            try
             {
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-                stbi_image_free(data);
+                auto data = ResourceManagers::textureDataManager->loadResource(faces[i], 0, false);
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, data.width, data.height, 0, GL_RGB, GL_UNSIGNED_BYTE, data.data);
+                delete[] data.data;
             }
-            else
+            catch(...)
             {
-                std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
-                stbi_image_free(data);
+                Log::getLogger()->errorLog("Could not load cube map texture" + faces[i]);
             }
         }
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

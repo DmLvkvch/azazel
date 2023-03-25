@@ -51,17 +51,12 @@ namespace Azazel
 
         }
 
-        void draw(Shader& shader)
+        void draw(const Shader& shader)
         {
             Render::getRender()->drawIndexed(*vertexArray, *indexBuffer, shader);
         }
 
-        std::vector<std::shared_ptr<Texture>>& getTextures()
-        {
-            return textures;
-        }
     private:
-        std::vector<std::shared_ptr<Texture>> textures;
         std::shared_ptr<VertexArray> vertexArray;
         std::shared_ptr<IndexBuffer> indexBuffer;
     };

@@ -15,53 +15,56 @@ namespace Azazel
 
         virtual ~GLESRender();
 
-        void init();
+        void init() override;
 
-        void saveState();
+        void saveState() override;
     
-        void popState();
+        void popState() override;
 
-        void clear(bool color = true, bool depth = false, bool stencil = false);
+        void clear(bool color = true, bool depth = false, bool stencil = false) override;
 
-        void setViewport(int x, int y, int width, int height);
+        void setViewport(int x, int y, int width, int height) override;
 
-        void setScissor(bool enable);
+        void setScissor(bool enable) override;
     
-        void setScissor(int x, int y, int width, int height);
+        void setScissor(int x, int y, int width, int height) override;
 
-        void setClearColor(const glm::vec4& color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+        void setClearColor(const glm::vec4& color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)) override;
 
-        void setMultisample(bool enable);
+        void setMultisample(bool enable) override;
 
-        void setCullFace(bool enable);
+        void setCullFace(bool enable) override;
 
-        void setCullFaceMode(CullMode cullMode);
+        void setCullFaceMode(CullMode cullMode) override;
 
-        void setFrontFace(CullFront cullFront);
+        void setFrontFace(CullFront cullFront) override;
 
-        void setDepthTest(bool enable);
+        void setDepthTest(bool enable) override;
 
-        void setStencilTest(bool enable);
+        void setDepthFunc() override;
 
-        void setBlend(bool enable);
+        void setStencilTest(bool enable) override;
 
-        void drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader);
+        void setBlend(bool enable) override;
 
-        void drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture);
+        void drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) override;
 
-        void drawArrays(const VertexArray& vertexArray, const Shader& shader, const Texture& texture);
+        void drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture) override;
 
-        void reset();
+        void drawArrays(const VertexArray& vertexArray, const Shader& shader, const Texture& texture) override;
 
-        void setBlendFunc(BlendFunction sFactor, BlendFunction dFactor);
+        void reset() override;
 
-        void setBlendEquation(BlendEquation blendEquation);
+        void setBlendFunc(BlendFunction sFactor, BlendFunction dFactor) override;
+
+        void setBlendEquation(BlendEquation blendEquation) override;
         
-        void beginScene();
+        void setFramebufferSRGB(bool enable) override;
 
-        void endScene();
+        void beginScene() override;
 
-        void setCamera();
+        void endScene() override;
+
     private:
         int drawCalls;
     };

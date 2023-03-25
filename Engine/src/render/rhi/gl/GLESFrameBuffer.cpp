@@ -19,6 +19,14 @@ namespace Azazel
         setDepthTarget(depthTarget);
     }
 
+    GLESFrameBuffer::GLESFrameBuffer(Texture* texture, Texture* depthTarget)
+    {
+        glGenFramebuffers(1, &rendererID);
+        addColorAttachment(texture);
+        setDepthTarget(depthTarget);
+    }
+
+
     GLESFrameBuffer::~GLESFrameBuffer()
     {
         glDeleteFramebuffers(1, &rendererID);  

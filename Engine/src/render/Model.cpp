@@ -149,7 +149,9 @@ namespace Azazel
                 material->GetTexture(aiTextureType_DIFFUSE, i, &str);
                 std::shared_ptr<Texture> texture;
                 std::string fullPath = directory +"/"+ str.C_Str();
-                texture.reset(Texture::create(TextureUtils::loadTexture(fullPath)));
+                auto textureData = TextureUtils::loadTexture(fullPath);
+                texture.reset(Texture::create(textureData));
+                delete[] textureData.data;
                 textures.push_back(texture);
            }
         }

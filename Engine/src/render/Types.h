@@ -162,18 +162,6 @@ namespace Azazel
         DECREMENT_WRAP
     };
 
-    enum class CompareFunction : uint32_t
-    {
-        NEVER,
-        LESS,
-        LESS_EQUAL,
-        GREATER,
-        GREATER_EQUAL,
-        EQUAL,
-        NOT_EQUAL,
-        ALWAYS
-    };
-
     enum class BlendOperation : uint32_t
     {
         ADD,
@@ -227,13 +215,6 @@ namespace Azazel
             sAddressMode(_sAddressMode), tAddressMode(_tAddressMode) {}
     };
 
-    enum class CullMode : uint32_t
-    {
-        NONE = 0x00000000,
-        BACK = 0x00000001,
-        FRONT = 0x00000002
-    };
-
     enum class Winding : uint32_t
     {
         CLOCK_WISE,
@@ -273,22 +254,11 @@ namespace Azazel
     };
 
     ///built-in uniform name
-    static const char* UNIFORM_NAME_MVP_MATRIX   = "u_MVPMatrix";
-    static const char* UNIFORM_NAME_TEXTURE      = "u_texture";
+    static const char* UNIFORM_NAME_MVP_MATRIX   = "u_mvp";
+    static const char* UNIFORM_NAME_TEXTURE      = "u_texture0";
     static const char* UNIFORM_NAME_TEXTURE1     = "u_texture1";
     static const char* UNIFORM_NAME_TEXTURE2     = "u_texture2";
     static const char* UNIFORM_NAME_TEXTURE3     = "u_texture3";
-    static const char* UNIFORM_NAME_TEXT_COLOR   = "u_textColor";
-    static const char* UNIFORM_NAME_EFFECT_COLOR = "u_effectColor";
-    static const char* UNIFORM_NAME_EFFECT_TYPE  = "u_effectType";
-
-    ///built-in attribute name
-    static const char* ATTRIBUTE_NAME_POSITION  = "a_position";
-    static const char* ATTRIBUTE_NAME_COLOR     = "a_color";
-    static const char* ATTRIBUTE_NAME_TEXCOORD  = "a_texCoord";
-    static const char* ATTRIBUTE_NAME_TEXCOORD1 = "a_texCoord1";
-    static const char* ATTRIBUTE_NAME_TEXCOORD2 = "a_texCoord2";
-    static const char* ATTRIBUTE_NAME_TEXCOORD3 = "a_texCoord3";
 
     struct BlendDescriptor
     {

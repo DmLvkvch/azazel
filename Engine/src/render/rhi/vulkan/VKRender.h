@@ -56,6 +56,8 @@ namespace Azazel
         void setBlendFunc(BlendFunction sFactor, BlendFunction dFactor);
 
         void setBlendEquation(BlendEquation blendEquation);
+
+        void setFramebufferSRGB(bool enable);
         
         void beginScene();
 

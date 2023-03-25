@@ -149,6 +149,11 @@ namespace Azazel
     {
     }
 
+    void VKRender::setFramebufferSRGB(bool enable)
+    {
+                
+    }
+
     void VKRender::saveState()
     {
 

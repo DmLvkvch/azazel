@@ -9,6 +9,7 @@ namespace Azazel
     public:
         GLESFrameBuffer(Texture* texture);
         GLESFrameBuffer(Texture* texture, FrameBufferTarget* depthTarget);
+        GLESFrameBuffer(Texture* texture, Texture* depthTarget);
         ~GLESFrameBuffer();
         void bind() const override;
         void unbind() const override;

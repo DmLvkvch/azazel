@@ -1,28 +1,51 @@
 #pragma once
 
-#include "ResourceManager.h"
+#include "AbstractResourceManager.h"
 #include "render/Texture.h"
-
+#include "TextureUtils.h"
 
 namespace Azazel
 {
-    class TextureResourceManager : public ResourceManager<std::shared_ptr<Texture>>
+    class TextureResourceManager : public ResourceManager<std::string, std::shared_ptr<Texture>>
     {
     public:
         std::shared_ptr<Texture> loadResource(const std::string& path, bool needCache = true)
         {
-            return std::shared_ptr<Texture>();
+            if (containsResource(path) && needCache)
+            {
+                return getResource(path);
+            }
+            auto textureData = TextureUtils::loadTexture(path);
+            std::shared_ptr<Texture> texture (Texture::create(textureData));
+            delete[] textureData.data;
+            if (needCache)
+            {
+                cacheResource(path, texture);
+            }
+            return texture;
         }
-    private:
-        static TextureResourceManager* textureManager;
     };
 
-    class TextureDataResourceManager : public ResourceManager<std::shared_ptr<TextureData>>
+    class TextureDataResourceManager : public ResourceManager<std::string, TextureData>
     {
     public:
-        std::shared_ptr<TextureData> loadResource(const std::string& path, bool needCache = true)
+        TextureData loadResource(const std::string& path, int flipVertically, bool needCache)
         {
-            return std::shared_ptr<TextureData>();
+            if (containsResource(path) && needCache)
+            {
+                return getResource(path);
+            }
+            TextureData textureData = TextureUtils::loadTexture(path, flipVertically > 0);
+            if (needCache)
+            {
+                cacheResource(path, textureData);
+            }
+            return textureData;
+        }
+
+        TextureData loadResource(const std::string& path, bool needCache = true)
+        {
+            return loadResource(path, 1, needCache);
         }
     private:
         static TextureDataResourceManager* textureDataManager;

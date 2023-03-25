@@ -38,8 +38,6 @@ namespace Azazel
 
         static Model cube();
 
-        Transform transform;
-
         Model& operator=(const Model& model)
         {
             this->meshes = model.meshes;
@@ -53,6 +51,9 @@ namespace Azazel
             this->textures = std::move(model.textures);
             return *this;
         }
+
+    public:
+        Transform transform;
 
     private:
 

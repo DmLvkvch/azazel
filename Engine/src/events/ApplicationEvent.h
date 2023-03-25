@@ -31,7 +31,7 @@ namespace Azazel
 
         std::string toString() override
         {
-            return "Window resize: " + std::to_string(width) + "height: " + std::to_string(height);
+            return "Window resize event. Width: " + std::to_string(width) + "height: " + std::to_string(height);
         }
         
     private:
@@ -55,7 +55,7 @@ namespace Azazel
 
         std::string toString()
         {
-            return "Window close:";
+            return "Window close event.";
         }
     };
 
@@ -76,7 +76,7 @@ namespace Azazel
 
         std::string toString()
         {
-            return "App tick:";
+            return "App tick event";
         }
     };
 
@@ -96,7 +96,7 @@ namespace Azazel
 
         std::string toString() override
         {
-            return "App update:";
+            return "App update event.";
         }
     };
 }

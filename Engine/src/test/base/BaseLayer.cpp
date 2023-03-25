@@ -26,8 +26,13 @@ namespace Azazel
 
         shader.reset(Shader::create(FileUtils::readFile("shaders/default.vert.glsl"), FileUtils::readFile("shaders/default.frag.glsl")));
         camera = OrthographicCamera(0, 960, 0, 540);
-        texture.reset(Texture::create(TextureData(500, 500, 0xff0000ff)));
-        texture1.reset(Texture::create(TextureData(500, 500, 0x0000fff0)));
+        TextureData square1(500, 500, 0xff0000ff); 
+        texture.reset(Texture::create(square1));
+        delete[] square1.data;
+
+        TextureData square2(500, 500, 0x0000fff0);
+        texture1.reset(Texture::create(square2));
+        delete[] square2.data;
 
         transform.scale = { 100.0f, 100.0f, 0.0f };
         color = {0.0f, 0.0f, 0.0f, 1.0f};

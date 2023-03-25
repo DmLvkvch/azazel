@@ -11,27 +11,18 @@ namespace Azazel
         glGenTextures(1, &rendererID);
         glBindTexture(GL_TEXTURE_CUBE_MAP, rendererID);
         int width, height, bpp;
-        std::vector<std::string> faces
-        {
-            "images/skybox/right.jpg",
-            "images/skybox/left.jpg",
-            "images/skybox/top.jpg",
-            "images/skybox/bottom.jpg",
-            "images/skybox/front.jpg",
-            "images/skybox/back.jpg"
-        };
         
         stbi_set_flip_vertically_on_load(false);
-        for (unsigned int i = 0; i < faces.size(); i++)
+        for (unsigned int i = 0; i < textures.size(); i++)
         {
-            unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &bpp, 4);
+            unsigned char *data = stbi_load(textures[i].c_str(), &width, &height, &bpp, 4);
             if (data)
             {
                 glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
             }
             else
             {
-                std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
+                std::cout << "Cubemap tex failed to load at path: " << textures[i] << std::endl;
             }
             stbi_image_free(data);
         }

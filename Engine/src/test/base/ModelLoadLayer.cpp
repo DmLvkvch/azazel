@@ -6,6 +6,7 @@
 #include "render/renderers/SkyboxRenderer.h"
 #include "Application.h"
 #include <functional>
+#include "resources/ResourceManager.h"
 
 namespace Azazel
 {
@@ -14,7 +15,18 @@ namespace Azazel
         model = Model("objects/duck/Duck.gltf");
         light.reset(Shader::create(FileUtils::readFile("shaders/light/phong.light.vert.glsl"), FileUtils::readFile("shaders/light/phong.light.frag.glsl")));
         
-        texture.reset(Texture::create(TextureUtils::loadTexture("objects/duck/DuckCM.png")));
+        auto textureData = TextureUtils::loadTexture("objects/duck/DuckCM.png");
+
+        texture.reset(Texture::create(textureData));
+
+        delete[] textureData.data;
+
+        TextureData square(500, 500, 0xffffffff);
+
+        textureTest.reset(Texture::create(square));
+
+        delete[] square.data;
+
         model.transform.scale = glm::vec3 { 0.0003f, 0.0003f, 0.0003f };
         camera = Camera();
         camera.subscribe();
@@ -31,7 +43,8 @@ namespace Azazel
     void ModelLoadLayer::onUpdate(float delta)
     {
         texture->bind();
-
+        model.transform.scale = glm::vec3 { 0.0003f, 0.0003f, 0.0003f };
+        model.transform.rotation.y = 0.0f;
         glm::mat4 modelMatrix = model.transform.getTransformMatrix();
 
         glm::vec3 color (0.2f);
@@ -62,16 +75,44 @@ namespace Azazel
         light->setVec3f("u_material.specular", { 0.5f, 0.5f, 0.5f });
         light->setFloat("u_material.shininess", 128.0f);
         sbr.shader->bind();
-        sbr.shader->setMatrix4f("view", camera.getViewMatrix());
+        sbr.shader->setMatrix4f("view", glm::mat4(glm::mat3(camera.getViewMatrix())));
         sbr.shader->setMatrix4f("projection", camera.getProjectionMatrix());
 
     }
 
     void ModelLoadLayer::onRender(float delta)
     {
-        sbr.draw();
+        //glEnable(GL_DEPTH_TEST);
+        //glEnable(GL_STENCIL_TEST);
+//
+        //glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);  
+        //
+        //glClear( GL_STENCIL_BUFFER_BIT); 
+//
+        //glStencilFunc(GL_ALWAYS, 1, 0x00);
+        //glStencilMask(0xFF);        
+//
+        //texture->bind(0);
+        //light->bind();
+        //light->setInt("u_texture_0", 0);
+        //model.draw(*light);
+//
+        //glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+        //glStencilMask(0x00);
+//
+        //model.transform.scale = glm::vec3 { 0.0004f, 0.0004f, 0.0004f };
+        //model.transform.rotation.y = 00.0f;
+        //
+        //textureTest->bind(0);
+        //light->bind();
+        //light->setMatrix4f("u_mvp", camera.getProjectionMatrix() * camera.getViewMatrix() * model.transform.getTransformMatrix());
+        //light->setInt("u_texture_0", 0);
+        //model.draw(*light);
+        //glStencilMask(0xFF);
+        //glStencilFunc(GL_ALWAYS, 1, 0xFF);
         Render::getRender()->setDepthTest(true);
         model.draw(*light);
+        sbr.draw();
         Render::getRender()->setDepthTest(false);
     }
 }

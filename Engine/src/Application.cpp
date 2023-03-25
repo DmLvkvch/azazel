@@ -44,7 +44,6 @@ namespace Azazel
         }
         this->eventSubscribers.removeListener(id);
         this->updateSubscribers.removeListener(id);
-
     }
 
     void Application::updateTargets(float delta)
@@ -58,9 +57,7 @@ namespace Azazel
         window = std::unique_ptr<Window>(Window::create());
         window->setEventCallback(std::bind(&Application::onEvent, this, std::placeholders::_1));
         Render::getRender()->init();
-        auto tmp = [](Event& e) {
-            std::cout<<"lambda "<<e.toString()<<std::endl;
-        };
+        auto tmp = [] (Event& e) { std::cout<<"lambda "<<e.toString()<<std::endl; };
         eventSubscribers.addListener(tmp);
     }
 
@@ -93,8 +90,12 @@ namespace Azazel
             Render::getRender()->setClearColor({0.0f, 0.0f, 0.0f, 1.0f});
             Render::getRender()->clear(true, true, false);
 
+            #ifdef AZAZEL_GL
             ImGui_ImplOpenGL3_NewFrame();
             ImGui::NewFrame();
+            #else
+            // vulkan
+            #endif
             
             updateTargets(delta);
 
@@ -105,9 +106,12 @@ namespace Azazel
                 layer->onUpdate(delta);
                 layer->onRender(delta);
             }
-
+            
+            #ifdef AZAZEL_GL
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            #else
+            #endif
 
             window->onUpdate(delta);
             Render::getRender()->endScene();

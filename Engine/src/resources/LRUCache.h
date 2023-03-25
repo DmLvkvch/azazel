@@ -61,7 +61,7 @@ namespace Azazel
             return cacheList.end();
         }
 
-        bool exist(const key_t& key)
+        bool contains(const key_t& key)
         {
             return cacheMap.find(key) != cacheMap.end();
         }

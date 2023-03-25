@@ -29,7 +29,9 @@ namespace Azazel
         vertexArray->addBuffer(vertexBuffer, Vertex_P3_T2::bufferLayout);
 
         shader.reset(Shader::create(FileUtils::readFile("shaders/default.vert.glsl"), FileUtils::readFile("shaders/default.frag.glsl")));
-        texture.reset(Texture::create(TextureUtils::loadTexture("images/awesomeface.png")));
+        auto textureData = TextureUtils::loadTexture("images/awesomeface.png");
+        texture.reset(Texture::create(textureData));
+        delete[] textureData.data;
 
         shader->bind();
         shader->setMatrix4f("u_mvp", glm::mat4(1.0f));
