@@ -22,7 +22,7 @@ include_directories ("vendor/glad/include"
                      "vendor/imgui"
                      "vendor/assimp"
                      "vendor/imgui/backends"
-                     "vendor"
+                     "vendor/stb_image"
                      "src")
 
 OPTION (ASSIMP_BUILD_TESTS "If the test suite for Assimp is built in addition to the library." OFF)

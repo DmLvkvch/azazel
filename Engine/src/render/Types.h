@@ -108,8 +108,8 @@ namespace Azazel
 
     enum class IndexFormat : uint32_t
     {
-        U_SHORT,
-        U_INT
+        UNSIGNED_SHORT,
+        UNSIGNED_INT
     };
 
     enum class VertexStepMode : uint32_t
@@ -234,7 +234,6 @@ namespace Azazel
         CONSTANT_ALPHA,
         SRC_ALPHA_SATURATE,
         ONE_MINUS_CONSTANT_ALPHA,
-        BLEND_COLOR,
         CONSTANT_COLOR,
         ONE_MINUS_CONSTANT_COLOR
     };

@@ -1,15 +1,10 @@
 #pragma once
 
 #include <cstddef>
+#include "Types.h"
 
 namespace Azazel
 {
-    enum class IndexBufferElementType
-    {
-        UNSIGNED_INT,
-        UNSIGNED_SHORT
-    };
-
     class IndexBuffer
     {
     public:
