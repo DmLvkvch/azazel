@@ -10,9 +10,6 @@
 [submodule "Engine/vendor/freetype"]
 	path = Engine/vendor/freetype
 	url = https://github.com/freetype/freetype
-[submodule "Engine/vendor/imgui"]
-	path = Engine/vendor/imgui
-	url = https://github.com/ocornut/imgui
 [submodule "Engine/vendor/SDL"]
 	path = Engine/vendor/SDL
 	url = https://github.com/libsdl-org/SDL
@@ -23,3 +20,6 @@
 [submodule "Engine/vendor/stb_image/stb_image"]
 	path = Engine/vendor/stb_image/stb_image
 	url = https://github.com/nothings/stb
+[submodule "Engine/vendor/imgui/imgui"]
+	path = Engine/vendor/imgui/imgui
+	url = https://github.com/ocornut/imgui

@@ -19,9 +19,9 @@ include_directories ("vendor/glad/include"
                      "vendor/glfw"
                      "vendor/glm"
                      "vendor/freetype"
-                     "vendor/imgui"
+                     "vendor/imgui/imgui"
+                     "vendor/imgui/imgui/backends"
                      "vendor/assimp"
-                     "vendor/imgui/backends"
                      "vendor/stb_image"
                      "src")
 
@@ -33,7 +33,7 @@ add_subdirectory(vendor/glm)
 add_subdirectory(vendor/stb_image)
 add_subdirectory(vendor/freetype)
 add_subdirectory(vendor/assimp)
-add_subdirectory(vendor)
+add_subdirectory(vendor/imgui)
 
 if (APPLE)
     set(CMAKE_C_ARCHIVE_FINISH   "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
