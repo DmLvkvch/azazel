@@ -2,6 +2,7 @@
 
 #include "Window.h"
 #include <vulkan/vulkan.h>
+#include <vector>
 
 struct GLFWwindow;
 
