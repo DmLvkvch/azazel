@@ -42,8 +42,8 @@ namespace Azazel
         {
             return;
         }
-        this->eventSubscribers.removeListener(id);
-        this->updateSubscribers.removeListener(id);
+        eventSubscribers.removeListener(id);
+        updateSubscribers.removeListener(id);
     }
 
     void Application::updateTargets(float delta)
@@ -64,6 +64,7 @@ namespace Azazel
     Application::~Application()
     {
         eventSubscribers.clear();
+        updateSubscribers.clear();
     }
 
     void Application::onEvent(Event& e)
@@ -117,7 +118,6 @@ namespace Azazel
             Render::getRender()->endScene();
             auto stopTime = std::chrono::high_resolution_clock::now();
             delta = std::chrono::duration<float, std::chrono::milliseconds::period>(stopTime - startTime).count();
-            //std::cout<<delta<<std::endl;
         }
     }
 

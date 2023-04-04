@@ -32,6 +32,11 @@ namespace Azazel
         glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
     }
 
+    void GLESVertexBuffer::updateData(void* data, int size)
+    {
+        glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
+    }
+
     void GLESVertexBuffer::setLayout(const BufferLayout& bufferLayout)
     {
          this->bufferLayout = bufferLayout;

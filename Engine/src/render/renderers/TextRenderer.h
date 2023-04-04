@@ -25,15 +25,19 @@ namespace Azazel
 
     class TextRenderer
     {
-        TextRenderer(const std::string& text);
+    public:
+        TextRenderer();
         ~TextRenderer();
+        void onUpdate(float delta);
         void draw(const std::string& text);
+        static TextRenderer* getRenderer();
     private:
-        std::map<GLchar, Character> characters;
-    
+        OrthographicCamera camera;
+        std::map<char, Character> characters;
         std::unique_ptr<VertexArray> vertexArray;
         std::unique_ptr<Shader> textShader;
         std::unique_ptr<IndexBuffer> indexBuffer;
         std::shared_ptr<VertexBuffer> vertexBuffer;
+        inline static TextRenderer* textRenderer = nullptr;
     };
 }

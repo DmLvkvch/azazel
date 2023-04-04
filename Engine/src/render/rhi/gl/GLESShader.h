@@ -21,6 +21,10 @@ namespace Azazel
 
         Shader* setInt(const std::string& name, int value) override;
 
+        Shader* setTexture(const std::string& name, const Texture& texture, int slot) override;
+
+        Shader* setTextureCube(const std::string& name, const CubeMap& cubeMap, int slot) override;
+
 	    Shader* setVec4f(const std::string& name, const glm::vec4& vec4) override;
 
         Shader* setMatrix4f(const std::string& name, const glm::mat4& mvp) override;
@@ -32,7 +36,7 @@ namespace Azazel
     private:
         int getShaderType(const ShaderType& shaderType) const;
         unsigned int compile(const std::string& programCode, const ShaderType& shaderType);
-        int getUniformLocation(const std::string& name) const;
+        int getUniformLocation(const std::string& name);
 
     private:
         unsigned int rendererID;

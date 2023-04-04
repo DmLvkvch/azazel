@@ -48,6 +48,6 @@ namespace Azazel
         double x = 0.0;
         double y = 0.0;
         glfwGetCursorPos(window, &x, &y);
-        return { (float) x, (float) y };
+        return { static_cast<float> (x), static_cast<float> (y) };
     }
 }

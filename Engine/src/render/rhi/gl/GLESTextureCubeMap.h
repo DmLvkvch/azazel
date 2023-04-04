@@ -1,6 +1,6 @@
 #pragma once
 
-#include "render/CubeMap.h"
+#include "render/Texture.h"
 
 #include <vector>
 #include <string>

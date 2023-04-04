@@ -14,7 +14,7 @@ namespace Azazel
         std::shared_ptr<Shader> loadResource(const std::string& path, bool needCache = true)
         {
 
-            if (containsResource(path) && needCache)
+            if (needCache && containsResource(path))
             {
                 return getResource(path);
             }
@@ -28,7 +28,7 @@ namespace Azazel
         {
             const std::string key = vertexPath + fragmentPath;
 
-            if (containsResource(key) && needCache)
+            if (needCache && containsResource(key))
             {
                 return getResource(key);
             }

@@ -2,15 +2,18 @@
 
 #include "ShaderResourceManager.h"
 #include "TextureResourceManager.h"
+#include "ModelResourceManager.h"
 
 namespace Azazel
 {
     namespace ResourceManagers
     {
-        inline static TextureResourceManager* textureManager = new TextureResourceManager();
+        inline static TextureResourceManager* textureResourceManager = new TextureResourceManager();
         
-        inline static TextureDataResourceManager* textureDataManager = new TextureDataResourceManager();
+        inline static TextureDataResourceManager* textureDataResourceManager = new TextureDataResourceManager();
 
-        inline static ShaderResourceManager* shaderManager = new ShaderResourceManager();
+        inline static ShaderResourceManager* shaderResourceManager = new ShaderResourceManager();
+
+        inline static ModelResourceManager* modelResourceManager = new ModelResourceManager();
     }
 }

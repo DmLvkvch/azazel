@@ -58,6 +58,11 @@ namespace Azazel
 		return this;
 	}
 
+    Shader* VKShader::setTexture(const std::string& name, const Texture& texture, int slot)
+	{
+		return this;
+	}
+
 	Shader* VKShader::setMatrix4f(const std::string& name, const glm::mat4& mvp)
 	{
         return this;

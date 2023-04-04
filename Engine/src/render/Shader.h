@@ -4,6 +4,7 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
+#include "Texture.h"
 
 namespace Azazel
 {
@@ -28,6 +29,10 @@ namespace Azazel
         virtual Shader* setFloat(const std::string& name, float value) = 0;
 
         virtual Shader* setInt(const std::string& name, int value) = 0;
+
+        virtual Shader* setTexture(const std::string& name, const Texture& texture, int slot = 0) = 0;
+
+        virtual Shader* setTextureCube(const std::string& name, const CubeMap& cubeMap, int slot = 0) = 0;
 
 	    virtual Shader* setVec4f(const std::string& name, const glm::vec4& vec4) = 0;
 

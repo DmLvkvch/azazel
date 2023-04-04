@@ -22,7 +22,6 @@ namespace Azazel
     private:
         std::unique_ptr<Shader> light;
         std::unique_ptr<Texture> texture;
-        std::unique_ptr<Texture> textureTest;
         Model model;
         Camera camera;
         SkyboxRenderer sbr;

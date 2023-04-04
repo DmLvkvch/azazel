@@ -3,6 +3,7 @@
 #include "TextureData.h"
 #include "Types.h"
 #include <string>
+#include <array>
 
 namespace Azazel
 {
@@ -158,5 +159,17 @@ namespace Azazel
         TextureData textureData;
         std::string label = "DEFAULT_TEXTURE";
         Format format;
+    };
+
+    class CubeMap
+    {
+    public:
+        CubeMap();
+        virtual ~CubeMap();
+
+        virtual void bind(int slot = 0) const = 0;
+        virtual void unbind() const = 0;
+
+        static CubeMap* create(std::array<TextureData, 6> textures);
     };
 }

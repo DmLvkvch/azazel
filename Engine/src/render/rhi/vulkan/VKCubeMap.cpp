@@ -17,7 +17,7 @@ namespace Azazel
     {
     }
 
-    void VKCubeMap::bind() const
+    void VKCubeMap::bind(int slot) const
     {
 
     }

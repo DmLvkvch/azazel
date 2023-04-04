@@ -1,84 +1,29 @@
 #include "SkyboxRenderer.h"
 
 #include "resources/ResourceManager.h"
+#include "render/MeshHelper.h"
 
 namespace Azazel
 {
     SkyboxRenderer::SkyboxRenderer()
     {
+        
+        mesh = MeshHelper::genSkybox();
+        
+        std::array<TextureData, 6> skyboxTextures;
+        skyboxTextures[0] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/right.jpg",  false, false);
+        skyboxTextures[1] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/left.jpg",   false, false);
+        skyboxTextures[2] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/top.jpg",    false, false);
+        skyboxTextures[3] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/bottom.jpg", false, false);
+        skyboxTextures[4] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/front.jpg",  false, false);
+        skyboxTextures[5] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/back.jpg",   false, false);
+        cubeMap.reset(CubeMap::create(skyboxTextures));
+        for (auto& textureData : skyboxTextures)
         {
-            std::vector<float> vertices
-            {
-                -1.0f,  1.0f, -1.0f,
-                -1.0f, -1.0f, -1.0f,
-                 1.0f, -1.0f, -1.0f,
-                 1.0f, -1.0f, -1.0f,
-                 1.0f,  1.0f, -1.0f,
-                -1.0f,  1.0f, -1.0f,
-
-                -1.0f, -1.0f,  1.0f,
-                -1.0f, -1.0f, -1.0f,
-                -1.0f,  1.0f, -1.0f,
-                -1.0f,  1.0f, -1.0f,
-                -1.0f,  1.0f,  1.0f,
-                -1.0f, -1.0f,  1.0f,
-
-                 1.0f, -1.0f, -1.0f,
-                 1.0f, -1.0f,  1.0f,
-                 1.0f,  1.0f,  1.0f,
-                 1.0f,  1.0f,  1.0f,
-                 1.0f,  1.0f, -1.0f,
-                 1.0f, -1.0f, -1.0f,
-
-                -1.0f, -1.0f,  1.0f,
-                -1.0f,  1.0f,  1.0f,
-                 1.0f,  1.0f,  1.0f,
-                 1.0f,  1.0f,  1.0f,
-                 1.0f, -1.0f,  1.0f,
-                -1.0f, -1.0f,  1.0f,
-
-                -1.0f,  1.0f, -1.0f,
-                 1.0f,  1.0f, -1.0f,
-                 1.0f,  1.0f,  1.0f,
-                 1.0f,  1.0f,  1.0f,
-                -1.0f,  1.0f,  1.0f,
-                -1.0f,  1.0f, -1.0f,
-
-                -1.0f, -1.0f, -1.0f,
-                -1.0f, -1.0f,  1.0f,
-                 1.0f, -1.0f, -1.0f,
-                 1.0f, -1.0f, -1.0f,
-                -1.0f, -1.0f,  1.0f,
-                 1.0f, -1.0f,  1.0f  
-            };
-            
-            std::vector<unsigned int> indices;
-            size_t sz = vertices.size() / 3;
-            indices.resize(sz);
-            
-            for (unsigned int i = 0; i < sz; i++)
-            {
-                indices[i] = i;
-            }
-
-            std::array<TextureData, 6> skyboxTextures;
-
-            skyboxTextures[0] = ResourceManagers::textureDataManager->loadResource("textures/skybox/right.jpg", false, false);
-            skyboxTextures[1] = ResourceManagers::textureDataManager->loadResource("textures/skybox/left.jpg", false, false);
-            skyboxTextures[2] = ResourceManagers::textureDataManager->loadResource("textures/skybox/top.jpg", false, false);
-            skyboxTextures[3] = ResourceManagers::textureDataManager->loadResource("textures/skybox/bottom.jpg", false, false);
-            skyboxTextures[4] = ResourceManagers::textureDataManager->loadResource("textures/skybox/front.jpg", false, false);
-            skyboxTextures[5] = ResourceManagers::textureDataManager->loadResource("textures/skybox/back.jpg", false, false);
-
-            mesh = Mesh<Vertex_P3>(vertices, indices);
-            cubeMap.reset(CubeMap::create(skyboxTextures));
-
-            for (auto& textureData : skyboxTextures)
-            {
-                delete[] textureData.data;
-            }
-            shader.reset(Shader::create(FileUtils::readFile("shaders/skybox.vert.glsl"), FileUtils::readFile("shaders/skybox.frag.glsl")));
+            delete[] textureData.data;
         }
+        shader.reset(Shader::create(FileUtils::readFile("shaders/skybox.vert.glsl"), FileUtils::readFile("shaders/skybox.frag.glsl")));
+        
     }
 
     SkyboxRenderer::~SkyboxRenderer()

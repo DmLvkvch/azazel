@@ -11,7 +11,7 @@ namespace Azazel
     public:
         std::shared_ptr<Texture> loadResource(const std::string& path, bool needCache = true)
         {
-            if (containsResource(path) && needCache)
+            if (needCache&& containsResource(path))
             {
                 return getResource(path);
             }
@@ -31,7 +31,7 @@ namespace Azazel
     public:
         TextureData loadResource(const std::string& path, int flipVertically, bool needCache)
         {
-            if (containsResource(path) && needCache)
+            if (needCache && containsResource(path))
             {
                 return getResource(path);
             }

@@ -65,19 +65,27 @@ namespace Azazel
             float cameraSpeed = static_cast<float>(2.5 * delta) / 1000.0f;
             if (Input::getInput()->isKeyPressed(KEY_W))
             {
-                cameraLocation.position += cameraSpeed * cameraLocation.front;
+                moveForward(cameraSpeed);
             }
             if (Input::getInput()->isKeyPressed(KEY_S))
             {
-                cameraLocation.position -= cameraSpeed * cameraLocation.front;
+                moveForward(-cameraSpeed);
             }
             if (Input::getInput()->isKeyPressed(KEY_A))
             {
-                cameraLocation.position -= glm::normalize(glm::cross(cameraLocation.front, cameraLocation.up)) * cameraSpeed;
+                moveRight(cameraSpeed);
             }
             if (Input::getInput()->isKeyPressed(KEY_D))
             {
-                cameraLocation.position += glm::normalize(glm::cross(cameraLocation.front, cameraLocation.up)) * cameraSpeed;
+                moveRight(-cameraSpeed);
+            }
+            if (Input::getInput()->isKeyPressed(KEY_Q))
+            {
+                moveUp(cameraSpeed);
+            }
+            if (Input::getInput()->isKeyPressed(KEY_E))
+            {
+                moveUp(-cameraSpeed);
             }
         }
 
@@ -85,11 +93,20 @@ namespace Azazel
 
         void setDirection(const glm::vec3& direction);
 
-        void moveForward(float z);
+        void moveForward(float z)
+        {
+            cameraLocation.position += z * cameraLocation.front;
+        }
 
-        void moveRight(float x);
+        void moveRight(float z)
+        {
+            cameraLocation.position -= glm::normalize(glm::cross(cameraLocation.front, cameraLocation.up)) * z;
+        }
 
-        void moveUp(float y);
+        void moveUp(float z)
+        {
+            cameraLocation.position -= cameraLocation.up * z;
+        }
 
         void setLookAtPosition(const glm::vec3& lookAtPosition = glm::vec3(0.0f, 0.0f, 0.0f));
 

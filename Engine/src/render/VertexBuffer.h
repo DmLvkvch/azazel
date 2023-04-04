@@ -168,6 +168,7 @@ namespace Azazel
         virtual void setLayout(const BufferLayout& bufferlayout) = 0;
         virtual const BufferLayout& getBufferLayout() const = 0;
         virtual void updateSubData(int offset, void* data, int size) = 0;
+        virtual void updateData(void* data, int size) = 0;
         
         static VertexBuffer* create(const float* vertices, size_t size);
     };

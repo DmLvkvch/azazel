@@ -67,7 +67,7 @@ namespace Azazel
     {
         shader->bind();
         shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * glm::scale(glm::mat4(1.0f), glm::vec3(100.0f, 100.0f, 0.0f)));
-        Render::getRender()->drawIndexed(*vertexArray, *indexBuffer, *shader, *texture);
+        Render::getRender()->drawIndexed(*vertexArray, *indexBuffer, *shader);
     }
 
     void TestLayer::onEvent(Event& e)

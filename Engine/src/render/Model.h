@@ -9,7 +9,6 @@
 #include "render/Shader.h"
 #include "render/Transform.h"
 #include "render/Texture.h"
-#include <iostream>
 
 namespace Azazel
 {

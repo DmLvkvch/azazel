@@ -79,12 +79,21 @@ namespace Azazel
 		glUseProgram(0);
 	}
 
-	int GLESShader::getUniformLocation(const std::string& name) const
+	int GLESShader::getUniformLocation(const std::string& name)
 	{
+		auto uniformLocation = uniformLocationMap.find(name);
+		if (uniformLocation != uniformLocationMap.end())
+		{
+			return uniformLocation->second;
+		}
 		int location = glGetUniformLocation(rendererID, name.c_str());
 		if (location == -1)
 		{
 			std::cout << "No active uniform variable with name " << name << " found" << std::endl;
+		}
+		else
+		{
+			uniformLocationMap[name] = location;
 		}
 		return location;
 	}
@@ -104,6 +113,20 @@ namespace Azazel
 	Shader* GLESShader::setInt(const std::string& name, int value)
 	{
 		glUniform1i(getUniformLocation(name), value);
+		return this;
+	}
+
+    Shader* GLESShader::setTexture(const std::string& name, const Texture& texture, int slot)
+	{
+		texture.bind(slot);
+		glUniform1i(getUniformLocation(name), slot);
+		return this;
+	}
+
+    Shader* GLESShader::setTextureCube(const std::string& name, const CubeMap& cubeMap, int slot)
+	{
+		cubeMap.bind(slot);
+		glUniform1i(getUniformLocation(name), slot);
 		return this;
 	}
 

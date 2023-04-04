@@ -168,6 +168,16 @@ namespace Azazel
         glStencilOp(gl_sfail, gl_dpfail, gl_dppass);
     }
 
+    void GLESRender::setStencilOpSeparate(CullMode face, StencilOperation sfail, StencilOperation dpfail, StencilOperation dppass)
+    {
+        unsigned int gl_face = convertCullMode(face);
+        unsigned int gl_sfail = convertStencilOp(sfail);
+        unsigned int gl_dpfail = convertStencilOp(dpfail);
+        unsigned int gl_dppass = convertStencilOp(dppass);
+
+        glStencilOpSeparate(gl_face, gl_sfail, gl_dpfail, gl_dppass);
+    }
+
     void GLESRender::setBlend(bool enable)
     {
         if (enable)
@@ -189,20 +199,25 @@ namespace Azazel
         drawCalls++;
     }
 
-    void GLESRender::drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture)
+    void GLESRender::drawIndexedInstanced(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, int instanceCount)
     {
-        texture.bind();
-        shader.bind();
-        vertexArray.bind();
-        indexBuffer.bind();
-        glDrawElements(GL_TRIANGLES, indexBuffer.getElementCount() * sizeof(unsigned int), GL_UNSIGNED_INT, 0);
-        drawCalls++;
+    }
+
+    void GLESRender::drawIndexedInstanced(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture, int instanceCount)
+    {
+
     }
 
     void GLESRender::drawArrays(const VertexArray& vertexArray, const Shader& shader, const Texture& texture)
     {
     }
 
+    void GLESRender::drawArrays(const VertexArray &vertexArray, const Shader &shader, int vertexCount)
+    {
+        shader.bind();
+        vertexArray.bind();
+        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+    }
 
     void GLESRender::beginScene()
     {

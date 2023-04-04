@@ -55,13 +55,19 @@ namespace Azazel
 
         void setStencilOp(StencilOperation sfail, StencilOperation dpfail, StencilOperation dppass) override;
 
+        void setStencilOpSeparate(CullMode face, StencilOperation sfail, StencilOperation dpfail, StencilOperation dppass) override;
+
         void setBlend(bool enable) override;
 
         void drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) override;
 
-        void drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture) override;
+        void drawIndexedInstanced(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, int instanceCount) override;
+
+        void drawIndexedInstanced(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture, int instanceCount) override;
 
         void drawArrays(const VertexArray& vertexArray, const Shader& shader, const Texture& texture) override;
+
+        void drawArrays(const VertexArray& vertexArray, const Shader& shader, int vertexCount) override;
 
         void setBlendFunc(BlendFunction sFactor, BlendFunction dFactor) override;
 

@@ -76,18 +76,24 @@ namespace Azazel
 
         virtual void setStencilOp(StencilOperation sfail, StencilOperation dpfail, StencilOperation dppass) = 0;
 
+        virtual void setStencilOpSeparate(CullMode face, StencilOperation sfail, StencilOperation dpfail, StencilOperation dppass) = 0;
+
         virtual void setBlend(bool enable) = 0;
 
         virtual void drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) = 0;
 
-        virtual void drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture) = 0;
+        virtual void drawIndexedInstanced(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, int instanceCount) = 0;
+
+        virtual void drawIndexedInstanced(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture, int instanceCount) = 0;
 
         virtual void drawArrays(const VertexArray& vertexArray, const Shader& shader, const Texture& texture) = 0;
+    
+        virtual void drawArrays(const VertexArray& vertexArray, const Shader& shader, int vertexCount) = 0;
 
         template <typename T>
         void drawMesh(const Mesh<T>& mesh, const Shader& shader, const Texture& texture)
         {
-            drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader, texture);
+            drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader);
         }
 
         template <typename T>
