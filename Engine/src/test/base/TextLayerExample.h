@@ -4,8 +4,7 @@
 #include "camera/OrthographicCamera.h"
 
 namespace Azazel
-{
-
+{       
     class TextLayerExample : public Layer
     {
     public:

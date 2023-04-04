@@ -8,7 +8,6 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_vulkan.h>
 #include <iostream>
-#include <vector>
 
 namespace Azazel
 {

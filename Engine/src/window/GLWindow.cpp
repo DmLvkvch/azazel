@@ -166,7 +166,12 @@ namespace Azazel
         io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
         ImGui::StyleColorsDark();
 
+        int w, h;
+
+        glfwGetFramebufferSize(window, &w, &h);	
+
         io.DisplaySize = ImVec2((float)width, (float)height);
+        io.DisplayFramebufferScale = ImVec2((float) w / width, (float) h / height);
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
     }
