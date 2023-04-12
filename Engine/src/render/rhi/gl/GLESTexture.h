@@ -16,7 +16,7 @@ namespace Azazel
         void unbind() const override;
         void setTextureFilter(Texture::TextureFilter textureFilter) override;
         void setTextureWrap(Texture::TextureWrap textureWrap) override;
-        const unsigned int getRendererId() const override;
+        const unsigned int getRendererID() const override;
     private:
         unsigned int textureFilterToGLFormat(Texture::TextureFilter textureFilter);
         unsigned int textureWrapToGLFormat(Texture::TextureWrap textureWrap);

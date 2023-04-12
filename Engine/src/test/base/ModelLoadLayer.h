@@ -21,13 +21,23 @@ namespace Azazel
         ~ModelLoadLayer();
     private:
         std::unique_ptr<Shader> light;
+        
+        std::unique_ptr<Shader> shadow;
+        std::unique_ptr<Shader> shadowMap;
+        std::unique_ptr<Shader> quadShader;
+
         std::unique_ptr<Texture> texture;
+
         Model model;
+        Model floor;
         Camera camera;
         SkyboxRenderer sbr;
         Mesh<Vertex_P3_T2> quad;
-        std::unique_ptr<FrameBuffer> fb;
+
+        std::unique_ptr<FrameBuffer> frameBuffer;
+
         std::unique_ptr<Texture> depthTexture;
-        std::unique_ptr<Shader> s;
+        std::unique_ptr<Texture> texture1;
+
     };
 }

@@ -144,7 +144,7 @@ namespace Azazel
         virtual void unbind() const = 0;
         virtual void setTextureFilter(Texture::TextureFilter textureFilter) = 0;
         virtual void setTextureWrap(Texture::TextureWrap textureWrap) = 0;
-        virtual const unsigned int getRendererId() const = 0;
+        virtual const unsigned int getRendererID() const = 0;
 
         static Texture* create(const TextureData& textureData);
         static Texture* create(int width, int height, int color);

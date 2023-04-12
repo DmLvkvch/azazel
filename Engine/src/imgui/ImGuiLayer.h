@@ -14,5 +14,9 @@ namespace Azazel
         void onUpdate(float delta) override;
         void onEvent(Event& e) override;
         void onInputUpdate(float delta) override;
+    private:
+        int n = 0;
+        float dt = 0.0f;
+        float fps = 144.0f;
     };
 }

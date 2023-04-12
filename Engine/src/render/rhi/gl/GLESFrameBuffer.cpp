@@ -22,8 +22,15 @@ namespace Azazel
     GLESFrameBuffer::GLESFrameBuffer(Texture* texture, Texture* depthTarget)
     {
         glGenFramebuffers(1, &rendererID);
+        bind();
+
         addColorAttachment(texture);
         setDepthTarget(depthTarget);
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        {
+            std::cout << "ERROR::FRAMEBUFFER. Framebuffer is not complete attachment!" << std::endl;
+        }
+        unbind();
     }
 
 
@@ -44,15 +51,13 @@ namespace Azazel
 
     void GLESFrameBuffer::addColorAttachment(Texture* texture, int slot)
     {
-        unsigned int textureId = texture->getRendererId();
+        unsigned int textureId = texture->getRendererID();
         colorTextureTarget[slot] = texture;
-        bind();
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + slot, GL_TEXTURE_2D, textureId, 0);
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
             std::cout << "ERROR::FRAMEBUFFER. Framebuffer is not complete attachment!" << std::endl;
         }
-        unbind();
     }
 
     void GLESFrameBuffer::setDepthTarget(FrameBufferTarget* depthTarget)
@@ -64,8 +69,10 @@ namespace Azazel
 
     void GLESFrameBuffer::setDepthTarget(Texture* depthTexture)
     {
-        bind();
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture->getRendererId(), 0);
-        unbind();
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture->getRendererID(), 0);
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        {
+            std::cout << "ERROR::FRAMEBUFFER. Framebuffer is not complete attachment!" << std::endl;
+        }
     }
 }

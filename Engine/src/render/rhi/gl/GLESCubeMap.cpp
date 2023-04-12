@@ -1,19 +1,19 @@
 #include "GLESCubeMap.h"
 
 #include "gl_headers.h"
+#include "logging/Log.h"
+
 #include <stb_image/stb_image.h>
 #include <iostream>
 #include <vector>
 #include <string>
-
-#include "logging/Log.h"
 
 namespace Azazel
 {
     GLESCubeMap::GLESCubeMap(std::array<TextureData, 6> textures)
     {
         glGenTextures(1, &textureID);
-        bind(0);
+        bind();
         
         for (unsigned int i = 0; i < 6; i++)
         {

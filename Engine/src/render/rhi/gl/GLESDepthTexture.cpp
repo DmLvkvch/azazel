@@ -5,11 +5,17 @@ namespace Azazel
     GLESDepthTexture::GLESDepthTexture(const TextureData& textureData)
     {
         glGenTextures(1, &rendererID);
+        bind();
         glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, textureData.width, textureData.height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        this->width = textureData.width;
+        this->height = textureData.height;
+        this->data = nullptr;
+        this->bpp = 3;
+        unbind();
     }
 
     GLESDepthTexture::~GLESDepthTexture()
@@ -19,6 +25,7 @@ namespace Azazel
 
     void GLESDepthTexture::bind(unsigned int slot) const
     {
+        glActiveTexture(GL_TEXTURE0 + slot);
         glBindTexture(GL_TEXTURE_2D, rendererID);
     }
 

@@ -34,15 +34,11 @@ namespace Azazel
 
     void VKFrameBuffer::setDepthTarget(FrameBufferTarget* depthTarget)
     {
-        bind();
-        // TODO
-        unbind();
+
     }
 
     void VKFrameBuffer::setDepthTarget(Texture* depthTexture)
     {
-        bind();
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture->getRendererId(), 0);
-        unbind();
+
     }
 }

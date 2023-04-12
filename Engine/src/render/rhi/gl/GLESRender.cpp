@@ -36,20 +36,20 @@ namespace Azazel
 
     void GLESRender::clear(bool color, bool depth, bool stencil)
     {
-        unsigned int clear = 0;
+        unsigned int clearBit = 0;
         if (color)
         {
-            clear |= GL_COLOR_BUFFER_BIT;
+            clearBit |= GL_COLOR_BUFFER_BIT;
         }
         if (depth)
         {
-            clear |= GL_DEPTH_BUFFER_BIT;
+            clearBit |= GL_DEPTH_BUFFER_BIT;
         }
         if (stencil)
         {
-            clear |= GL_STENCIL_BUFFER_BIT;
+            clearBit |= GL_STENCIL_BUFFER_BIT;
         }
-        glClear(clear);
+        glClear(clearBit);
     }
 
     void GLESRender::setViewport(int x, int y, int width, int height)

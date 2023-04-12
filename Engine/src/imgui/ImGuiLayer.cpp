@@ -40,8 +40,16 @@ namespace Azazel
     void ImGuiLayer::onUpdate(float delta)
     {
         ImGui::Begin("Debug");
-     
-        ImGui::Text("FPS %.3f", 1000.0f / delta);
+        dt += delta;
+        n++;
+        if (n % 10 == 0)
+        {
+            fps = 1000.0f * 10 / dt;
+            n = 0;
+            dt = 0;
+        }
+        ImGui::Text("Current FPS %.3f", 1000.0f / delta);
+        ImGui::Text("Avg FPS %.3f", fps);
 
         ImGui::End();
     }

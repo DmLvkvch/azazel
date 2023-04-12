@@ -11,6 +11,8 @@ namespace Azazel
         FrameBufferTarget() {}
         virtual ~FrameBufferTarget() {}
 
+        virtual unsigned int getRendererID() = 0;
+
         template<typename T>
         bool checkTargetType()
         {
@@ -21,21 +23,31 @@ namespace Azazel
     class FrameBufferTextureTarget : public FrameBufferTarget
     {
     public:
-        FrameBufferTextureTarget(Texture* textureTarget) {}
+        FrameBufferTextureTarget(Texture* texture);
 
         virtual ~FrameBufferTextureTarget() {}
 
+        virtual unsigned int getRendererID() override
+        {
+            return texture->getRendererID();
+        }
+
     private:
-        Texture* textureTarget;
+        Texture* texture;
     };
 
     class FrameBufferRenderBufferTarget : public FrameBufferTarget
     {
     public:
-        FrameBufferRenderBufferTarget(RenderBuffer* renderBufferTarget) {}
+        FrameBufferRenderBufferTarget(RenderBuffer* renderBuffer);
         
         virtual ~FrameBufferRenderBufferTarget() {}
+
+        virtual unsigned int getRendererID() override
+        {
+            return renderBuffer->getRendererID();
+        }
     private:
-        RenderBuffer* renderBufferTarget;
+        RenderBuffer* renderBuffer;
     };
 }

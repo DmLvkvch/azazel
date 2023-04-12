@@ -8,7 +8,8 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include <iostream>
+#include "logging/Log.h"
+#include "IO/KeyCodes.h"
 
 namespace Azazel
 {
@@ -31,7 +32,7 @@ namespace Azazel
         // INIT GLAD
         if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
         {
-            std::cout << "Failed to initialize GLAD" << std::endl;
+            Log::getLogger()->errorLog("Failed to initialize GLAD!");
         }
 
         //INIT IMGUI
@@ -62,6 +63,11 @@ namespace Azazel
                 {
                     KeyPressedEvent e(key, 1);
                     data.eventCallback(e);
+                    if (key == KEY_ESCAPE)
+                    {
+                        WindowCloseEvent ev {};
+                        data.eventCallback(ev);
+                    }
                     break;
                 }
                 case GLFW_RELEASE:
@@ -128,7 +134,7 @@ namespace Azazel
         int succes = glfwInit();
         if (succes == GLFW_FALSE)
         {
-            std::cout << "Failed to initialize" << std::endl;
+            Log::getLogger()->errorLog("Failed to initialize GLFW!");
         }
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
@@ -140,11 +146,11 @@ namespace Azazel
         
         if (window == NULL)
         {
-            std::cout << "Failed to create GLFW window" << std::endl;
+            Log::getLogger()->errorLog("Failed to create GLFW window!");
             glfwTerminate();
         }
         glfwMakeContextCurrent(window);
-        setVSync(true);
+        setVSync(false);
         glfwSetWindowUserPointer(window, &windowData);
         initialized = true;
         return window;

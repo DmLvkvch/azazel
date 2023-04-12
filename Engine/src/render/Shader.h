@@ -18,6 +18,16 @@ namespace Azazel
             GEOMETRY
         };
 
+        static constexpr char const* UNIFORM_TEXTURE0      = "u_texture_0";
+        static constexpr char const* UNIFORM_TEXTURE1      = "u_texture_1";
+        static constexpr char const* UNIFORM_TEXTURE2      = "u_texture_2";
+        static constexpr char const* UNIFORM_TEXTURE3      = "u_texture_3";
+        
+        static constexpr char const* UNIFORM_MVP_MATRIX    = "u_mvp";
+        static constexpr char const* UNIFORM_MODEL_MATRIX  = "u_model_matrix";
+        static constexpr char const* UNIFORM_NORMAL_MATRIX = "u_normal_matrix";
+
+
         Shader(const std::string& vertexShader, const std::string& fragmentShader);
 
         virtual ~Shader();

@@ -83,7 +83,7 @@ namespace Azazel
     void TextRenderer::draw(const std::string& text)
     {   
         textShader->bind();
-        textShader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 1.0f)));
+        textShader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix());
         Render::getRender()->setBlend(true);
         Render::getRender()->setBlendFunc(BlendFunction::SRC_ALPHA, BlendFunction::ONE_MINUS_SRC_ALPHA);
         glActiveTexture(GL_TEXTURE0);

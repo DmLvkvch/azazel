@@ -131,7 +131,7 @@ namespace Azazel
 
         glm::mat4 getViewProjectionMatrix()
         {
-            return getViewLookAtMatrix() * cameraProjection.getProjectionMatrix();
+            return getViewLookAtMatrix() * getProjectionMatrix();
         }
 
         void move(const glm::vec3& move);
@@ -147,10 +147,6 @@ namespace Azazel
             {
                 cameraProjection.fov = 45.0f;
             }
-            cameraProjection.width = 1280.0f;
-            cameraProjection.height = 720.0f;
-            cameraProjection.near = 0.1f;
-            cameraProjection.far = 100.0f;
         }
 
         void onEvent(Event& e)
@@ -211,7 +207,7 @@ namespace Azazel
     private:
         void updateCamera();
 
-    private:
+    public:
         float yaw = -90.0f;
         float pitch = 0.0f;
         float lastX = 1280.0f / 2.0f;

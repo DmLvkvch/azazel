@@ -3,8 +3,6 @@
 #include "window/Window.h"
 #include "LayerStack.h"
 #include <memory>
-#include <functional>
-#include <unordered_map>
 
 namespace Azazel
 {

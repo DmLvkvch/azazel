@@ -30,7 +30,7 @@ namespace Azazel
 
         Mesh(const std::vector<float>& vertices, const std::vector<unsigned int>& indices)
         {
-            init((float*) vertices.data(), vertices.size() * sizeof(T), indices.data(), indices.size());
+            init((float*) vertices.data(), vertices.size() * sizeof(float), indices.data(), indices.size());
         }
 
         void init(const float* vertices, size_t size, const unsigned int* indices, size_t count)

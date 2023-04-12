@@ -26,7 +26,7 @@ namespace Azazel
 
         }
 
-        const unsigned int getRendererId() const override
+        const unsigned int getRendererID() const override
         {
             return rendererID;
         }

@@ -18,7 +18,7 @@ namespace Azazel
         glDeleteRenderbuffers(1, &rendererID);
     }
 
-    int GLESRenderBuffer::getRendererId() const
+    int GLESRenderBuffer::getRendererID() const
     {
         return rendererID;
     }

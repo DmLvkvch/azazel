@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include <vector>
+#include "render/MeshHelper.h"
 
 namespace Azazel
 {
@@ -33,17 +34,7 @@ namespace Azazel
 
         testShader.reset(Shader::create(FileUtils::readFile("shaders/circle.vert.glsl"), FileUtils::readFile("shaders/circle.frag.glsl")));
         
-        std::vector<float> gridVerts
-        {
-            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-            -1.0f,  1.0f, 0.0f, 1.0f, 0.0f,
-             1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-             1.0f, -1.0f, 0.0f, 0.0f, 1.0f
-        };
-
-        std::vector<unsigned int> gridInds {0, 1, 2, 0, 2, 3};
-
-        gridMesh = Mesh<Vertex_P3_T2>(gridVerts, gridInds);
+        gridMesh = MeshHelper::genQuadMesh();
 
         orthographicCamera = OrthographicCamera(-2.0f, 2.0f, -2.0f, 2.0f);
     }

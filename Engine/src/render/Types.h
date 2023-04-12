@@ -60,39 +60,6 @@ namespace Azazel
         RGBA4444,
         //! 16-bit textures: RGB5A1
         RGB5A1,
-        //! 4-bit PVRTC-compressed texture: PVRTC4
-        PVRTC4,
-        //! 4-bit PVRTC-compressed texture: PVRTC4 (has alpha channel)
-        PVRTC4A,
-        //! 2-bit PVRTC-compressed texture: PVRTC2
-        PVRTC2,
-        //! 2-bit PVRTC-compressed texture: PVRTC2 (has alpha channel)
-        PVRTC2A,
-        //! ETC-compressed texture: ETC
-        ETC,
-        //! S3TC-compressed texture: S3TC_Dxt1
-        S3TC_DXT1,
-        //! S3TC-compressed texture: S3TC_Dxt3
-        S3TC_DXT3,
-        //! S3TC-compressed texture: S3TC_Dxt5
-        S3TC_DXT5,
-        //! ATITC-compressed texture: ATC_RGB
-        ATC_RGB,
-        //! ATITC-compressed texture: ATC_EXPLICIT_ALPHA
-        ATC_EXPLICIT_ALPHA,
-        //! ATITC-compressed texture: ATC_INTERPOLATED_ALPHA
-        ATC_INTERPOLATED_ALPHA,
-        //! Default texture format: AUTO
-
-        MTL_B5G6R5,
-        //MTL_A1BGR5,
-        MTL_BGR5A1,
-        MTL_ABGR4,
-
-        // A packed 32-bit combined depth and stencil pixel format with two nomorlized unsigned integer
-        // components: 24 bits, typically used for a depth render target, and 8 bits, typically used for
-        // a stencil render target.
-        D24S8,
 
         DEFAULT = AUTO,
 
@@ -110,12 +77,6 @@ namespace Azazel
     {
         UNSIGNED_SHORT,
         UNSIGNED_INT
-    };
-
-    enum class VertexStepMode : uint32_t
-    {
-        VERTEX,
-        INSTANCE
     };
 
     enum class PrimitiveType : uint32_t
@@ -317,13 +278,6 @@ namespace Azazel
         POSITIVE_Z = 4,
         NEGATIVE_Z = 5
     };
-
-    ///built-in uniform name
-    static const char* UNIFORM_NAME_MVP_MATRIX   = "u_mvp";
-    static const char* UNIFORM_NAME_TEXTURE      = "u_texture0";
-    static const char* UNIFORM_NAME_TEXTURE1     = "u_texture1";
-    static const char* UNIFORM_NAME_TEXTURE2     = "u_texture2";
-    static const char* UNIFORM_NAME_TEXTURE3     = "u_texture3";
 
     struct BlendDescriptor
     {

@@ -27,12 +27,6 @@ namespace Azazel
         // INIT GLFW
         GLFWwindow* window = initGLFW(width, height, title);
 
-        // INIT GLAD
-        //if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
-        //{
-        //    std::cout << "Failed to initialize GLAD" << std::endl;
-        //}
-
         //INIT IMGUI
         initImgui(window, width, height);
 
@@ -187,8 +181,6 @@ namespace Azazel
 			exit(1);
 		}
 
-		// Find queue family with graphics support
-		// Note: is a transfer queue necessary to copy vertices to the gpu or can a graphics queue handle that?
 		std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
 		vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilies.data());
 

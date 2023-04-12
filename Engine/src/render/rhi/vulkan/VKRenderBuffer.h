@@ -10,7 +10,7 @@ namespace Azazel
         VKRenderBuffer(int width, int height);
         ~VKRenderBuffer();
         
-        int getRendererId() const override;
+        int getRendererID() const override;
         void bind() const override;
         void unbind() const override;
     private:

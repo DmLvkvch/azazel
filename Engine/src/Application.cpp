@@ -73,7 +73,6 @@ namespace Azazel
         {
             running = false;
         }
-
         for (auto layer : layerStack)
         {
             layer->onEvent(e);
