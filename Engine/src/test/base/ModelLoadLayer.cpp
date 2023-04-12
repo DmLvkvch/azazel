@@ -6,7 +6,6 @@
 #include "render/renderers/SkyboxRenderer.h"
 #include "render/renderers/TextRenderer.h"
 
-#include "Application.h"
 #include <functional>
 #include "resources/ResourceManager.h"
 
@@ -17,9 +16,10 @@ namespace Azazel
         model = Model("objects/duck/Duck.gltf");
         model.transform.scale = glm::vec3 { 0.003f, 0.003f, 0.003f };
 
-       // model = Model::cube();
-       // model.transform.scale = glm::vec3 { 0.3f, 0.3f, 0.3f };
-       // model.transform.position.y += 0.05;
+        cube = Model::cube();
+        cube.transform.scale = glm::vec3 { 0.9f, 0.9f, 0.9f };
+        cube.transform.position.x += 1.1f;
+        cube.transform.position.y += 1.1;
 
         floor = Model::floor();
 
@@ -119,7 +119,7 @@ namespace Azazel
         auto renderer = Render::getRender();
         renderer->setDepthTest(true);
 
-        glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 7.5f);
+        glm::mat4 lightProjection = glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, 1.0f, 7.5f);
 
         glm::vec3 lightPos(-2.0f, 4.0f, -1.0f);
         lightPos.x = sin(glfwGetTime()) * 3.0f;
@@ -141,11 +141,12 @@ namespace Azazel
         frameBuffer->bind();
 
         renderer->clear(false, true, true);
-        shadowMap->setMatrix4f("model", floorModel);
+
         floor.draw(*shadowMap);
 
-        shadowMap->setMatrix4f("model", modelModel);
         model.draw(*shadowMap);
+
+        cube.draw(*shadowMap);
 
         frameBuffer->unbind();
 
@@ -158,17 +159,18 @@ namespace Azazel
         shadow->setTexture("diffuseTexture", *texture, 0);
         shadow->setTexture("shadowMap", *depthTexture, 1);
 
-        shadow->setMatrix4f("model", floorModel);
         shadow->setMatrix4f(Shader::UNIFORM_MVP_MATRIX, camera.getProjectionMatrix() * camera.getViewMatrix() * floorModel);
         floor.draw(*shadow);
 
-        shadow->setMatrix4f("model", modelModel);
         shadow->setMatrix4f(Shader::UNIFORM_MVP_MATRIX, camera.getProjectionMatrix() * camera.getViewMatrix() * modelModel);
         model.draw(*shadow);
-        renderer->setDepthFunc(CompareFunction::LESS_EQUAL);
-        //sbr.draw();
-        renderer->setDepthFunc(CompareFunction::LESS);
-        depthTexture->bind();
-        renderer->drawMesh<Vertex_P3_T2>(quad, *quadShader);
+
+        shadow->setMatrix4f(Shader::UNIFORM_MVP_MATRIX, camera.getProjectionMatrix() * camera.getViewMatrix() * cube.transform.getTransformMatrix());
+        cube.draw(*shadow);
+        // renderer->setDepthFunc(CompareFunction::LESS_EQUAL);
+        // sbr.draw();
+        // renderer->setDepthFunc(CompareFunction::LESS);
+         depthTexture->bind();
+         renderer->drawMesh<Vertex_P3_T2>(quad, *quadShader);
     }
 }

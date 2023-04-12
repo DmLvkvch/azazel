@@ -162,6 +162,8 @@ namespace Azazel
 
     void Model::draw( Shader& shader)
     {
+        shader.bind();
+        shader.setMatrix4f("model", transform.getTransformMatrix());
         for (const auto& mesh : meshes)
         {
             Render::getRender()->drawMesh(mesh, shader);

@@ -30,6 +30,8 @@ namespace Azazel
 
         Model model;
         Model floor;
+        Model cube;
+        
         Camera camera;
         SkyboxRenderer sbr;
         Mesh<Vertex_P3_T2> quad;
