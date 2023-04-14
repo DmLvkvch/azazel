@@ -111,7 +111,7 @@ namespace Azazel
             ImGui_ImplGlfw_ScrollCallback(window, xOffset, yOffset);
 
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-            MouseScrollEvent e((float) xOffset, (float) yOffset);
+            MouseScrollEvent e(static_cast<float> (xOffset), static_cast<float> (yOffset));
             data.eventCallback(e);
         });
 
@@ -150,7 +150,7 @@ namespace Azazel
             glfwTerminate();
         }
         glfwMakeContextCurrent(window);
-        setVSync(false);
+        setVSync(true);
         glfwSetWindowUserPointer(window, &windowData);
         initialized = true;
         return window;
@@ -158,7 +158,6 @@ namespace Azazel
 
     void GLWindow::destroyGLFW()
     {
-
         glfwDestroyWindow(window);
         glfwTerminate();
     }
@@ -176,8 +175,8 @@ namespace Azazel
 
         glfwGetFramebufferSize(window, &w, &h);	
 
-        io.DisplaySize = ImVec2((float)width, (float)height);
-        io.DisplayFramebufferScale = ImVec2((float) w / width, (float) h / height);
+        io.DisplaySize = ImVec2(static_cast<float> (width), static_cast<float> (height));
+        io.DisplayFramebufferScale = ImVec2(static_cast<float> (w) / width, static_cast<float> (h) / height);
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
     }

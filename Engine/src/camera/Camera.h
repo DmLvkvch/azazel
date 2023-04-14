@@ -131,7 +131,7 @@ namespace Azazel
 
         glm::mat4 getViewProjectionMatrix()
         {
-            return getViewLookAtMatrix() * getProjectionMatrix();
+            return getProjectionMatrix() * getViewMatrix();
         }
 
         void move(const glm::vec3& move);

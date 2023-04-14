@@ -57,8 +57,6 @@ namespace Azazel
         window = std::unique_ptr<Window>(Window::create());
         window->setEventCallback(std::bind(&Application::onEvent, this, std::placeholders::_1));
         Render::getRender()->init();
-        auto tmp = [] (Event& e) { std::cout<<"lambda "<<e.toString()<<std::endl; };
-        eventSubscribers.addListener(tmp);
     }
 
     Application::~Application()

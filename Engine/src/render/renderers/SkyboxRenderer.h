@@ -16,9 +16,9 @@ namespace Azazel
         ~SkyboxRenderer();
         void draw();
     public:
-        std::unique_ptr<Shader> shader;
+        Shader* shader;
     private:
-        std::unique_ptr<CubeMap> cubeMap;
+        CubeMap* cubeMap;
         Mesh<Vertex_P3> mesh;
     };
 }

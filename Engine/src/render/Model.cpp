@@ -11,13 +11,13 @@ namespace Azazel
     {
         std::vector<float> vertices {
         // positions            // normals         // texcoords
-         25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
-        -25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
-        -25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
+         1.0f, -0.5f,  1.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
+        -1.0f, -0.5f,  1.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
+        -1.0f, -0.5f, -1.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
 
-         25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
-        -25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
-         25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,  25.0f, 25.0f
+         1.0f, -0.5f,  1.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
+        -1.0f, -0.5f, -1.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
+         1.0f, -0.5f, -1.0f,  0.0f, 1.0f, 0.0f,  25.0f, 25.0f
         };
         std::vector<unsigned int> indices
         {
@@ -160,7 +160,7 @@ namespace Azazel
         processNode(scene->mRootNode, scene, directory);
     }
 
-    void Model::draw( Shader& shader)
+    void Model::draw(Shader& shader)
     {
         shader.bind();
         shader.setMatrix4f("model", transform.getTransformMatrix());
@@ -201,11 +201,11 @@ namespace Azazel
             }
             if(mesh->mTextureCoords[0])
             {
-                vertex.texCoord = glm::vec2 { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
+                vertex.texCoord =  { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
             }
             else
             {
-                vertex.texCoord = glm::vec2(0.0f, 0.0f);
+                vertex.texCoord = { 0.0f, 0.0f };
             }
             vertices.push_back(vertex);
         }

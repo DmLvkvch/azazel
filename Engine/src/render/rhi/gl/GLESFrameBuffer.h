@@ -15,8 +15,10 @@ namespace Azazel
         void unbind() const override;
         void setDepthTarget(FrameBufferTarget* depthTarget) override;
         void setDepthTarget(Texture* depthTexture) override;
-
+        void setDepthTarget(RenderBuffer* renderBuffer);
         void addColorAttachment(Texture* colorTarget, int slot = 0) override;
+    private:
+        int checkFrameBufferStatus();
     private:
         unsigned int rendererID;
     };

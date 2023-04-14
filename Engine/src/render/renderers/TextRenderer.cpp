@@ -64,11 +64,11 @@ namespace Azazel
 
     TextRenderer* TextRenderer::getRenderer()
     {
-        if (!TextRenderer::textRenderer)
+        if (!TextRenderer::textRenderer.get())
         {
-            TextRenderer::textRenderer = new TextRenderer();
+            TextRenderer::textRenderer.reset(new TextRenderer());
         }
-        return TextRenderer::textRenderer;
+        return TextRenderer::textRenderer.get();
     }
     
     TextRenderer::~TextRenderer()

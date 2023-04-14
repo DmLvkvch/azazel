@@ -17,24 +17,28 @@ namespace Azazel
         skyboxTextures[3] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/bottom.jpg", false, false);
         skyboxTextures[4] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/front.jpg",  false, false);
         skyboxTextures[5] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/back.jpg",   false, false);
-        cubeMap.reset(CubeMap::create(skyboxTextures));
+        cubeMap = CubeMap::create(skyboxTextures);
         for (auto& textureData : skyboxTextures)
         {
             delete[] textureData.data;
+            textureData.data = nullptr;
         }
-        shader.reset(Shader::create(FileUtils::readFile("shaders/skybox.vert.glsl"), FileUtils::readFile("shaders/skybox.frag.glsl")));
+        shader = Shader::create(FileUtils::readFile("shaders/skybox.vert.glsl"), FileUtils::readFile("shaders/skybox.frag.glsl"));
         
     }
 
     SkyboxRenderer::~SkyboxRenderer()
     {
-        
+        delete cubeMap;
+        delete shader;
     }
 
     void SkyboxRenderer::draw()
     {
+        Render::getRender()->setCullFace(false);
         shader->bind();
         cubeMap->bind();
         Render::getRender()->drawMesh<Vertex_P3>(mesh, *shader);
+        Render::getRender()->setCullFace(true);
     }
 }

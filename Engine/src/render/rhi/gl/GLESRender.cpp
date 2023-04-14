@@ -134,6 +134,7 @@ namespace Azazel
 
     void GLESRender::setDepthFunc(CompareFunction compareFunction)
     {
+        glDepthFunc(convertCompareFunction(compareFunction));
     }
 
     void GLESRender::setStencilTest(bool enable)
@@ -161,7 +162,7 @@ namespace Azazel
 
     void GLESRender::setStencilOp(StencilOperation sfail, StencilOperation dpfail, StencilOperation dppass)
     {
-        unsigned int gl_sfail = convertStencilOp(sfail);
+        unsigned int gl_sfail  = convertStencilOp(sfail);
         unsigned int gl_dpfail = convertStencilOp(dpfail);
         unsigned int gl_dppass = convertStencilOp(dppass);
 
@@ -170,8 +171,8 @@ namespace Azazel
 
     void GLESRender::setStencilOpSeparate(CullMode face, StencilOperation sfail, StencilOperation dpfail, StencilOperation dppass)
     {
-        unsigned int gl_face = convertCullMode(face);
-        unsigned int gl_sfail = convertStencilOp(sfail);
+        unsigned int gl_face   = convertCullMode(face);
+        unsigned int gl_sfail  = convertStencilOp(sfail);
         unsigned int gl_dpfail = convertStencilOp(dpfail);
         unsigned int gl_dppass = convertStencilOp(dppass);
 
