@@ -33,6 +33,8 @@ namespace Azazel
 
         Shader* setVec2f(const std::string& name, const glm::vec2& vec2) override;
 
+        Shader* setBool(const std::string& name, bool value) override;
+
     private:
         int getShaderType(const ShaderType& shaderType) const;
         unsigned int compile(const std::string& programCode, const ShaderType& shaderType);

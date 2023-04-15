@@ -52,6 +52,8 @@ namespace Azazel
 
         virtual Shader* setVec2f(const std::string& name, const glm::vec2& vec2) = 0;
 
+        virtual Shader* setBool(const std::string& name, bool value) = 0;
+
         void setLabel(const std::string& label);
 
         const inline std::string& getLabel() const

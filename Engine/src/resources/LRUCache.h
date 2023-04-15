@@ -31,7 +31,7 @@ namespace Azazel
             
             cacheMap[key] = cacheList.begin();
             
-            if (cacheMap.size() > sz)
+            if (cacheMap.size() > sz && sz >= 0)
             {
                 auto last = --cacheList.end();
                 cacheMap.erase(last->first);

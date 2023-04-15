@@ -6,17 +6,17 @@
 
 namespace Azazel
 {
-    class TextureResourceManager : public ResourceManager<std::string, std::shared_ptr<Texture>>
+    class TextureResourceManager : public ResourceManager<std::string, Texture*>
     {
     public:
-        std::shared_ptr<Texture> loadResource(const std::string& path, bool needCache = true)
+        Texture* loadResource(const std::string& path, bool needCache = true)
         {
             if (needCache&& containsResource(path))
             {
                 return getResource(path);
             }
             auto textureData = TextureUtils::loadTexture(path);
-            std::shared_ptr<Texture> texture (Texture::create(textureData));
+            auto texture = Texture::create(textureData);
             delete[] textureData.data;
             if (needCache)
             {
@@ -35,7 +35,7 @@ namespace Azazel
             {
                 return getResource(path);
             }
-            TextureData textureData = TextureUtils::loadTexture(path, flipVertically > 0);
+            auto textureData = TextureUtils::loadTexture(path, flipVertically > 0);
             if (needCache)
             {
                 cacheResource(path, textureData);
@@ -47,7 +47,5 @@ namespace Azazel
         {
             return loadResource(path, 1, needCache);
         }
-    private:
-        static TextureDataResourceManager* textureDataManager;
     };
 }

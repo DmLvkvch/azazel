@@ -8,20 +8,22 @@
 
 #include <functional>
 #include "resources/ResourceManager.h"
+#include "render/ModelHelper.h"
 
 namespace Azazel
 {
     ModelLoadLayer::ModelLoadLayer() : Layer("Model Load Example")
     {
-        model = Model("objects/duck/Duck.gltf");
+        model = Model("objects/Sponza/glTF/Sponza.gltf");
         model.transform.scale = glm::vec3{ 0.003f, 0.003f, 0.003f };
+        model.transform.position.y += 0.2f;
 
         cube = Model("objects/cube/cube.gltf");
         cube.transform.scale = glm::vec3{ 0.1f, 0.1f, 0.1f };
         cube.transform.position.x += 1.5f;
         cube.transform.position.y += 1.1f;
 
-        floor = Model::floor();
+        floor = ModelHelper::floor();
         floor.transform.scale = glm::vec3{ 5.0f, 1.0f, 5.0f };
 
         light.reset(Shader::create(FileUtils::readFile("shaders/light/phong.light.vert.glsl"), FileUtils::readFile("shaders/light/phong.light.frag.glsl")));
@@ -99,9 +101,9 @@ namespace Azazel
     {
         auto renderer = Render::getRender();
         renderer->setDepthTest(true);
-        glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 10.5f);
+        glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, -10.1f, 15.5f);
 
-        glm::vec3 lightPos(-7.0f, 4.0f, -2.0f);
+        glm::vec3 lightPos(-17.0f, 40.0f, -2.0f);
         lightPos.x = sin(glfwGetTime()) * 3.0f;
         lightPos.z = cos(glfwGetTime()) * 2.0f;
         lightPos.y = 5.0 + cos(glfwGetTime()) * 1.0f;

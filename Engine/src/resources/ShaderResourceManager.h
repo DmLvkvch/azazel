@@ -7,11 +7,11 @@
 
 namespace Azazel
 {
-    class ShaderResourceManager : public ResourceManager<std::string, std::shared_ptr<Shader>>
+    class ShaderResourceManager : public ResourceManager<std::string, Shader*>
     {
     public:
 
-        std::shared_ptr<Shader> loadResource(const std::string& path, bool needCache = true)
+        Shader* loadResource(const std::string& path, bool needCache = true)
         {
 
             if (needCache && containsResource(path))
@@ -20,11 +20,10 @@ namespace Azazel
             }
             const std::string fullCode = FileUtils::readFile(path);
             // TODO parse code
-            std::shared_ptr<Shader> shader;
-            return shader;
+            return nullptr;
         }
 
-        std::shared_ptr<Shader> loadResource(const std::string& vertexPath, const std::string& fragmentPath, bool needCache = true)
+        Shader* loadResource(const std::string& vertexPath, const std::string& fragmentPath, bool needCache = true)
         {
             const std::string key = vertexPath + fragmentPath;
 
@@ -36,7 +35,7 @@ namespace Azazel
             const std::string vertex = FileUtils::readFile(vertexPath);
             const std::string fragment = FileUtils::readFile(fragmentPath);
 
-            std::shared_ptr<Shader> shader (Shader::create(vertex, fragment));
+            Shader* shader (Shader::create(vertex, fragment));
             if (needCache)
             {
                 cacheResource(key, shader);

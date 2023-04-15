@@ -147,4 +147,10 @@ namespace Azazel
 		glUniform2fv(getUniformLocation(name), 1, &vec2.x);
         return this;
 	}
+
+    Shader* GLESShader::setBool(const std::string& name, bool value)
+	{
+		glUniform1i(getUniformLocation(name), value);
+		return this;
+	}
 }

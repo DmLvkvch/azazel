@@ -18,6 +18,7 @@
 #include <iostream>
 #include <vector>
 #include "render/MeshHelper.h"
+#include "render/ModelHelper.h"
 
 namespace Azazel
 {
@@ -25,7 +26,7 @@ namespace Azazel
     void GLLayer::onAttach()
     {
 
-        model = Model::cube();
+        model = ModelHelper::cube();
         auto textureData = TextureUtils::loadTexture("images/container2.png");
         this->face.reset(Texture::create(textureData));
         delete[] textureData.data;

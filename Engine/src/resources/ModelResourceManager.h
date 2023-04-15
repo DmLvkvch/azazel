@@ -6,12 +6,12 @@
 
 namespace Azazel
 {
-    class ModelResourceManager : public ResourceManager<std::string, std::shared_ptr<Model>>
+    class ModelResourceManager : public ResourceManager<std::string, Model*>
     {
     public:
-        std::shared_ptr<Model> loadResource(const std::string& path, bool needCache = true)
+        Model* loadResource(const std::string& path, bool needCache = true)
         {
-            return std::shared_ptr<Model> ();
+            return nullptr;
         }
     };
 }

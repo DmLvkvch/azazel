@@ -14,13 +14,7 @@ namespace Azazel
 {
     class Model
     {
-    public:        
-
-        static Model cube();
-
-        static Model sphere(float segmentsX, float segmentsY);
-
-        static Model floor();
+    public:
 
         Model() = default;
 
@@ -42,7 +36,7 @@ namespace Azazel
             this->textures = model.textures;
         }
 
-        void draw( Shader& shader);
+        void draw(Shader& shader);
 
         Model& operator=(const Model& model)
         {
