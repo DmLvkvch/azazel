@@ -3,8 +3,6 @@
 #include "render/Mesh.h"
 #include "render/Vertex.h"
 #include "render/Texture.h"
-#include <memory>
-#include "api/file/FileUtils.h"
 #include "render/Render.h"
 
 namespace Azazel
@@ -15,9 +13,9 @@ namespace Azazel
         SkyboxRenderer();
         ~SkyboxRenderer();
         void draw();
-    public:
-        Shader* shader;
+
     private:
+        Shader* shader;
         CubeMap* cubeMap;
         Mesh<Vertex_P3> mesh;
     };

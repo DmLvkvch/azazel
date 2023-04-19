@@ -10,6 +10,15 @@ namespace Azazel
     class ShaderResourceManager : public ResourceManager<std::string, Shader*>
     {
     public:
+        ShaderResourceManager()
+        {
+            std::cout << "ShaderResourceManager constructor" << std::endl;
+        }
+        
+        virtual ~ShaderResourceManager()
+        {
+            std::cout << "ShaderResourceManager destructor" << std::endl;
+        }
 
         Shader* loadResource(const std::string& path, bool needCache = true)
         {

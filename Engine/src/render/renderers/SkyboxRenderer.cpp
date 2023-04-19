@@ -11,17 +11,16 @@ namespace Azazel
         mesh = MeshHelper::genSkybox();
         
         std::array<TextureData, 6> skyboxTextures;
-        skyboxTextures[0] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/right.jpg",  false, false);
-        skyboxTextures[1] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/left.jpg",   false, false);
-        skyboxTextures[2] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/top.jpg",    false, false);
-        skyboxTextures[3] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/bottom.jpg", false, false);
-        skyboxTextures[4] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/front.jpg",  false, false);
-        skyboxTextures[5] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/back.jpg",   false, false);
+        skyboxTextures[0] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/canyon/PositiveX.jpg", false, false);
+        skyboxTextures[1] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/canyon/NegativeX.jpg", false, false);
+        skyboxTextures[2] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/canyon/PositiveY.jpg", false, false);
+        skyboxTextures[3] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/canyon/NegativeY.jpg", false, false);
+        skyboxTextures[4] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/canyon/PositiveZ.jpg", false, false);
+        skyboxTextures[5] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/canyon/NegativeZ.jpg", false, false);
         cubeMap = CubeMap::create(skyboxTextures);
         for (auto& textureData : skyboxTextures)
         {
-            delete[] textureData.data;
-            textureData.data = nullptr;
+            TextureUtils::freeTextureData(textureData);
         }
         shader = Shader::create(FileUtils::readFile("shaders/skybox.vert.glsl"), FileUtils::readFile("shaders/skybox.frag.glsl"));
         
@@ -37,6 +36,9 @@ namespace Azazel
     {
         Render::getRender()->setCullFace(false);
         shader->bind();
+        auto camera = Render::getRender()->getCamera();
+        shader->setMatrix4f("view", glm::mat4(glm::mat3(camera->getViewMatrix())));
+        shader->setMatrix4f("projection", camera->getProjectionMatrix());
         cubeMap->bind();
         Render::getRender()->drawMesh<Vertex_P3>(mesh, *shader);
         Render::getRender()->setCullFace(true);

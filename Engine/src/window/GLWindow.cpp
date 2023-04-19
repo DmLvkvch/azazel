@@ -21,7 +21,8 @@ namespace Azazel
         {
             return;
         }
-        
+        std::cout << "GLWindow constructor" << std::endl;
+
         width = props.width;
         height = props.height;
         title = props.title;
@@ -127,6 +128,7 @@ namespace Azazel
     GLWindow::~GLWindow()
     {
         shutDown();
+        std::cout << "GLWindow destructor" << std::endl;
     }
 
     GLFWwindow* GLWindow::initGLFW(int width, int height, const std::string& title)
@@ -150,7 +152,7 @@ namespace Azazel
             glfwTerminate();
         }
         glfwMakeContextCurrent(window);
-        setVSync(true);
+        setVSync(false);
         glfwSetWindowUserPointer(window, &windowData);
         initialized = true;
         return window;

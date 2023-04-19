@@ -11,7 +11,8 @@
 #include "events/ApplicationEvent.h"
 #include "IO/Input.h"
 #include "IO/KeyCodes.h"
-#include "Application.h"
+
+#include <iostream>
 
 namespace Azazel
 {
@@ -32,7 +33,6 @@ namespace Azazel
     struct CameraLocation
     {
         glm::vec3 position { 0.0f, 0.0f, 0.0f };
-        glm::vec3 direction { 0.0f, 0.0f, -1.0f };
         glm::vec3 up { 0.0f, 1.0f, 0.0f };
         glm::vec3 front {0.0f, 0.0f, -1.0f};
     };
@@ -43,21 +43,12 @@ namespace Azazel
 
         Camera()
         {
-        }
-
-        void subscribe()
-        {
-            index = Application::getApplication()->subscribe(std::bind(&Camera::onEvent, this, std::placeholders::_1));
-        }
-
-        void unsubscribe()
-        {
-            Application::getApplication()->unsubscribe(index);
+            std::cout << "Camera constructor" << std::endl;
         }
 
         ~Camera()
         {
-            unsubscribe();
+            std::cout << "Camera destructor" << std::endl;
         }
 
         void onInputUpdate(float delta)
@@ -87,6 +78,16 @@ namespace Azazel
             {
                 moveUp(-cameraSpeed);
             }
+        }
+
+        const glm::vec3& getViewDirection() const
+        {
+            return cameraLocation.front;
+        }
+
+        const glm::vec3& getViewPosition() const
+        {
+            return cameraLocation.position;
         }
 
         void setPosition(const glm::vec3& position);

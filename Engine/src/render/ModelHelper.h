@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Model.h"
+
 namespace Azazel
 {
     class ModelHelper
@@ -7,21 +9,23 @@ namespace Azazel
     public:
         static Model floor()
         {
-            std::vector<float> vertices {
-            // positions            // normals         // texcoords
-            1.0f, -0.5f,  1.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
-            -1.0f, -0.5f,  1.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
-            -1.0f, -0.5f, -1.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
-
-            1.0f, -0.5f,  1.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
-            -1.0f, -0.5f, -1.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
-            1.0f, -0.5f, -1.0f,  0.0f, 1.0f, 0.0f,  25.0f, 25.0f
+            std::vector<float> vertices 
+            {
+                0.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
+                1.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
+                0.0f, 1.0f, 0.0f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
+                1.0f, 1.0f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f
             };
+
             std::vector<unsigned int> indices
             {
-                0, 1, 2, 3, 4, 5
+                0, 1, 3, 3, 2, 0
             };
             Mesh<Vertex_P3_N3_T2> mesh {vertices, indices};
+            auto textureData = TextureUtils::loadTexture("textures/wood.png");
+            auto texture = Texture::create(textureData);
+            TextureUtils::freeTextureData(textureData);
+            mesh.textures.push_back(std::shared_ptr<Texture>(texture));
             return Model(mesh);
         }
 
@@ -104,7 +108,7 @@ namespace Azazel
                     glm::vec3 pos { xPos, yPos, zPos };
                     glm::vec2 texCoord { xSegment, ySegment };
 
-                    vertices.emplace_back(pos, pos, texCoord);
+                    vertices.emplace_back(pos, -pos, texCoord);
                 }
             }
             std::vector<unsigned int> indices;
@@ -124,7 +128,8 @@ namespace Azazel
             }
 
             Mesh<Vertex_P3_N3_T2> mesh(vertices, indices);
-
+            std::shared_ptr<Texture> texture(Texture::create(512, 512, 0xffffffff));
+            mesh.textures.push_back(texture);
             return Model({mesh});
         }
     };

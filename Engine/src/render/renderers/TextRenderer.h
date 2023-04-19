@@ -38,6 +38,5 @@ namespace Azazel
         std::unique_ptr<Shader> textShader;
         std::unique_ptr<IndexBuffer> indexBuffer;
         std::shared_ptr<VertexBuffer> vertexBuffer;
-        inline static std::unique_ptr<TextRenderer> textRenderer;
     };
 }

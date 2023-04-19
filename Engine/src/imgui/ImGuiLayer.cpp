@@ -7,10 +7,9 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include "IO/Input.h"
 #include <iostream>
+#include "render/Render.h"
 
 namespace Azazel
 {
@@ -48,9 +47,14 @@ namespace Azazel
             n = 0;
             dt = 0;
         }
-        ImGui::Text("Current FPS %.3f", 1000.0f / delta);
-        ImGui::Text("Avg FPS %.3f", fps);
+        ImGui::Text("Current FPS %d", static_cast<int>(1000.0f / delta));
+        ImGui::Text("Avg FPS %d", static_cast<int>(fps));
+        auto camera = Render::getRender()->getCamera();
+        glm::vec3 cameraPos = camera->getViewPosition();
+        ImGui::Text("Camera position: (%.3f, %.3f, %.3f)", cameraPos.x, cameraPos.y, cameraPos.z);
 
+        glm::vec3 cameraDir = camera->getViewDirection();
+        ImGui::Text("Camera direction: (%.3f, %.3f, %.3f)", cameraDir.x, cameraDir.y, cameraDir.z);
         ImGui::End();
     }
 

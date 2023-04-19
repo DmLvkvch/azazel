@@ -13,12 +13,13 @@ out VS_OUT {
 
 uniform mat4 u_mvp;
 uniform mat4 model;
+uniform mat4 u_normal_matrix;
 uniform mat4 lightSpaceMatrix;
 
 void main()
 {    
     vs_out.fragPos = vec3(model * vec4(a_position, 1.0));
-    vs_out.normal = transpose(inverse(mat3(model))) * a_normal;
+    vs_out.normal = vec3(u_normal_matrix * vec4(a_normal, 1.0));
     vs_out.texCoords = a_texture_coord;
     vs_out.fragPosLightSpace = lightSpaceMatrix * vec4(vs_out.fragPos, 1.0);
     gl_Position = u_mvp * vec4(a_position, 1.0);

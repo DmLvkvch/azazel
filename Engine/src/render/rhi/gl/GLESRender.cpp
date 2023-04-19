@@ -8,12 +8,12 @@ namespace Azazel
 
     GLESRender::GLESRender()
     {
-
+        std::cout << "GLESRender constructor" << std::endl;
     }
 
     GLESRender::~GLESRender()
     {
-
+        std::cout << "GLESRender destructor" << std::endl;
     }
 
     void GLESRender::init()

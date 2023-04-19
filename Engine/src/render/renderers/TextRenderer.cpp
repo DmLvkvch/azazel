@@ -9,6 +9,7 @@
 
 namespace Azazel
 {
+
     TextRenderer::TextRenderer()
     {
         camera = OrthographicCamera(-400.0f, 400.0f, -400.00f, 400.0f, -1.0f, 1.0f);
@@ -64,11 +65,7 @@ namespace Azazel
 
     TextRenderer* TextRenderer::getRenderer()
     {
-        if (!TextRenderer::textRenderer.get())
-        {
-            TextRenderer::textRenderer.reset(new TextRenderer());
-        }
-        return TextRenderer::textRenderer.get();
+        return nullptr;
     }
     
     TextRenderer::~TextRenderer()

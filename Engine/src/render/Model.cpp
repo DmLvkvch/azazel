@@ -41,10 +41,12 @@ namespace Azazel
     void Model::draw(Shader& shader)
     {
         shader.bind();
-        shader.setMatrix4f("model", transform.getTransformMatrix());
+        auto modelMatrix = transform.getTransformMatrix();
+        shader.setMatrix4f("model", modelMatrix);
+        shader.setMatrix4f("u_normal_matrix", glm::transpose(glm::inverse(glm::mat3(modelMatrix))));
         for (const auto& mesh : meshes)
         {
-            for (int i = 0; i < mesh.textures.size(); i++)
+            for (int i = 0;i < mesh.textures.size(); i++)
             {
                 std::string textureName = std::to_string(i);
                 textureName = "u_texture_" + textureName;
@@ -102,10 +104,25 @@ namespace Azazel
                 aiString str;
                 material->GetTexture(aiTextureType_DIFFUSE, i, &str);
                 std::shared_ptr<Texture> texture;
-                std::string fullPath = directory +"/"+ str.C_Str();
-                auto textureData = TextureUtils::loadTexture(fullPath);
+                TextureData textureData;
+                if (auto texture = scene->GetEmbeddedTexture(str.C_Str())) 
+                {
+                    if (texture->mHeight == 0)
+                    {
+                        textureData.data = stbi_load_from_memory(reinterpret_cast<unsigned char*>(texture->pcData), texture->mWidth, &textureData.width, &textureData.height, &textureData.bpp, 0);
+                    }
+                    else
+                    {
+                        textureData.data = stbi_load_from_memory(reinterpret_cast<unsigned char*>(texture->pcData), texture->mWidth * texture->mHeight, &textureData.width, &textureData.height, &textureData.bpp, 0);
+                    }
+                }
+                else
+                {
+                    std::string fullPath = directory + "/" + str.C_Str();
+                    textureData = TextureUtils::loadTexture(fullPath);
+                }
                 texture.reset(Texture::create(textureData));
-                delete[] textureData.data;
+                TextureUtils::freeTextureData(textureData);
                 textures.push_back(texture);
            }
         }

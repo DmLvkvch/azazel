@@ -17,5 +17,11 @@ namespace Azazel
             unsigned char* data = stbi_load(path.c_str(), &width, &height, &bpp, desiredChannels);
             return TextureData(width, height, bpp, data);
         }
+
+        static void freeTextureData(TextureData& textureData)
+        {
+            stbi_image_free(textureData.data);
+            textureData.data = nullptr;
+        }
     };
 }

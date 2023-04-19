@@ -14,7 +14,12 @@ namespace Azazel
     public:
         ResourceManager()
         {
+            std::cout << "ResourceManager constructor" << std::endl;
+        }
 
+        virtual ~ResourceManager()
+        {
+            std::cout << "ResourceManager destructor" << std::endl;
         }
 
         virtual T loadResource(const K& path, bool needCache = true) = 0;

@@ -29,7 +29,7 @@ namespace Azazel
         model = ModelHelper::cube();
         auto textureData = TextureUtils::loadTexture("images/container2.png");
         this->face.reset(Texture::create(textureData));
-        delete[] textureData.data;
+        TextureUtils::freeTextureData(textureData);
         
         shader.reset(Shader::create(FileUtils::readFile("shaders/default.vert.glsl"), FileUtils::readFile("shaders/default.frag.glsl")));
 

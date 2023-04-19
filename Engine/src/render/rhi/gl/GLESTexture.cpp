@@ -4,6 +4,12 @@
 #include <iostream>
 #include "logging/Log.h"
 
+//#ifdef _DEBUG
+//#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+//#else
+//#define DBG_NEW new
+//#endif
+
 namespace Azazel
 {
     GLESTexture::GLESTexture(const TextureData& textureData)
@@ -59,6 +65,11 @@ namespace Azazel
             format = GL_RED;
             internalFormat = GL_RED;
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        }
+        else if (bpp == 8)
+        {
+            format = GL_RGBA;
+            internalFormat = GL_RGBA16F;
         }
         else
         {

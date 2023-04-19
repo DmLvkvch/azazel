@@ -31,7 +31,7 @@ namespace Azazel
         shader.reset(Shader::create(FileUtils::readFile("shaders/default.vert.glsl"), FileUtils::readFile("shaders/default.frag.glsl")));
         auto textureData = TextureUtils::loadTexture("images/awesomeface.png");
         texture.reset(Texture::create(textureData));
-        delete[] textureData.data;
+        TextureUtils::freeTextureData(textureData);
 
         shader->bind();
         shader->setMatrix4f("u_mvp", glm::mat4(1.0f));

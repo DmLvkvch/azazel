@@ -53,16 +53,20 @@ namespace Azazel
 
     Application::Application()
     {
+        std::cout << "Application constuctor" << std::endl;
         delta = 0.0f;
-        window = std::unique_ptr<Window>(Window::create());
+        window.reset(Window::create());
         window->setEventCallback(std::bind(&Application::onEvent, this, std::placeholders::_1));
         Render::getRender()->init();
+        camera.reset(new Camera());
+        Render::getRender()->setCamera(camera.get());
     }
 
     Application::~Application()
     {
         eventSubscribers.clear();
         updateSubscribers.clear();
+        std::cout << "Application destuctor" << std::endl;
     }
 
     void Application::onEvent(Event& e)
@@ -76,6 +80,7 @@ namespace Azazel
             layer->onEvent(e);
         }
         eventSubscribers.dispatch(e);
+        camera->onEvent(e);
     }
 
     void Application::run()
@@ -96,7 +101,7 @@ namespace Azazel
             #endif
             
             updateTargets(delta);
-
+            camera->onInputUpdate(delta);
             for (auto layer : layerStack)
             {
                 layer->onInputUpdate(delta);

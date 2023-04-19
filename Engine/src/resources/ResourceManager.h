@@ -6,14 +6,16 @@
 
 namespace Azazel
 {
-    namespace ResourceManagers
+    class ResourceManagers
     {
-        inline static std::unique_ptr<TextureResourceManager> textureResourceManager (new TextureResourceManager());
+    public:
+
+        static std::unique_ptr<TextureResourceManager> textureResourceManager;
         
-        inline static std::unique_ptr < TextureDataResourceManager> textureDataResourceManager(new TextureDataResourceManager());
+        static std::unique_ptr<TextureDataResourceManager> textureDataResourceManager;
 
-        inline static std::unique_ptr < ShaderResourceManager> shaderResourceManager(new ShaderResourceManager());
+        static std::unique_ptr<ShaderResourceManager> shaderResourceManager;
 
-        inline static std::unique_ptr < ModelResourceManager> modelResourceManager ( new ModelResourceManager());
-    }
+        static std::unique_ptr<ModelResourceManager> modelResourceManager;
+    };
 }

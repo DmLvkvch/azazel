@@ -4,6 +4,8 @@
 #include "window/Window.h"
 #include <GLFW/glfw3.h>
 
+#include <iostream>
+
 namespace Azazel
 {
     std::unique_ptr<Input> Input::input(new Input());
@@ -15,10 +17,12 @@ namespace Azazel
 
     Input::Input()
     {
+        std::cout << "Input constructor" << std::endl;
     }
 
     Input::~Input()
     {
+        std::cout << "Input destructor" << std::endl;
     }
 
     bool Input::isKeyPressed(int keycode)

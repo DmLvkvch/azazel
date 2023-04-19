@@ -10,7 +10,7 @@ in VS_OUT {
     vec4 fragPosLightSpace;
 } fs_in;
 
-uniform sampler2D diffuseTexture;
+uniform sampler2D u_texture_0;
 uniform sampler2D shadowMap;
 
 uniform vec3 lightPos;
@@ -29,7 +29,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     // calculate bias (based on depth map resolution and slope)
     vec3 normal = normalize(fs_in.normal);
     vec3 lightDir = normalize(lightPos - fs_in.fragPos);
-    float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
+    float bias = max(0.005 * (1.0 - dot(normal, lightDir)), 0.0005);
     // check whether current frag pos is in shadow
     // float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
     // PCF
@@ -54,7 +54,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 
 void main()
 {           
-    vec3 color = texture(diffuseTexture, fs_in.texCoords).rgb;
+    vec3 color = texture(u_texture_0, fs_in.texCoords).rgb;
     vec3 normal = normalize(fs_in.normal);
     vec3 lightColor = vec3(1.0, 1.0, 1.0);
     // ambient

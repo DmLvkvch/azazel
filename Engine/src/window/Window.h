@@ -5,6 +5,8 @@
 #include <string>
 #include <memory>
 
+#include <iostream>
+
 namespace Azazel
 {
 
@@ -25,8 +27,16 @@ namespace Azazel
     {
     public:
         using EventCallbackFn = std::function<void(Event&)>;
-        Window() {}
-        virtual ~Window(){}
+        Window() 
+        {
+            std::cout << "Window constructor" << std::endl;
+        }
+
+        virtual ~Window()
+        {
+            std::cout << "Window destructor" << std::endl;
+        }
+
         virtual void onUpdate(float delta) = 0;
         virtual unsigned int getWidth() const = 0;
         virtual unsigned int getHeight() const = 0;
