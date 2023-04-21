@@ -17,6 +17,6 @@ namespace Azazel
     private:
         Shader* shader;
         CubeMap* cubeMap;
-        Mesh<Vertex_P3> mesh;
+        Mesh mesh;
     };
 }

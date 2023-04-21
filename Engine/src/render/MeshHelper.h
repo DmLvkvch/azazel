@@ -8,7 +8,7 @@ namespace Azazel
     class MeshHelper
     {
     public:
-        static Mesh<Vertex_P3_T2> genQuadMesh()
+        static Mesh genQuadMesh()
         {
             std::vector<float> vertices
             {
@@ -23,10 +23,10 @@ namespace Azazel
                 0, 1, 3, 3, 2, 0
             };
 
-            return Mesh<Vertex_P3_T2>(vertices, indices);
+            return Mesh::createMesh<Vertex_P3_T2>(vertices, indices);
         }
 
-        static Mesh<Vertex_P3> genSkybox()
+        static Mesh genSkybox()
         {
             std::vector<float> vertices
             {
@@ -82,7 +82,7 @@ namespace Azazel
                 indices[i] = i;
             }
 
-            return Mesh<Vertex_P3>(vertices, indices);
+            return Mesh::createMesh<Vertex_P3>(vertices, indices);
         }
     };
 }

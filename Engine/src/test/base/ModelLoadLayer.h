@@ -9,6 +9,8 @@
 #include "render/MeshHelper.h"
 #include "render/FrameBuffer.h"
 
+#include "render/Material.h"
+
 namespace Azazel
 {
     class ModelLoadLayer : public Layer
@@ -34,9 +36,9 @@ namespace Azazel
         Model floor;
         Model cube;
         Model sphere;
-        
+        Material material;
         SkyboxRenderer sbr;
         HdrRenderer hdrRenderer;
-        Mesh<Vertex_P3_T2> quad;
+        Mesh quad;
     };
 }

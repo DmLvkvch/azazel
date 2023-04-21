@@ -4,22 +4,25 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include "TextureUtils.h"
+#include "Render.h"
 
 namespace Azazel
 {
 
-    Model::Model(const std::string& path)
+    Model Model::createModel(const std::string& path)
     {
-        loadModel(path);
+        Model model;
+        model.loadModel(path);
+        return std::move(model);
     }
 
-    Model::Model(Mesh<Vertex_P3_N3_T2>& mesh)
+    Model::Model(Mesh& mesh)
     : meshes({mesh})
     {
         
     }
 
-    Model::Model(const std::vector<Mesh<Vertex_P3_N3_T2>>& meshes)
+    Model::Model(const std::vector<Mesh>& meshes)
     : meshes(meshes)
     {
         
@@ -28,7 +31,7 @@ namespace Azazel
     void Model::loadModel(const std::string& path)
     {
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals);
+        const aiScene* scene = importer.ReadFile(path, aiProcessPreset_TargetRealtime_Quality);
         if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
             std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
@@ -58,10 +61,11 @@ namespace Azazel
 
     void Model::processNode(aiNode* node, const aiScene* scene, const std::string& directory)
     {
+        meshes.reserve(meshes.size() + node->mNumMeshes);
         for(unsigned int i = 0; i < node->mNumMeshes; i++)
         {
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            meshes.push_back(processMesh(mesh, scene, directory));
+            meshes.push_back(std::move(processMesh(mesh, scene, directory)));
         }
         for(unsigned int i = 0; i < node->mNumChildren; i++)
         {
@@ -69,13 +73,14 @@ namespace Azazel
         }
     }
 
-    Mesh<Vertex_P3_N3_T2> Model::processMesh(aiMesh* mesh, const aiScene* scene, const std::string& directory)
+    Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene, const std::string& directory)
     {
-        std::vector<Vertex_P3_N3_T2> vertices;
+        std::vector<Vertex_P3_N3_T2_TAN3_BTAN_3> vertices;
         std::vector<unsigned int> indices;
+        vertices.reserve(mesh->mNumVertices);
         for(unsigned int i = 0; i < mesh->mNumVertices; i++)
         {
-            Vertex_P3_N3_T2 vertex {};
+            Vertex_P3_N3_T2_TAN3_BTAN_3 vertex {};
             glm::vec3 vector { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
             vertex.position = vector;
             if (mesh->HasNormals())
@@ -84,6 +89,16 @@ namespace Azazel
                 vector.y = mesh->mNormals[i].y;
                 vector.z = mesh->mNormals[i].z;
                 vertex.normal = vector;
+
+                vector.x = mesh->mTangents[i].x;
+                vector.y = mesh->mTangents[i].y;
+                vector.z = mesh->mTangents[i].z;
+                vertex.tangent = vector;
+
+                vector.x = mesh->mBitangents[i].x;
+                vector.y = mesh->mBitangents[i].y;
+                vector.z = mesh->mBitangents[i].z;
+                vertex.bitangent = vector;
             }
             if(mesh->mTextureCoords[0])
             {
@@ -97,45 +112,55 @@ namespace Azazel
         }
         if(mesh->mMaterialIndex >= 0)
         {
-            aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
-            int count = material->GetTextureCount(aiTextureType_DIFFUSE);
-            for(unsigned int i = 0; i < count; i++)
-            {
-                aiString str;
-                material->GetTexture(aiTextureType_DIFFUSE, i, &str);
-                std::shared_ptr<Texture> texture;
-                TextureData textureData;
-                if (auto texture = scene->GetEmbeddedTexture(str.C_Str())) 
-                {
-                    if (texture->mHeight == 0)
-                    {
-                        textureData.data = stbi_load_from_memory(reinterpret_cast<unsigned char*>(texture->pcData), texture->mWidth, &textureData.width, &textureData.height, &textureData.bpp, 0);
-                    }
-                    else
-                    {
-                        textureData.data = stbi_load_from_memory(reinterpret_cast<unsigned char*>(texture->pcData), texture->mWidth * texture->mHeight, &textureData.width, &textureData.height, &textureData.bpp, 0);
-                    }
-                }
-                else
-                {
-                    std::string fullPath = directory + "/" + str.C_Str();
-                    textureData = TextureUtils::loadTexture(fullPath);
-                }
-                texture.reset(Texture::create(textureData));
-                TextureUtils::freeTextureData(textureData);
-                textures.push_back(texture);
-           }
+            aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+            loadTextures(scene, material, aiTextureType_DIFFUSE, textures, directory);
         }
+        
         for (unsigned int i = 0; i < mesh->mNumFaces; i++)
         {
             aiFace face = mesh->mFaces[i];
+            indices.reserve(indices.size() + face.mNumIndices);
             for (unsigned int j = 0; j < face.mNumIndices; j++)
             {
                 indices.push_back(face.mIndices[j]);        
             }
         }
-        auto m = Mesh<Vertex_P3_N3_T2>(vertices, indices);
+        auto m = Mesh::createMesh<Vertex_P3_N3_T2_TAN3_BTAN_3>(vertices, indices);
         m.textures = std::move(textures);
         return m;
     }
+
+
+    void Model::loadTextures(const aiScene* scene, aiMaterial* material,
+                            aiTextureType textureType, std::vector<std::shared_ptr<Texture>>& textures, const std::string& directory)
+    {
+        int diffuseCount = material->GetTextureCount(textureType);
+        for (unsigned int i = 0; i < diffuseCount; i++)
+        {
+            aiString str;
+            material->GetTexture(textureType, i, &str);
+            std::shared_ptr<Texture> texture;
+            TextureData textureData;
+            if (auto texture = scene->GetEmbeddedTexture(str.C_Str()))
+            {
+                if (texture->mHeight == 0)
+                {
+                    textureData.data = stbi_load_from_memory(reinterpret_cast<unsigned char*>(texture->pcData), texture->mWidth, &textureData.width, &textureData.height, &textureData.bpp, 0);
+                }
+                else
+                {
+                    textureData.data = stbi_load_from_memory(reinterpret_cast<unsigned char*>(texture->pcData), texture->mWidth * texture->mHeight, &textureData.width, &textureData.height, &textureData.bpp, 0);
+                }
+            }
+            else
+            {
+                std::string fullPath = directory + "/" + str.C_Str();
+                textureData = TextureUtils::loadTexture(fullPath);
+            }
+            texture.reset(Texture::create(textureData));
+            TextureUtils::freeTextureData(textureData);
+            textures.push_back(texture);
+        }
+    }
+
 }

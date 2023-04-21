@@ -48,14 +48,14 @@ namespace Azazel
         {
             auto renderer = Render::getRender();
             colorTexture->bind(0);
-            renderer->drawMesh<Vertex_P3_T2>(quad, *shader);
+            renderer->drawMesh(quad, *shader);
         }
 
         FrameBuffer* frameBuffer;
         Texture* colorTexture;
         Texture* depthTexture;
         Shader* shader;
-        Mesh<Vertex_P3_T2> quad;
+        Mesh quad;
         float exp = 1.0f;
     };
 }

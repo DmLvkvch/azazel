@@ -18,13 +18,13 @@ namespace Azazel
 
         Model() = default;
 
-        Model(const std::vector<Mesh<Vertex_P3_N3_T2>>& meshes);
+        Model(const std::vector<Mesh>& meshes);
 
-        Model(Mesh<Vertex_P3_N3_T2>& mesh);
+        Model(Mesh& mesh);
 
-        Model(const std::string& path);
+        static Model createModel(const std::string& path);
 
-        Model(Model&& model)
+        Model(Model&& model) noexcept
         {
             this->meshes = std::move(model.meshes);
             this->textures = std::move(model.textures);
@@ -59,11 +59,14 @@ namespace Azazel
 
         void loadModel(const std::string& path);
 
+        void loadTextures(const aiScene* scene, aiMaterial* material,
+            aiTextureType textureType, std::vector<std::shared_ptr<Texture>>& textures, const std::string& directory);
+
         void processNode(aiNode* node, const aiScene* scene, const std::string& directory);
 
-        Mesh<Vertex_P3_N3_T2> processMesh(aiMesh* mesh, const aiScene* scene, const std::string& directory);
+        Mesh processMesh(aiMesh* mesh, const aiScene* scene, const std::string& directory);
     private:
-        std::vector<Mesh<Vertex_P3_N3_T2>> meshes;
+        std::vector<Mesh> meshes;
         std::vector<std::shared_ptr<Texture>> textures;
     };
 }

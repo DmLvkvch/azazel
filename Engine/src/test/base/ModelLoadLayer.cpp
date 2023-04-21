@@ -11,11 +11,11 @@ namespace Azazel
 {
     ModelLoadLayer::ModelLoadLayer() : Layer("Model Load Example")
     {
-        model = Model("objects/Sponza/Sponza.gltf");
+        model = Model::createModel("objects/Sponza/Sponza.gltf");
         model.transform.scale = { 0.003f, 0.003f, 0.003f };
         model.transform.position.y = 0.2f;
 
-        cube = Model("objects/earth/Earth.glb");
+        cube = Model::createModel("objects/earth/Earth.glb");
         cube.transform.scale = { 0.007f, 0.007f, 0.007f };
         cube.transform.position.x = 10.5f;
         cube.transform.position.y = 8.0f;
@@ -130,7 +130,7 @@ namespace Azazel
 
       //  hdrRenderer.bind();
       
-        renderer->clear(true, true, true);
+    //    renderer->clear(true, true, true);
         renderer->setViewport(0, 0, 1280, 720);
         renderer->setCullFaceMode(CullMode::BACK);
 

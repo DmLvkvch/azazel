@@ -5,7 +5,6 @@
 namespace Azazel
 {
 
-    template <class T>
     class Mesh;
 
     class GLESRender : public Render

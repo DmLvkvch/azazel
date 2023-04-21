@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Model.h"
+#include "TextureUtils.h"
 
 namespace Azazel
 {
@@ -21,7 +22,7 @@ namespace Azazel
             {
                 0, 1, 3, 3, 2, 0
             };
-            Mesh<Vertex_P3_N3_T2> mesh {vertices, indices};
+            Mesh mesh = Mesh::createMesh<Vertex_P3_N3_T2> (vertices, indices);
             auto textureData = TextureUtils::loadTexture("textures/wood.png");
             auto texture = Texture::create(textureData);
             TextureUtils::freeTextureData(textureData);
@@ -33,47 +34,47 @@ namespace Azazel
         {
             std::vector<float> vertices
             {
-                -0.5f, -0.5f, -0.5f,     0.0f,  0.0f, -1.0f,    0.0f, 0.0f,  
-                0.5f, -0.5f, -0.5f,     0.0f,  0.0f, -1.0f,    1.0f, 0.0f,  
-                0.5f, 0.5f,  -0.5f,     0.0f,  0.0f, -1.0f,    1.0f, 1.0f,  
-                0.5f, 0.5f,  -0.5f,     0.0f,  0.0f, -1.0f,    1.0f, 1.0f,  
-                -0.5f, 0.5f,  -0.5f,     0.0f,  0.0f, -1.0f,    0.0f, 1.0f,  
-                -0.5f, -0.5f, -0.5f,     0.0f,  0.0f, -1.0f,    0.0f, 0.0f,  
-
+                -0.5f, -0.5f, -0.5f,     0.0f,  0.0f, -1.0f,    0.0f, 0.0f,
+                0.5f, -0.5f, -0.5f,     0.0f,  0.0f, -1.0f,    1.0f, 0.0f, 
+                0.5f, 0.5f,  -0.5f,     0.0f,  0.0f, -1.0f,    1.0f, 1.0f, 
+                0.5f, 0.5f,  -0.5f,     0.0f,  0.0f, -1.0f,    1.0f, 1.0f, 
+                -0.5f, 0.5f,  -0.5f,     0.0f,  0.0f, -1.0f,    0.0f, 1.0f,
+                -0.5f, -0.5f, -0.5f,     0.0f,  0.0f, -1.0f,    0.0f, 0.0f,
+                                                                              
                 -0.5f, -0.5f,  0.5f,     0.0f,  0.0f, 1.0f,     0.0f, 0.0f,
-                0.5f, -0.5f,  0.5f,     0.0f,  0.0f, 1.0f,     1.0f, 0.0f,
-                0.5f,  0.5f,  0.5f,     0.0f,  0.0f, 1.0f,     1.0f, 1.0f,
-                0.5f,  0.5f,  0.5f,     0.0f,  0.0f, 1.0f,     1.0f, 1.0f,
+                0.5f, -0.5f,  0.5f,     0.0f,  0.0f, 1.0f,     1.0f, 0.0f, 
+                0.5f,  0.5f,  0.5f,     0.0f,  0.0f, 1.0f,     1.0f, 1.0f, 
+                0.5f,  0.5f,  0.5f,     0.0f,  0.0f, 1.0f,     1.0f, 1.0f, 
                 -0.5f,  0.5f,  0.5f,     0.0f,  0.0f, 1.0f,     0.0f, 1.0f,
                 -0.5f, -0.5f,  0.5f,     0.0f,  0.0f, 1.0f,     0.0f, 0.0f,
-
+                                                                           
                 -0.5f,  0.5f,  0.5f,     -1.0f,  0.0f, 0.0f,    0.0f, 0.0f,
                 -0.5f,  0.5f, -0.5f,     -1.0f,  0.0f, 0.0f,    1.0f, 0.0f,
                 -0.5f, -0.5f, -0.5f,     -1.0f,  0.0f, 0.0f,    1.0f, 1.0f,
                 -0.5f, -0.5f, -0.5f,     -1.0f,  0.0f, 0.0f,    1.0f, 1.0f,
                 -0.5f, -0.5f,  0.5f,     -1.0f,  0.0f, 0.0f,    0.0f, 1.0f,
                 -0.5f,  0.5f,  0.5f,     -1.0f,  0.0f, 0.0f,    0.0f, 0.0f,
-
+                                                                           
                 0.5f,  0.5f,  0.5f,      1.0f,  0.0f,  0.0f,    0.0f, 0.0f,
                 0.5f,  0.5f, -0.5f,      1.0f,  0.0f,  0.0f,    1.0f, 0.0f,
                 0.5f, -0.5f, -0.5f,      1.0f,  0.0f,  0.0f,    1.0f, 1.0f,
                 0.5f, -0.5f, -0.5f,      1.0f,  0.0f,  0.0f,    1.0f, 1.0f,
                 0.5f, -0.5f,  0.5f,      1.0f,  0.0f,  0.0f,    0.0f, 1.0f,
                 0.5f,  0.5f,  0.5f,      1.0f,  0.0f,  0.0f,    0.0f, 0.0f,
-
+                                                                           
                 -0.5f, -0.5f, -0.5f,     0.0f, -1.0f, 0.0f,     0.0f, 0.0f,
-                0.5f, -0.5f, -0.5f,     0.0f, -1.0f, 0.0f,     1.0f, 0.0f,
-                0.5f, -0.5f,  0.5f,     0.0f, -1.0f, 0.0f,     1.0f, 1.0f,
-                0.5f, -0.5f,  0.5f,     0.0f, -1.0f, 0.0f,     1.0f, 1.0f,
+                0.5f, -0.5f, -0.5f,     0.0f, -1.0f, 0.0f,      1.0f, 0.0f,
+                0.5f, -0.5f,  0.5f,     0.0f, -1.0f, 0.0f,      1.0f, 1.0f,
+                0.5f, -0.5f,  0.5f,     0.0f, -1.0f, 0.0f,      1.0f, 1.0f,
                 -0.5f, -0.5f,  0.5f,     0.0f, -1.0f, 0.0f,     0.0f, 1.0f,
                 -0.5f, -0.5f, -0.5f,     0.0f, -1.0f, 0.0f,     0.0f, 0.0f,
-
-                -0.5f,  0.5f, -0.5f,     0.0f,  1.0f, 0.0f,     0.0f, 0.0f,
-                0.5f,  0.5f, -0.5f,     0.0f,  1.0f, 0.0f,     1.0f, 0.0f,
-                0.5f,  0.5f,  0.5f,     0.0f,  1.0f, 0.0f,     1.0f, 1.0f,
-                0.5f,  0.5f,  0.5f,     0.0f,  1.0f, 0.0f,     1.0f, 1.0f,
-                -0.5f,  0.5f,  0.5f,     0.0f,  1.0f, 0.0f,     0.0f, 1.0f,
-                -0.5f,  0.5f, -0.5f,     0.0f,  1.0f, 0.0f,     0.0f, 0.0f
+                                                                           
+                -0.5f,  0.5f, -0.5f,     0.0f,  1.0f, 0.0f,    0.0f, 0.0f, 
+                0.5f,  0.5f, -0.5f,     0.0f,  1.0f, 0.0f,     1.0f, 0.0f, 
+                0.5f,  0.5f,  0.5f,     0.0f,  1.0f, 0.0f,     1.0f, 1.0f, 
+                0.5f,  0.5f,  0.5f,     0.0f,  1.0f, 0.0f,     1.0f, 1.0f, 
+                -0.5f,  0.5f,  0.5f,     0.0f,  1.0f, 0.0f,    0.0f, 1.0f, 
+                -0.5f,  0.5f, -0.5f,     0.0f,  1.0f, 0.0f,    0.0f, 0.0f
             };
             
             std::vector<unsigned int> indices;
@@ -84,7 +85,7 @@ namespace Azazel
                 indices[i] = i;
             }
 
-            Mesh<Vertex_P3_N3_T2> mesh(vertices, indices);
+            Mesh mesh = Mesh::createMesh<Vertex_P3_N3_T2>(vertices, indices);
             return Model({ mesh });
         }
 
@@ -127,7 +128,7 @@ namespace Azazel
                 }
             }
 
-            Mesh<Vertex_P3_N3_T2> mesh(vertices, indices);
+            Mesh mesh = Mesh::createMesh<Vertex_P3_N3_T2>(vertices, indices);
             std::shared_ptr<Texture> texture(Texture::create(512, 512, 0xffffffff));
             mesh.textures.push_back(texture);
             return Model({mesh});

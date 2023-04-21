@@ -54,7 +54,7 @@ namespace Azazel
         glm::mat4 mvp = orthographicCamera.getViewProjectionMatrix();
         testShader->bind();
         testShader->setMatrix4f("u_mvp", mvp)->setFloat("u_radius", r.x)->setFloat("u_thickness", r.y);
-        gridMesh.draw(*testShader);
+       // gridMesh.draw(*testShader);
         mvp = orthographicCamera.getViewProjectionMatrix() * glm::translate(glm::mat4(1.0f), glm::vec3{0.1f, 0.3f, 0.0f}) * glm::rotate(glm::mat4(1.0f), glm::radians((float) glfwGetTime()* 10.0f), {1.0f, 0.0f, 1.0f}) * glm::scale(glm::mat4(1.0f), {0.4f, 0.40f, 0.4f});
        
         Render::getRender()->setDepthTest(true);

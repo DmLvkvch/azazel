@@ -9,6 +9,7 @@
 #include "camera/Camera.h"
 #include "Types.h"
 #include <memory>
+#include "Mesh.h"
 
 namespace Azazel
 {
@@ -25,9 +26,6 @@ namespace Azazel
             trianglesCount = 0;
         }
     };
-
-    template <class T>
-    class Mesh;
 
     class Render
     {
@@ -90,14 +88,12 @@ namespace Azazel
     
         virtual void drawArrays(const VertexArray& vertexArray, const Shader& shader, int vertexCount) = 0;
 
-        template <typename T>
-        void drawMesh(const Mesh<T>& mesh, const Shader& shader, const Texture& texture)
+        void drawMesh(const Mesh& mesh, const Shader& shader, const Texture& texture)
         {
             drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader);
         }
 
-        template <typename T>
-        void drawMesh(const Mesh<T>& mesh, const Shader& shader)
+        void drawMesh(const Mesh& mesh, const Shader& shader)
         {
             drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader);
         }

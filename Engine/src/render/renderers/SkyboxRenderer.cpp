@@ -40,7 +40,7 @@ namespace Azazel
         shader->setMatrix4f("view", glm::mat4(glm::mat3(camera->getViewMatrix())));
         shader->setMatrix4f("projection", camera->getProjectionMatrix());
         cubeMap->bind();
-        Render::getRender()->drawMesh<Vertex_P3>(mesh, *shader);
+        Render::getRender()->drawMesh(mesh, *shader);
         Render::getRender()->setCullFace(true);
     }
 }
