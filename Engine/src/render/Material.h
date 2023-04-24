@@ -21,6 +21,7 @@ namespace Azazel
             VEC4,
             MAT4,
             TEXTURE,
+            BOOL,
             UNKNOWN
         };
 
@@ -65,6 +66,12 @@ namespace Azazel
             type = TEXTURE;
         }
 
+        void setValue(bool value)
+        {
+            this->value = value;
+            type = BOOL;
+        }
+
         void applyProperty(const std::string& name, Shader& shader, int& slot)
         {
             switch (type)
@@ -90,6 +97,9 @@ namespace Azazel
                 shader.setTexture(name, *std::get<std::shared_ptr<Texture>>(value), slot);
                 slot++;
                 break;
+            case Azazel::MaterialProperty::BOOL:
+                shader.setBool(name, std::get<bool>(value));
+                break;
             case Azazel::MaterialProperty::UNKNOWN:
                 break;
             default:
@@ -98,7 +108,7 @@ namespace Azazel
         }
 
         ShaderPropertyType type = UNKNOWN;
-        std::variant<float, int, glm::vec2, glm::vec3, glm::vec4, glm::mat4, std::shared_ptr<Texture>> value;
+        std::variant<float, int, bool, glm::vec2, glm::vec3, glm::vec4, glm::mat4, std::shared_ptr<Texture>> value;
 
     };
 
@@ -116,12 +126,7 @@ namespace Azazel
             }
         }
 
-        void putProperty(const std::string& name, MaterialProperty property)
-        {
-            updateProperty(name, property);
-        }
-
-        void updateProperty(const std::string& name, MaterialProperty property)
+        void setProperty(const std::string& name, MaterialProperty property)
         {
             properties[name] = property;
         }

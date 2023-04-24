@@ -8,7 +8,7 @@
 #include <numeric>
 #include <vector>
 
-namespace Engine::Render3D {
+namespace Azazel {
 
     class Utils {
     public:

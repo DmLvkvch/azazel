@@ -4,16 +4,35 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include "TextureUtils.h"
+#include "api/file/FileUtils.h"
 #include "Render.h"
 
 namespace Azazel
 {
+    std::string getValue(std::string& key)
+    {
+        int index = key.find_first_of('=', 0);
+        return key.substr(index, key.size());
+    }
+
+    std::string getValue(const char* key)
+    {
+        return "";
+    }
+
+    Model Model::createModel(const std::string& path, int i)
+    {
+
+        Model model;
+        return model;
+    }
+
 
     Model Model::createModel(const std::string& path)
     {
         Model model;
         model.loadModel(path);
-        return std::move(model);
+        return model;
     }
 
     Model::Model(Mesh& mesh)
@@ -49,12 +68,11 @@ namespace Azazel
         shader.setMatrix4f("u_normal_matrix", glm::transpose(glm::inverse(glm::mat3(modelMatrix))));
         for (const auto& mesh : meshes)
         {
-            for (int i = 0;i < mesh.textures.size(); i++)
+            if (mesh.material)
             {
-                std::string textureName = std::to_string(i);
-                textureName = "u_texture_" + textureName;
-                shader.setTexture(textureName, *mesh.textures[i], i);
-            }    
+                auto m = mesh.material;
+                m->applyProperties(shader);
+            }
             Render::getRender()->drawMesh(mesh, shader);
         }
     }
@@ -110,10 +128,23 @@ namespace Azazel
             }
             vertices.push_back(vertex);
         }
+        Material mat{};
         if(mesh->mMaterialIndex >= 0)
         {
             aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
             loadTextures(scene, material, aiTextureType_DIFFUSE, textures, directory);
+            MaterialProperty prop;
+            prop.setValue(textures.at(0));
+            mat.setProperty("diffuse", prop);
+            loadTextures(scene, material, aiTextureType_NORMALS, textures, directory);
+            if (textures.size() > 1)
+            {
+                MaterialProperty prop;
+                prop.setValue(textures.at(1));
+                mat.setProperty("normal", prop);
+                prop.setValue(true);
+                mat.setProperty("hasNormal", prop);
+            }
         }
         
         for (unsigned int i = 0; i < mesh->mNumFaces; i++)
@@ -127,6 +158,7 @@ namespace Azazel
         }
         auto m = Mesh::createMesh<Vertex_P3_N3_T2_TAN3_BTAN_3>(vertices, indices);
         m.textures = std::move(textures);
+        m.material = mat;
         return m;
     }
 
@@ -160,6 +192,7 @@ namespace Azazel
             texture.reset(Texture::create(textureData));
             TextureUtils::freeTextureData(textureData);
             textures.push_back(texture);
+           
         }
     }
 

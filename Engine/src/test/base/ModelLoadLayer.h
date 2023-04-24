@@ -36,6 +36,8 @@ namespace Azazel
         Model floor;
         Model cube;
         Model sphere;
+
+        Model cerberus;
         Material material;
         SkyboxRenderer sbr;
         HdrRenderer hdrRenderer;

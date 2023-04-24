@@ -7,6 +7,8 @@
 #include "render/Texture.h"
 #include <memory>
 #include <vector>
+#include <optional>
+#include "Material.h"
 
 namespace Azazel
 {
@@ -56,7 +58,7 @@ namespace Azazel
         }
 
         std::vector<std::shared_ptr<Texture>> textures;
-
+        std::optional<Material> material = std::nullopt;
     private:
         BufferLayout layout;
         std::shared_ptr<VertexArray> vertexArray;

@@ -9,6 +9,7 @@
 #include "render/Shader.h"
 #include "render/Transform.h"
 #include "render/Texture.h"
+#include "Material.h"
 
 namespace Azazel
 {
@@ -21,6 +22,8 @@ namespace Azazel
         Model(const std::vector<Mesh>& meshes);
 
         Model(Mesh& mesh);
+
+        static Model createModel(const std::string& path, int i);
 
         static Model createModel(const std::string& path);
 

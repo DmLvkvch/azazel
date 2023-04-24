@@ -11,6 +11,7 @@ namespace Azazel
 {
     ModelLoadLayer::ModelLoadLayer() : Layer("Model Load Example")
     {
+        model = Model::createModel("objects/Sponza/sponza.info", 0);
         model = Model::createModel("objects/Sponza/Sponza.gltf");
         model.transform.scale = { 0.003f, 0.003f, 0.003f };
         model.transform.position.y = 0.2f;
@@ -28,6 +29,12 @@ namespace Azazel
 
         sphere = ModelHelper::sphere(36, 36);
         sphere.transform.scale = { 0.5f, 0.5f, 0.5f };
+
+        cerberus = Model::createModel("objects/cerberus/cerberus.fbx");
+        cerberus.transform.scale = { 0.007f, 0.007f, 0.007f };
+        cerberus.transform.position.y += 0.9f;
+        cerberus.transform.rotation.x -= 90.0f;
+        cerberus.transform.rotation.z -= 90.0f;
 
         depthTexture = Texture::createDepthTexture(1024, 1024);
 
@@ -80,7 +87,7 @@ namespace Azazel
         //  light->setVec3f("u_material.diffuse", { 1.0f, 0.5f, 0.31f });
         //  light->setVec3f("u_material.specular", { 0.5f, 0.5f, 0.5f });
         //  light->setFloat("u_material.shininess", 128.0f);
-        cube.transform.rotation.y += delta / 10.0f;
+      //  cube.transform.rotation.y += delta / 10.0f;
     }
 
     void ModelLoadLayer::onRender(float delta)
@@ -93,9 +100,9 @@ namespace Azazel
 
         glm::vec3 lightPos;
 
-        lightPos.x = 10.0f + sin(glfwGetTime()) * 5.0f;
-        lightPos.z = cos(glfwGetTime()) * 10.0f;
-        lightPos.y = 8.0f + 4.0f * cos(glfwGetTime());
+        lightPos.x = 1.0f;
+        lightPos.z = -0.3f;
+        lightPos.y = -0.1f;
 
         sphere.transform.position = lightPos;
 
@@ -117,7 +124,7 @@ namespace Azazel
         renderer->clear(true, true, true);
 
         floor.draw(*shadowMap);
-
+        cerberus.draw(*shadowMap);
         model.draw(*shadowMap);
 
         cube.draw(*shadowMap);
@@ -153,6 +160,9 @@ namespace Azazel
 
         shadow->setMatrix4f(Shader::UNIFORM_MVP_MATRIX, camera->getViewProjectionMatrix() * sphere.transform.getTransformMatrix());
         sphere.draw(*shadow);
+
+        shadow->setMatrix4f(Shader::UNIFORM_MVP_MATRIX, camera->getViewProjectionMatrix() * cerberus.transform.getTransformMatrix());
+        cerberus.draw(*shadow);
         shadow->unbind();
 
         renderer->setDepthFunc(CompareFunction::LESS_EQUAL);
