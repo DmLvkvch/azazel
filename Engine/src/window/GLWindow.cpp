@@ -143,6 +143,7 @@ namespace Azazel
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+
         glfwWindowHint(GLFW_SAMPLES, 4);
         window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
         
@@ -152,7 +153,7 @@ namespace Azazel
             glfwTerminate();
         }
         glfwMakeContextCurrent(window);
-        setVSync(false);
+        setVSync(true);
         glfwSetWindowUserPointer(window, &windowData);
         initialized = true;
         return window;

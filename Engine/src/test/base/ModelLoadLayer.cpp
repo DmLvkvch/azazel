@@ -87,7 +87,7 @@ namespace Azazel
         //  light->setVec3f("u_material.diffuse", { 1.0f, 0.5f, 0.31f });
         //  light->setVec3f("u_material.specular", { 0.5f, 0.5f, 0.5f });
         //  light->setFloat("u_material.shininess", 128.0f);
-      //  cube.transform.rotation.y += delta / 10.0f;
+        cube.transform.rotation.y += delta / 10.0f;
     }
 
     void ModelLoadLayer::onRender(float delta)
@@ -100,9 +100,9 @@ namespace Azazel
 
         glm::vec3 lightPos;
 
-        lightPos.x = 1.0f;
-        lightPos.z = -0.3f;
-        lightPos.y = -0.1f;
+        lightPos.x = 10.0f + sin(glfwGetTime()) * 5.0f;
+        lightPos.z = cos(glfwGetTime()) * 10.0f;
+        lightPos.y = 8.0f + 4.0f * cos(glfwGetTime());
 
         sphere.transform.position = lightPos;
 
@@ -115,7 +115,7 @@ namespace Azazel
         shadowMap->bind();
         shadowMap->setMatrix4f("lightSpaceMatrix", lightSpaceMatrix);
 
-        renderer->setViewport(0, 0, 1280, 1024);
+        renderer->setViewport(0, 0, 1024, 1024);
 
         frameBuffer->bind();
 
@@ -138,7 +138,7 @@ namespace Azazel
       //  hdrRenderer.bind();
       
     //    renderer->clear(true, true, true);
-        renderer->setViewport(0, 0, 1280, 720);
+        renderer->setViewport(0, 0, 1280 * 2, 720 * 2);
         renderer->setCullFaceMode(CullMode::BACK);
 
        // renderer->setViewport(0, 0, 1024, 1024);

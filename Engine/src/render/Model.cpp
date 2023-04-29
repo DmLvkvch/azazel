@@ -135,7 +135,7 @@ namespace Azazel
             loadTextures(scene, material, aiTextureType_DIFFUSE, textures, directory);
             MaterialProperty prop;
             prop.setValue(textures.at(0));
-            mat.setProperty("diffuse", prop);
+            mat.setProperty("u_texture_0", prop);
             loadTextures(scene, material, aiTextureType_NORMALS, textures, directory);
             if (textures.size() > 1)
             {
