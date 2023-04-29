@@ -87,7 +87,7 @@ namespace Azazel
         //  light->setVec3f("u_material.diffuse", { 1.0f, 0.5f, 0.31f });
         //  light->setVec3f("u_material.specular", { 0.5f, 0.5f, 0.5f });
         //  light->setFloat("u_material.shininess", 128.0f);
-      //  cube.transform.rotation.y += delta / 10.0f;
+        cube.transform.rotation.y += delta / 10.0f;
     }
 
     void ModelLoadLayer::onRender(float delta)
