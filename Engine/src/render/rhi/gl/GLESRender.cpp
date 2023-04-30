@@ -57,6 +57,11 @@ namespace Azazel
         glViewport(x, y, width, height);
     }
 
+    void GLESRender::popViewport()
+    {
+
+    }
+
     void GLESRender::setScissor(bool enable)
     {
         if (enable)

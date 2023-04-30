@@ -27,6 +27,26 @@ namespace Azazel
         }
     };
 
+    struct Viewport
+    {
+        int x;
+        int y;
+        int width;
+        int height;
+
+        Viewport()
+        : x(0), y(0), width(1280), height(720)
+        {
+
+        }
+
+        Viewport(int x, int y, int width, int height)
+        : x(x), y(y), width(width), height(height)
+        {
+
+        }
+    };
+
     class Render
     {
     public:
@@ -45,6 +65,13 @@ namespace Azazel
         virtual void clear(bool color = true, bool depth = false, bool stencil = false) = 0;
 
         virtual void setViewport(int x, int y, int width, int height) = 0;
+
+        void setViewport(Viewport viewport)
+        {
+            setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+        }
+
+        virtual void popViewport() = 0;
 
         virtual void setScissor(bool enable) = 0;
     
@@ -130,5 +157,8 @@ namespace Azazel
         
         RenderStats renderStats;
         Camera* camera;
+        std::vector<Viewport> viewportStack;
+
+        Viewport defaultViewport;
     };
 }

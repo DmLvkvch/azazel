@@ -115,10 +115,9 @@ namespace Azazel
         shadowMap->bind();
         shadowMap->setMatrix4f("lightSpaceMatrix", lightSpaceMatrix);
 
-        renderer->setViewport(0, 0, 1024, 1024);
 
         frameBuffer->bind();
-
+        renderer->setViewport(0, 0, 1024, 1024);
         renderer->setCullFace(true);
         renderer->setCullFaceMode(CullMode::FRONT);
         renderer->clear(true, true, true);
@@ -138,7 +137,7 @@ namespace Azazel
       //  hdrRenderer.bind();
       
     //    renderer->clear(true, true, true);
-        renderer->setViewport(0, 0, 1280 * 2, 720 * 2);
+        renderer->setViewport(0, 0, 1280, 720);
         renderer->setCullFaceMode(CullMode::BACK);
 
        // renderer->setViewport(0, 0, 1024, 1024);

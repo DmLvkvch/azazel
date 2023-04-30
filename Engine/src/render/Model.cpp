@@ -137,7 +137,8 @@ namespace Azazel
             prop.setValue(textures.at(0));
             mat.setProperty("u_texture_0", prop);
             loadTextures(scene, material, aiTextureType_NORMALS, textures, directory);
-            if (textures.size() > 1)
+           // if (textures.size() > 1)
+            if (false)
             {
                 MaterialProperty prop;
                 prop.setValue(textures.at(1));

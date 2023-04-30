@@ -26,6 +26,8 @@ namespace Azazel
 
         void setViewport(int x, int y, int width, int height) override;
 
+        void popViewport() override;
+
         void setScissor(bool enable) override;
     
         void setScissor(int x, int y, int width, int height) override;
