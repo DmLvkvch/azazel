@@ -1,0 +1,22 @@
+{
+    "name": "Earth",
+    "model": "Earth.glb",
+    "transform":
+    {
+      "scale": {
+        "x": 0.007,
+        "y": 0.007,
+        "z": 0.007
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "position": {
+        "x": 10.5,
+        "y": 8.0,
+        "z": 0.0
+      }
+    }
+}

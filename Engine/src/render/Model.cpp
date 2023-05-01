@@ -6,23 +6,12 @@
 #include "TextureUtils.h"
 #include "api/file/FileUtils.h"
 #include "Render.h"
+#include <nlohmann/json.hpp>
 
 namespace Azazel
 {
-    std::string getValue(std::string& key)
-    {
-        int index = key.find_first_of('=', 0);
-        return key.substr(index, key.size());
-    }
-
-    std::string getValue(const char* key)
-    {
-        return "";
-    }
-
     Model Model::createModel(const std::string& path, int i)
     {
-
         Model model;
         return model;
     }

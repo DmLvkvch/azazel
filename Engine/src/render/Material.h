@@ -143,5 +143,12 @@ namespace Azazel
         {
         
         }
+
+        void setDiffuseTexture(std::shared_ptr<Texture> texture)
+        {
+            MaterialProperty prop;
+            prop.setValue(texture);
+            setProperty("u_texture_0", prop);
+        }
    };
 }

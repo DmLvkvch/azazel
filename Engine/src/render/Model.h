@@ -10,6 +10,7 @@
 #include "render/Transform.h"
 #include "render/Texture.h"
 #include "Material.h"
+#include <iostream>
 
 namespace Azazel
 {
@@ -31,12 +32,17 @@ namespace Azazel
         {
             this->meshes = std::move(model.meshes);
             this->textures = std::move(model.textures);
+            this->transform = std::move(model.transform);
+            std::cout<<"move"<<std::endl;
+
         }
 
         Model(const Model& model)
         {
             this->meshes = model.meshes;
             this->textures = model.textures;
+            this->transform = model.transform;
+            std::cout<<"copy"<<std::endl;
         }
 
         void draw(Shader& shader);
@@ -45,6 +51,8 @@ namespace Azazel
         {
             this->meshes = model.meshes;
             this->textures = model.textures;
+            this->transform = model.transform;
+            std::cout<<"copy="<<std::endl;
             return *this;
         }
 
@@ -52,6 +60,10 @@ namespace Azazel
         {
             this->meshes = std::move(model.meshes);
             this->textures = std::move(model.textures);
+            this->transform = std::move(model.transform);
+
+            std::cout<<"move="<<std::endl;
+
             return *this;
         }
 

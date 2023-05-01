@@ -6,20 +6,15 @@
 #include <functional>
 #include "resources/ResourceManager.h"
 #include "render/ModelHelper.h"
+#include <nlohmann/json.hpp>
 
 namespace Azazel
 {
     ModelLoadLayer::ModelLoadLayer() : Layer("Model Load Example")
     {
-        model = Model::createModel("objects/Sponza/sponza.info", 0);
-        model = Model::createModel("objects/Sponza/Sponza.gltf");
-        model.transform.scale = { 0.003f, 0.003f, 0.003f };
-        model.transform.position.y = 0.2f;
+        model = ResourceManagers::modelResourceManager->loadResource("objects/Sponza/cfg.json");
 
-        cube = Model::createModel("objects/earth/Earth.glb");
-        cube.transform.scale = { 0.007f, 0.007f, 0.007f };
-        cube.transform.position.x = 10.5f;
-        cube.transform.position.y = 8.0f;
+        cube = ResourceManagers::modelResourceManager->loadResource("objects/earth/cfg.json");
 
         floor = ModelHelper::floor();
         floor.transform.scale = { 20.0f, 20.0f, 1.0f };
@@ -30,11 +25,7 @@ namespace Azazel
         sphere = ModelHelper::sphere(36, 36);
         sphere.transform.scale = { 0.5f, 0.5f, 0.5f };
 
-        cerberus = Model::createModel("objects/cerberus/cerberus.fbx");
-        cerberus.transform.scale = { 0.007f, 0.007f, 0.007f };
-        cerberus.transform.position.y += 0.9f;
-        cerberus.transform.rotation.x -= 90.0f;
-        cerberus.transform.rotation.z -= 90.0f;
+        cerberus = ResourceManagers::modelResourceManager->loadResource("objects/cerberus/cfg.json");
 
         depthTexture = Texture::createDepthTexture(1024, 1024);
 
@@ -100,7 +91,7 @@ namespace Azazel
 
         glm::vec3 lightPos;
 
-        lightPos.x = 10.0f + sin(glfwGetTime()) * 5.0f;
+        lightPos.x = 0.0f + sin(glfwGetTime()) * 5.0f;
         lightPos.z = cos(glfwGetTime()) * 10.0f;
         lightPos.y = 8.0f + 4.0f * cos(glfwGetTime());
 
