@@ -5,19 +5,39 @@
 
 namespace Azazel
 {
-    GLESFrameBuffer::GLESFrameBuffer(std::shared_ptr<Texture> texture)
+    GLESFrameBuffer::GLESFrameBuffer(Texture* texture)
+    : GLESFrameBuffer(texture, static_cast<Texture*>(nullptr))
     {
         glGenFramebuffers(1, &rendererID);
         addColorAttachment(texture);
-        depthTarget = std::shared_ptr<FrameBufferTarget>(nullptr);
+        depthTarget = nullptr;
     }
 
-    GLESFrameBuffer::GLESFrameBuffer(std::shared_ptr<Texture> texture, std::shared_ptr<FrameBufferTarget> depthTarget)
+    GLESFrameBuffer::GLESFrameBuffer(Texture* texture, FrameBufferTarget* depthTarget)
     {
         glGenFramebuffers(1, &rendererID);
+        bind();
         addColorAttachment(texture);
         setDepthTarget(depthTarget);
+        
+        checkFrameBufferStatus();
+
+        unbind();
     }
+
+    GLESFrameBuffer::GLESFrameBuffer(Texture* texture, Texture* depthTarget)
+    {
+        glGenFramebuffers(1, &rendererID);
+        bind();
+
+        addColorAttachment(texture);
+        setDepthTarget(depthTarget);
+
+        checkFrameBufferStatus();
+
+        unbind();
+    }
+
 
     GLESFrameBuffer::~GLESFrameBuffer()
     {
@@ -34,30 +54,61 @@ namespace Azazel
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    void GLESFrameBuffer::addColorAttachment(std::shared_ptr<Texture> texture, int slot)
+    void GLESFrameBuffer::addColorAttachment(Texture* texture, int slot)
     {
-        unsigned int textureId = texture->getRendererId();
-        colorTextureTarget = texture;
-        bind();
+        if (!texture)
+        {
+            return;
+        }
+
+        unsigned int textureId = texture->getRendererID();
+        colorTextureTarget[slot] = texture;
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + slot, GL_TEXTURE_2D, textureId, 0);
+    }
+
+    int GLESFrameBuffer::checkFrameBufferStatus()
+    {
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         {
             std::cout << "ERROR::FRAMEBUFFER. Framebuffer is not complete attachment!" << std::endl;
+            //throw std::exception("FrameBuffer incomplete attachment." + glGetError());
+        }
+        return GL_FRAMEBUFFER_COMPLETE;
+    }
+
+    void GLESFrameBuffer::setDepthTarget(FrameBufferTarget* depthTarget)
+    {
+        if (!depthTarget)
+        {
+            return;
+        }
+        bind();
+        if (depthTarget->checkTargetType<FrameBufferTextureTarget>())
+        {
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTarget->getRendererID(), 0);
+        }
+        else
+        {
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthTarget->getRendererID()); 
         }
         unbind();
     }
 
-    void GLESFrameBuffer::setDepthTarget(std::shared_ptr<FrameBufferTarget> depthTarget)
+    void setDepthTarget(RenderBuffer* renderBuffer)
     {
-        bind();
-        // TODO
-        unbind();
+        if (!renderBuffer)
+        {
+            return;
+        }
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBuffer->getRendererID()); 
     }
 
-    void GLESFrameBuffer::setDepthTarget(std::shared_ptr<Texture> depthTexture)
+    void GLESFrameBuffer::setDepthTarget(Texture* depthTexture)
     {
-        bind();
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture->getRendererId(), 0);
-        unbind();
+        if (!depthTexture)
+        {
+            return;
+        }
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture->getRendererID(), 0);
     }
 }

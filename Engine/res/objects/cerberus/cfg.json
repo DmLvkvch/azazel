@@ -1,0 +1,22 @@
+{
+    "name": "Cerberus",
+    "model": "cerberus.fbx",
+    "transform":
+    {
+      "scale": {
+        "x": 0.007,
+        "y": 0.007,
+        "z": 0.007
+      },
+      "rotation": {
+        "x": -90.0,
+        "y": 0.0,
+        "z": -90.0
+      },
+      "position": {
+        "x": 0.0,
+        "y": 0.9,
+        "z": 0.0
+      }
+    }
+}

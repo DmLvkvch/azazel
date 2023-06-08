@@ -11,6 +11,7 @@ namespace Azazel
         GLESVertexArray();
         ~GLESVertexArray();
         void addBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer, const BufferLayout& layout) override;
+        void addBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer) override;
         void bind() const override;
         void unbind() const override;
     private:

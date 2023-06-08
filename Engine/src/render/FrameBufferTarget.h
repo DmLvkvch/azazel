@@ -2,7 +2,6 @@
 
 #include "Texture.h"
 #include "RenderBuffer.h"
-#include <memory>
 
 namespace Azazel
 {
@@ -12,8 +11,10 @@ namespace Azazel
         FrameBufferTarget() {}
         virtual ~FrameBufferTarget() {}
 
+        virtual unsigned int getRendererID() = 0;
+
         template<typename T>
-        bool checkTarget()
+        bool checkTargetType()
         {
             return dynamic_cast<T*> (this) != nullptr;
         }
@@ -22,18 +23,31 @@ namespace Azazel
     class FrameBufferTextureTarget : public FrameBufferTarget
     {
     public:
-        FrameBufferTextureTarget(std::shared_ptr<Texture> textureTarget) {}
+        FrameBufferTextureTarget(Texture* texture);
+
         virtual ~FrameBufferTextureTarget() {}
+
+        virtual unsigned int getRendererID() override
+        {
+            return texture->getRendererID();
+        }
+
     private:
-        std::shared_ptr<Texture> textureTarget;
+        Texture* texture;
     };
 
     class FrameBufferRenderBufferTarget : public FrameBufferTarget
     {
     public:
-        FrameBufferRenderBufferTarget(std::shared_ptr<RenderBuffer> renderBufferTarget) {}
+        FrameBufferRenderBufferTarget(RenderBuffer* renderBuffer);
+        
         virtual ~FrameBufferRenderBufferTarget() {}
+
+        virtual unsigned int getRendererID() override
+        {
+            return renderBuffer->getRendererID();
+        }
     private:
-        std::shared_ptr<RenderBuffer> renderBufferTarget;
+        RenderBuffer* renderBuffer;
     };
 }

@@ -6,7 +6,6 @@
 #include "render/rhi/vulkan/VKVertexBuffer.h"
 #endif
 
-
 namespace Azazel
 {
     VertexBuffer* VertexBuffer::create(const float* vertices, size_t size)

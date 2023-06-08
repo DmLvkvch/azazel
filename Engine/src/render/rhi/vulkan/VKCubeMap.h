@@ -1,6 +1,6 @@
 #pragma once
 
-#include "render/CubeMap.h"
+#include "render/Texture.h"
 
 namespace Azazel
 {
@@ -9,8 +9,8 @@ namespace Azazel
     public:
         VKCubeMap();
         ~VKCubeMap();
-        void bind() override;
-        void unbind() override;
+        void bind(int slot) const override;
+        void unbind() const override;
     private:
         unsigned int textureID;
     };

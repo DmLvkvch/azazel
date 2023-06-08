@@ -79,9 +79,15 @@ namespace Azazel
 		glUseProgram(0);
 	}
 
-	int GLESShader::getUniformLocation(const std::string& name) const
+	int GLESShader::getUniformLocation(const std::string& name)
 	{
+		auto uniformLocation = uniformLocationMap.find(name);
+		if (uniformLocation != uniformLocationMap.end())
+		{
+			return uniformLocation->second;
+		}
 		int location = glGetUniformLocation(rendererID, name.c_str());
+		uniformLocationMap[name] = location;
 		if (location == -1)
 		{
 			std::cout << "No active uniform variable with name " << name << " found" << std::endl;
@@ -91,37 +97,102 @@ namespace Azazel
 
 	Shader* GLESShader::setFloat(const std::string& name, float value)
 	{
-		glUniform1f(getUniformLocation(name), value);
+		int uniformLocation = getUniformLocation(name);
+		if (uniformLocation < 0)
+		{
+			return this;
+		}
+		glUniform1f(uniformLocation, value);
 		return this;
 	}
 
 	Shader* GLESShader::setVec4f(const std::string& name, const glm::vec4& vec4)
 	{
-		glUniform4f(getUniformLocation(name), vec4.x, vec4.y, vec4.z, vec4.w);
+		int uniformLocation = getUniformLocation(name);
+		if (uniformLocation < 0)
+		{
+			return this;
+		}
+		glUniform4f(uniformLocation, vec4.x, vec4.y, vec4.z, vec4.w);
 		return this;
 	}
 
 	Shader* GLESShader::setInt(const std::string& name, int value)
 	{
-		glUniform1i(getUniformLocation(name), value);
+		int uniformLocation = getUniformLocation(name);
+		if (uniformLocation < 0)
+		{
+			return this;
+		}
+		glUniform1i(uniformLocation, value);
+		return this;
+	}
+
+    Shader* GLESShader::setTexture(const std::string& name, const Texture& texture, int slot)
+	{
+		int uniformLocation = getUniformLocation(name);
+		if (uniformLocation < 0)
+		{
+			return this;
+		}
+		texture.bind(slot);
+		glUniform1i(uniformLocation, slot);
+		return this;
+	}
+
+    Shader* GLESShader::setTextureCube(const std::string& name, const CubeMap& cubeMap, int slot)
+	{
+		int uniformLocation = getUniformLocation(name);
+		if (uniformLocation < 0)
+		{
+			return this;
+		}
+		cubeMap.bind(slot);
+		glUniform1i(uniformLocation, slot);
 		return this;
 	}
 
 	Shader* GLESShader::setMatrix4f(const std::string& name, const glm::mat4& mvp)
 	{
-		glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &mvp[0][0]);
+		int uniformLocation = getUniformLocation(name);
+		if (uniformLocation < 0)
+		{
+			return this;
+		}
+		glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &mvp[0][0]);
         return this;
 	}
 
 	Shader* GLESShader::setVec3f(const std::string& name, const glm::vec3& vec3)
 	{
-		glUniform3fv(getUniformLocation(name), 1, &vec3.x);
+		int uniformLocation = getUniformLocation(name);
+		if (uniformLocation < 0)
+		{
+			return this;
+		}
+		glUniform3fv(uniformLocation, 1, &vec3.x);
         return this;
 	}
 
 	Shader* GLESShader::setVec2f(const std::string& name, const glm::vec2& vec2)
 	{
-		glUniform2fv(getUniformLocation(name), 1, &vec2.x);
+		int uniformLocation = getUniformLocation(name);
+		if (uniformLocation < 0)
+		{
+			return this;
+		}
+		glUniform2fv(uniformLocation, 1, &vec2.x);
         return this;
+	}
+
+    Shader* GLESShader::setBool(const std::string& name, bool value)
+	{
+		int uniformLocation = getUniformLocation(name);
+		if (uniformLocation < 0)
+		{
+			return this;
+		}
+		glUniform1i(uniformLocation, value);
+		return this;
 	}
 }

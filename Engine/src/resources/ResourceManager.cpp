@@ -2,9 +2,11 @@
 
 namespace Azazel
 {
-    TextureResourceManager* TextureResourceManager::textureManager = new TextureResourceManager();
+    std::unique_ptr<TextureResourceManager> ResourceManagers::textureResourceManager(new TextureResourceManager());
 
-    TextureDataResourceManager* TextureDataResourceManager::textureDataManager = new TextureDataResourceManager();
-    
-    ShaderResourceManager* ShaderResourceManager::shaderManager = new ShaderResourceManager();
+    std::unique_ptr<TextureDataResourceManager> ResourceManagers::textureDataResourceManager(new TextureDataResourceManager());
+
+    std::unique_ptr<ShaderResourceManager> ResourceManagers::shaderResourceManager(new ShaderResourceManager());
+
+    std::unique_ptr<ModelResourceManager> ResourceManagers::modelResourceManager(new ModelResourceManager());
 }

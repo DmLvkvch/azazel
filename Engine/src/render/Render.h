@@ -7,81 +7,45 @@
 #include "render/Texture.h"
 #include "render/Vertex.h"
 #include "camera/Camera.h"
+#include "Types.h"
 #include <memory>
+#include "Mesh.h"
 
 namespace Azazel
 {
-
-    enum class CullMode
+    struct RenderStats
     {
-        Front,
-        Back,
-        FrontAndBack,
-        None
+        int drawCalls = 0;
+        int gpuMemoryUsage = 0;
+        int trianglesCount = 0;
+
+        void reset()
+        {
+            drawCalls = 0;
+            gpuMemoryUsage = 0;
+            trianglesCount = 0;
+        }
     };
 
-    enum class CullFront
+    struct Viewport
     {
-        Cw,
-        Ccw
-    };
+        int x;
+        int y;
+        int width;
+        int height;
 
-    enum class BlendEquation
-    {
-        Add,
-        Subtract,
-        ReverseSubtract,
-        Min,
-        Max,
-        None
-    };
+        Viewport()
+        : x(0), y(0), width(1280), height(720)
+        {
 
-    enum class BlendFunction
-    {
-        Zero,
-        One,
-        SrcColor,
-        OneMinusSrcColor,
-        DstColor,
-        OneMinusDstColor,
-        SrcAlpha,
-        OneMinusSrcAlpha,
-        DstAlpha,
-        OneMinusDstAlpha,
-        ConstantColor,
-        OneMinusConstantColor,
-        ConstantAlpha,
-        OneMinusConstantAlpha,
-        SrcAlphaSaturate,
-        None
-    };
+        }
 
-    enum class CompareFunction
-    {
-        Never,
-        Less,
-        Equal,
-        LessOrEqual,
-        Greater,
-        NotEqual,
-        GreaterOrEqual,
-        Always,
-    };
+        Viewport(int x, int y, int width, int height)
+        : x(x), y(y), width(width), height(height)
+        {
 
-    enum class StencilFunc
-    {
-        Keep,
-        Zero,
-        Replace,
-        Incr,
-        IncrWrap,
-        Decr,
-        DecrWrap,
-        Invert
+        }
     };
-
-    template <class T>
-    class Mesh;
 
     class Render
     {
@@ -102,6 +66,13 @@ namespace Azazel
 
         virtual void setViewport(int x, int y, int width, int height) = 0;
 
+        void setViewport(Viewport viewport)
+        {
+            setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+        }
+
+        virtual void popViewport() = 0;
+
         virtual void setScissor(bool enable) = 0;
     
         virtual void setScissor(int x, int y, int width, int height) = 0;
@@ -118,21 +89,46 @@ namespace Azazel
 
         virtual void setDepthTest(bool enable) = 0;
 
+        virtual void setDepthMask(bool enable) = 0;
+
+        virtual void setDepthFunc(CompareFunction compareFunction) = 0;
+
         virtual void setStencilTest(bool enable) = 0;
+
+        virtual void setStencilMask(unsigned int mask) = 0;
+
+        virtual void setStencilFunc(CompareFunction compareFunction, int ref, unsigned int mask) = 0;
+
+        virtual void setStencilOp(StencilOperation sfail, StencilOperation dpfail, StencilOperation dppass) = 0;
+
+        virtual void setStencilOpSeparate(CullMode face, StencilOperation sfail, StencilOperation dpfail, StencilOperation dppass) = 0;
 
         virtual void setBlend(bool enable) = 0;
 
         virtual void drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) = 0;
 
-        virtual void drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture) = 0;
+        virtual void drawIndexedInstanced(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, int instanceCount) = 0;
+
+        virtual void drawIndexedInstanced(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture, int instanceCount) = 0;
 
         virtual void drawArrays(const VertexArray& vertexArray, const Shader& shader, const Texture& texture) = 0;
+    
+        virtual void drawArrays(const VertexArray& vertexArray, const Shader& shader, int vertexCount) = 0;
 
-        template <typename T>
-        void drawMesh(const Mesh<T>& mesh, const Shader& shader, const Texture& texture);
+        void drawMesh(const Mesh& mesh, const Shader& shader, const Texture& texture)
+        {
+            drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader);
+        }
 
-        template <typename T>
-        void drawMesh(const Mesh<T>& mesh, const Shader& shader);
+        void drawMesh(const Mesh& mesh, const Shader& shader)
+        {
+            drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader);
+        }
+
+        virtual void drawRect()
+        {
+            
+        }
 
         virtual void reset() = 0;
 
@@ -140,36 +136,29 @@ namespace Azazel
 
         virtual void setBlendEquation(BlendEquation blendEquation) = 0;
         
+        virtual void setFramebufferSRGB(bool enable) = 0;
+
         virtual void beginScene() = 0;
 
         virtual void endScene() = 0;
 
-        const Camera& getCamera() const
+        Camera* getCamera()
         {
             return camera;
         }
 
-        void setCamera(const Camera& camera)
+        void setCamera(Camera* camera)
         {
             this->camera = camera;
         }
 
-    private:
+    protected:
         static std::unique_ptr<Render> render;
         
-        Camera camera;
-        int drawCalls;
+        RenderStats renderStats;
+        Camera* camera;
+        std::vector<Viewport> viewportStack;
+
+        Viewport defaultViewport;
     };
-
-    template <typename T> 
-    void Render::drawMesh(const Mesh<T>& mesh, const Shader& shader, const Texture& texture)
-    {
-        drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader, texture);
-    }
-
-    template <typename T> 
-    void Render::drawMesh(const Mesh<T>& mesh, const Shader& shader)
-    {
-        drawIndexed(*mesh.vertexArray, *mesh.indexBuffer, shader);
-    }
 }

@@ -4,6 +4,7 @@
 
 namespace Azazel
 {
+
     class GLESVertexBuffer : public VertexBuffer
     {
     public:
@@ -13,6 +14,8 @@ namespace Azazel
         void unbind() const override;
         void setLayout(const BufferLayout& bufferlayout) override;
         void updateSubData(int offset, void* data, int size) override;
+        void updateData(void* data, int size) override;
+
         const BufferLayout& getBufferLayout() const override;
     private:
         unsigned int rendererID;

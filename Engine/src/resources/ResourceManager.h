@@ -1,52 +1,21 @@
 #pragma once
 
-#include <unordered_map>
-#include <string>
-#include <memory>
-#include "render/Shader.h"
-#include "render/Texture.h"
+#include "ShaderResourceManager.h"
+#include "TextureResourceManager.h"
+#include "ModelResourceManager.h"
 
 namespace Azazel
 {
-    template <typename T>
-    class ResourceManager
+    class ResourceManagers
     {
     public:
-        virtual T loadResource(const std::string& path) = 0;
-    private:
-        std::unordered_map<std::string, T> resources;   
-    };
 
-    class TextureResourceManager : public ResourceManager<std::shared_ptr<Texture>>
-    {
-    public:
-        std::shared_ptr<Texture> loadResource(const std::string& path)
-        {
-            return std::shared_ptr<Texture>();
-        }
-    private:
-        static TextureResourceManager* textureManager;
-    };
+        static std::unique_ptr<TextureResourceManager> textureResourceManager;
+        
+        static std::unique_ptr<TextureDataResourceManager> textureDataResourceManager;
 
-    class TextureDataResourceManager : public ResourceManager<std::shared_ptr<TextureData>>
-    {
-    public:
-        std::shared_ptr<TextureData> loadResource(const std::string& path)
-        {
-            return std::shared_ptr<TextureData>();
-        }
-    private:
-        static TextureDataResourceManager* textureDataManager;
-    };
+        static std::unique_ptr<ShaderResourceManager> shaderResourceManager;
 
-    class ShaderResourceManager : public ResourceManager<std::shared_ptr<Shader>>
-    {
-    public:
-        std::shared_ptr<Shader> loadResource(const std::string& path)
-        {
-            return std::shared_ptr<Shader>();
-        }
-    private:
-        static ShaderResourceManager* shaderManager;
+        static std::unique_ptr<ModelResourceManager> modelResourceManager;
     };
 }

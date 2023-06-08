@@ -9,41 +9,50 @@
 #include "render/Shader.h"
 #include "render/Transform.h"
 #include "render/Texture.h"
+#include "Material.h"
 #include <iostream>
 
 namespace Azazel
 {
     class Model
     {
-    public:        
+    public:
+
         Model() = default;
 
-        Model(const std::vector<Mesh<Vertex_P3_N3_T2>>& meshes);
+        Model(const std::vector<Mesh>& meshes);
 
-        Model(const std::string& path);
+        Model(Mesh& mesh);
 
-        Model(Model&& model)
+        static Model createModel(const std::string& path, int i);
+
+        static Model createModel(const std::string& path);
+
+        Model(Model&& model) noexcept
         {
             this->meshes = std::move(model.meshes);
             this->textures = std::move(model.textures);
+            this->transform = std::move(model.transform);
+            std::cout<<"move"<<std::endl;
+
         }
 
         Model(const Model& model)
         {
             this->meshes = model.meshes;
             this->textures = model.textures;
+            this->transform = model.transform;
+            std::cout<<"copy"<<std::endl;
         }
 
-        void draw(const Shader& shader);
-
-        static Model cube();
-
-        Transform transform;
+        void draw(Shader& shader);
 
         Model& operator=(const Model& model)
         {
             this->meshes = model.meshes;
             this->textures = model.textures;
+            this->transform = model.transform;
+            std::cout<<"copy="<<std::endl;
             return *this;
         }
 
@@ -51,18 +60,28 @@ namespace Azazel
         {
             this->meshes = std::move(model.meshes);
             this->textures = std::move(model.textures);
+            this->transform = std::move(model.transform);
+
+            std::cout<<"move="<<std::endl;
+
             return *this;
         }
+
+    public:
+        Transform transform;
 
     private:
 
         void loadModel(const std::string& path);
 
+        void loadTextures(const aiScene* scene, aiMaterial* material,
+            aiTextureType textureType, std::vector<std::shared_ptr<Texture>>& textures, const std::string& directory);
+
         void processNode(aiNode* node, const aiScene* scene, const std::string& directory);
 
-        Mesh<Vertex_P3_N3_T2> processMesh(aiMesh* mesh, const aiScene* scene, const std::string& directory);
+        Mesh processMesh(aiMesh* mesh, const aiScene* scene, const std::string& directory);
     private:
-        std::vector<Mesh<Vertex_P3_N3_T2>> meshes;
+        std::vector<Mesh> meshes;
         std::vector<std::shared_ptr<Texture>> textures;
     };
 }

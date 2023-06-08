@@ -2,7 +2,10 @@
 
 #ifdef AZAZEL_GL
 #include "rhi/gl/GLESTexture.h"
+#include "rhi/gl/GLESDepthTexture.h"
+#include "render/rhi/gl/GLESCubeMap.h"
 #else
+#include "render/rhi/vulkan/VKCubeMap.h"
 #include "rhi/vulkan/VKTexture.h"
 #endif
 
@@ -38,7 +41,42 @@ namespace Azazel
 
     Texture* Texture::create(int width, int height, int color)
     {
-        TextureData textureData (width, height, color);
-        return create(textureData);
+        return new GLESTexture(width, height, color);
+    }
+
+    Texture* Texture::createDepthTexture(const TextureData& textureData)
+    {
+        #ifdef AZAZEL_GL
+        return new GLESDepthTexture(textureData);
+        #else
+        return nullptr;
+        #endif
+    }
+
+    Texture* Texture::createDepthTexture(int width, int height)
+    {
+        TextureData textureData(width, height, 4, nullptr);
+        #ifdef AZAZEL_GL
+        return new GLESDepthTexture(textureData);
+        #else
+        return nullptr;
+        #endif
+    }
+
+    CubeMap::CubeMap()
+    {
+    }
+
+    CubeMap::~CubeMap()
+    {
+    }
+    
+    CubeMap *CubeMap::create(std::array<TextureData, 6> textures)
+    {
+        #ifdef AZAZEL_GL
+        return new GLESCubeMap(textures);
+        #else 
+        return DBG_NEW VKCubeMap();
+        #endif
     }
 }

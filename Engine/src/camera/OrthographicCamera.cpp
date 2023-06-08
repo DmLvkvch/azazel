@@ -16,6 +16,7 @@ namespace Azazel
     {
         this->projectionMatrix = glm::ortho(left, right, bottom, top, near, far);
         this->position = glm::vec3{0.0f, 0.0f, 0.0f};
+        this->rotation = 0.0f;
         this->near = near;
         this->far = far;
         updateMatrix();

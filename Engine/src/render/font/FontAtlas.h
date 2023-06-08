@@ -15,6 +15,11 @@ namespace Azazel
             atlas = new char[size * size];
         }
 
+        ~FontAtlas()
+        {
+            delete[] atlas;
+        }
+
         Mesh<Vertex_P3_T2> renderText(std::string& text);
 
     private:

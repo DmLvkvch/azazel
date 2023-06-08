@@ -1,8 +1,10 @@
 #include "Input.h"
 
 #include "Application.h"
-#include "Window.h"
+#include "window/Window.h"
 #include <GLFW/glfw3.h>
+
+#include <iostream>
 
 namespace Azazel
 {
@@ -15,10 +17,12 @@ namespace Azazel
 
     Input::Input()
     {
+        std::cout << "Input constructor" << std::endl;
     }
 
     Input::~Input()
     {
+        std::cout << "Input destructor" << std::endl;
     }
 
     bool Input::isKeyPressed(int keycode)
@@ -48,6 +52,6 @@ namespace Azazel
         double x = 0.0;
         double y = 0.0;
         glfwGetCursorPos(window, &x, &y);
-        return { (float) x, (float) y };
+        return { static_cast<float> (x), static_cast<float> (y) };
     }
 }

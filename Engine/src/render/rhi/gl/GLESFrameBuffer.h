@@ -7,15 +7,18 @@ namespace Azazel
     class GLESFrameBuffer : public FrameBuffer
     {
     public:
-        GLESFrameBuffer(std::shared_ptr<Texture> texture);
-        GLESFrameBuffer(std::shared_ptr<Texture> texture, std::shared_ptr<FrameBufferTarget> depthTarget);
+        GLESFrameBuffer(Texture* texture);
+        GLESFrameBuffer(Texture* texture, FrameBufferTarget* depthTarget);
+        GLESFrameBuffer(Texture* texture, Texture* depthTarget);
         ~GLESFrameBuffer();
         void bind() const override;
         void unbind() const override;
-        void setDepthTarget(std::shared_ptr<FrameBufferTarget> depthTarget) override;
-        void setDepthTarget(std::shared_ptr<Texture> depthTexture) override;
-
-        void addColorAttachment(std::shared_ptr<Texture> colorTarget, int slot = 0) override;
+        void setDepthTarget(FrameBufferTarget* depthTarget) override;
+        void setDepthTarget(Texture* depthTexture) override;
+        void setDepthTarget(RenderBuffer* renderBuffer);
+        void addColorAttachment(Texture* colorTarget, int slot = 0) override;
+    private:
+        int checkFrameBufferStatus();
     private:
         unsigned int rendererID;
     };

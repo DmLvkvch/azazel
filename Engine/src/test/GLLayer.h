@@ -39,7 +39,7 @@ namespace Azazel
         
         Model model;
         
-        Mesh<Vertex_P3_T2> gridMesh;
+        Mesh gridMesh;
         
         std::unique_ptr<Texture> face;
 

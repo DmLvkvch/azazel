@@ -13,7 +13,7 @@ namespace Azazel
     {
     }
 
-    int VKRenderBuffer::getRendererId() const
+    int VKRenderBuffer::getRendererID() const
     {
         return rendererID;
     }

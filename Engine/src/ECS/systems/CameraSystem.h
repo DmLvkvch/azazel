@@ -1,15 +1,20 @@
 #pragma once
 
+#include "Application.h"
 #include "ECS/System.h"
 
 class Event;
 
 namespace Azazel
 {
-    class CameraSystem
+    class CameraSystem : public System
     {
     public:
-        void init();
+        void init()
+        {
+
+        }
+
 	    void update(float dt);
 
     private:

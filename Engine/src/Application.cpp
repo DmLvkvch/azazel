@@ -42,9 +42,8 @@ namespace Azazel
         {
             return;
         }
-        this->eventSubscribers.removeListener(id);
-        this->updateSubscribers.removeListener(id);
-
+        eventSubscribers.removeListener(id);
+        updateSubscribers.removeListener(id);
     }
 
     void Application::updateTargets(float delta)
@@ -54,19 +53,20 @@ namespace Azazel
 
     Application::Application()
     {
+        std::cout << "Application constuctor" << std::endl;
         delta = 0.0f;
-        window = std::unique_ptr<Window>(Window::create());
+        window.reset(Window::create());
         window->setEventCallback(std::bind(&Application::onEvent, this, std::placeholders::_1));
         Render::getRender()->init();
-        auto tmp = [](Event& e) {
-            std::cout<<"lambda "<<e.toString()<<std::endl;
-        };
-        eventSubscribers.addListener(tmp);
+        camera.reset(new Camera());
+        Render::getRender()->setCamera(camera.get());
     }
 
     Application::~Application()
     {
         eventSubscribers.clear();
+        updateSubscribers.clear();
+        std::cout << "Application destuctor" << std::endl;
     }
 
     void Application::onEvent(Event& e)
@@ -75,12 +75,12 @@ namespace Azazel
         {
             running = false;
         }
-
         for (auto layer : layerStack)
         {
             layer->onEvent(e);
         }
         eventSubscribers.dispatch(e);
+        camera->onEvent(e);
     }
 
     void Application::run()
@@ -93,11 +93,15 @@ namespace Azazel
             Render::getRender()->setClearColor({0.0f, 0.0f, 0.0f, 1.0f});
             Render::getRender()->clear(true, true, false);
 
+            #ifdef AZAZEL_GL
             ImGui_ImplOpenGL3_NewFrame();
             ImGui::NewFrame();
+            #else
+            // vulkan
+            #endif
             
             updateTargets(delta);
-
+            camera->onInputUpdate(delta);
             for (auto layer : layerStack)
             {
                 layer->onInputUpdate(delta);
@@ -105,15 +109,17 @@ namespace Azazel
                 layer->onUpdate(delta);
                 layer->onRender(delta);
             }
-
+            
+            #ifdef AZAZEL_GL
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            #else
+            #endif
 
             window->onUpdate(delta);
             Render::getRender()->endScene();
             auto stopTime = std::chrono::high_resolution_clock::now();
             delta = std::chrono::duration<float, std::chrono::milliseconds::period>(stopTime - startTime).count();
-            //std::cout<<delta<<std::endl;
         }
     }
 

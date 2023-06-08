@@ -17,11 +17,13 @@ namespace Azazel
 
         void unbind() const override;
         
-        int getUniformLocation(const std::string& name) const override;
-
         Shader* setFloat(const std::string& name, float value) override;
 
         Shader* setInt(const std::string& name, int value) override;
+
+        Shader* setTexture(const std::string& name, const Texture& texture, int slot) override;
+
+        Shader* setTextureCube(const std::string& name, const CubeMap& cubeMap, int slot) override;
 
 	    Shader* setVec4f(const std::string& name, const glm::vec4& vec4) override;
 
@@ -31,10 +33,13 @@ namespace Azazel
 
         Shader* setVec2f(const std::string& name, const glm::vec2& vec2) override;
 
+        Shader* setBool(const std::string& name, bool value) override;
+
     private:
         int getShaderType(const ShaderType& shaderType) const;
         unsigned int compile(const std::string& programCode, const ShaderType& shaderType);
-    
+        int getUniformLocation(const std::string& name);
+
     private:
         unsigned int rendererID;
         std::unordered_map<std::string, int> uniformLocationMap;

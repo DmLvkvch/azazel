@@ -1,0 +1,22 @@
+{
+    "name": "Sponza",
+    "model": "Sponza.gltf",
+    "transform":
+    {
+      "scale": {
+        "x": 0.003,
+        "y": 0.003,
+        "z": 0.003
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "position": {
+        "x": 0.2,
+        "y": 0.0,
+        "z": 0.0
+      }
+    }
+}

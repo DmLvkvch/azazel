@@ -1,10 +1,7 @@
 #include "BaseLayer.h"
 
 #include "TextureUtils.h"
-#include "FileUtils.h"
-#include "events/KeyEvent.h"
-#include "events/MouseEvent.h"
-#include "events/ApplicationEvent.h"
+#include "api/file/FileUtils.h"
 #include "render/Render.h"
 #include "render/Mesh.h"
 #include "resources/ResourceManager.h"
@@ -29,12 +26,17 @@ namespace Azazel
 
         shader.reset(Shader::create(FileUtils::readFile("shaders/default.vert.glsl"), FileUtils::readFile("shaders/default.frag.glsl")));
         camera = OrthographicCamera(0, 960, 0, 540);
-        texture.reset(Texture::create(TextureData(500, 500, 0xff0000ff)));
-        texture1.reset(Texture::create(TextureData(500, 500, 0x0000fff0)));
+        TextureData square1(500, 500, 0xff0000ff); 
+        texture.reset(Texture::create(square1));
+        TextureUtils::freeTextureData(square1);
+
+        TextureData square2(500, 500, 0x0000fff0);
+        texture1.reset(Texture::create(square2));
+        TextureUtils::freeTextureData(square2);
 
         transform.scale = { 100.0f, 100.0f, 0.0f };
         color = {0.0f, 0.0f, 0.0f, 1.0f};
-        mesh = Mesh<Vertex_P3_C4_T2>(vertices, indices);
+        mesh = Mesh::createMesh<Vertex_P3_C4_T2>(vertices, indices);
         
     }
 
@@ -50,15 +52,15 @@ namespace Azazel
     void BaseLayer::onRender(float delta)
     {
         Render::getRender()->setBlend(true);
-        Render::getRender()->setBlendFunc(BlendFunction::SrcAlpha, BlendFunction::OneMinusSrcAlpha);
+        Render::getRender()->setBlendFunc(BlendFunction::SRC_ALPHA, BlendFunction::ONE_MINUS_SRC_ALPHA);
 
         shader->bind();
         shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * transform.getTransformMatrix());
-        Render::getRender()->drawMesh<Vertex_P3_C4_T2>(mesh, *shader, *texture);
+       // Render::getRender()->drawMesh(mesh, *shader, *texture);
 
         shader->bind();
         shader->setMatrix4f("u_mvp", camera.getViewProjectionMatrix() * glm::translate(glm::mat4(1.0f), glm::vec3(400.0f, 400.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(200.0f, 200.0f, 1.0f)));
-        Render::getRender()->drawIndexed(*vertexArray, *indexBuffer, *shader, *texture1);
+        Render::getRender()->drawIndexed(*vertexArray, *indexBuffer, *shader);
     }
 
     void BaseLayer::onImguiRender(float delta)
@@ -104,23 +106,23 @@ namespace Azazel
                 {
                     if (item == "GL_FUNC_ADD")
                     {
-                        Render::getRender()->setBlendEquation(BlendEquation::Add);
+                        Render::getRender()->setBlendEquation(BlendEquation::ADD);
                     }
                     else if (item == "GL_FUNC_SUBTRACT")
                     {
-                        Render::getRender()->setBlendEquation(BlendEquation::Subtract);
+                        Render::getRender()->setBlendEquation(BlendEquation::SUBTRACT);
                     }
                     else if (item == "GL_FUNC_REVERSE_SUBTRACT")
                     {
-                        Render::getRender()->setBlendEquation(BlendEquation::ReverseSubtract);
+                        Render::getRender()->setBlendEquation(BlendEquation::REVERSE_SUBTRACT);
                     }
                     else if (item == "GL_MIN")
                     {
-                        Render::getRender()->setBlendEquation(BlendEquation::Min);
+                        Render::getRender()->setBlendEquation(BlendEquation::MIN);
                     }
                     else if (item == "GL_MAX")
                     {
-                        Render::getRender()->setBlendEquation(BlendEquation::Max);
+                        Render::getRender()->setBlendEquation(BlendEquation::MAX);
                     }
                 }
             }

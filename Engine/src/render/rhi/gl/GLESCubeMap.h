@@ -1,16 +1,16 @@
 #pragma once
 
-#include "render/CubeMap.h"
+#include "render/Texture.h"
 
 namespace Azazel
 {
     class GLESCubeMap : public CubeMap
     {
     public:
-        GLESCubeMap();
+        GLESCubeMap(std::array<TextureData, 6> textures);
         ~GLESCubeMap();
-        void bind() override;
-        void unbind() override;
+        void bind(int slot = 0) const override;
+        void unbind() const override;
     private:
         unsigned int textureID;
     };

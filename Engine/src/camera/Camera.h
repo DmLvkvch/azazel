@@ -11,9 +11,8 @@
 #include "events/ApplicationEvent.h"
 #include "IO/Input.h"
 #include "IO/KeyCodes.h"
-#include <iostream>
-#include "Application.h"
 
+#include <iostream>
 
 namespace Azazel
 {
@@ -34,7 +33,6 @@ namespace Azazel
     struct CameraLocation
     {
         glm::vec3 position { 0.0f, 0.0f, 0.0f };
-        glm::vec3 direction { 0.0f, 0.0f, -1.0f };
         glm::vec3 up { 0.0f, 1.0f, 0.0f };
         glm::vec3 front {0.0f, 0.0f, -1.0f};
     };
@@ -45,21 +43,12 @@ namespace Azazel
 
         Camera()
         {
-        }
-
-        void subscribe()
-        {
-            index = Application::getApplication()->subscribe(std::bind(&Camera::onEvent, this, std::placeholders::_1));
-        }
-
-        void unsubscribe()
-        {
-            Application::getApplication()->unsubscribe(index);
+            std::cout << "Camera constructor" << std::endl;
         }
 
         ~Camera()
         {
-            unsubscribe();
+            std::cout << "Camera destructor" << std::endl;
         }
 
         void onInputUpdate(float delta)
@@ -67,31 +56,58 @@ namespace Azazel
             float cameraSpeed = static_cast<float>(2.5 * delta) / 1000.0f;
             if (Input::getInput()->isKeyPressed(KEY_W))
             {
-                cameraLocation.position += cameraSpeed * cameraLocation.front;
+                moveForward(cameraSpeed);
             }
             if (Input::getInput()->isKeyPressed(KEY_S))
             {
-                cameraLocation.position -= cameraSpeed * cameraLocation.front;
+                moveForward(-cameraSpeed);
             }
             if (Input::getInput()->isKeyPressed(KEY_A))
             {
-                cameraLocation.position -= glm::normalize(glm::cross(cameraLocation.front, cameraLocation.up)) * cameraSpeed;
+                moveRight(cameraSpeed);
             }
             if (Input::getInput()->isKeyPressed(KEY_D))
             {
-                cameraLocation.position += glm::normalize(glm::cross(cameraLocation.front, cameraLocation.up)) * cameraSpeed;
+                moveRight(-cameraSpeed);
             }
+            if (Input::getInput()->isKeyPressed(KEY_Q))
+            {
+                moveUp(cameraSpeed);
+            }
+            if (Input::getInput()->isKeyPressed(KEY_E))
+            {
+                moveUp(-cameraSpeed);
+            }
+        }
+
+        const glm::vec3& getViewDirection() const
+        {
+            return cameraLocation.front;
+        }
+
+        const glm::vec3& getViewPosition() const
+        {
+            return cameraLocation.position;
         }
 
         void setPosition(const glm::vec3& position);
 
         void setDirection(const glm::vec3& direction);
 
-        void moveForward(float z);
+        void moveForward(float z)
+        {
+            cameraLocation.position += z * cameraLocation.front;
+        }
 
-        void moveRight(float x);
+        void moveRight(float z)
+        {
+            cameraLocation.position -= glm::normalize(glm::cross(cameraLocation.front, cameraLocation.up)) * z;
+        }
 
-        void moveUp(float y);
+        void moveUp(float z)
+        {
+            cameraLocation.position -= cameraLocation.up * z;
+        }
 
         void setLookAtPosition(const glm::vec3& lookAtPosition = glm::vec3(0.0f, 0.0f, 0.0f));
 
@@ -116,14 +132,22 @@ namespace Azazel
 
         glm::mat4 getViewProjectionMatrix()
         {
-            return getViewLookAtMatrix() * cameraProjection.getProjectionMatrix();
+            return getProjectionMatrix() * getViewMatrix();
         }
 
         void move(const glm::vec3& move);
 
         void zoomCamera(float offset)
         {
-
+            cameraProjection.fov -= offset;
+            if (cameraProjection.fov < 1.0f)
+            {
+                cameraProjection.fov = 1.0f;
+            }
+            if (cameraProjection.fov > 45.0f)
+            {
+                cameraProjection.fov = 45.0f;
+            }
         }
 
         void onEvent(Event& e)
@@ -131,19 +155,7 @@ namespace Azazel
             if (e.getEventType() == EventType::MouseScrolled)
             {
                 const MouseScrollEvent& ev = *(MouseScrollEvent*)(&e);
-                cameraProjection.fov -= (float) ev.getY();
-                if (cameraProjection.fov < 1.0f)
-                {
-                    cameraProjection.fov = 1.0f;
-                }
-                if (cameraProjection.fov > 45.0f)
-                {
-                    cameraProjection.fov = 45.0f;
-                }
-                cameraProjection.width = 1280.0f;
-                cameraProjection.height = 720.0f;
-                cameraProjection.near = 0.1f;
-                cameraProjection.far = 100.0f;
+                zoomCamera(ev.getY());
             }
             if (e.getEventType() == EventType::MousePressed)
             {
@@ -196,13 +208,13 @@ namespace Azazel
     private:
         void updateCamera();
 
-    private:
+    public:
         float yaw = -90.0f;
         float pitch = 0.0f;
         float lastX = 1280.0f / 2.0f;
         float lastY = 720.0f / 2.0f;
         
-        int index = -1;
+        size_t index = -1;
         bool lock = false;
         
         CameraLocation cameraLocation;

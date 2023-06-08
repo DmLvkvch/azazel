@@ -1,6 +1,5 @@
 #include "VKRender.h"
 
-#include "render/ConvertUtils.h"
 #include <iostream>
 
 namespace Azazel
@@ -148,6 +147,11 @@ namespace Azazel
 
     void VKRender::setBlendEquation(BlendEquation blendEquation)
     {
+    }
+
+    void VKRender::setFramebufferSRGB(bool enable)
+    {
+                
     }
 
     void VKRender::saveState()

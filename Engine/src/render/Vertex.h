@@ -8,7 +8,7 @@
 
 namespace Azazel
 {
-    enum ElementType
+    enum class ElementType
     {
         FLOAT,
         HALF,
@@ -86,7 +86,6 @@ namespace Azazel
         }
     };
 
-#pragma pack(push, 1)
     struct Vertex_P3_C4_T2
     {
     public:
@@ -170,7 +169,4 @@ namespace Azazel
 
         }
     };
-
-#pragma pack(pop)
-
 }

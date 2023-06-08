@@ -4,7 +4,7 @@
 #include "events/MouseEvent.h"
 #include "events/ApplicationEvent.h"
 #include "TextureUtils.h"
-#include "FileUtils.h"
+#include "api/file/FileUtils.h"
 #include "render/TextureData.h"
 #include "render/Render.h"
 
@@ -16,9 +16,9 @@
 #include <glm/ext/matrix_clip_space.hpp>
 
 #include <iostream>
-#include <fstream>
-#include <streambuf>
 #include <vector>
+#include "render/MeshHelper.h"
+#include "render/ModelHelper.h"
 
 namespace Azazel
 {
@@ -26,24 +26,16 @@ namespace Azazel
     void GLLayer::onAttach()
     {
 
-        model = Model::cube();
-        this->face.reset(Texture::create(TextureUtils::loadTexture("images/container2.png")));
+        model = ModelHelper::cube();
+        auto textureData = TextureUtils::loadTexture("images/container2.png");
+        this->face.reset(Texture::create(textureData));
+        TextureUtils::freeTextureData(textureData);
         
         shader.reset(Shader::create(FileUtils::readFile("shaders/default.vert.glsl"), FileUtils::readFile("shaders/default.frag.glsl")));
 
         testShader.reset(Shader::create(FileUtils::readFile("shaders/circle.vert.glsl"), FileUtils::readFile("shaders/circle.frag.glsl")));
         
-        std::vector<float> gridVerts
-        {
-            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-            -1.0f,  1.0f, 0.0f, 1.0f, 0.0f,
-             1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-             1.0f, -1.0f, 0.0f, 0.0f, 1.0f
-        };
-
-        std::vector<unsigned int> gridInds {0, 1, 2, 0, 2, 3};
-
-        gridMesh = Mesh<Vertex_P3_T2>(gridVerts, gridInds);
+        gridMesh = MeshHelper::genQuadMesh();
 
         orthographicCamera = OrthographicCamera(-2.0f, 2.0f, -2.0f, 2.0f);
     }
@@ -62,7 +54,7 @@ namespace Azazel
         glm::mat4 mvp = orthographicCamera.getViewProjectionMatrix();
         testShader->bind();
         testShader->setMatrix4f("u_mvp", mvp)->setFloat("u_radius", r.x)->setFloat("u_thickness", r.y);
-        gridMesh.draw(*testShader);
+       // gridMesh.draw(*testShader);
         mvp = orthographicCamera.getViewProjectionMatrix() * glm::translate(glm::mat4(1.0f), glm::vec3{0.1f, 0.3f, 0.0f}) * glm::rotate(glm::mat4(1.0f), glm::radians((float) glfwGetTime()* 10.0f), {1.0f, 0.0f, 1.0f}) * glm::scale(glm::mat4(1.0f), {0.4f, 0.40f, 0.4f});
        
         Render::getRender()->setDepthTest(true);

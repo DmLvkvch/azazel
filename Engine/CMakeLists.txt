@@ -15,17 +15,15 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 
-set(CMAKE_C_ARCHIVE_FINISH   "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
-set(CMAKE_CXX_ARCHIVE_FINISH "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
-
 include_directories ("vendor/glad/include"
                      "vendor/glfw"
                      "vendor/glm"
                      "vendor/freetype"
-                     "vendor/imgui"
+                     "vendor/imgui/imgui"
+                     "vendor/imgui/imgui/backends"
                      "vendor/assimp"
-                     "vendor/imgui/backends"
-                     "vendor"
+                     "vendor/stb_image"
+                     "vendor/json/include"
                      "src")
 
 OPTION (ASSIMP_BUILD_TESTS "If the test suite for Assimp is built in addition to the library." OFF)
@@ -36,10 +34,15 @@ add_subdirectory(vendor/glm)
 add_subdirectory(vendor/stb_image)
 add_subdirectory(vendor/freetype)
 add_subdirectory(vendor/assimp)
-add_subdirectory(vendor)
+add_subdirectory(vendor/imgui)
+
+if (APPLE)
+    set(CMAKE_C_ARCHIVE_FINISH   "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
+    set(CMAKE_CXX_ARCHIVE_FINISH "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
+endif()
 
 if(MSVC)
-    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")
 endif()
 
 file(GLOB_RECURSE ENGINE_SRC
@@ -58,7 +61,7 @@ if (APPLE)
     target_link_libraries(${PROJECT_NAME} "-framework Cocoa")
     target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
     target_link_libraries(${PROJECT_NAME} "-framework IOKit")
-endif (APPLE)
+endif ()
 
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} Vulkan::Vulkan glfw assimp stb_image glad glm::glm freetype IMGUI OpenGL::GL)
 
@@ -66,7 +69,6 @@ file(REMOVE ${CMAKE_BINARY_DIR}/shaders)
 file(REMOVE ${CMAKE_BINARY_DIR}/images)
 file(REMOVE ${CMAKE_BINARY_DIR}/textures)
 file(REMOVE ${CMAKE_BINARY_DIR}/fonts)
-
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/res/shaders/ DESTINATION ${CMAKE_BINARY_DIR}/shaders)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/res/images/ DESTINATION ${CMAKE_BINARY_DIR}/images)

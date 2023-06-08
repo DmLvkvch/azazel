@@ -14,21 +14,6 @@ namespace Azazel
 
     }
 
-    void Camera::moveRight(float x)
-    {
-        cameraLocation.position += glm::vec3(x, 0.0f, 0.0f);
-    }
-
-    void Camera::moveUp(float y)
-    {
-        cameraLocation.position += glm::vec3(0.0f, y, 0.0f);
-    }
-
-    void Camera::moveForward(float z)
-    {
-        cameraLocation.position += glm::vec3(0.0f, 0.0f, z);
-    }
-
     void Camera::setLookAtPosition(const glm::vec3& lookAtPosition)
     {
     }

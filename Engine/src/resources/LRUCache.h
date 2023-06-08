@@ -14,7 +14,7 @@ namespace Azazel
         using key_value_pair_t = std::pair<key_t, value_t>;
         using list_iterator_t = typename std::list<key_value_pair_t>::iterator;
 
-        LRUCache(int size) : 
+        LRUCache(int size = 50): 
         sz(size)
         {
         }
@@ -31,7 +31,7 @@ namespace Azazel
             
             cacheMap[key] = cacheList.begin();
             
-            if (cacheMap.size() > sz)
+            if (cacheMap.size() > sz && sz >= 0)
             {
                 auto last = --cacheList.end();
                 cacheMap.erase(last->first);
@@ -61,7 +61,7 @@ namespace Azazel
             return cacheList.end();
         }
 
-        bool exist(const key_t& key)
+        bool contains(const key_t& key)
         {
             return cacheMap.find(key) != cacheMap.end();
         }

@@ -4,18 +4,26 @@
 #include <iostream>
 #include "logging/Log.h"
 
+//#ifdef _DEBUG
+//#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+//#else
+//#define DBG_NEW new
+//#endif
+
 namespace Azazel
 {
     GLESTexture::GLESTexture(const TextureData& textureData)
     : Texture(textureData.width, textureData.height, textureData.bpp, textureData.data, Format::RGBA32)
     {
         createTexture(getWidth(), getHeight(), getBpp(), textureData.data);
+        data = nullptr;
     }
 
     GLESTexture::GLESTexture(int width, int height, int bpp, const unsigned char* data)
     : Texture(width, height, bpp, data, Format::RGBA32)
     {
         createTexture(width, height, bpp, data);
+        data = nullptr;
     }
 
     GLESTexture::GLESTexture(int width, int height, int color)
@@ -33,6 +41,8 @@ namespace Azazel
             data[i + 3] = a;
         }
         createTexture(width, height, 4, data);
+        delete[] data;
+        data = nullptr;
     }
 
     void GLESTexture::createTexture(int width, int height, int bpp, const unsigned char* data)
@@ -56,6 +66,11 @@ namespace Azazel
             internalFormat = GL_RED;
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         }
+        else if (bpp == 8)
+        {
+            format = GL_RGBA;
+            internalFormat = GL_RGBA16F;
+        }
         else
         {
             format = GL_RGBA;
@@ -67,11 +82,6 @@ namespace Azazel
         }
         
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        if (data)
-        {
-            delete[] data;
-            data = nullptr;
-        }
         unbind();
     }
 
@@ -145,7 +155,7 @@ namespace Azazel
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
     }
 
-    unsigned int GLESTexture::getRendererId() const
+    const unsigned int GLESTexture::getRendererID() const
     {
         return rendererID;
     }

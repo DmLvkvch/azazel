@@ -5,6 +5,11 @@
 #include "camera/Camera.h"
 #include "render/Model.h"
 #include "render/renderers/SkyboxRenderer.h"
+#include "render/renderers/HdrRenderer.h"
+#include "render/MeshHelper.h"
+#include "render/FrameBuffer.h"
+
+#include "render/Material.h"
 
 namespace Azazel
 {
@@ -15,14 +20,27 @@ namespace Azazel
 
         void onUpdate(float delta) override;
         void onRender(float delta) override;
-        void update(float f);
 
         ~ModelLoadLayer();
     private:
-        std::unique_ptr<Shader> light;
-        std::unique_ptr<Texture> texture;
+        
+        Shader* shadow;
+        Shader* shadowMap;
+        Shader* quadShader;
+
+        FrameBuffer* frameBuffer;
+
+        Texture* depthTexture;
+
         Model model;
-        Camera camera;
+        Model floor;
+        Model cube;
+        Model sphere;
+
+        Model cerberus;
+        Material material;
         SkyboxRenderer sbr;
+        HdrRenderer hdrRenderer;
+        Mesh quad;
     };
 }

@@ -1,10 +1,23 @@
 #pragma once
 
 #include "TextureData.h"
+#include "Types.h"
 #include <string>
+#include <array>
 
 namespace Azazel
 {
+    struct TextureDescriptor
+    {
+        TextureType textureType = TextureType::TEXTURE_2D;
+        PixelFormat textureFormat = PixelFormat::RGBA8888;
+        TextureUsage textureUsage = TextureUsage::READ;
+        uint32_t width = 0;
+        uint32_t height = 0;
+        uint32_t depth = 0;
+        SamplerDescriptor samplerDescriptor;
+    };
+
     class Texture
     {
     public:
@@ -127,17 +140,18 @@ namespace Azazel
 
         void setLabel(const std::string& label);
 
-        // RENDER
         virtual void bind(unsigned int slot = 0) const = 0;
         virtual void unbind() const = 0;
         virtual void setTextureFilter(Texture::TextureFilter textureFilter) = 0;
         virtual void setTextureWrap(Texture::TextureWrap textureWrap) = 0;
-        virtual unsigned int getRendererId() const = 0;
+        virtual const unsigned int getRendererID() const = 0;
 
-        // STATIC
         static Texture* create(const TextureData& textureData);
         static Texture* create(int width, int height, int color);
-    private:
+        static Texture* createDepthTexture(const TextureData& textureData);
+        static Texture* createDepthTexture(int width, int height);
+
+    protected:
         const unsigned char* data;
         int bpp;
         int width;
@@ -145,5 +159,17 @@ namespace Azazel
         TextureData textureData;
         std::string label = "DEFAULT_TEXTURE";
         Format format;
+    };
+
+    class CubeMap
+    {
+    public:
+        CubeMap();
+        virtual ~CubeMap();
+
+        virtual void bind(int slot = 0) const = 0;
+        virtual void unbind() const = 0;
+
+        static CubeMap* create(std::array<TextureData, 6> textures);
     };
 }

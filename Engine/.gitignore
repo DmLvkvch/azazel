@@ -1,5 +1,6 @@
 /out/
 /build/
 /.vs/
+/.idea/
 /.vscode/
 /*.vcxproj

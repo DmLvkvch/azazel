@@ -1,6 +1,6 @@
 #include "GLESRender.h"
 
-#include "render/ConvertUtils.h"
+#include "utils/ConvertUtils.h"
 #include <iostream>
 
 namespace Azazel
@@ -8,12 +8,12 @@ namespace Azazel
 
     GLESRender::GLESRender()
     {
-
+        std::cout << "GLESRender constructor" << std::endl;
     }
 
     GLESRender::~GLESRender()
     {
-
+        std::cout << "GLESRender destructor" << std::endl;
     }
 
     void GLESRender::init()
@@ -36,12 +36,30 @@ namespace Azazel
 
     void GLESRender::clear(bool color, bool depth, bool stencil)
     {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        unsigned int clearBit = 0;
+        if (color)
+        {
+            clearBit |= GL_COLOR_BUFFER_BIT;
+        }
+        if (depth)
+        {
+            clearBit |= GL_DEPTH_BUFFER_BIT;
+        }
+        if (stencil)
+        {
+            clearBit |= GL_STENCIL_BUFFER_BIT;
+        }
+        glClear(clearBit);
     }
 
     void GLESRender::setViewport(int x, int y, int width, int height)
     {
         glViewport(x, y, width, height);
+    }
+
+    void GLESRender::popViewport()
+    {
+
     }
 
     void GLESRender::setScissor(bool enable)
@@ -107,6 +125,23 @@ namespace Azazel
         }
     }
 
+    void GLESRender::setDepthMask(bool enable)
+    {
+        if (enable)
+        {
+            glDepthMask(GL_TRUE);
+        }
+        else
+        {
+            glDepthMask(GL_FALSE);
+        }
+    }
+
+    void GLESRender::setDepthFunc(CompareFunction compareFunction)
+    {
+        glDepthFunc(convertCompareFunction(compareFunction));
+    }
+
     void GLESRender::setStencilTest(bool enable)
     {
         if (enable)
@@ -117,6 +152,36 @@ namespace Azazel
         {
             glDisable(GL_STENCIL);
         }
+    }
+
+    void GLESRender::setStencilMask(unsigned int mask)
+    {
+        glStencilMask(mask);
+    }
+
+    void GLESRender::setStencilFunc(CompareFunction stencilFunction, int ref, unsigned int mask)
+    {
+        unsigned int stencilFunc = convertCompareFunction(stencilFunction);
+        glStencilFunc(stencilFunc, ref, mask);
+    }
+
+    void GLESRender::setStencilOp(StencilOperation sfail, StencilOperation dpfail, StencilOperation dppass)
+    {
+        unsigned int gl_sfail  = convertStencilOp(sfail);
+        unsigned int gl_dpfail = convertStencilOp(dpfail);
+        unsigned int gl_dppass = convertStencilOp(dppass);
+
+        glStencilOp(gl_sfail, gl_dpfail, gl_dppass);
+    }
+
+    void GLESRender::setStencilOpSeparate(CullMode face, StencilOperation sfail, StencilOperation dpfail, StencilOperation dppass)
+    {
+        unsigned int gl_face   = convertCullMode(face);
+        unsigned int gl_sfail  = convertStencilOp(sfail);
+        unsigned int gl_dpfail = convertStencilOp(dpfail);
+        unsigned int gl_dppass = convertStencilOp(dppass);
+
+        glStencilOpSeparate(gl_face, gl_sfail, gl_dpfail, gl_dppass);
     }
 
     void GLESRender::setBlend(bool enable)
@@ -140,20 +205,25 @@ namespace Azazel
         drawCalls++;
     }
 
-    void GLESRender::drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture)
+    void GLESRender::drawIndexedInstanced(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, int instanceCount)
     {
-        texture.bind();
-        shader.bind();
-        vertexArray.bind();
-        indexBuffer.bind();
-        glDrawElements(GL_TRIANGLES, indexBuffer.getElementCount() * sizeof(unsigned int), GL_UNSIGNED_INT, 0);
-        drawCalls++;
+    }
+
+    void GLESRender::drawIndexedInstanced(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture, int instanceCount)
+    {
+
     }
 
     void GLESRender::drawArrays(const VertexArray& vertexArray, const Shader& shader, const Texture& texture)
     {
     }
 
+    void GLESRender::drawArrays(const VertexArray &vertexArray, const Shader &shader, int vertexCount)
+    {
+        shader.bind();
+        vertexArray.bind();
+        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+    }
 
     void GLESRender::beginScene()
     {
@@ -176,6 +246,11 @@ namespace Azazel
     void GLESRender::setBlendEquation(BlendEquation blendEquation)
     {
         glBlendEquation(convertBlendEquation(blendEquation));
+    }
+
+    void GLESRender::setFramebufferSRGB(bool enable)
+    {
+        glEnable(GL_FRAMEBUFFER_SRGB);
     }
 
     void GLESRender::saveState()

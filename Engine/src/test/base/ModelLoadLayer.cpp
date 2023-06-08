@@ -1,79 +1,167 @@
 #include "ModelLoadLayer.h"
 
-#include "FileUtils.h"
+#include "api/file/FileUtils.h"
 #include "TextureUtils.h"
 #include "logging/Log.h"
-#include "render/renderers/SkyboxRenderer.h"
-#include "Application.h"
 #include <functional>
+#include "resources/ResourceManager.h"
+#include "render/ModelHelper.h"
+#include <nlohmann/json.hpp>
 
 namespace Azazel
 {
     ModelLoadLayer::ModelLoadLayer() : Layer("Model Load Example")
     {
-        model = Model("objects/duck/Duck.gltf");
-        light.reset(Shader::create(FileUtils::readFile("shaders/light/phong.light.vert.glsl"), FileUtils::readFile("shaders/light/phong.light.frag.glsl")));
-        
-        texture.reset(Texture::create(TextureUtils::loadTexture("objects/duck/DuckCM.png")));
-        model.transform.scale = glm::vec3 { 0.0003f, 0.0003f, 0.0003f };
-        camera = Camera();
-        camera.subscribe();
-        Application::getApplication()->subscribe(std::bind(&ModelLoadLayer::update, this, std::placeholders::_1));
+        model = ResourceManagers::modelResourceManager->loadResource("objects/Sponza/cfg.json");
 
+        cube = ResourceManagers::modelResourceManager->loadResource("objects/earth/cfg.json");
+
+        floor = ModelHelper::floor();
+        floor.transform.scale = { 20.0f, 20.0f, 1.0f };
+        floor.transform.rotation.x = -90.0f;
+        floor.transform.position.x = -10.0f;
+        floor.transform.position.z = 10.0f;
+
+        sphere = ModelHelper::sphere(36, 36);
+        sphere.transform.scale = { 0.5f, 0.5f, 0.5f };
+
+        cerberus = ResourceManagers::modelResourceManager->loadResource("objects/cerberus/cfg.json");
+
+        depthTexture = Texture::createDepthTexture(1024, 1024);
+
+        frameBuffer = FrameBuffer::create(nullptr, depthTexture);
+
+        quad = MeshHelper::genQuadMesh();
+        shadow = ResourceManagers::shaderResourceManager->loadResource("shaders/shadow.vert.glsl", "shaders/shadow.frag.glsl", false);
+        shadowMap = ResourceManagers::shaderResourceManager->loadResource("shaders/depth_map.vert.glsl", "shaders/depth_map.frag.glsl", false);
+        quadShader = ResourceManagers::shaderResourceManager->loadResource("shaders/shadow_map.debug.vert.glsl", "shaders/shadow_map.debug.frag.glsl", false);
+        quadShader->bind();
+        quadShader->setMatrix4f("u_mvp", glm::mat4(1.0f));
+        quadShader->setFloat("near_plane", 1.0f);
+        quadShader->setFloat("far_plane", 10.5f);
     }
 
     ModelLoadLayer::~ModelLoadLayer()
     {
-    }
-
-    void ModelLoadLayer::update(float delta)
-    {
+        delete shadow;
+        delete shadowMap;
+        delete quadShader;
+        delete frameBuffer;
+        delete depthTexture;
     }
 
     void ModelLoadLayer::onUpdate(float delta)
     {
-        texture->bind();
-
-        glm::mat4 modelMatrix = model.transform.getTransformMatrix();
-
-        glm::vec3 color (0.2f);
-        float lightX = 2.0f * sin(glfwGetTime());
-        float lightY = -0.3f;
-        float lightZ = 1.5f * cos(glfwGetTime());
-        glm::vec3 lightPos = glm::vec3(lightX, lightY, lightZ);
-
-        glm::mat4 viewMatrix = glm::lookAt(glm::vec3{1.0f, 1.0f, 0.0}, glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3{0.0f, 1.0f, 0.0f});
-        glm::mat4 projectionMatrix = glm::perspective(glm::radians(45.0f), 1.5f, 0.1f, 100.0f);
-
-        light->bind();
-        light->setInt("u_texture_0", 0);
-        camera.onInputUpdate(delta);
-        light->setMatrix4f("u_mvp", camera.getProjectionMatrix() * camera.getViewMatrix() * modelMatrix);
-        light->setMatrix4f("u_model", modelMatrix);
-        light->setMatrix4f("u_normalMatrix", glm::transpose(glm::inverse(modelMatrix)));
-
-        light->setVec3f("u_light.ambient", color);
-        light->setVec3f("u_light.diffuse", color);
-        light->setVec3f("u_light.specular", color);
-        light->setVec3f("u_light.position", lightPos );
-
-        light->setVec3f("u_viewPos", {1.0f, 1.0f, 0.0} );
-
-        light->setVec3f("u_material.ambient", { 1.0f, 0.5f, 0.31f });
-        light->setVec3f("u_material.diffuse", { 1.0f, 0.5f, 0.31f });
-        light->setVec3f("u_material.specular", { 0.5f, 0.5f, 0.5f });
-        light->setFloat("u_material.shininess", 128.0f);
-        sbr.shader->bind();
-        sbr.shader->setMatrix4f("view", camera.getViewMatrix());
-        sbr.shader->setMatrix4f("projection", camera.getProjectionMatrix());
-
+        //  model.transform.rotation.x = 180 / 3.14f * static_cast<float>(sin(glfwGetTime()));
+        //  glm::mat4 modelMatrix = model.transform.getTransformMatrix();
+  //
+        //  glm::vec3 color (0.2f);
+        //  float lightX = 2.0f * static_cast<float>(sin(glfwGetTime()));
+        //  float lightY = -0.3f;
+        //  float lightZ = 1.5f * static_cast<float>(cos(glfwGetTime()));
+        //  glm::vec3 lightPos = glm::vec3(lightX, lightY, lightZ);
+  //
+        //  light->bind();
+        //  light->setTexture(Shader::UNIFORM_TEXTURE0, *texture);
+        //  light->setMatrix4f(Shader::UNIFORM_MVP_MATRIX, camera.getProjectionMatrix() * camera.getViewMatrix() * modelMatrix);
+        //  light->setMatrix4f(Shader::UNIFORM_MODEL_MATRIX, modelMatrix);
+        //  light->setMatrix4f(Shader::UNIFORM_NORMAL_MATRIX, glm::transpose(glm::inverse(modelMatrix)));
+  //
+        //  light->setVec3f("u_light.ambient", color);
+        //  light->setVec3f("u_light.diffuse", color);
+        //  light->setVec3f("u_light.specular", color);
+        //  light->setVec3f("u_light.position", lightPos );
+  //
+        //  light->setVec3f("u_viewPos", {1.0f, 1.0f, 0.0} );
+  //
+        //  light->setVec3f("u_material.ambient", { 1.0f, 0.5f, 0.31f });
+        //  light->setVec3f("u_material.diffuse", { 1.0f, 0.5f, 0.31f });
+        //  light->setVec3f("u_material.specular", { 0.5f, 0.5f, 0.5f });
+        //  light->setFloat("u_material.shininess", 128.0f);
+        cube.transform.rotation.y += delta / 10.0f;
     }
 
     void ModelLoadLayer::onRender(float delta)
     {
+        auto renderer = Render::getRender();
+        auto camera = renderer->getCamera();
+        
+        renderer->setDepthTest(true);
+        glm::mat4 lightProjection = glm::ortho(-15.0f, 15.0f, -15.0f, 15.0f, -30.f, 30.f);
+
+        glm::vec3 lightPos;
+
+        lightPos.x = 0.0f + sin(glfwGetTime()) * 5.0f;
+        lightPos.z = cos(glfwGetTime()) * 10.0f;
+        lightPos.y = 8.0f + 4.0f * cos(glfwGetTime());
+
+        sphere.transform.position = lightPos;
+
+        glm::mat4 lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+        glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+
+        auto floorModel = floor.transform.getTransformMatrix();
+        auto modelModel = model.transform.getTransformMatrix();
+
+        shadowMap->bind();
+        shadowMap->setMatrix4f("lightSpaceMatrix", lightSpaceMatrix);
+
+
+        frameBuffer->bind();
+        renderer->setViewport(0, 0, 1024, 1024);
+        renderer->setCullFace(true);
+        renderer->setCullFaceMode(CullMode::FRONT);
+        renderer->clear(true, true, true);
+
+        floor.draw(*shadowMap);
+        cerberus.draw(*shadowMap);
+        model.draw(*shadowMap);
+
+        cube.draw(*shadowMap);
+
+        sphere.draw(*shadowMap);
+
+        frameBuffer->unbind();
+
+        shadowMap->unbind();
+
+      //  hdrRenderer.bind();
+      
+    //    renderer->clear(true, true, true);
+        renderer->setViewport(0, 0, 1280, 720);
+        renderer->setCullFaceMode(CullMode::BACK);
+
+       // renderer->setViewport(0, 0, 1024, 1024);
+
+        shadow->bind();
+        shadow->setVec3f("viewPos", camera->cameraLocation.position);
+        shadow->setVec3f("lightPos", lightPos);
+        shadow->setMatrix4f("lightSpaceMatrix", lightSpaceMatrix);
+        shadow->setTexture("shadowMap", *depthTexture, 1);
+
+        shadow->setMatrix4f(Shader::UNIFORM_MVP_MATRIX, camera->getViewProjectionMatrix() * floorModel);
+        floor.draw(*shadow);
+
+        shadow->setMatrix4f(Shader::UNIFORM_MVP_MATRIX, camera->getViewProjectionMatrix() * modelModel);
+        model.draw(*shadow);
+
+        shadow->setMatrix4f(Shader::UNIFORM_MVP_MATRIX, camera->getViewProjectionMatrix() * cube.transform.getTransformMatrix());
+        cube.draw(*shadow);
+
+        shadow->setMatrix4f(Shader::UNIFORM_MVP_MATRIX, camera->getViewProjectionMatrix() * sphere.transform.getTransformMatrix());
+        sphere.draw(*shadow);
+
+        shadow->setMatrix4f(Shader::UNIFORM_MVP_MATRIX, camera->getViewProjectionMatrix() * cerberus.transform.getTransformMatrix());
+        cerberus.draw(*shadow);
+        shadow->unbind();
+
+        renderer->setDepthFunc(CompareFunction::LESS_EQUAL);
         sbr.draw();
-        Render::getRender()->setDepthTest(true);
-        model.draw(*light);
-        Render::getRender()->setDepthTest(false);
+        renderer->setDepthFunc(CompareFunction::LESS);
+     //   depthTexture->bind();
+     //   renderer->drawMesh<Vertex_P3_T2>(quad, *quadShader);
+        //renderer->setViewport(0, 0, 1280, 720);
+        //hdrRenderer.unbind();
+        //hdrRenderer.draw();
     }
 }
