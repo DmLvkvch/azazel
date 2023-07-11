@@ -28,12 +28,13 @@ namespace Azazel
         void setValue(float value)
         {
             this->value = value;
+            type = FLOAT;
         }
 
         void setValue(int value)
         {
             this->value = value;
-            type = FLOAT;
+            type = INT;
         }
 
         void setValue(const glm::vec2& value)
@@ -77,6 +78,7 @@ namespace Azazel
             switch (type)
             {
             case Azazel::MaterialProperty::INT:
+                shader.setInt(name, std::get<int>(value));
                 break;
             case Azazel::MaterialProperty::FLOAT:
                 shader.setFloat(name, std::get<float>(value));
@@ -109,7 +111,6 @@ namespace Azazel
 
         ShaderPropertyType type = UNKNOWN;
         std::variant<float, int, bool, glm::vec2, glm::vec3, glm::vec4, glm::mat4, std::shared_ptr<Texture>> value;
-
     };
 
     class Material

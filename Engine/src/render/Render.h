@@ -31,8 +31,8 @@ namespace Azazel
     {
         int x;
         int y;
-        int width;
-        int height;
+        unsigned int width;
+        unsigned int height;
 
         Viewport()
         : x(0), y(0), width(1280), height(720)
@@ -45,6 +45,11 @@ namespace Azazel
         {
 
         }
+    };
+
+    struct RenderState
+    {
+
     };
 
     class Render
@@ -64,14 +69,21 @@ namespace Azazel
 
         virtual void clear(bool color = true, bool depth = false, bool stencil = false) = 0;
 
-        virtual void setViewport(int x, int y, int width, int height) = 0;
+        virtual void setViewport(int x, int y, unsigned int width, unsigned int height) = 0;
 
-        void setViewport(Viewport viewport)
+        void setViewport(const Viewport& viewport)
         {
             setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+            viewportStack.push_back(currentViewport);
+            currentViewport = viewport;
         }
 
-        virtual void popViewport() = 0;
+        virtual void popViewport()
+        {
+            currentViewport = viewportStack.back();
+            viewportStack.pop_back();
+            setViewport(currentViewport.x, currentViewport.y, currentViewport.width, currentViewport.height);
+        }
 
         virtual void setScissor(bool enable) = 0;
     
@@ -152,6 +164,12 @@ namespace Azazel
             this->camera = camera;
         }
 
+        void setDefaultViewport(Viewport viewport)
+        {
+            defaultViewport = viewport;
+            currentViewport = viewport;
+        }
+
     protected:
         static std::unique_ptr<Render> render;
         
@@ -159,6 +177,7 @@ namespace Azazel
         Camera* camera;
         std::vector<Viewport> viewportStack;
 
+        Viewport currentViewport;
         Viewport defaultViewport;
     };
 }

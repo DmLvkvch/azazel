@@ -11,12 +11,12 @@ namespace Azazel
         mesh = MeshHelper::genSkybox();
         
         std::array<TextureData, 6> skyboxTextures;
-        skyboxTextures[0] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/canyon/PositiveX.jpg", false, false);
-        skyboxTextures[1] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/canyon/NegativeX.jpg", false, false);
-        skyboxTextures[2] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/canyon/PositiveY.jpg", false, false);
-        skyboxTextures[3] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/canyon/NegativeY.jpg", false, false);
-        skyboxTextures[4] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/canyon/PositiveZ.jpg", false, false);
-        skyboxTextures[5] = ResourceManagers::textureDataResourceManager->loadResource("textures/skybox/canyon/NegativeZ.jpg", false, false);
+        skyboxTextures[0] = ResourceManagers::getTextureDataResourceManager().loadResource("textures/skybox/canyon/PositiveX.jpg", false, false);
+        skyboxTextures[1] = ResourceManagers::getTextureDataResourceManager().loadResource("textures/skybox/canyon/NegativeX.jpg", false, false);
+        skyboxTextures[2] = ResourceManagers::getTextureDataResourceManager().loadResource("textures/skybox/canyon/PositiveY.jpg", false, false);
+        skyboxTextures[3] = ResourceManagers::getTextureDataResourceManager().loadResource("textures/skybox/canyon/NegativeY.jpg", false, false);
+        skyboxTextures[4] = ResourceManagers::getTextureDataResourceManager().loadResource("textures/skybox/canyon/PositiveZ.jpg", false, false);
+        skyboxTextures[5] = ResourceManagers::getTextureDataResourceManager().loadResource("textures/skybox/canyon/NegativeZ.jpg", false, false);
         cubeMap = CubeMap::create(skyboxTextures);
         for (auto& textureData : skyboxTextures)
         {

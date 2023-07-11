@@ -10,7 +10,6 @@ namespace Azazel
     {
         CameraController(Camera* camera)
         {
-            index = Application::getApplication()->subscribe(std::bind(&CameraController::onEvent, this, std::placeholders::_1));
         }
 
         ~CameraController()

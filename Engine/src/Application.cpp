@@ -53,20 +53,19 @@ namespace Azazel
 
     Application::Application()
     {
-        std::cout << "Application constuctor" << std::endl;
         delta = 0.0f;
         window.reset(Window::create());
         window->setEventCallback(std::bind(&Application::onEvent, this, std::placeholders::_1));
         Render::getRender()->init();
         camera.reset(new Camera());
         Render::getRender()->setCamera(camera.get());
+        Render::getRender()->setDefaultViewport( Viewport{0, 0, (int) window->getWidth() * 2, (int) window->getHeight() * 2} );
     }
 
     Application::~Application()
     {
         eventSubscribers.clear();
         updateSubscribers.clear();
-        std::cout << "Application destuctor" << std::endl;
     }
 
     void Application::onEvent(Event& e)
@@ -88,7 +87,7 @@ namespace Azazel
         while (running)
         {
             auto startTime = std::chrono::high_resolution_clock::now();
-            
+            Render::getRender()->setViewport(0, 0, window->getWidth() * 2, window->getHeight() * 2);
             Render::getRender()->beginScene();
             Render::getRender()->setClearColor({0.0f, 0.0f, 0.0f, 1.0f});
             Render::getRender()->clear(true, true, false);

@@ -181,7 +181,7 @@ namespace Azazel
         io.DisplaySize = ImVec2(static_cast<float> (width), static_cast<float> (height));
         io.DisplayFramebufferScale = ImVec2(static_cast<float> (w) / width, static_cast<float> (h) / height);
         ImGui_ImplGlfw_InitForOpenGL(window, true);
-        ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
+        ImGui_ImplOpenGL3_Init((char*) glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
     }
 
     void GLWindow::destroyImgui()

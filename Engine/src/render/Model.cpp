@@ -6,7 +6,6 @@
 #include "TextureUtils.h"
 #include "api/file/FileUtils.h"
 #include "Render.h"
-#include <nlohmann/json.hpp>
 
 namespace Azazel
 {
@@ -107,7 +106,7 @@ namespace Azazel
                 vector.z = mesh->mBitangents[i].z;
                 vertex.bitangent = vector;
             }
-            if(mesh->mTextureCoords[0])
+            if (mesh->mTextureCoords[0])
             {
                 vertex.texCoord =  { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
             }

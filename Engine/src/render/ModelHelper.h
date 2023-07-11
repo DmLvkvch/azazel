@@ -13,9 +13,9 @@ namespace Azazel
             std::vector<float> vertices 
             {
                 0.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
-                1.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
-                0.0f, 1.0f, 0.0f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-                1.0f, 1.0f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f
+                10.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
+                0.0f, 10.0f, 0.0f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
+                10.0f, 10.0f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f
             };
 
             std::vector<unsigned int> indices
@@ -26,8 +26,20 @@ namespace Azazel
             auto textureData = TextureUtils::loadTexture("textures/wood.png");
             auto texture = Texture::create(textureData);
             TextureUtils::freeTextureData(textureData);
+
             mesh.textures.push_back(std::shared_ptr<Texture>(texture));
-            return Model(mesh);
+
+            mesh.material = Material();
+            mesh.material->setProperty("u_texture_0", {MaterialProperty::TEXTURE, std::shared_ptr<Texture>(texture)});
+
+            auto model = Model(mesh);
+
+           // model.transform.scale = { 10.0f, 10.0f, 1.0f };
+            model.transform.rotation.x = -90.0f;
+            model.transform.position.x = -10.0f;
+            model.transform.position.z = 10.0f;
+            
+            return model;
         }
 
         static Model cube()

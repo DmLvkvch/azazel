@@ -52,14 +52,9 @@ namespace Azazel
         glClear(clearBit);
     }
 
-    void GLESRender::setViewport(int x, int y, int width, int height)
+    void GLESRender::setViewport(int x, int y, unsigned int width, unsigned int height)
     {
         glViewport(x, y, width, height);
-    }
-
-    void GLESRender::popViewport()
-    {
-
     }
 
     void GLESRender::setScissor(bool enable)

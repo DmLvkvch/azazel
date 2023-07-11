@@ -10,12 +10,28 @@ namespace Azazel
     {
     public:
 
-        static std::unique_ptr<TextureResourceManager> textureResourceManager;
-        
-        static std::unique_ptr<TextureDataResourceManager> textureDataResourceManager;
+        static TextureResourceManager& getTextureResourceManager()
+        {
+            static TextureResourceManager textureResourceManager;
+            return textureResourceManager;
+        }
 
-        static std::unique_ptr<ShaderResourceManager> shaderResourceManager;
+        static TextureDataResourceManager& getTextureDataResourceManager()
+        {
+            static TextureDataResourceManager textureDataResourceManager;
+            return textureDataResourceManager;
+        }
 
-        static std::unique_ptr<ModelResourceManager> modelResourceManager;
+        static ShaderResourceManager& getShaderResourceManager()
+        {
+            static ShaderResourceManager shaderResourceManager;
+            return shaderResourceManager;
+        }
+
+        static ModelResourceManager& getModelResourceManager()
+        {
+            static ModelResourceManager modelResourceManager;
+            return modelResourceManager;
+        }
     };
 }

@@ -2,6 +2,7 @@
 #include "gl_headers.h"
 
 #include <iostream>
+#include "GLESFrameBufferHistory.h"
 
 namespace Azazel
 {
@@ -16,26 +17,26 @@ namespace Azazel
     GLESFrameBuffer::GLESFrameBuffer(Texture* texture, FrameBufferTarget* depthTarget)
     {
         glGenFramebuffers(1, &rendererID);
-        bind();
+        frameBufferHistory().activate(rendererID);
         addColorAttachment(texture);
         setDepthTarget(depthTarget);
         
         checkFrameBufferStatus();
 
-        unbind();
+        frameBufferHistory().deactivateLast();
     }
 
     GLESFrameBuffer::GLESFrameBuffer(Texture* texture, Texture* depthTarget)
     {
         glGenFramebuffers(1, &rendererID);
-        bind();
+        frameBufferHistory().activate(rendererID);
 
         addColorAttachment(texture);
         setDepthTarget(depthTarget);
 
         checkFrameBufferStatus();
 
-        unbind();
+        frameBufferHistory().deactivateLast();
     }
 
 
@@ -46,12 +47,12 @@ namespace Azazel
 
     void GLESFrameBuffer::bind() const
     {
-        glBindFramebuffer(GL_FRAMEBUFFER, rendererID);
+        frameBufferHistory().activate(rendererID);
     }
     
     void GLESFrameBuffer::unbind() const
     {
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        frameBufferHistory().deactivateLast();
     }
 
     void GLESFrameBuffer::addColorAttachment(Texture* texture, int slot)
@@ -60,10 +61,11 @@ namespace Azazel
         {
             return;
         }
-
+        frameBufferHistory().activate(rendererID);
         unsigned int textureId = texture->getRendererID();
         colorTextureTarget[slot] = texture;
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + slot, GL_TEXTURE_2D, textureId, 0);
+        frameBufferHistory().deactivateLast();
     }
 
     int GLESFrameBuffer::checkFrameBufferStatus()
@@ -82,7 +84,7 @@ namespace Azazel
         {
             return;
         }
-        bind();
+        frameBufferHistory().activate(rendererID);
         if (depthTarget->checkTargetType<FrameBufferTextureTarget>())
         {
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTarget->getRendererID(), 0);
@@ -91,16 +93,18 @@ namespace Azazel
         {
             glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthTarget->getRendererID()); 
         }
-        unbind();
+        frameBufferHistory().deactivateLast();
     }
 
-    void setDepthTarget(RenderBuffer* renderBuffer)
+    void GLESFrameBuffer::setDepthTarget(RenderBuffer* renderBuffer)
     {
         if (!renderBuffer)
         {
             return;
         }
+        frameBufferHistory().activate(rendererID);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBuffer->getRendererID()); 
+        frameBufferHistory().deactivateLast();
     }
 
     void GLESFrameBuffer::setDepthTarget(Texture* depthTexture)
@@ -109,6 +113,8 @@ namespace Azazel
         {
             return;
         }
+        frameBufferHistory().activate(rendererID);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture->getRendererID(), 0);
+        frameBufferHistory().deactivateLast();
     }
 }

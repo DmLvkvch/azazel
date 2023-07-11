@@ -11,12 +11,10 @@ namespace Azazel
     public:
         TextureResourceManager()
         {
-            std::cout << "TextureResourceManager constructor" << std::endl;
         }
 
         virtual ~TextureResourceManager()
         {
-            std::cout << "TextureResourceManager destructor" << std::endl;
         }
         
         Texture* loadResource(const std::string& path, bool needCache = true)

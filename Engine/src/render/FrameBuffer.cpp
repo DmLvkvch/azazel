@@ -2,12 +2,14 @@
 
 #ifdef AZAZEL_GL
 #include "render/rhi/gl/GLESFrameBuffer.h"
+#include "render/rhi/gl/GLESFrameBufferHistory.h"
 #else
 #include "render/rhi/vulkan/VKFrameBuffer.h"
 #endif
 
 namespace Azazel
 {
+
     FrameBuffer::~FrameBuffer()
     {
 

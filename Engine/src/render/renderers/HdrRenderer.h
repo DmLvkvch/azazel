@@ -18,7 +18,7 @@ namespace Azazel
             depthTexture = Texture::createDepthTexture(1024, 1024);
             frameBuffer = FrameBuffer::create(colorTexture, depthTexture);
             quad = MeshHelper::genQuadMesh();
-            shader = ResourceManagers::shaderResourceManager->loadResource("shaders/default.vert.glsl", "shaders/hdr.frag.glsl", false);
+            shader = ResourceManagers::getShaderResourceManager().loadResource("shaders/default.vert.glsl", "shaders/hdr.frag.glsl", false);
             shader->bind();
             shader->setBool("hdr", true);
             shader->setMatrix4f("u_mvp", glm::mat4(1.0f));

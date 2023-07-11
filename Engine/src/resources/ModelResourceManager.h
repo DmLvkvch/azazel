@@ -14,12 +14,10 @@ namespace Azazel
     public:
         ModelResourceManager()
         {
-            std::cout << "ModelResourceManager constructor" << std::endl;
         }
 
         virtual ~ModelResourceManager()
         {
-            std::cout << "ModelResourceManager destructor" << std::endl;
         }
 
 
@@ -28,7 +26,7 @@ namespace Azazel
             std::ifstream f(path);
             json data = json::parse(f);
             
-            glm::vec3 scale = {(float) data["transform"]["scale"]["x"], (float) data["transform"]["scale"]["y"], (float) data["transform"]["scale"]["z"]};            
+            glm::vec3 scale    = {(float) data["transform"]["scale"]["x"], (float) data["transform"]["scale"]["y"], (float) data["transform"]["scale"]["z"]};            
             glm::vec3 rotation = {(float) data["transform"]["rotation"]["x"], (float) data["transform"]["rotation"]["y"], (float) data["transform"]["rotation"]["z"]};
             glm::vec3 position = {(float) data["transform"]["position"]["x"], (float) data["transform"]["position"]["y"], (float) data["transform"]["position"]["z"]};
             

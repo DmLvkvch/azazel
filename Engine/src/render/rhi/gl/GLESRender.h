@@ -24,9 +24,7 @@ namespace Azazel
 
         void clear(bool color = true, bool depth = false, bool stencil = false) override;
 
-        void setViewport(int x, int y, int width, int height) override;
-
-        void popViewport() override;
+        void setViewport(int x, int y, unsigned int width, unsigned int height) override;
 
         void setScissor(bool enable) override;
     

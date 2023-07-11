@@ -5,10 +5,10 @@
 #include "render/VertexArray.h"
 #include "render/IndexBuffer.h"
 #include "render/Texture.h"
+#include "Material.h"
 #include <memory>
 #include <vector>
 #include <optional>
-#include "Material.h"
 
 namespace Azazel
 {

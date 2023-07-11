@@ -26,7 +26,6 @@ namespace Azazel
         
         Shader* shadow;
         Shader* shadowMap;
-        Shader* quadShader;
 
         FrameBuffer* frameBuffer;
 
