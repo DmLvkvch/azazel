@@ -4,7 +4,7 @@
 
 namespace Azazel
 {
-    GLESIndexBuffer::GLESIndexBuffer(const void* data, size_t count)
+    GLESIndexBuffer::GLESIndexBuffer(const void* data, unsigned int count)
     {
         this->count = count;
         glGenBuffers(1, &rendererID);
@@ -28,7 +28,7 @@ namespace Azazel
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    size_t GLESIndexBuffer::getElementCount() const
+    unsigned int GLESIndexBuffer::getElementCount() const
     {
         return count;
     }

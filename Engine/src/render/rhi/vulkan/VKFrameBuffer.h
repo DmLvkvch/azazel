@@ -9,6 +9,8 @@ namespace Azazel
     public:
         VKFrameBuffer(Texture* texture);
         VKFrameBuffer(Texture* texture, FrameBufferTarget* depthTarget);
+        VKFrameBuffer(Texture* texture, Texture* depthTarget){}
+
         ~VKFrameBuffer();
         void bind() const override;
         void unbind() const override;

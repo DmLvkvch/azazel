@@ -1,10 +1,19 @@
 #pragma once
 
 #include "render/FrameBuffer.h"
-#include "GLESFrameBufferHistory.h"
+#include <vector>
 
 namespace Azazel
 {
+    class FrameBufferStack
+    {
+    public:
+        void activate(unsigned int id);
+        void deactivateLast();
+    private:
+        std::vector<unsigned int> frameBufferStack {0};
+    };
+
     class GLESFrameBuffer : public FrameBuffer
     {
     public:
@@ -25,10 +34,10 @@ namespace Azazel
     private:
         int checkFrameBufferStatus();
 
-        static FrameBufferHistory& frameBufferHistory()
+        static FrameBufferStack& frameBufferStack()
         {
-            static FrameBufferHistory fbh;
-            return fbh;
+            static FrameBufferStack fbs;
+            return fbs;
         }
     private:
         unsigned int rendererID;

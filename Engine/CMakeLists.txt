@@ -8,12 +8,16 @@ find_package (Vulkan REQUIRED)
 set(GLFW_BUILD_DOCS OFF CACHE BOOL  "GLFW lib only")
 set(GLFW_INSTALL OFF CACHE BOOL  "GLFW lib only")
 
-add_definitions(-DAZAZEL_GL)
+add_definitions(-DAZAZEL_VK)
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++17")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
+
+add_executable (glslang::validator IMPORTED)
+find_program (GLSLANG_VALIDATOR "glslangValidator" HINTS $ENV{VULKAN_SDK}/bin REQUIRED)
+set_property (TARGET glslang::validator PROPERTY IMPORTED_LOCATION "${GLSLANG_VALIDATOR}")
 
 include_directories ("vendor/glad/include"
                      "vendor/glfw"
@@ -28,6 +32,8 @@ include_directories ("vendor/glad/include"
 
 OPTION (ASSIMP_BUILD_TESTS "If the test suite for Assimp is built in addition to the library." OFF)
 OPTION (ASSIMP_WARNINGS_AS_ERRORS "Treat all warnings as errors." OFF)
+OPTION( ASSIMP_INSTALL "Disable this if you want to use assimp as a submodule." OFF )
+
 add_subdirectory(vendor/glad)
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/glm)
@@ -75,3 +81,33 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/res/images/ DESTINATION ${CMAKE_BINARY_DIR
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/res/textures/ DESTINATION ${CMAKE_BINARY_DIR}/textures)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/res/fonts/ DESTINATION ${CMAKE_BINARY_DIR}/fonts)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/res/objects/ DESTINATION ${CMAKE_BINARY_DIR}/objects)
+
+file(GLOB_RECURSE GLSL_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/res/shaders/* )
+
+find_program(GLSLC glslc)
+
+macro(compile_glsl GLSL)
+
+    get_filename_component(SHADER ${GLSL} NAME)
+
+    set(current-shader-path ${GLSL})
+    set(current-output-path ${CMAKE_BINARY_DIR}/shaders/${SHADER}.spv)
+    get_filename_component(current-output-dir ${current-output-path} DIRECTORY)
+
+    file(MAKE_DIRECTORY ${current-output-dir})
+    add_custom_command(
+        OUTPUT ${current-output-path}
+        COMMAND ${GLSLC} ${current-shader-path} -o ${current-output-path}
+        DEPENDS ${current-shader-path}
+        COMMENT "Compiling ${GLSL}"
+        )
+
+    list(APPEND SPIRV_BINARY_FILES ${current-output-path})
+endmacro()
+
+foreach(GLSL IN LISTS GLSL_SOURCE_FILES)
+    compile_glsl(${GLSL})
+endforeach()
+
+add_custom_target(shaders ALL DEPENDS ${SPIRV_BINARY_FILES})
+add_dependencies(${PROJECT_NAME} shaders)

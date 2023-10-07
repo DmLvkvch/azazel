@@ -33,7 +33,6 @@ namespace Azazel
             this->meshes = std::move(model.meshes);
             this->textures = std::move(model.textures);
             this->transform = std::move(model.transform);
-
         }
 
         Model(const Model& model)
@@ -59,6 +58,11 @@ namespace Azazel
             this->textures = std::move(model.textures);
             this->transform = std::move(model.transform);
             return *this;
+        }
+
+        ~Model()
+        {
+            std::cout<<"Model destr"<<std::endl;
         }
 
     public:

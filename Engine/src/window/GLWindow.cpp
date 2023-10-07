@@ -28,7 +28,7 @@ namespace Azazel
         title = props.title;
 
         // INIT GLFW
-        GLFWwindow* window = initGLFW(width, height, title);
+        window = initGLFW(width, height, title);
 
         // INIT GLAD
         if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
@@ -145,7 +145,7 @@ namespace Azazel
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
         glfwWindowHint(GLFW_SAMPLES, 4);
-        window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+        GLFWwindow* window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
         
         if (window == NULL)
         {
@@ -200,7 +200,6 @@ namespace Azazel
     void GLWindow::onUpdate(float delta)
     {
         glfwPollEvents();
-        glfwSwapBuffers(window);
     }
 
     unsigned int GLWindow::getWidth() const

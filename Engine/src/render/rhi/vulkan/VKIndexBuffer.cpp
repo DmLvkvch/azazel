@@ -4,7 +4,7 @@
 
 namespace Azazel
 {
-    VKIndexBuffer::VKIndexBuffer(const void* data, size_t count)
+    VKIndexBuffer::VKIndexBuffer(const void* data, unsigned int count)
     {
         this->count = count;
 
@@ -22,7 +22,7 @@ namespace Azazel
     {
     }
 
-    size_t VKIndexBuffer::getElementCount() const
+    unsigned int VKIndexBuffer::getElementCount() const
     {
         return count;
     }

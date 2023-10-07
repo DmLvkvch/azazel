@@ -7,7 +7,7 @@ namespace Azazel
     class VKIndexBuffer : public IndexBuffer
     {
     public:
-        VKIndexBuffer(const void* data, size_t count);
+        VKIndexBuffer(const void* data, unsigned int count);
 
         ~VKIndexBuffer();
 
@@ -15,9 +15,9 @@ namespace Azazel
 
         void unbind() const override;
 
-        size_t getElementCount() const override;
+        unsigned int getElementCount() const override;
     private:
         unsigned int rendererID;
-        size_t count;
+        unsigned int count;
     };
 }

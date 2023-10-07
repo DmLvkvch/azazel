@@ -45,6 +45,8 @@ namespace Azazel
         virtual void setVSync(bool enabled) = 0;
         virtual bool isVSync() const = 0;
         virtual void* getNativeWindow() = 0;
+        virtual void drawFrame(){}
+
         static Window* create(const WindowProperties& props = WindowProperties());
     private:
         static Window* window;

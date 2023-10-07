@@ -6,6 +6,7 @@
 #include "TextureUtils.h"
 #include "api/file/FileUtils.h"
 #include "Render.h"
+#include <nlohmann/json.hpp>
 
 namespace Azazel
 {
@@ -106,7 +107,7 @@ namespace Azazel
                 vector.z = mesh->mBitangents[i].z;
                 vertex.bitangent = vector;
             }
-            if (mesh->mTextureCoords[0])
+            if(mesh->mTextureCoords[0])
             {
                 vertex.texCoord =  { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
             }
@@ -146,8 +147,8 @@ namespace Azazel
             }
         }
         auto m = Mesh::createMesh<Vertex_P3_N3_T2_TAN3_BTAN_3>(vertices, indices);
-        m.textures = std::move(textures);
         m.material = mat;
+        textures.clear();
         return m;
     }
 
@@ -181,7 +182,6 @@ namespace Azazel
             texture.reset(Texture::create(textureData));
             TextureUtils::freeTextureData(textureData);
             textures.push_back(texture);
-           
         }
     }
 

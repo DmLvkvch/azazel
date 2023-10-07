@@ -41,7 +41,11 @@ namespace Azazel
 
     Texture* Texture::create(int width, int height, int color)
     {
+        #ifdef AZAZEL_GL
         return new GLESTexture(width, height, color);
+        #else
+        return nullptr;
+        #endif
     }
 
     Texture* Texture::createDepthTexture(const TextureData& textureData)
@@ -76,7 +80,7 @@ namespace Azazel
         #ifdef AZAZEL_GL
         return new GLESCubeMap(textures);
         #else 
-        return DBG_NEW VKCubeMap();
+        return new VKCubeMap();
         #endif
     }
 }

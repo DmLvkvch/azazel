@@ -13,9 +13,9 @@ namespace Azazel
             std::vector<float> vertices 
             {
                 0.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
-                10.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
-                0.0f, 10.0f, 0.0f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-                10.0f, 10.0f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f
+                1.0f, 0.0f, 0.0f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
+                0.0f, 1.0f, 0.0f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
+                1.0f, 1.0f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f
             };
 
             std::vector<unsigned int> indices
@@ -27,14 +27,14 @@ namespace Azazel
             auto texture = Texture::create(textureData);
             TextureUtils::freeTextureData(textureData);
 
-            mesh.textures.push_back(std::shared_ptr<Texture>(texture));
+            auto t = std::shared_ptr<Texture>(texture);
 
             mesh.material = Material();
-            mesh.material->setProperty("u_texture_0", {MaterialProperty::TEXTURE, std::shared_ptr<Texture>(texture)});
+            mesh.material->setProperty("u_texture_0", {MaterialProperty::TEXTURE, t});
 
             auto model = Model(mesh);
 
-           // model.transform.scale = { 10.0f, 10.0f, 1.0f };
+            model.transform.scale = { 25.0f, 25.0f, 1.0f };
             model.transform.rotation.x = -90.0f;
             model.transform.position.x = -10.0f;
             model.transform.position.z = 10.0f;
@@ -90,7 +90,7 @@ namespace Azazel
             };
             
             std::vector<unsigned int> indices;
-            int sz = vertices.size() / sizeof(Vertex_P3_N3_T2) * sizeof(float);
+            unsigned long sz = vertices.size() / sizeof(Vertex_P3_N3_T2) * sizeof(float);
             indices.resize(sz);
             for (int i = 0; i < indices.size(); i++)
             {
@@ -142,7 +142,6 @@ namespace Azazel
 
             Mesh mesh = Mesh::createMesh<Vertex_P3_N3_T2>(vertices, indices);
             std::shared_ptr<Texture> texture(Texture::create(512, 512, 0xffffffff));
-            mesh.textures.push_back(texture);
             return Model({mesh});
         }
     };

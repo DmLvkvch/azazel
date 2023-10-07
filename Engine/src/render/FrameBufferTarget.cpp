@@ -4,12 +4,12 @@ namespace Azazel
 {
 
     FrameBufferTextureTarget::FrameBufferTextureTarget(Texture* texture)
-        : texture(texture)
+    : texture(texture)
     {
     }
 
     FrameBufferRenderBufferTarget::FrameBufferRenderBufferTarget(RenderBuffer* renderBuffer)
-        : renderBuffer(renderBuffer)
+    : renderBuffer(renderBuffer)
     {
     }
 }
