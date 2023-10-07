@@ -26,11 +26,11 @@ namespace Azazel
             auto textureData = TextureUtils::loadTexture("textures/wood.png");
             auto texture = Texture::create(textureData);
             TextureUtils::freeTextureData(textureData);
-
-            mesh.textures.push_back(std::shared_ptr<Texture>(texture));
+            auto t = std::shared_ptr<Texture>(texture);
+            mesh.textures.push_back(t);
 
             mesh.material = Material();
-            mesh.material->setProperty("u_texture_0", {MaterialProperty::TEXTURE, std::shared_ptr<Texture>(texture)});
+            mesh.material->setProperty("u_texture_0", {MaterialProperty::TEXTURE, t});
 
             auto model = Model(mesh);
 
