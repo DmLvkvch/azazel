@@ -27,7 +27,6 @@ namespace Azazel
             auto texture = Texture::create(textureData);
             TextureUtils::freeTextureData(textureData);
             auto t = std::shared_ptr<Texture>(texture);
-            mesh.textures.push_back(t);
 
             mesh.material = Material();
             mesh.material->setProperty("u_texture_0", {MaterialProperty::TEXTURE, t});

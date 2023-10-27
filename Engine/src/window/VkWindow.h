@@ -70,7 +70,7 @@ namespace Azazel
         std::vector<VkImageView> createImageViews(VkDevice, std::vector<VkImage>&);
         VkRenderPass createRenderPass(VkDevice device, VkFormat swapChainImageFormat);
         void createGraphicsPipeline(VkDevice device);
-        void createVertexBuffer();
+        VkBuffer createVertexBuffer();
         uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
         void drawFrame() override;

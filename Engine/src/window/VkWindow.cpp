@@ -4,9 +4,6 @@
 #include "events/KeyEvent.h"
 #include "events/MouseEvent.h"
 #include <GLFW/glfw3.h>
-#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_vulkan.h>
 #include <iostream>
 #include "IO/KeyCodes.h"
 
@@ -202,23 +199,10 @@ namespace Azazel
         
         renderPass = createRenderPass(logicalDevice, swapChainImageFormat);
 
-        VkDescriptorPoolSize pool_sizes[] =
-        {
-            { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1 }
-        };
-
-        VkDescriptorPoolCreateInfo pool_info {};
-        pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-        pool_info.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
-        pool_info.maxSets = 1;
-        pool_info.poolSizeCount = (uint32_t)IM_ARRAYSIZE(pool_sizes);
-        pool_info.pPoolSizes = pool_sizes;
-        vkCreateDescriptorPool(logicalDevice, &pool_info, nullptr, &descriptorPool);
-
         createGraphicsPipeline(logicalDevice);
         createFramebuffers();
         commandPool = createCommandPool();
-        createVertexBuffer();
+        vertexBuffer = createVertexBuffer();
         commandBuffer = createCommandBuffer();
         createSyncObjects();
     }
@@ -768,8 +752,9 @@ namespace Azazel
         return shaderModule;
     }
 
-    void VkWindow::createVertexBuffer()
-    { 
+    VkBuffer VkWindow::createVertexBuffer()
+    {
+        VkBuffer vertexBuffer;
         VkBufferCreateInfo bufferInfo {};
         bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
         bufferInfo.size = sizeof(vertices[0]) * vertices.size();
@@ -800,6 +785,7 @@ namespace Azazel
         vkMapMemory(logicalDevice, vertexBufferMemory, 0, bufferInfo.size, 0, &data);
         memcpy(data, vertices.data(), (size_t) bufferInfo.size);
         vkUnmapMemory(logicalDevice, vertexBufferMemory);
+        return vertexBuffer;
     }
 
     uint32_t VkWindow::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) 
@@ -891,7 +877,8 @@ namespace Azazel
         colorBlending.blendConstants[2] = 0.0f;
         colorBlending.blendConstants[3] = 0.0f;
 
-        std::vector<VkDynamicState> dynamicStates = {
+        std::vector<VkDynamicState> dynamicStates = 
+        {
             VK_DYNAMIC_STATE_VIEWPORT,
             VK_DYNAMIC_STATE_SCISSOR
         };
@@ -997,7 +984,8 @@ namespace Azazel
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-        if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
+        if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) 
+        {
             throw std::runtime_error("failed to begin recording command buffer!");
         }
 

@@ -1,9 +1,7 @@
 #pragma once
 
-#include <GLFW/glfw3.h>
+#include "Window.h"
 #include <vulkan/vulkan.hpp>
-#include <vector>
-#include <functional>
 
 namespace Azazel
 {
@@ -42,7 +40,7 @@ namespace Azazel
 
     class VulkanContext
     {
-        VulkanContext(GLFWwindow* window);
+        VulkanContext(Window* window);
 
         private:
             VkInstance initVkInstance();
