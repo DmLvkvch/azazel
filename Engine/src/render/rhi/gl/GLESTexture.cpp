@@ -1,8 +1,7 @@
 #include "GLESTexture.h"
 
 #include "gl_headers.h"
-#include <iostream>
-#include "logging/Log.h"
+#include "api/logging/Log.h"
 
 namespace Azazel
 {

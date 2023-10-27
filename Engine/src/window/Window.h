@@ -47,7 +47,7 @@ namespace Azazel
         virtual void* getNativeWindow() = 0;
         virtual void drawFrame(){}
 
-        static Window* create(const WindowProperties& props = WindowProperties());
+        static Window* create(const WindowProperties& properties = WindowProperties());
     private:
         static Window* window;
     };

@@ -122,7 +122,7 @@ namespace Azazel
         }
 
     private:
-        unsigned long index = -1;
+        long index = -1;
         Camera* camera;
     };
 }

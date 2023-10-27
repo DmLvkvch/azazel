@@ -13,21 +13,11 @@ namespace Azazel
 
 	VKShader::~VKShader()
 	{
-		glDeleteProgram(rendererID);
 	}
 
 	int VKShader::getShaderType(const ShaderType& shaderType) const
 	{
-		switch (shaderType)
-		{
-			case VERTEX:
-				return GL_VERTEX_SHADER;
-			case FRAGMENT:
-				return GL_FRAGMENT_SHADER;
-			case GEOMETRY:
-				return GL_GEOMETRY_SHADER;
-		}
-		return -1;
+		
 	}
 
 	unsigned int VKShader::compile(const std::string& programCode, const ShaderType& shaderType)

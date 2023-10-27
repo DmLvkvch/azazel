@@ -2,7 +2,7 @@
 
 #include "api/file/FileUtils.h"
 #include "TextureUtils.h"
-#include "logging/Log.h"
+#include "api/logging/Log.h"
 #include <functional>
 #include "resources/ResourceManager.h"
 #include "render/ModelHelper.h"

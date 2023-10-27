@@ -89,41 +89,12 @@ namespace Azazel
     {
         while (running)
         {
+            camera->onInputUpdate(delta);
             window->onUpdate(delta);
             window->drawFrame();
 
             auto startTime = std::chrono::high_resolution_clock::now();
-            Render::getRender()->setViewport(0, 0, window->getWidth() * 2, window->getHeight() * 2);
-            Render::getRender()->beginScene();
-            Render::getRender()->setClearColor({1.0f, 1.0f, 0.0f, 1.0f});
-            Render::getRender()->clear(true, true, false);
-
-            #ifdef AZAZEL_GL
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui::NewFrame();
-            #else
-            //ImGui_ImplVulkan_NewFrame();
-            //ImGui::NewFrame();
-            #endif
-            
-            updateTargets(delta);
-            camera->onInputUpdate(delta);
-            for (auto layer : layerStack)
-            {
-                layer->onInputUpdate(delta);
-                layer->onImguiRender(delta);
-                layer->onUpdate(delta);
-                layer->onRender(delta);
-            }
-            
-            #ifdef AZAZEL_GL
-            ImGui::Render();
-            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-            #else
-            //ImGui::Render();
-            //ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData());
-            #endif
-
+        
             Render::getRender()->endScene();
             auto stopTime = std::chrono::high_resolution_clock::now();
             delta = std::chrono::duration<float, std::chrono::milliseconds::period>(stopTime - startTime).count();

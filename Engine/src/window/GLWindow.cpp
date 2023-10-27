@@ -8,7 +8,7 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include "logging/Log.h"
+#include "api/logging/Log.h"
 #include "IO/KeyCodes.h"
 
 namespace Azazel

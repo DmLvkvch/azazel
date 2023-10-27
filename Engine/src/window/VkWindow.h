@@ -50,26 +50,28 @@ namespace Azazel
         VkInstance createVkInstance();
         VkApplicationInfo createVkApplicationInfo(const char* applicationName, const char* engineName);
         VkInstanceCreateInfo createVkInstanceCreateInfo(VkApplicationInfo* appInfo, std::vector<const char*>&, std::vector<const char*>&);
-        void setupDebugMessenger(VkInstance);
-
-        VkPhysicalDevice initVkPhysicalDevice(VkInstance instance);
-        VkDevice initVkDevice(VkPhysicalDevice physicalDevice);
+        VkDebugUtilsMessengerEXT setupDebugMessenger(VkInstance);
+        VkDebugUtilsMessengerCreateInfoEXT populateDebugMessengerCreateInfo(PFN_vkDebugUtilsMessengerCallbackEXT callback);
 
         VkSurfaceKHR createSurface(VkInstance instance, GLFWwindow* window);
-        VkPhysicalDevice pickPhysicalDevice(VkInstance instance);
-        VkDevice createLogicalDevice(VkPhysicalDevice physicalDevice);
-        VkSwapchainKHR createSwapChain(VkPhysicalDevice physicalDevice);
-        void recreateSwapChain();
+
+        VkPhysicalDevice createVkPhysicalDevice(VkInstance instance);
+        VkDevice createVkDevice(VkPhysicalDevice physicalDevice);
 
 		QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-        
-        VkDebugUtilsMessengerCreateInfoEXT populateDebugMessengerCreateInfo();
+
+        VkPhysicalDevice pickPhysicalDevice(VkInstance instance);
         bool isDeviceSuitable(VkPhysicalDevice device);
 
+        VkDevice createLogicalDevice(VkPhysicalDevice physicalDevice);
 
+        VkSwapchainKHR createSwapChain(VkPhysicalDevice physicalDevice);
+        
         std::vector<VkImageView> createImageViews(VkDevice, std::vector<VkImage>&);
         VkRenderPass createRenderPass(VkDevice device, VkFormat swapChainImageFormat);
         void createGraphicsPipeline(VkDevice device);
+        void createVertexBuffer();
+        uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
         void drawFrame() override;
 
@@ -81,11 +83,11 @@ namespace Azazel
         std::vector<const char*> getRequiredExtensions();
         VkShaderModule createShaderModule(VkDevice device, const std::vector<char>& code);
 
-
         void createFramebuffers();
-        void createCommandPool();
 
-        void createCommandBuffer();
+        VkCommandPool createCommandPool();
+        VkCommandBuffer createCommandBuffer();
+
         void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
         void createSyncObjects();
         bool checkValidationLayerSupport();
@@ -105,16 +107,24 @@ namespace Azazel
 
         WindowData windowData;
 
+        // INSTANCE
         VkInstance instance;
+
+        // DEBUG
         VkDebugUtilsMessengerEXT debugMessenger;
+
+        // SURFACE
         VkSurfaceKHR surface;
 
-        VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-        VkDevice device;
+        // DEVICES
+        VkPhysicalDevice physicalDevice;
+        VkDevice logicalDevice;
 
+        // QUEUES
         VkQueue graphicsQueue;
         VkQueue presentQueue;
 
+        // SWAPCHAIN
         VkSwapchainKHR swapChain;
         std::vector<VkImage> swapChainImages;
         
@@ -136,5 +146,8 @@ namespace Azazel
         VkFence inFlightFence;
 
         VkDescriptorPool descriptorPool;
+
+        VkBuffer vertexBuffer;
+        VkDeviceMemory vertexBufferMemory;
     };
 }
