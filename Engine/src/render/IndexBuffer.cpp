@@ -18,7 +18,7 @@ namespace Azazel
         #ifdef AZAZEL_GL
         return new GLESIndexBuffer(indices, count);
         #else
-        return new VKIndexBuffer(indices, count);
+        return nullptr;// new VKIndexBuffer(indices, count);
         #endif
     }
 }

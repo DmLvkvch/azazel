@@ -6,6 +6,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include <iostream>
+#include "render/rhi/gl/gl_headers.h"
 
 namespace Azazel
 {

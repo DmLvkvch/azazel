@@ -18,6 +18,8 @@
 #include <set>
 #include <glm/glm.hpp>
 
+#include "render/rhi/vulkan/VKVertexBuffer.h"
+
 namespace Azazel
 {
 
@@ -191,18 +193,20 @@ namespace Azazel
 
         physicalDevice = createVkPhysicalDevice(instance);
 
-        logicalDevice = createVkDevice(physicalDevice);
+        device = createVkDevice(physicalDevice);
 
         swapChain = createSwapChain(physicalDevice);
         
-        swapChainImageViews = createImageViews(logicalDevice, swapChainImages);
+        swapChainImageViews = createImageViews(device, swapChainImages);
         
-        renderPass = createRenderPass(logicalDevice, swapChainImageFormat);
+        renderPass = createRenderPass(device, swapChainImageFormat);
 
-        createGraphicsPipeline(logicalDevice);
+        createGraphicsPipeline(device);
         createFramebuffers();
         commandPool = createCommandPool();
-        vertexBuffer = createVertexBuffer();
+        //vertexBuffer = createVertexBuffer();
+        VKVertexBuffer vb(device, physicalDevice, commandPool, graphicsQueue, (void*) vertices.data(), sizeof(vertices[0]) * vertices.size());
+        vertexBuffer = vb.vertexBuffer;
         commandBuffer = createCommandBuffer();
         createSyncObjects();
     }
@@ -572,14 +576,14 @@ namespace Azazel
         createInfo.clipped = VK_TRUE;
         createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-        if (vkCreateSwapchainKHR(logicalDevice, &createInfo, nullptr, &swapChain) != VK_SUCCESS) 
+        if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapChain) != VK_SUCCESS) 
         {
             throw std::runtime_error("failed to create swap chain!");
         }
 
-        vkGetSwapchainImagesKHR(logicalDevice, swapChain, &imageCount, nullptr);
+        vkGetSwapchainImagesKHR(device, swapChain, &imageCount, nullptr);
         swapChainImages.resize(imageCount);
-        vkGetSwapchainImagesKHR(logicalDevice, swapChain, &imageCount, swapChainImages.data());
+        vkGetSwapchainImagesKHR(device, swapChain, &imageCount, swapChainImages.data());
 
         swapChainImageFormat = surfaceFormat.format;
         swapChainExtent = extent;
@@ -761,30 +765,30 @@ namespace Azazel
         bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
         bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-        if (vkCreateBuffer(logicalDevice, &bufferInfo, nullptr, &vertexBuffer) != VK_SUCCESS) 
+        if (vkCreateBuffer(device, &bufferInfo, nullptr, &vertexBuffer) != VK_SUCCESS) 
         {
             throw std::runtime_error("failed to create vertex buffer!");
         }
 
         VkMemoryRequirements memRequirements;
-        vkGetBufferMemoryRequirements(logicalDevice, vertexBuffer, &memRequirements);
+        vkGetBufferMemoryRequirements(device, vertexBuffer, &memRequirements);
 
         VkMemoryAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         allocInfo.allocationSize = memRequirements.size;
         allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
-        if (vkAllocateMemory(logicalDevice, &allocInfo, nullptr, &vertexBufferMemory) != VK_SUCCESS) 
+        if (vkAllocateMemory(device, &allocInfo, nullptr, &vertexBufferMemory) != VK_SUCCESS) 
         {
             throw std::runtime_error("failed to allocate vertex buffer memory!");
         }
 
-        vkBindBufferMemory(logicalDevice, vertexBuffer, vertexBufferMemory, 0);
+        vkBindBufferMemory(device, vertexBuffer, vertexBufferMemory, 0);
 
         void* data;
-        vkMapMemory(logicalDevice, vertexBufferMemory, 0, bufferInfo.size, 0, &data);
+        vkMapMemory(device, vertexBufferMemory, 0, bufferInfo.size, 0, &data);
         memcpy(data, vertices.data(), (size_t) bufferInfo.size);
-        vkUnmapMemory(logicalDevice, vertexBufferMemory);
+        vkUnmapMemory(device, vertexBufferMemory);
         return vertexBuffer;
     }
 
@@ -938,7 +942,7 @@ namespace Azazel
                 framebufferInfo.height = swapChainExtent.height;
                 framebufferInfo.layers = 1;
             }
-            if (vkCreateFramebuffer(logicalDevice, &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS)
+            if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS)
             {
                 throw std::runtime_error("failed to create framebuffer!");
             }
@@ -955,7 +959,7 @@ namespace Azazel
             poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
             poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
         }
-        if (vkCreateCommandPool(logicalDevice, &poolInfo, nullptr, &commandPool) != VK_SUCCESS)
+        if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS)
         {
             throw std::runtime_error("failed to create command pool!");
         }
@@ -972,7 +976,7 @@ namespace Azazel
             allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
             allocInfo.commandBufferCount = 1;
         }
-        if (vkAllocateCommandBuffers(logicalDevice, &allocInfo, &commandBuffer) != VK_SUCCESS)
+        if (vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer) != VK_SUCCESS)
         {
             throw std::runtime_error("failed to allocate command buffers!");
         }
@@ -1044,9 +1048,9 @@ namespace Azazel
             fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
         }
 
-        if (vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphore) != VK_SUCCESS ||
-            vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphore) != VK_SUCCESS ||
-            vkCreateFence(logicalDevice, &fenceInfo, nullptr, &inFlightFence) != VK_SUCCESS)
+        if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphore) != VK_SUCCESS ||
+            vkCreateSemaphore(device, &semaphoreInfo, nullptr, &renderFinishedSemaphore) != VK_SUCCESS ||
+            vkCreateFence(device, &fenceInfo, nullptr, &inFlightFence) != VK_SUCCESS)
         {
             throw std::runtime_error("failed to create synchronization objects for a frame!");
         }
@@ -1054,11 +1058,11 @@ namespace Azazel
 
     void VkWindow::drawFrame() 
     {
-        vkWaitForFences(logicalDevice, 1, &inFlightFence, VK_TRUE, UINT64_MAX);
-        vkResetFences(logicalDevice, 1, &inFlightFence);
+        vkWaitForFences(device, 1, &inFlightFence, VK_TRUE, UINT64_MAX);
+        vkResetFences(device, 1, &inFlightFence);
 
         uint32_t imageIndex;
-        vkAcquireNextImageKHR(logicalDevice, swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+        vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
         vkResetCommandBuffer(commandBuffer, 0);
         recordCommandBuffer(commandBuffer, imageIndex);

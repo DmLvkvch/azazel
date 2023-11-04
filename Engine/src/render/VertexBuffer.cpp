@@ -13,7 +13,7 @@ namespace Azazel
         #ifdef AZAZEL_GL
         return new GLESVertexBuffer(vertices, size);
         #else 
-        return new VKVertexBuffer(vertices, size);
+        return nullptr; //VKVertexBuffer(vertices, size);
         #endif
     }
 }

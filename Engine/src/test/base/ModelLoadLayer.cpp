@@ -57,9 +57,7 @@ float time = 0.0f;
 
         glm::vec3 lightPos {0.0f, 5.0f, 0.0f};
 
-         lightPos.x = 0.0f + sin(glfwGetTime()) * 5.0f;
-         lightPos.z = cos(glfwGetTime()) * 10.0f;
-         lightPos.y = 8.0f + 4.0f * cos(glfwGetTime());
+
 
         sphere.transform.position = lightPos;
         

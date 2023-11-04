@@ -118,7 +118,7 @@ namespace Azazel
 
         // DEVICES
         VkPhysicalDevice physicalDevice;
-        VkDevice logicalDevice;
+        VkDevice device;
 
         // QUEUES
         VkQueue graphicsQueue;

@@ -62,7 +62,7 @@ namespace Azazel
         return createInfo;
     }
     
-    VkInstance VulkanContext::initVkInstance()
+    VkInstance VulkanContext::createInstance()
     {
         if (!checkValidationLayerSupport(validationLayers)) 
         {
@@ -119,8 +119,7 @@ namespace Azazel
 
     void VulkanContext::setupDebugInitCallback(VkInstance instance)
     {
-        auto vkCreateDebugReportCallbackEXT = 
-        (PFN_vkCreateDebugReportCallbackEXT)vkGetInstanceProcAddr(instance,"vkCreateDebugReportCallbackEXT");
+        auto vkCreateDebugReportCallbackEXT = (PFN_vkCreateDebugReportCallbackEXT) vkGetInstanceProcAddr(instance,"vkCreateDebugReportCallbackEXT");
 
         VkDebugReportCallbackEXT vk_debugReportCallbackEXT;
 
@@ -184,30 +183,8 @@ namespace Azazel
     {
         VkDevice vkDevice;
 
-        VkDeviceCreateInfo vkDeviceCreateInfo;
-        {
-            // vkDeviceCreateInfo.sType = VkStructureType::VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-            // vkDeviceCreateInfo.pNext = nullptr;
-            // vkDeviceCreateInfo.flags = 0;
-            // vkDeviceCreateInfo.queueCreateInfoCount = vkDeviceQueueCreateInfos.size();
-            // vkDeviceCreateInfo.pQueueCreateInfos = vkDeviceQueueCreateInfos.data();
-            // vkDeviceCreateInfo.enabledLayerCount = layerNames.size();
-            // vkDeviceCreateInfo.ppEnabledLayerNames = layerNames.data();
-            // vkDeviceCreateInfo.enabledExtensionCount = extensionNames.size();
-            // vkDeviceCreateInfo.ppEnabledExtensionNames = extensionNames.data();
-            // vkDeviceCreateInfo.pEnabledFeatures = &vkPhysicalDeviceFeatures;
-        };
+        VkPhysicalDeviceFeatures vkPhysicalDeviceFeatures {};
 
-        if(vkCreateDevice(vkPhysicalDevice, &vkDeviceCreateInfo, nullptr, &vkDevice) != VkResult::VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to create device");
-        }
-
-        return vkDevice;
-    }
-    
-    std::vector<VkDeviceQueueCreateInfo> VulkanContext::createVkDeviceQueueCreateInfo()
-    {
         std::vector<VkDeviceQueueCreateInfo> vkDeviceQueueCreateInfos(1);
         std::vector<std::vector<float>> vkDeviceQueuesPriorities(vkDeviceQueueCreateInfos.size(), std::vector<float>(1, 0.0f));
         {
@@ -223,8 +200,31 @@ namespace Azazel
                 vkDeviceQueueCreateInfo.pQueuePriorities = vkDeviceQueuePriorities.data();
             }
         }
-        return vkDeviceQueueCreateInfos;
+        std::vector<const char*> validationLayers;// = getValidationLayers();
+
+        std::vector<const char*> deviceExtensions;// = getDeviceExtenstions();
+
+        VkDeviceCreateInfo vkDeviceCreateInfo;
+        {
+            vkDeviceCreateInfo.sType = VkStructureType::VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+            vkDeviceCreateInfo.pNext = nullptr;
+            vkDeviceCreateInfo.flags = 0;
+            vkDeviceCreateInfo.queueCreateInfoCount = vkDeviceQueueCreateInfos.size();
+            vkDeviceCreateInfo.pQueueCreateInfos = vkDeviceQueueCreateInfos.data();
+
+            vkDeviceCreateInfo.enabledLayerCount = validationLayers.size();
+            vkDeviceCreateInfo.ppEnabledLayerNames = validationLayers.data();
+
+            vkDeviceCreateInfo.enabledExtensionCount = deviceExtensions.size();
+            vkDeviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();
+            vkDeviceCreateInfo.pEnabledFeatures = &vkPhysicalDeviceFeatures;
+        };
+
+        if(vkCreateDevice(vkPhysicalDevice, &vkDeviceCreateInfo, nullptr, &vkDevice) != VkResult::VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to create device");
+        }
+
+        return vkDevice;
     }
-
-
 }

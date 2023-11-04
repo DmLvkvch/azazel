@@ -2,6 +2,7 @@
 
 #include "Window.h"
 #include <vulkan/vulkan.hpp>
+#include <GLFW/glfw3.h>
 
 namespace Azazel
 {
@@ -38,12 +39,29 @@ namespace Azazel
         size_t maxStageBufferSize = 64 * 1024 * 1024;
     };
 
+    class VulkanSurface
+    {
+    public:
+        bool сheckVulkanPresentationSupport(const VkInstance& instance, const VkPhysicalDevice& physicalDevice, uint32_t familyQueueIndex)
+        {
+            return glfwGetPhysicalDevicePresentationSupport(instance, physicalDevice, familyQueueIndex) == GLFW_TRUE;
+        }
+
+        VkSurfaceKHR createSurface(VkInstance & instance, GLFWwindow* window)
+        {
+            glfwCreateWindowSurface(instance, window, nullptr, &surface);
+            return surface;
+        }
+        
+        VkSurfaceKHR surface;
+    };
+
     class VulkanContext
     {
         VulkanContext(Window* window);
 
         private:
-            VkInstance initVkInstance();
+            VkInstance createInstance();
             bool checkValidationLayerSupport(std::vector<const char*> validationLayers);
             VkApplicationInfo createVkApplicationInfo();
             VkInstanceCreateInfo createVkInstanceCreateInfo(VkApplicationInfo& appInfo);
