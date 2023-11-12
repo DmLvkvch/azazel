@@ -120,7 +120,8 @@ namespace Azazel
 
     VKIndexBuffer::~VKIndexBuffer()
     {
-        vkDestroyBuffer(device, indexBuffer, nullptr);
+        //vkDestroyBuffer(device, indexBuffer, nullptr);
+        //vkFreeMemory(device, indexBufferMemory, nullptr);
     }
 
     void VKIndexBuffer::bind() const

@@ -28,10 +28,10 @@ namespace Azazel
         const VkSurfaceFormatKHR &GetFormat() const { return format; }
 
     private:
-        const Instance &instance;
-        const PhysicalDevice &physicalDevice;
-        const LogicalDevice &logicalDevice;
-        const Window &window;
+        const Instance & instance;
+        const PhysicalDevice & physicalDevice;
+        const LogicalDevice & logicalDevice;
+        const Window & window;
 
         VkSurfaceKHR surface = VK_NULL_HANDLE;
         VkSurfaceCapabilitiesKHR capabilities {};

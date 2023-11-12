@@ -17,7 +17,7 @@ namespace Azazel
 
 	int VKShader::getShaderType(const ShaderType& shaderType) const
 	{
-		
+		return 0;
 	}
 
 	unsigned int VKShader::compile(const std::string& programCode, const ShaderType& shaderType)

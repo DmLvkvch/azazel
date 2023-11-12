@@ -118,6 +118,7 @@ namespace Azazel
     VKVertexBuffer::~VKVertexBuffer()
     {
         //vkDestroyBuffer(device, vertexBuffer, nullptr);
+        //vkFreeMemory(device, vertexBufferMemory, nullptr);
     }
 
     void VKVertexBuffer::bind() const
