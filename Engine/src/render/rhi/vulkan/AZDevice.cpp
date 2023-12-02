@@ -1,4 +1,4 @@
-#include "VKDevice.h"
+#include "AZDevice.h"
 
 namespace Azazel
 {

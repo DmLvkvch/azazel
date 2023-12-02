@@ -8,36 +8,6 @@ namespace Azazel
 {
     inline void defaultVulkanContextCallback(const std::string&) { }
 
-    struct VulkanContextCreateOptions
-    {
-        int vulkanApiMajorVersion = 1;
-        int vulkanApiMinorVersion = 0;
-        std::function<void(const std::string&)> errorCallback = defaultVulkanContextCallback;
-        std::function<void(const std::string&)> infoCallback = defaultVulkanContextCallback;
-        std::vector<const char*> extensions;
-        std::vector<const char*> layers;
-        const char* applicationName = "Azazel";
-        const char* engineName = "Azazel";
-    };
-
-    enum class DeviceType
-    {
-        CPU = 0,
-        DISCRETE_GPU,
-        INTEGRATED_GPU,
-        VIRTUAL_GPU,
-        OTHER,
-    };
-
-    struct ContextInitializeOptions
-    {
-        DeviceType PreferredDeviceType = DeviceType::DISCRETE_GPU;
-        std::function<void(const std::string&)> ErrorCallback = defaultVulkanContextCallback;
-        std::function<void(const std::string&)> InfoCallback = defaultVulkanContextCallback;
-        std::vector<const char*> deviceExtensions;
-        size_t virtualFrameCount = 3;
-        size_t maxStageBufferSize = 64 * 1024 * 1024;
-    };
 
     class VulkanSurface
     {
@@ -54,6 +24,16 @@ namespace Azazel
         }
         
         VkSurfaceKHR surface;
+    };
+
+    class VulkanPhysicalDevice
+    {
+
+    };
+
+    class VulkanDevice
+    {
+
     };
 
     class VulkanContext

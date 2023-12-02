@@ -18,8 +18,8 @@
 #include <set>
 #include <glm/glm.hpp>
 
-#include "render/rhi/vulkan/VKVertexBuffer.h"
-#include "render/rhi/vulkan/VKIndexBuffer.h"
+#include "render/rhi/vulkan/AZVertexBuffer.h"
+#include "render/rhi/vulkan/AZIndexBuffer.h"
 
 namespace Azazel
 {
@@ -209,8 +209,8 @@ namespace Azazel
         
         renderPass = createRenderPass(device, swapChainImageFormat);
 
-        createGraphicsPipeline(device);
-        createFramebuffers();
+        graphicsPipeline = createGraphicsPipeline(device);
+        swapChainFramebuffers = createFramebuffers();
         commandPool = createCommandPool();
         
         VKVertexBuffer vb(device, physicalDevice, commandPool, graphicsQueue, (void*) vertices.data(), sizeof(vertices[0]) * vertices.size());
@@ -768,7 +768,7 @@ namespace Azazel
         return shaderModule;
     }
 
-    void VkWindow::createGraphicsPipeline(VkDevice device)
+    VkPipeline VkWindow::createGraphicsPipeline(VkDevice device)
     {
         auto vertShaderCode = readFile("shaders/example.vert.spv");
         auto fragShaderCode = readFile("shaders/example.frag.spv");
@@ -846,7 +846,7 @@ namespace Azazel
             VK_DYNAMIC_STATE_VIEWPORT,
             VK_DYNAMIC_STATE_SCISSOR
         };
-        VkPipelineDynamicStateCreateInfo dynamicState{};
+        VkPipelineDynamicStateCreateInfo dynamicState {};
         dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
         dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
         dynamicState.pDynamicStates = dynamicStates.data();        
@@ -856,7 +856,8 @@ namespace Azazel
         pipelineLayoutInfo.setLayoutCount = 0;
         pipelineLayoutInfo.pushConstantRangeCount = 0;
 
-        if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
+        if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) 
+        {
             throw std::runtime_error("failed to create pipeline layout!");
         }
 
@@ -876,28 +877,29 @@ namespace Azazel
         pipelineInfo.subpass = 0;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-        if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) {
+        if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) 
+        {
             throw std::runtime_error("failed to create graphics pipeline!");
         }
 
         vkDestroyShaderModule(device, fragShaderModule, nullptr);
         vkDestroyShaderModule(device, vertShaderModule, nullptr);
+        return graphicsPipeline;
     }
 
-    void VkWindow::createFramebuffers()
+    std::vector<VkFramebuffer> VkWindow::createFramebuffers()
     {
+        std::vector<VkFramebuffer> swapChainFramebuffers;
         swapChainFramebuffers.resize(swapChainImageViews.size());
 
         for (size_t i = 0; i < swapChainImageViews.size(); i++)
         {
-            VkImageView attachments[] = { swapChainImageViews[i] };
-
             VkFramebufferCreateInfo framebufferInfo {};
             {
                 framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
                 framebufferInfo.renderPass = renderPass;
                 framebufferInfo.attachmentCount = 1;
-                framebufferInfo.pAttachments = attachments;
+                framebufferInfo.pAttachments = &swapChainImageViews[i];
                 framebufferInfo.width = swapChainExtent.width;
                 framebufferInfo.height = swapChainExtent.height;
                 framebufferInfo.layers = 1;
@@ -907,6 +909,7 @@ namespace Azazel
                 throw std::runtime_error("failed to create framebuffer!");
             }
         }
+        return swapChainFramebuffers;
     }
 
     VkCommandPool VkWindow::createCommandPool()
@@ -943,6 +946,8 @@ namespace Azazel
         return commandBuffer;
     }
 
+    float t = 0.0f;
+
     void VkWindow::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex)
     {
         VkCommandBufferBeginInfo beginInfo{};
@@ -960,7 +965,7 @@ namespace Azazel
         renderPassInfo.renderArea.offset = {0, 0};
         renderPassInfo.renderArea.extent = swapChainExtent;
 
-        VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
+        VkClearValue clearColor = {{{t += 0.001f, 1.0f, 0.0f, 1.0f}}};
         renderPassInfo.clearValueCount = 1;
         renderPassInfo.pClearValues = &clearColor;
 
@@ -993,7 +998,8 @@ namespace Azazel
 
         vkCmdEndRenderPass(commandBuffer);
 
-        if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
+        if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) 
+        {
             throw std::runtime_error("failed to record command buffer!");
         }
     }
@@ -1057,9 +1063,8 @@ namespace Azazel
         presentInfo.waitSemaphoreCount = 1;
         presentInfo.pWaitSemaphores = signalSemaphores;
 
-        VkSwapchainKHR swapChains[] = {swapChain};
         presentInfo.swapchainCount = 1;
-        presentInfo.pSwapchains = swapChains;
+        presentInfo.pSwapchains = &swapChain;
 
         presentInfo.pImageIndices = &imageIndex;
 

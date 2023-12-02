@@ -1,26 +1,23 @@
-#include "VKIndexBuffer.h"
-
-#include <vector>
+#include "AZVertexBuffer.h"
 
 namespace Azazel
 {
-    VKIndexBuffer::VKIndexBuffer(VkDevice & device, 
-                                 VkPhysicalDevice & physicalDevice, 
-                                 VkCommandPool & commandPool, 
-                                 VkQueue & graphicsQueue, 
-                                 const void* indices, 
-                                 size_t indicesCount)
+    VKVertexBuffer::VKVertexBuffer(VkDevice device, 
+                                   VkPhysicalDevice physicalDevice, 
+                                   VkCommandPool commandPool, 
+                                   VkQueue graphicsQueue, 
+                                   const void* data, 
+                                   size_t size)
     : device(device), 
       physicalDevice(physicalDevice), 
       commandPool(commandPool), 
       graphicsQueue(graphicsQueue)
     {
-        this->count = indicesCount;
-        createIndexBuffer(indices, sizeof(unsigned int) * indicesCount);
+        createVertexBuffer(data, size);
     }
-    
-    void VKIndexBuffer::createIndexBuffer(const void* indices, uint64_t size) 
-    {
+
+    void VKVertexBuffer::createVertexBuffer(const void* vertices, uint64_t size) 
+    {        
         VkDeviceSize bufferSize = size;
 
         VkBuffer stagingBuffer;
@@ -29,18 +26,18 @@ namespace Azazel
 
         void* data;
         vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
-        memcpy(data, indices, (size_t) bufferSize);
+        memcpy(data, vertices, (size_t) bufferSize);
         vkUnmapMemory(device, stagingBufferMemory);
 
-        createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
+        createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
 
-        copyBuffer(stagingBuffer, indexBuffer, bufferSize);
+        copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
 
         vkDestroyBuffer(device, stagingBuffer, nullptr);
         vkFreeMemory(device, stagingBufferMemory, nullptr);
     }
 
-    void VKIndexBuffer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) 
+    void VKVertexBuffer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) 
     {
         VkBufferCreateInfo bufferInfo{};
         bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -69,9 +66,9 @@ namespace Azazel
         vkBindBufferMemory(device, buffer, bufferMemory, 0);
     }
 
-    void VKIndexBuffer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) 
+    void VKVertexBuffer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) 
     {
-        VkCommandBufferAllocateInfo allocInfo {};
+        VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
         allocInfo.commandPool = commandPool;
@@ -86,13 +83,13 @@ namespace Azazel
 
         vkBeginCommandBuffer(commandBuffer, &beginInfo);
 
-        VkBufferCopy copyRegion {};
+        VkBufferCopy copyRegion{};
         copyRegion.size = size;
         vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
 
         vkEndCommandBuffer(commandBuffer);
 
-        VkSubmitInfo submitInfo {};
+        VkSubmitInfo submitInfo{};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
         submitInfo.commandBufferCount = 1;
         submitInfo.pCommandBuffers = &commandBuffer;
@@ -103,7 +100,7 @@ namespace Azazel
         vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
     }
 
-    uint32_t VKIndexBuffer::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) 
+    uint32_t VKVertexBuffer::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) 
     {
         VkPhysicalDeviceMemoryProperties memProperties;
         vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
@@ -118,22 +115,9 @@ namespace Azazel
         throw std::runtime_error("failed to find suitable memory type!");
     }
 
-    VKIndexBuffer::~VKIndexBuffer()
+    VKVertexBuffer::~VKVertexBuffer()
     {
-        //vkDestroyBuffer(device, indexBuffer, nullptr);
-        //vkFreeMemory(device, indexBufferMemory, nullptr);
-    }
-
-    void VKIndexBuffer::bind() const
-    {
-    }
-
-    void VKIndexBuffer::unbind() const
-    {
-    }
-
-    unsigned int VKIndexBuffer::getElementCount() const
-    {
-        return count;
+        //vkDestroyBuffer(device, vertexBuffer, nullptr);
+        //vkFreeMemory(device, vertexBufferMemory, nullptr);
     }
 }

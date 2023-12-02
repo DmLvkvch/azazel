@@ -1,6 +1,4 @@
-#include "VKTexture.h"
-
-#include "vk_headers.h"
+#include "AZTexture.h"
 
 namespace Azazel
 {

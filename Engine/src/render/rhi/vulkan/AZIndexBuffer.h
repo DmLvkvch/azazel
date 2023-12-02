@@ -8,10 +8,10 @@ namespace Azazel
     class VKIndexBuffer : public IndexBuffer
     {
     public:
-        VKIndexBuffer(VkDevice & device, 
-                      VkPhysicalDevice & physicalDevice, 
-                      VkCommandPool & commandPool, 
-                      VkQueue & graphicsQueue, 
+        VKIndexBuffer(VkDevice device, 
+                      VkPhysicalDevice physicalDevice, 
+                      VkCommandPool commandPool, 
+                      VkQueue graphicsQueue, 
                       const void* indices, 
                       size_t indicesCount);
 
@@ -31,10 +31,10 @@ namespace Azazel
         unsigned int rendererID;
         unsigned int count;
 
-        VkCommandPool & commandPool;
-        VkQueue & graphicsQueue;
-        VkDevice& device;
-        VkPhysicalDevice& physicalDevice;
+        VkCommandPool commandPool;
+        VkQueue graphicsQueue;
+        VkDevice device;
+        VkPhysicalDevice physicalDevice;
         VkBuffer indexBuffer;
         VkDeviceMemory indexBufferMemory;
     };

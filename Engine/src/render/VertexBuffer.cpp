@@ -3,7 +3,7 @@
 #ifdef AZAZEL_GL
 #include "render/rhi/gl/GLESVertexBuffer.h"
 #else 
-#include "render/rhi/vulkan/VKVertexBuffer.h"
+#include "render/rhi/vulkan/AZVertexBuffer.h"
 #endif
 
 namespace Azazel

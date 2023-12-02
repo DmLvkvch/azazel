@@ -59,10 +59,10 @@ namespace Azazel
         delta = 0.0f;
         window.reset(Window::create());
         window->setEventCallback(std::bind(&Application::onEvent, this, std::placeholders::_1));
-        Render::getRender()->init();
+        //Render::getRender()->init();
         camera.reset(new Camera());
-        Render::getRender()->setCamera(camera.get());
-        Render::getRender()->setDefaultViewport( Viewport{0, 0, (int) window->getWidth() * 2, (int) window->getHeight() * 2} );
+        //Render::getRender()->setCamera(camera.get());
+        //Render::getRender()->setDefaultViewport( Viewport{0, 0, (int) window->getWidth() * 2, (int) window->getHeight() * 2} );
     }
 
     Application::~Application()
@@ -95,7 +95,7 @@ namespace Azazel
 
             auto startTime = std::chrono::high_resolution_clock::now();
         
-            Render::getRender()->endScene();
+            //Render::getRender()->endScene();
             auto stopTime = std::chrono::high_resolution_clock::now();
             delta = std::chrono::duration<float, std::chrono::milliseconds::period>(stopTime - startTime).count();
         }

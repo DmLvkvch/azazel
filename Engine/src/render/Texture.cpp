@@ -5,8 +5,7 @@
 #include "rhi/gl/GLESDepthTexture.h"
 #include "render/rhi/gl/GLESCubeMap.h"
 #else
-#include "render/rhi/vulkan/VKCubeMap.h"
-#include "rhi/vulkan/VKTexture.h"
+#include "rhi/vulkan/AZTexture.h"
 #endif
 
 namespace Azazel
@@ -80,7 +79,6 @@ namespace Azazel
         #ifdef AZAZEL_GL
         return new GLESCubeMap(textures);
         #else 
-        return new VKCubeMap();
         #endif
     }
 }

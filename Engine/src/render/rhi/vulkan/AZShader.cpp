@@ -1,7 +1,4 @@
-#include "VKShader.h"
-
-#include "vk_headers.h"
-#include <iostream>
+#include "AZShader.h"
 
 namespace Azazel
 {

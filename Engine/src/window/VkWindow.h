@@ -7,6 +7,10 @@
 #include <vector>
 #include <optional>
 
+#include "render/rhi/vulkan/AZVertexBuffer.h"
+#include "render/rhi/vulkan/AZIndexBuffer.h"
+
+
 struct GLFWwindow;
 
 namespace Azazel
@@ -70,7 +74,7 @@ namespace Azazel
         
         std::vector<VkImageView> createImageViews(VkDevice, std::vector<VkImage>&);
         VkRenderPass createRenderPass(VkDevice device, VkFormat swapChainImageFormat);
-        void createGraphicsPipeline(VkDevice device);
+        VkPipeline createGraphicsPipeline(VkDevice device);
 
         void drawFrame() override;
 
@@ -82,7 +86,7 @@ namespace Azazel
         std::vector<const char*> getRequiredExtensions();
         VkShaderModule createShaderModule(VkDevice device, const std::vector<char>& code);
 
-        void createFramebuffers();
+        std::vector<VkFramebuffer> createFramebuffers();
 
         VkCommandPool createCommandPool();
         VkCommandBuffer createCommandBuffer();
