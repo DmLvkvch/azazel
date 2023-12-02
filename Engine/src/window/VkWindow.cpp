@@ -213,10 +213,10 @@ namespace Azazel
         swapChainFramebuffers = createFramebuffers();
         commandPool = createCommandPool();
         
-        VKVertexBuffer vb(device, physicalDevice, commandPool, graphicsQueue, (void*) vertices.data(), sizeof(vertices[0]) * vertices.size());
+        AZVertexBuffer vb(device, physicalDevice, commandPool, graphicsQueue, (void*) vertices.data(), sizeof(vertices[0]) * vertices.size());
         vertexBuffer = vb.vertexBuffer;
 
-        VKIndexBuffer ib(device, physicalDevice, commandPool, graphicsQueue, (void*)indices.data(), 6);
+        AZIndexBuffer ib(device, physicalDevice, commandPool, graphicsQueue, (void*)indices.data(), 6);
         indexBuffer = ib.indexBuffer;
 
         commandBuffer = createCommandBuffer();
@@ -846,6 +846,7 @@ namespace Azazel
             VK_DYNAMIC_STATE_VIEWPORT,
             VK_DYNAMIC_STATE_SCISSOR
         };
+
         VkPipelineDynamicStateCreateInfo dynamicState {};
         dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
         dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());

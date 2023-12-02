@@ -20,6 +20,8 @@ find_program (GLSLANG_VALIDATOR "glslangValidator" HINTS $ENV{VULKAN_SDK}/bin RE
 set_property (TARGET glslang::validator PROPERTY IMPORTED_LOCATION "${GLSLANG_VALIDATOR}")
 
 include_directories ("vendor/glad/include"
+                     "vendor/glslang/glslang/Public" 
+                     "vendor/glslang/SPIRV" 
                      "vendor/glfw"
                      "vendor/glm"
                      "vendor/freetype"
@@ -35,6 +37,7 @@ OPTION (ASSIMP_WARNINGS_AS_ERRORS "Treat all warnings as errors." OFF)
 OPTION( ASSIMP_INSTALL "Disable this if you want to use assimp as a submodule." OFF )
 
 add_subdirectory(vendor/glad)
+add_subdirectory(vendor/glslang)
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/glm)
 add_subdirectory(vendor/stb_image)
@@ -69,7 +72,7 @@ if (APPLE)
     target_link_libraries(${PROJECT_NAME} "-framework IOKit")
 endif ()
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} Vulkan::Vulkan glfw assimp stb_image glad glm::glm freetype IMGUI OpenGL::GL)
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} Vulkan::Vulkan glfw SPIRV assimp stb_image glad glm::glm freetype IMGUI OpenGL::GL)
 
 file(REMOVE ${CMAKE_BINARY_DIR}/shaders)
 file(REMOVE ${CMAKE_BINARY_DIR}/images)

@@ -5,25 +5,27 @@
 
 namespace Azazel
 {
-    class VKVertexBuffer
+    class AZVertexBuffer
     {
     public:
-        VKVertexBuffer(VkDevice device, 
+        AZVertexBuffer(VkDevice device,
                        VkPhysicalDevice physicalDevice, 
                        VkCommandPool commandPool, 
                        VkQueue graphicsQueue, 
                        const void* data, 
                        size_t size);
-        ~VKVertexBuffer();
+        ~AZVertexBuffer();
+
+
     
     private:
         void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
         void createVertexBuffer(const void* vertices, uint64_t size);
         void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
         uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
-    
+        void destroy();
+
     public:
-        unsigned int rendererID;
         BufferLayout bufferLayout;
         VkCommandPool commandPool;
         VkQueue graphicsQueue;

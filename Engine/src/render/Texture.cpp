@@ -76,9 +76,6 @@ namespace Azazel
     
     CubeMap *CubeMap::create(std::array<TextureData, 6> textures)
     {
-        #ifdef AZAZEL_GL
-        return new GLESCubeMap(textures);
-        #else 
-        #endif
+        return nullptr;
     }
 }

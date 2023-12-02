@@ -26,3 +26,6 @@
 [submodule "Engine/vendor/json"]
 	path = Engine/vendor/json
 	url = https://github.com/nlohmann/json
+[submodule "Engine/vendor/glslang"]
+	path = Engine/vendor/glslang
+	url = https://github.com/KhronosGroup/glslang

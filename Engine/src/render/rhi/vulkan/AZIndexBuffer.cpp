@@ -4,7 +4,7 @@
 
 namespace Azazel
 {
-    VKIndexBuffer::VKIndexBuffer(VkDevice device, 
+    AZIndexBuffer::AZIndexBuffer(VkDevice device,
                                  VkPhysicalDevice physicalDevice, 
                                  VkCommandPool commandPool, 
                                  VkQueue graphicsQueue, 
@@ -19,7 +19,7 @@ namespace Azazel
         createIndexBuffer(indices, sizeof(unsigned int) * indicesCount);
     }
     
-    void VKIndexBuffer::createIndexBuffer(const void* indices, uint64_t size) 
+    void AZIndexBuffer::createIndexBuffer(const void* indices, uint64_t size)
     {
         VkDeviceSize bufferSize = size;
 
@@ -40,7 +40,7 @@ namespace Azazel
         vkFreeMemory(device, stagingBufferMemory, nullptr);
     }
 
-    void VKIndexBuffer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) 
+    void AZIndexBuffer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
     {
         VkBufferCreateInfo bufferInfo{};
         bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -69,7 +69,7 @@ namespace Azazel
         vkBindBufferMemory(device, buffer, bufferMemory, 0);
     }
 
-    void VKIndexBuffer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) 
+    void AZIndexBuffer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
     {
         VkCommandBufferAllocateInfo allocInfo {};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -103,7 +103,7 @@ namespace Azazel
         vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
     }
 
-    uint32_t VKIndexBuffer::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) 
+    uint32_t AZIndexBuffer::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
     {
         VkPhysicalDeviceMemoryProperties memProperties;
         vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
@@ -118,21 +118,13 @@ namespace Azazel
         throw std::runtime_error("failed to find suitable memory type!");
     }
 
-    VKIndexBuffer::~VKIndexBuffer()
+    AZIndexBuffer::~AZIndexBuffer()
     {
         //vkDestroyBuffer(device, indexBuffer, nullptr);
     }
 
-    void VKIndexBuffer::bind() const
+    void AZIndexBuffer::destroy()
     {
-    }
 
-    void VKIndexBuffer::unbind() const
-    {
-    }
-
-    unsigned int VKIndexBuffer::getElementCount() const
-    {
-        return count;
     }
 }

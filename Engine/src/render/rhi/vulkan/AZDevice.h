@@ -17,24 +17,29 @@ struct QueueFamilyIndices
         }
     };
 
-    class PhysicalDevice
-    {
-    public:
-        PhysicalDevice(VkInstance instance)
+class PhysicalDevice
+{
+public:
+    PhysicalDevice(VkInstance instance)
         : instance(instance)
-        {
-            //physicalDevice = createVkPhysicalDevice(instance);
-        }
+    {
+        //physicalDevice = createVkPhysicalDevice(instance);
+    }
 
-        ~PhysicalDevice()
-        {
+    VkPhysicalDevice pickPhysicalDevice(VkInstance instance)
+    {
 
-        }
+    }
 
-        VkPhysicalDevice physicalDevice;
+    ~PhysicalDevice()
+    {
+
+    }
+
+    VkPhysicalDevice physicalDevice;
     
-        VkInstance instance;
-    };
+    VkInstance instance;
+};
 
     class Device
     {

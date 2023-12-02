@@ -19,7 +19,7 @@ namespace Azazel
         #ifdef AZAZEL_GL
         return new GLESFrameBuffer(texture, depthTarget);
         #else
-        return new VKFrameBuffer(texture, depthTarget);
+        return nullptr;// new AZFrameBuffer(texture, depthTarget);
         #endif
     }
 
@@ -28,7 +28,7 @@ namespace Azazel
         #ifdef AZAZEL_GL
         return new GLESFrameBuffer(texture, depthTarget);
         #else
-        return new VKFrameBuffer(texture, depthTarget);
+        return nullptr;// new AZFrameBuffer(texture, depthTarget);
         #endif
     }
 

@@ -4,20 +4,14 @@
 
 namespace Azazel
 {
-    class VKFrameBuffer : public FrameBuffer
+    class AZFrameBuffer
     {
     public:
-        VKFrameBuffer(Texture* texture);
-        VKFrameBuffer(Texture* texture, FrameBufferTarget* depthTarget);
-        VKFrameBuffer(Texture* texture, Texture* depthTarget){}
+        AZFrameBuffer(Texture* texture);
+        AZFrameBuffer(Texture* texture, FrameBufferTarget* depthTarget);
+        AZFrameBuffer(Texture* texture, Texture* depthTarget){}
 
-        ~VKFrameBuffer();
-        void bind() const override;
-        void unbind() const override;
-        void setDepthTarget(FrameBufferTarget* depthTarget) override;
-        void setDepthTarget(Texture* depthTexture) override;
-
-        void addColorAttachment(Texture* colorTarget, int slot = 0) override;
+        ~AZFrameBuffer();
     private:
         unsigned int rendererID;
     };

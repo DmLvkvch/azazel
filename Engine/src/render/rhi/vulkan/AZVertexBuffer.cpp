@@ -2,7 +2,7 @@
 
 namespace Azazel
 {
-    VKVertexBuffer::VKVertexBuffer(VkDevice device, 
+    AZVertexBuffer::AZVertexBuffer(VkDevice device,
                                    VkPhysicalDevice physicalDevice, 
                                    VkCommandPool commandPool, 
                                    VkQueue graphicsQueue, 
@@ -16,7 +16,7 @@ namespace Azazel
         createVertexBuffer(data, size);
     }
 
-    void VKVertexBuffer::createVertexBuffer(const void* vertices, uint64_t size) 
+    void AZVertexBuffer::createVertexBuffer(const void* vertices, uint64_t size)
     {        
         VkDeviceSize bufferSize = size;
 
@@ -37,7 +37,7 @@ namespace Azazel
         vkFreeMemory(device, stagingBufferMemory, nullptr);
     }
 
-    void VKVertexBuffer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory) 
+    void AZVertexBuffer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
     {
         VkBufferCreateInfo bufferInfo{};
         bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -66,7 +66,7 @@ namespace Azazel
         vkBindBufferMemory(device, buffer, bufferMemory, 0);
     }
 
-    void VKVertexBuffer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) 
+    void AZVertexBuffer::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
     {
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -100,7 +100,7 @@ namespace Azazel
         vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
     }
 
-    uint32_t VKVertexBuffer::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) 
+    uint32_t AZVertexBuffer::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
     {
         VkPhysicalDeviceMemoryProperties memProperties;
         vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
@@ -115,9 +115,14 @@ namespace Azazel
         throw std::runtime_error("failed to find suitable memory type!");
     }
 
-    VKVertexBuffer::~VKVertexBuffer()
+    AZVertexBuffer::~AZVertexBuffer()
     {
         //vkDestroyBuffer(device, vertexBuffer, nullptr);
         //vkFreeMemory(device, vertexBufferMemory, nullptr);
+    }
+
+    void AZVertexBuffer::destroy()
+    {
+
     }
 }

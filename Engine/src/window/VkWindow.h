@@ -2,7 +2,6 @@
 
 #include "Window.h"
 #include <vulkan/vulkan.hpp>
-#include "VulkanContext.h"
 
 #include <vector>
 #include <optional>

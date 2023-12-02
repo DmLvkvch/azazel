@@ -18,6 +18,12 @@ namespace Azazel
             }
             vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool);
         }
+
+        void reset()
+        {
+
+        }
+
     public:
         VKCommandPool commandPool;
     };

@@ -23,17 +23,45 @@ namespace Azazel
         {
 
         }
+
+        void init()
+        {
+
+        }
     
         void begin()
         {
-
+            VkCommandBufferBeginInfo beginInfo {};
+            beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+            beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+            if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS)
+            {
+                throw std::runtime_error("failed to begin recording command buffer!");
+            }
         }
 
         void end()
         {
+            vkEndCommandBuffer(commandBuffer)
+        }
+
+        void execute()
+        {
 
         }
+
+        void reset()
+        {
+
+        }
+
+        void* getAPIBuffer() 
+        { 
+            return (void*)&commandBuffer; 
+        }
+
     public:
         VkCommandBuffer commandBuffer;
+        VkCommandPool   commandPool;
     };
 }
