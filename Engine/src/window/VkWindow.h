@@ -8,7 +8,8 @@
 
 #include "render/rhi/vulkan/AZVertexBuffer.h"
 #include "render/rhi/vulkan/AZIndexBuffer.h"
-
+#include "render/rhi/vulkan/AZCommandBuffer.h"
+#include "render/rhi/vulkan/AZCommandPool.h"
 
 struct GLFWwindow;
 
@@ -88,11 +89,11 @@ namespace Azazel
         std::vector<VkFramebuffer> createFramebuffers();
 
         VkCommandPool createCommandPool();
-        VkCommandBuffer createCommandBuffer();
 
-        void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+        void recordCommandBuffer(AZCommandBuffer & azCommandBuffer, uint32_t imageIndex);
         void createSyncObjects();
         bool checkValidationLayerSupport();
+        void createDescriptorSetLayout();
 
         void destroyGLFW();
     private:
@@ -137,11 +138,13 @@ namespace Azazel
         std::vector<VkFramebuffer> swapChainFramebuffers;
 
         VkRenderPass renderPass;
+
+        VkDescriptorSetLayout descriptorSetLayout;
         VkPipelineLayout pipelineLayout;
         VkPipeline graphicsPipeline;
 
         VkCommandPool commandPool;
-        VkCommandBuffer commandBuffer;
+        AZCommandBuffer commandBuffer;
 
         VkSemaphore imageAvailableSemaphore;
         VkSemaphore renderFinishedSemaphore;
@@ -149,7 +152,7 @@ namespace Azazel
 
         VkDescriptorPool descriptorPool;
 
-        VkBuffer vertexBuffer;
-        VkBuffer indexBuffer;
+        AZVertexBuffer vertexBuffer;
+        AZIndexBuffer indexBuffer;
     };
 }

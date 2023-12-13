@@ -4,10 +4,15 @@
 
 namespace Azazel
 {
-    class VKCommandBuffer
+    class AZCommandBuffer
     {
     public:
-        VKCommandBuffer(VkDevice device, VkCommandPool commandPool)
+        AZCommandBuffer()
+        {
+
+        }
+
+        AZCommandBuffer(VkDevice device, VkCommandPool commandPool)
         {
             VkCommandBufferAllocateInfo allocInfo {};
             {
@@ -16,10 +21,13 @@ namespace Azazel
                 allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
                 allocInfo.commandBufferCount = 1;
             }
-            vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
+            if (vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer) != VK_SUCCESS)
+            {
+                throw std::runtime_error("failed to allocate command buffers!");
+            }
         }
 
-        ~VKCommandBuffer()
+        ~AZCommandBuffer()
         {
 
         }
@@ -42,7 +50,7 @@ namespace Azazel
 
         void end()
         {
-            vkEndCommandBuffer(commandBuffer)
+            vkEndCommandBuffer(commandBuffer);
         }
 
         void execute()
@@ -52,12 +60,12 @@ namespace Azazel
 
         void reset()
         {
-
+            vkResetCommandBuffer(commandBuffer, 0);
         }
 
         void* getAPIBuffer() 
         { 
-            return (void*)&commandBuffer; 
+            return (void*) &commandBuffer; 
         }
 
     public:

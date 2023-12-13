@@ -1,15 +1,19 @@
 #pragma once
 
-#include "vk_header.h"
+#include "vk_headers.h"
 
 namespace Azazel
 {
     class AZCommandPool
     {
     public:
+        AZCommandPool()
+        {
+
+        }
+
         AZCommandPool(VkDevice device, int queueIndex)
         {
-            VkCommandPool comamndPool;
             VkCommandPoolCreateInfo poolInfo {};
             {
                 poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -25,6 +29,6 @@ namespace Azazel
         }
 
     public:
-        VKCommandPool commandPool;
+        VkCommandPool commandPool;
     };
 }

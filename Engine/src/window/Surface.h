@@ -7,8 +7,7 @@ namespace Azazel
     class Surface
     {
     
-    	Surface(const Instance &instance, const PhysicalDevice &physicalDevice, const LogicalDevice &logicalDevice, const Window &window)
-        : instance(instance), physicalDevice(physicalDevice), logicalDevice(logicalDevice), window(window)
+    	Surface()
         {
             if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS) 
             {

@@ -18,9 +18,6 @@
 #include <set>
 #include <glm/glm.hpp>
 
-#include "render/rhi/vulkan/AZVertexBuffer.h"
-#include "render/rhi/vulkan/AZIndexBuffer.h"
-
 namespace Azazel
 {
 
@@ -57,15 +54,17 @@ namespace Azazel
         }
     };
 
-    const std::vector<Vertex> vertices = {
+    const std::vector<Vertex> vertices = 
+    {
         {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
         {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
         {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
         {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
     };
 
-    const std::vector<uint32_t> indices = {
-    0, 1, 2, 2, 3, 0
+    const std::vector<uint32_t> indices = 
+    {
+        0, 1, 2, 2, 3, 0
     };
 
     static bool initialized = false;
@@ -211,15 +210,14 @@ namespace Azazel
 
         graphicsPipeline = createGraphicsPipeline(device);
         swapChainFramebuffers = createFramebuffers();
+
         commandPool = createCommandPool();
         
-        AZVertexBuffer vb(device, physicalDevice, commandPool, graphicsQueue, (void*) vertices.data(), sizeof(vertices[0]) * vertices.size());
-        vertexBuffer = vb.vertexBuffer;
+        vertexBuffer = AZVertexBuffer(device, physicalDevice, commandPool, graphicsQueue, (void*) vertices.data(), sizeof(vertices[0]) * vertices.size());
 
-        AZIndexBuffer ib(device, physicalDevice, commandPool, graphicsQueue, (void*)indices.data(), 6);
-        indexBuffer = ib.indexBuffer;
+        indexBuffer = AZIndexBuffer(device, physicalDevice, commandPool, graphicsQueue, (void*)indices.data(), 6);
 
-        commandBuffer = createCommandBuffer();
+        commandBuffer = AZCommandBuffer(device, commandPool);
         createSyncObjects();
     }
 
@@ -768,6 +766,32 @@ namespace Azazel
         return shaderModule;
     }
 
+    struct UBO_MVP
+    {
+        glm::mat4 mvp;
+    };
+
+    void VkWindow::createDescriptorSetLayout()
+    {
+        VkDescriptorSetLayoutBinding uboLayoutBinding{};
+        uboLayoutBinding.binding = 0;
+        uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        uboLayoutBinding.descriptorCount = 1;
+        uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+        uboLayoutBinding.pImmutableSamplers = nullptr; // Optional
+
+        VkDescriptorSetLayoutCreateInfo layoutInfo {};
+        layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+        layoutInfo.bindingCount = 1;
+        layoutInfo.pBindings = &uboLayoutBinding;
+
+        if (vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to create descriptor set layout!");
+        }
+    }
+
+
     VkPipeline VkWindow::createGraphicsPipeline(VkDevice device)
     {
         auto vertShaderCode = readFile("shaders/example.vert.spv");
@@ -790,7 +814,7 @@ namespace Azazel
 
         VkPipelineShaderStageCreateInfo shaderStages[] = {vertShaderStageInfo, fragShaderStageInfo};
 
-        VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
+        VkPipelineVertexInputStateCreateInfo vertexInputInfo {};
         vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 
         auto bindingDescription = Vertex::getBindingDescription();
@@ -801,7 +825,7 @@ namespace Azazel
         vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
         vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 
-        VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
+        VkPipelineInputAssemblyStateCreateInfo inputAssembly {};
         inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
         inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
         inputAssembly.primitiveRestartEnable = VK_FALSE;
@@ -811,7 +835,7 @@ namespace Azazel
         viewportState.viewportCount = 1;
         viewportState.scissorCount = 1;
 
-        VkPipelineRasterizationStateCreateInfo rasterizer{};
+        VkPipelineRasterizationStateCreateInfo rasterizer {};
         rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
         rasterizer.depthClampEnable = VK_FALSE;
         rasterizer.rasterizerDiscardEnable = VK_FALSE;
@@ -821,15 +845,14 @@ namespace Azazel
         rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
         rasterizer.depthBiasEnable = VK_FALSE;
 
-        VkPipelineMultisampleStateCreateInfo multisampling{};
+        VkPipelineMultisampleStateCreateInfo multisampling {};
         multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
         multisampling.sampleShadingEnable = VK_FALSE;
         multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
 
-        VkPipelineColorBlendAttachmentState colorBlendAttachment{};
+        VkPipelineColorBlendAttachmentState colorBlendAttachment {};
         colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
         colorBlendAttachment.blendEnable = VK_FALSE;
-
         VkPipelineColorBlendStateCreateInfo colorBlending{};
         colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
         colorBlending.logicOpEnable = VK_FALSE;
@@ -916,48 +939,16 @@ namespace Azazel
     VkCommandPool VkWindow::createCommandPool()
     {
         QueueFamilyIndices queueFamilyIndices = findQueueFamilies(physicalDevice);
-        VkCommandPool comamndPool;
-        VkCommandPoolCreateInfo poolInfo {};
-        {
-            poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-            poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-            poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
-        }
-        if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to create command pool!");
-        }
-        return commandPool;
-    }
-
-    VkCommandBuffer VkWindow::createCommandBuffer() 
-    {
-        VkCommandBuffer commandBuffer;
-        VkCommandBufferAllocateInfo allocInfo {};
-        {
-            allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-            allocInfo.commandPool = commandPool;
-            allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-            allocInfo.commandBufferCount = 1;
-        }
-        if (vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer) != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to allocate command buffers!");
-        }
-        return commandBuffer;
+        AZCommandPool commandPool(device, queueFamilyIndices.graphicsFamily.value());
+        return commandPool.commandPool;
     }
 
     float t = 0.0f;
 
-    void VkWindow::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex)
+    void VkWindow::recordCommandBuffer(AZCommandBuffer & azCommandBuffer, uint32_t imageIndex)
     {
-        VkCommandBufferBeginInfo beginInfo{};
-        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-
-        if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) 
-        {
-            throw std::runtime_error("failed to begin recording command buffer!");
-        }
+        azCommandBuffer.begin();
+        VkCommandBuffer commandBuffer = azCommandBuffer.commandBuffer;
 
         VkRenderPassBeginInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -974,35 +965,48 @@ namespace Azazel
 
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
-        VkViewport viewport{};
+        VkViewport viewport {};
         viewport.x = 0.0f;
         viewport.y = 0.0f;
         viewport.width = (float) swapChainExtent.width;
         viewport.height = (float) swapChainExtent.height;
         viewport.minDepth = 0.0f;
         viewport.maxDepth = 1.0f;
+
         vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
-        VkRect2D scissor{};
+        VkRect2D scissor {};
         scissor.offset = {0, 0};
         scissor.extent = swapChainExtent;
+
         vkCmdSetScissor(commandBuffer, 0, 1, &scissor);            
 
-        VkBuffer vertexBuffers[] = {vertexBuffer};
+        VkBuffer vertexBuffers[] = {vertexBuffer.vertexBuffer};
         VkDeviceSize offsets[] = {0};
 
         vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-        vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+        vkCmdBindIndexBuffer(commandBuffer, indexBuffer.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+
+        viewport.x = 0.0f;
+        viewport.y = 0.0f;
+        viewport.width = (float) swapChainExtent.width / 2;
+        viewport.height = (float) swapChainExtent.height / 2;
+        viewport.minDepth = 0.0f;
+        viewport.maxDepth = 1.0f;
+        vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+
+        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+        vkCmdBindIndexBuffer(commandBuffer, indexBuffer.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
         vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
         vkCmdEndRenderPass(commandBuffer);
 
-        if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) 
-        {
-            throw std::runtime_error("failed to record command buffer!");
-        }
+        azCommandBuffer.end();
     }
 
     void VkWindow::createSyncObjects()
@@ -1034,7 +1038,7 @@ namespace Azazel
         uint32_t imageIndex;
         vkAcquireNextImageKHR(device, swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
-        vkResetCommandBuffer(commandBuffer, 0);
+        commandBuffer.reset();
         recordCommandBuffer(commandBuffer, imageIndex);
 
         VkSubmitInfo submitInfo {};
@@ -1047,7 +1051,7 @@ namespace Azazel
         submitInfo.pWaitDstStageMask = waitStages;
 
         submitInfo.commandBufferCount = 1;
-        submitInfo.pCommandBuffers = &commandBuffer;
+        submitInfo.pCommandBuffers = &commandBuffer.commandBuffer;
 
         VkSemaphore signalSemaphores[] = {renderFinishedSemaphore};
         submitInfo.signalSemaphoreCount = 1;

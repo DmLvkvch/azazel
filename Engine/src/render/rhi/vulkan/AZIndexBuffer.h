@@ -8,6 +8,11 @@ namespace Azazel
     class AZIndexBuffer
     {
     public:
+        AZIndexBuffer()
+        {
+
+        }
+        
         AZIndexBuffer(VkDevice device, 
                       VkPhysicalDevice physicalDevice, 
                       VkCommandPool commandPool, 

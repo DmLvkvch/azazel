@@ -8,6 +8,11 @@ namespace Azazel
     class AZVertexBuffer
     {
     public:
+        AZVertexBuffer()
+        {
+
+        }
+        
         AZVertexBuffer(VkDevice device,
                        VkPhysicalDevice physicalDevice, 
                        VkCommandPool commandPool, 
