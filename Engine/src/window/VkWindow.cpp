@@ -213,11 +213,11 @@ namespace Azazel
 
         commandPool = createCommandPool();
         
-        vertexBuffer = AZVertexBuffer(device, physicalDevice, commandPool, graphicsQueue, (void*) vertices.data(), sizeof(vertices[0]) * vertices.size());
+        vertexBuffer = AZVertexBuffer(device, physicalDevice, commandPool.commandPool, graphicsQueue, BufferDesc{ (void*)vertices.data(), sizeof(vertices[0]) * vertices.size() } );
 
-        indexBuffer = AZIndexBuffer(device, physicalDevice, commandPool, graphicsQueue, (void*)indices.data(), 6);
+        indexBuffer = AZIndexBuffer(device, physicalDevice, commandPool.commandPool, graphicsQueue, (void*) indices.data(), 6);
 
-        commandBuffer = AZCommandBuffer(device, commandPool);
+        commandBuffer = AZCommandBuffer(device, commandPool.commandPool);
         createSyncObjects();
     }
 
@@ -936,11 +936,11 @@ namespace Azazel
         return swapChainFramebuffers;
     }
 
-    VkCommandPool VkWindow::createCommandPool()
+    AZCommandPool VkWindow::createCommandPool()
     {
         QueueFamilyIndices queueFamilyIndices = findQueueFamilies(physicalDevice);
         AZCommandPool commandPool(device, queueFamilyIndices.graphicsFamily.value());
-        return commandPool.commandPool;
+        return commandPool;
     }
 
     float t = 0.0f;

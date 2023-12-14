@@ -21,6 +21,7 @@ namespace Azazel
                 allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
                 allocInfo.commandBufferCount = 1;
             }
+
             if (vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer) != VK_SUCCESS)
             {
                 throw std::runtime_error("failed to allocate command buffers!");

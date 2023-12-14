@@ -204,7 +204,7 @@ namespace Azazel
 
         std::vector<const char*> deviceExtensions;// = getDeviceExtenstions();
 
-        VkDeviceCreateInfo vkDeviceCreateInfo;
+        VkDeviceCreateInfo vkDeviceCreateInfo {};
         {
             vkDeviceCreateInfo.sType = VkStructureType::VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
             vkDeviceCreateInfo.pNext = nullptr;

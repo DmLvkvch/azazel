@@ -21,7 +21,7 @@ class PhysicalDevice
 {
 public:
     PhysicalDevice(VkInstance instance)
-        : instance(instance)
+    : instance(instance)
     {
         //physicalDevice = createVkPhysicalDevice(instance);
     }
@@ -43,6 +43,11 @@ public:
 
     class Device
     {
+        Device()
+        {
+
+        }
+
         Device(VkInstance instance, VkPhysicalDevice physicalDevice)
         {
             device = createVkDevice(physicalDevice);
@@ -99,10 +104,5 @@ public:
         }
 
         VkDevice device;
-        Device()
-        {
-
-        }    
-
     };
 }

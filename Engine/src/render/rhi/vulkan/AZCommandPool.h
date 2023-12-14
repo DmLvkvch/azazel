@@ -23,12 +23,23 @@ namespace Azazel
             vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool);
         }
 
-        void reset()
+        ~AZCommandPool()
         {
 
         }
 
+        void reset()
+        {
+            vkResetCommandPool(device, commandPool, VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT);
+        }
+
+        void destroy()
+        {
+            vkDestroyCommandPool(device, commandPool, nullptr);
+        }
+
     public:
+        VkDevice device;
         VkCommandPool commandPool;
     };
 }

@@ -6,14 +6,13 @@ namespace Azazel
                                    VkPhysicalDevice physicalDevice, 
                                    VkCommandPool commandPool, 
                                    VkQueue graphicsQueue, 
-                                   const void* data, 
-                                   size_t size)
+                                   BufferDesc bufferDesc)
     : device(device), 
       physicalDevice(physicalDevice), 
       commandPool(commandPool), 
       graphicsQueue(graphicsQueue)
     {
-        createVertexBuffer(data, size);
+        createVertexBuffer(bufferDesc.data, bufferDesc.size);
     }
 
     void AZVertexBuffer::createVertexBuffer(const void* vertices, uint64_t size)

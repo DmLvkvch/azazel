@@ -88,7 +88,7 @@ namespace Azazel
 
         std::vector<VkFramebuffer> createFramebuffers();
 
-        VkCommandPool createCommandPool();
+        AZCommandPool createCommandPool();
 
         void recordCommandBuffer(AZCommandBuffer & azCommandBuffer, uint32_t imageIndex);
         void createSyncObjects();
@@ -143,7 +143,7 @@ namespace Azazel
         VkPipelineLayout pipelineLayout;
         VkPipeline graphicsPipeline;
 
-        VkCommandPool commandPool;
+        AZCommandPool commandPool;
         AZCommandBuffer commandBuffer;
 
         VkSemaphore imageAvailableSemaphore;

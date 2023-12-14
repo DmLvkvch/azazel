@@ -1,10 +1,21 @@
 #pragma once
 
-#include "render/VertexBuffer.h"
 #include "vk_headers.h"
 
 namespace Azazel
 {
+    enum BufferType
+    {
+        VERTEX
+    };
+
+    struct BufferDesc
+    {
+
+        const void* data;
+        uint64_t size;
+    };
+
     class AZVertexBuffer
     {
     public:
@@ -16,9 +27,9 @@ namespace Azazel
         AZVertexBuffer(VkDevice device,
                        VkPhysicalDevice physicalDevice, 
                        VkCommandPool commandPool, 
-                       VkQueue graphicsQueue, 
-                       const void* data, 
-                       size_t size);
+                       VkQueue graphicsQueue,
+                       BufferDesc bufferDesc);
+
         ~AZVertexBuffer();
 
 
@@ -31,7 +42,6 @@ namespace Azazel
         void destroy();
 
     public:
-        BufferLayout bufferLayout;
         VkCommandPool commandPool;
         VkQueue graphicsQueue;
         VkDevice device;
