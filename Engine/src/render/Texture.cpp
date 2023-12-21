@@ -74,7 +74,7 @@ namespace Azazel
     {
     }
     
-    CubeMap *CubeMap::create(std::array<TextureData, 6> textures)
+    CubeMap* CubeMap::create(std::array<TextureData, 6> textures)
     {
         return nullptr;
     }

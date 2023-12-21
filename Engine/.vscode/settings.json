@@ -118,7 +118,8 @@
     "__tuple": "cpp",
     "complex": "cpp",
     "csignal": "cpp",
-    "valarray": "cpp"
+    "valarray": "cpp",
+    "*.hpp11": "cpp"
   },
   "cmake.configureOnOpen": true,
   "C_Cpp_Runner.cCompilerPath": "gcc",

@@ -38,7 +38,7 @@ namespace Azazel
         }
 
         template<typename T>
-        void init(const float* vertices, size_t size, const unsigned int* indices, unsigned int count)
+        void init(const float* vertices, size_t size, const unsigned int* indices, size_t count)
         {
             vertexArray.reset(VertexArray::create());
             indexBuffer.reset(IndexBuffer::create(indices, count));

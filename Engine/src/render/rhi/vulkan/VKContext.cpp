@@ -1,21 +1,43 @@
 #include "VKContext.h"
+
 #include <iostream>
 #include <exception>
 
 namespace Azazel
 {
-    bool VulkanContext::checkValidationLayerSupport(std::vector<const char*> validationLayers)
+    VkInstance VulkanContext::createInstance() 
     {
-        uint32_t layerCount;
+        if (!checkValidationLayerSupport(validationLayers)) 
+        {
+            throw std::runtime_error("validation layers requested, but not available!");
+        }
+
+        VkApplicationInfo appInfo = createVkApplicationInfo("Azazel", "Azazel Engine");
+
+        auto extensions = getRequiredExtensions();
+
+        VkInstanceCreateInfo createInfo = createVkInstanceCreateInfo(&appInfo, extensions, validationLayers);
+        
+        VkInstance instance;
+        if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to create instance!");
+        }
+        return instance;
+    }
+
+    bool VulkanContext::checkValidationLayerSupport(std::vector<const char*> & validationLayers)
+    {
+        uint32_t layerCount = 0;
         vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
         std::vector<VkLayerProperties> availableLayers(layerCount);
         vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
-        for (const char* layerName : validationLayers)
+        for (const char* layerName : validationLayers) 
         {
             bool layerFound = false;
-            for (const auto& layerProperties : availableLayers)
+            for (const auto& layerProperties : availableLayers) 
             {
-                if (strcmp(layerName, layerProperties.layerName) == 0)
+                if (strcmp(layerName, layerProperties.layerName) == 0) 
                 {
                     layerFound = true;
                     break;
@@ -29,56 +51,50 @@ namespace Azazel
         return true;
     }
 
-    VkApplicationInfo VulkanContext::createVkApplicationInfo()
+    VkApplicationInfo VulkanContext::createVkApplicationInfo(const char* applicationName, const char* engineName)
     {
-        if (!checkValidationLayerSupport(validationLayers))
+        VkApplicationInfo appInfo {};
         {
-            throw std::runtime_error("validation layers requested, but not available!");
+            appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+            appInfo.pApplicationName = applicationName;
+            appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+            appInfo.pEngineName = engineName;
+            appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+            appInfo.apiVersion = VK_API_VERSION_1_0;
         }
-
-        VkApplicationInfo appInfo{};
-        appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-        appInfo.pApplicationName = "Hello Triangle";
-        appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-        appInfo.pEngineName = "No Engine";
-        appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-        appInfo.apiVersion = VK_API_VERSION_1_0;
         return appInfo;
     }
 
-    VkInstanceCreateInfo VulkanContext::createVkInstanceCreateInfo(VkApplicationInfo& appInfo)
+    std::vector<const char*> VulkanContext::getRequiredExtensions()
     {
-        VkInstanceCreateInfo createInfo{};
-        createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-        createInfo.pApplicationInfo = &appInfo;
-        createInfo.flags = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
+        uint32_t glfwExtensionCount = 0;
+        const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-        createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
-        createInfo.ppEnabledExtensionNames = extensions.data();
+        std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
-        createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
-        createInfo.ppEnabledLayerNames = validationLayers.data();
+        extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+        extensions.push_back("VK_KHR_portability_enumeration");
+        extensions.push_back("VK_KHR_get_physical_device_properties2");
 
-        return createInfo;
+        return extensions;
     }
 
-    VkInstance VulkanContext::createInstance()
+    VkInstanceCreateInfo VulkanContext::createVkInstanceCreateInfo(VkApplicationInfo* appInfo,
+                                                              std::vector<const char*>& extensions, 
+                                                              std::vector<const char*>& validationLayers)
     {
-        if (!checkValidationLayerSupport(validationLayers))
+        VkInstanceCreateInfo createInfo {};
         {
-            throw std::runtime_error("validation layers requested, but not available!");
+            createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+            createInfo.pApplicationInfo = appInfo;
+            createInfo.flags = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
+            createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
+            createInfo.ppEnabledExtensionNames = extensions.data();
+
+            createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+            createInfo.ppEnabledLayerNames = validationLayers.data();
         }
-
-        VkApplicationInfo appInfo = createVkApplicationInfo();
-
-        VkInstanceCreateInfo createInfo = createVkInstanceCreateInfo(appInfo);
-
-        VkInstance instance;
-        if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to create instance!");
-        }
-        return instance;
+        return createInfo;   
     }
 
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
@@ -143,88 +159,52 @@ namespace Azazel
         }
     }
 
-    VkPhysicalDevice VulkanContext::createVkPhysicalDevice(VkInstance vkInstance)
+
+    VkDevice VulkanDevice::createLogicalDevice(VulkanContext & context, PhysicalDevice & physicalDevice)
     {
-        VkPhysicalDevice vkPhysicalDevice;
+        VkDevice device;
+        QueueFamilyIndices indices = physicalDevice.indices;
+        std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+        std::set<uint32_t> uniqueQueueFamilies = {indices.graphicsFamily.value(), indices.presentFamily.value()};
+        float queuePriority = 1.0f;
+        for (uint32_t queueFamily : uniqueQueueFamilies) 
         {
-            uint32_t vkPhysicalDevicesCount;
-            if (vkEnumeratePhysicalDevices(vkInstance, &vkPhysicalDevicesCount, nullptr) != VkResult::VK_SUCCESS)
-            {
-                throw std::runtime_error("failed to get physical devices count");
-            }
-            std::vector<VkPhysicalDevice> vkPhysicalDevices(vkPhysicalDevicesCount);
-            if (vkEnumeratePhysicalDevices(vkInstance, &vkPhysicalDevicesCount, vkPhysicalDevices.data()) != VkResult::VK_SUCCESS)
-            {
-                throw std::runtime_error("failed to get physical devices");
-            }
-            if (vkPhysicalDevices.empty())
-            {
-                throw std::runtime_error("no physical devices");
-            }
-            vkPhysicalDevice = vkPhysicalDevices[0];
+            VkDeviceQueueCreateInfo queueCreateInfo {};
+            queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+            queueCreateInfo.queueFamilyIndex = queueFamily;
+            queueCreateInfo.queueCount = 1;
+            queueCreateInfo.pQueuePriorities = &queuePriority;
+            queueCreateInfos.push_back(queueCreateInfo);
         }
-        return vkPhysicalDevice;
+        VkPhysicalDeviceFeatures deviceFeatures {};
+        auto deviceExtensions = context.deviceExtensions;
+        auto validationLayers = context.validationLayers;
+        VkDeviceCreateInfo createInfo {};
+        {
+            createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+            createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+            createInfo.pQueueCreateInfos = queueCreateInfos.data();
+            createInfo.pEnabledFeatures = &deviceFeatures;
+            createInfo.enabledExtensionCount = 0;
+            createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+            createInfo.ppEnabledLayerNames = validationLayers.data();
+            createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
+            createInfo.ppEnabledExtensionNames = deviceExtensions.data();
+        }
+        if (vkCreateDevice(physicalDevice.physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS) 
+        {
+            throw std::runtime_error("failed to create logical device!");
+        }
+        vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
+        vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
+        return device;
     }
 
-    std::vector<VkQueueFamilyProperties> VulkanContext::getVkPhysicalDeviceQueueFamilyProperties(VkPhysicalDevice vkPhysicalDevice)
+    VkQueue VulkanDevice::createQueue(uint32_t queueFamilyIndex)
     {
-        std::vector<VkQueueFamilyProperties> vkPhysicalDeviceQueueFamilyProperties;
-        {
-            uint32_t vkPhysicalDeviceQueueFamilyPropertiesCount;
-            vkGetPhysicalDeviceQueueFamilyProperties(vkPhysicalDevice, &vkPhysicalDeviceQueueFamilyPropertiesCount, nullptr);
-
-            vkPhysicalDeviceQueueFamilyProperties.resize(vkPhysicalDeviceQueueFamilyPropertiesCount);
-            vkGetPhysicalDeviceQueueFamilyProperties(vkPhysicalDevice, &vkPhysicalDeviceQueueFamilyPropertiesCount, vkPhysicalDeviceQueueFamilyProperties.data());
-        }
-        return vkPhysicalDeviceQueueFamilyProperties;
+        VkQueue queue;
+        vkGetDeviceQueue(device, queueFamilyIndex, 0, &queue);
+        return queue;
     }
 
-    VkDevice VulkanContext::createLogicalDevice(VkPhysicalDevice physicalDevice)
-    {
-        VkDevice vkDevice;
-
-        VkPhysicalDeviceFeatures vkPhysicalDeviceFeatures{};
-
-        std::vector<VkDeviceQueueCreateInfo> vkDeviceQueueCreateInfos(1);
-        std::vector<std::vector<float>> vkDeviceQueuesPriorities(vkDeviceQueueCreateInfos.size(), std::vector<float>(1, 0.0f));
-        {
-            for (size_t i = 0; i < vkDeviceQueueCreateInfos.size(); ++i)
-            {
-                auto& vkDeviceQueueCreateInfo = vkDeviceQueueCreateInfos[i];
-                auto& vkDeviceQueuePriorities = vkDeviceQueuesPriorities[i];
-                vkDeviceQueueCreateInfo.sType = VkStructureType::VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-                vkDeviceQueueCreateInfo.pNext = nullptr;
-                vkDeviceQueueCreateInfo.flags = 0;
-                vkDeviceQueueCreateInfo.queueFamilyIndex = i;
-                vkDeviceQueueCreateInfo.queueCount = vkDeviceQueuePriorities.size();
-                vkDeviceQueueCreateInfo.pQueuePriorities = vkDeviceQueuePriorities.data();
-            }
-        }
-        std::vector<const char*> validationLayers;// = getValidationLayers();
-
-        std::vector<const char*> deviceExtensions;// = getDeviceExtenstions();
-
-        VkDeviceCreateInfo vkDeviceCreateInfo {};
-        {
-            vkDeviceCreateInfo.sType = VkStructureType::VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-            vkDeviceCreateInfo.pNext = nullptr;
-            vkDeviceCreateInfo.flags = 0;
-            vkDeviceCreateInfo.queueCreateInfoCount = vkDeviceQueueCreateInfos.size();
-            vkDeviceCreateInfo.pQueueCreateInfos = vkDeviceQueueCreateInfos.data();
-
-            vkDeviceCreateInfo.enabledLayerCount = validationLayers.size();
-            vkDeviceCreateInfo.ppEnabledLayerNames = validationLayers.data();
-
-            vkDeviceCreateInfo.enabledExtensionCount = deviceExtensions.size();
-            vkDeviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();
-            vkDeviceCreateInfo.pEnabledFeatures = &vkPhysicalDeviceFeatures;
-        };
-
-        if (vkCreateDevice(vkPhysicalDevice, &vkDeviceCreateInfo, nullptr, &vkDevice) != VkResult::VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to create device");
-        }
-
-        return vkDevice;
-    }
 }
