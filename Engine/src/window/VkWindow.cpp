@@ -208,108 +208,20 @@ namespace Azazel
 
         swapChain = AZSwapChain(window, azSurface, azPhysicalDevice, azDevice);;
         
-        swapChainImageViews = createImageViews(device, swapChain.swapChainImages);
-        
-        renderPass = createRenderPass(device, swapChain.swapChainImageFormat);
+        renderPass.initRenderPass(device, swapChain.swapChainImageFormat);
 
         swapChainFramebuffers = createFramebuffers();
 
         graphicsPipeline = createGraphicsPipeline(device);
 
-        commandPool = createCommandPool();
+        commandPool = AZCommandPool(device, azPhysicalDevice.indices.graphicsFamily.value());
         
-        vertexBuffer = AZVertexBuffer(device, azPhysicalDevice.physicalDevice, commandPool.commandPool, azDevice.graphicsQueue, BufferDesc{ (void*)vertices.data(), sizeof(vertices[0]) * vertices.size() } );
+        vertexBuffer = AZVertexBuffer(device, azPhysicalDevice.physicalDevice, commandPool.commandPool, azDevice.graphicsQueue.queue, BufferDesc{ (void*)vertices.data(), sizeof(vertices[0]) * vertices.size() } );
 
-        indexBuffer = AZIndexBuffer(device, azPhysicalDevice.physicalDevice, commandPool.commandPool, azDevice.graphicsQueue, (void*) indices.data(), 6);
+        indexBuffer = AZIndexBuffer(device, azPhysicalDevice.physicalDevice, commandPool.commandPool, azDevice.graphicsQueue.queue, (void*) indices.data(), 6);
 
         commandBuffer = AZCommandBuffer(device, commandPool.commandPool);
         createSyncObjects();
-    }
-
-    std::vector<VkImageView> VkWindow::createImageViews(VkDevice device, std::vector<VkImage> & swapChainImages)
-    {
-        std::vector<VkImageView> swapChainImageViews;
-        swapChainImageViews.resize(swapChainImages.size());
-
-        for (size_t i = 0; i < swapChainImages.size(); i++)
-        {
-            VkImageViewCreateInfo createInfo {};
-            createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-            createInfo.image = swapChainImages[i];
-            createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-            createInfo.format = swapChain.swapChainImageFormat;
-            createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
-            createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
-            createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
-            createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
-            createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-            createInfo.subresourceRange.baseMipLevel = 0;
-            createInfo.subresourceRange.levelCount = 1;
-            createInfo.subresourceRange.baseArrayLayer = 0;
-            createInfo.subresourceRange.layerCount = 1;
-
-            if (vkCreateImageView(device, &createInfo, nullptr, &swapChainImageViews[i]) != VK_SUCCESS)
-            {
-                throw std::runtime_error("failed to create image views!");
-            }
-        }
-        return swapChainImageViews;
-    }
-
-    VkRenderPass VkWindow::createRenderPass(VkDevice device, VkFormat swapChainImageFormat)
-    {
-        VkRenderPass renderPass;
-        VkAttachmentDescription colorAttachment {};
-        {
-            colorAttachment.format = swapChainImageFormat;
-            colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
-            colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-            colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-            colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-            colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-            colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-            colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
-        }
-
-        VkAttachmentReference colorAttachmentRef {};
-        {
-            colorAttachmentRef.attachment = 0;
-            colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-        }
-
-        VkSubpassDescription subpass {};
-        {
-            subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-            subpass.colorAttachmentCount = 1;
-            subpass.pColorAttachments = &colorAttachmentRef;
-        }
-
-        VkSubpassDependency dependency {};
-        {
-            dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
-            dependency.dstSubpass = 0;
-            dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-            dependency.srcAccessMask = 0;
-            dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-            dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-        }
-
-        VkRenderPassCreateInfo renderPassInfo {};
-        {
-            renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-            renderPassInfo.attachmentCount = 1;
-            renderPassInfo.pAttachments = &colorAttachment;
-            renderPassInfo.subpassCount = 1;
-            renderPassInfo.pSubpasses = &subpass;
-            renderPassInfo.dependencyCount = 1;
-            renderPassInfo.pDependencies = &dependency;
-        }
-
-        if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to create render pass!");
-        }
-        return renderPass;
     }
 
     static std::vector<char> readFile(const std::string& filename)
@@ -341,38 +253,10 @@ namespace Azazel
             createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
         }
         VkShaderModule shaderModule;
-        if (vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to create shader module!");
-        }
+        vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule);
+
         return shaderModule;
     }
-
-    struct UBO_MVP
-    {
-        glm::mat4 mvp;
-    };
-
-    void VkWindow::createDescriptorSetLayout()
-    {
-        VkDescriptorSetLayoutBinding uboLayoutBinding{};
-        uboLayoutBinding.binding = 0;
-        uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        uboLayoutBinding.descriptorCount = 1;
-        uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-        uboLayoutBinding.pImmutableSamplers = nullptr; // Optional
-
-        VkDescriptorSetLayoutCreateInfo layoutInfo {};
-        layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-        layoutInfo.bindingCount = 1;
-        layoutInfo.pBindings = &uboLayoutBinding;
-
-        if (vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to create descriptor set layout!");
-        }
-    }
-
 
     VkPipeline VkWindow::createGraphicsPipeline(VkDevice device)
     {
@@ -462,10 +346,7 @@ namespace Azazel
         pipelineLayoutInfo.setLayoutCount = 0;
         pipelineLayoutInfo.pushConstantRangeCount = 0;
 
-        if (vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) 
-        {
-            throw std::runtime_error("failed to create pipeline layout!");
-        }
+        vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout);
 
         VkGraphicsPipelineCreateInfo pipelineInfo{};
         pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -479,14 +360,11 @@ namespace Azazel
         pipelineInfo.pColorBlendState = &colorBlending;
         pipelineInfo.pDynamicState = &dynamicState;
         pipelineInfo.layout = pipelineLayout;
-        pipelineInfo.renderPass = renderPass;
+        pipelineInfo.renderPass = renderPass.renderPass;
         pipelineInfo.subpass = 0;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-        if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS) 
-        {
-            throw std::runtime_error("failed to create graphics pipeline!");
-        }
+        vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline);
 
         vkDestroyShaderModule(device, fragShaderModule, nullptr);
         vkDestroyShaderModule(device, vertShaderModule, nullptr);
@@ -496,6 +374,7 @@ namespace Azazel
     std::vector<VkFramebuffer> VkWindow::createFramebuffers()
     {
         std::vector<VkFramebuffer> swapChainFramebuffers;
+        auto& swapChainImageViews = swapChain.swapChainImageViews;
         swapChainFramebuffers.resize(swapChainImageViews.size());
 
         for (size_t i = 0; i < swapChainImageViews.size(); i++)
@@ -503,29 +382,17 @@ namespace Azazel
             VkFramebufferCreateInfo framebufferInfo {};
             {
                 framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-                framebufferInfo.renderPass = renderPass;
+                framebufferInfo.renderPass = renderPass.renderPass;
                 framebufferInfo.attachmentCount = 1;
                 framebufferInfo.pAttachments = &swapChainImageViews[i];
                 framebufferInfo.width = swapChain.swapChainExtent.width;
                 framebufferInfo.height = swapChain.swapChainExtent.height;
                 framebufferInfo.layers = 1;
             }
-            if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS)
-            {
-                throw std::runtime_error("failed to create framebuffer!");
-            }
+            vkCreateFramebuffer(device, &framebufferInfo, nullptr, &swapChainFramebuffers[i]);
         }
         return swapChainFramebuffers;
     }
-
-    AZCommandPool VkWindow::createCommandPool()
-    {
-        QueueFamilyIndices indices = azPhysicalDevice.indices;
-        AZCommandPool commandPool(device, indices.graphicsFamily.value());
-        return commandPool;
-    }
-
-    float t = 0.0f;
 
     void VkWindow::recordCommandBuffer(AZCommandBuffer & azCommandBuffer, uint32_t imageIndex)
     {
@@ -533,18 +400,7 @@ namespace Azazel
         
         VkCommandBuffer commandBuffer = azCommandBuffer.commandBuffer;
 
-        VkRenderPassBeginInfo renderPassInfo{};
-        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        renderPassInfo.renderPass = renderPass;
-        renderPassInfo.framebuffer = swapChainFramebuffers[imageIndex];
-        renderPassInfo.renderArea.offset = {0, 0};
-        renderPassInfo.renderArea.extent = swapChain.swapChainExtent;
-
-        VkClearValue clearColor = {{{t += 0.001f, 1.0f, 0.0f, 1.0f}}};
-        renderPassInfo.clearValueCount = 1;
-        renderPassInfo.pClearValues = &clearColor;
-
-        vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+        renderPass.beginRenderPass(azCommandBuffer, swapChainFramebuffers[imageIndex], swapChain.swapChainExtent);
 
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
@@ -579,15 +435,16 @@ namespace Azazel
         viewport.height = (float) swapChain.swapChainExtent.height / 2;
         viewport.minDepth = 0.0f;
         viewport.maxDepth = 1.0f;
+
         vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
-        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+        //vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-        vkCmdBindIndexBuffer(commandBuffer, indexBuffer.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+        //vkCmdBindIndexBuffer(commandBuffer, indexBuffer.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
         vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
-        vkCmdEndRenderPass(commandBuffer);
+        renderPass.endRenderPass(azCommandBuffer);
 
         azCommandBuffer.end();
     }
@@ -605,12 +462,9 @@ namespace Azazel
             fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
         }
 
-        if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphore) != VK_SUCCESS ||
-            vkCreateSemaphore(device, &semaphoreInfo, nullptr, &renderFinishedSemaphore) != VK_SUCCESS ||
-            vkCreateFence(device, &fenceInfo, nullptr, &inFlightFence) != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to create synchronization objects for a frame!");
-        }
+        vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphore);
+        vkCreateSemaphore(device, &semaphoreInfo, nullptr, &renderFinishedSemaphore);
+        vkCreateFence(device, &fenceInfo, nullptr, &inFlightFence);
     }
 
     void VkWindow::drawFrame() 
@@ -640,10 +494,7 @@ namespace Azazel
         submitInfo.signalSemaphoreCount = 1;
         submitInfo.pSignalSemaphores = signalSemaphores;
 
-        if (vkQueueSubmit(azDevice.graphicsQueue, 1, &submitInfo, inFlightFence) != VK_SUCCESS) 
-        {
-            throw std::runtime_error("failed to submit draw command buffer!");
-        }
+        vkQueueSubmit(azDevice.graphicsQueue.queue, 1, &submitInfo, inFlightFence);
 
         VkPresentInfoKHR presentInfo{};
         presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -656,7 +507,7 @@ namespace Azazel
 
         presentInfo.pImageIndices = &imageIndex;
 
-        vkQueuePresentKHR(azDevice.presentQueue, &presentInfo);
+        vkQueuePresentKHR(azDevice.presentQueue.queue, &presentInfo);
     }
 
     VkWindow::~VkWindow()
@@ -666,7 +517,8 @@ namespace Azazel
 
     void VkWindow::destroyGLFW()
     {
-       
+        glfwDestroyWindow(window);
+        glfwTerminate();
     }
 
     void VkWindow::shutDown()

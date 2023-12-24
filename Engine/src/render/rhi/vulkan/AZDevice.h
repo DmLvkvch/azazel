@@ -1,6 +1,7 @@
 #pragma once
 
-#include <vulkan/vulkan.hpp>
+#include "VKContext.h"
+#include "AZQueue.h"
 #include <set>
 #include <optional>
 
@@ -10,15 +11,13 @@ namespace Azazel
     class PhysicalDevice
     {
     public:
-        PhysicalDevice(VkInstance instance)
-        : instance(instance)
+        PhysicalDevice()
         {
-            //physicalDevice = createVkPhysicalDevice(instance);
         }
 
-        VkPhysicalDevice pickPhysicalDevice(VkInstance instance)
+        PhysicalDevice(VkInstance instance, VkSurfaceKHR surface)
         {
-
+            physicalDevice = createPhysicalDevice(instance, surface);
         }
 
         ~PhysicalDevice()
@@ -26,13 +25,44 @@ namespace Azazel
 
         }
 
+        VkPhysicalDevice createPhysicalDevice(VkInstance instance, VkSurfaceKHR surface);
+
+        bool isDeviceSuitable(VkPhysicalDevice & device, VkSurfaceKHR surface, std::vector<const char*>& deviceExtensions);
+
+        bool checkDeviceExtensionSupport(VkPhysicalDevice & physicalDevice, std::vector<const char*>& deviceExtensions);
+
+        QueueFamilyIndices findQueueFamilies(VkPhysicalDevice & physicalDevice);
+
+        std::optional<uint32_t> findPresentQueue(VkPhysicalDevice & physicalDevice, VkSurfaceKHR surface);
+
+        std::vector<const char*> deviceExtensions =
+        {
+            VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+            #ifndef _WIN32
+            "VK_KHR_portability_subset"
+            #endif
+        };
+
         VkPhysicalDevice physicalDevice;
-        
-        VkInstance instance;
+        QueueFamilyIndices indices;
     };
 
-    class Device
+    class VulkanDevice
     {
+    public:
+        VulkanDevice()
+        {
 
+        }
+
+        VulkanDevice(VulkanContext& context, PhysicalDevice& physicalDevice);
+
+        VkDevice createDevice(VulkanContext& context, PhysicalDevice& physicalDevice);
+        void destroy();
+
+        AZQueue graphicsQueue;
+        AZQueue presentQueue;
+
+        VkDevice device;
     };
 }

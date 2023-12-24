@@ -12,31 +12,16 @@ namespace Azazel
 
         }
 
-        AZCommandPool(VkDevice device, int queueIndex)
-        {
-            VkCommandPoolCreateInfo poolInfo {};
-            {
-                poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-                poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-                poolInfo.queueFamilyIndex = queueIndex;
-            }
-            vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool);
-        }
+        AZCommandPool(VkDevice device, int queueIndex);
 
         ~AZCommandPool()
         {
 
         }
 
-        void reset()
-        {
-            vkResetCommandPool(device, commandPool, VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT);
-        }
+        void reset();
 
-        void destroy()
-        {
-            vkDestroyCommandPool(device, commandPool, nullptr);
-        }
+        void destroy();
 
     public:
         VkDevice device;

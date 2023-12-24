@@ -4,17 +4,18 @@
 
 namespace Azazel
 {
-    AZFrameBuffer::AZFrameBuffer(Texture* texture)
+    AZFramebuffer::AZFramebuffer(VkDevice& device, FramebufferDesc& framebufferDesc)
     {
-        
-    }
-
-    AZFrameBuffer::AZFrameBuffer(Texture* texture, FrameBufferTarget* depthTarget)
-    {
-
-    }
-
-    AZFrameBuffer::~AZFrameBuffer()
-    {
+        VkFramebufferCreateInfo framebufferInfo{};
+        {
+            framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+            framebufferInfo.renderPass = framebufferDesc.renderPass;
+            framebufferInfo.attachmentCount = framebufferDesc.attachments.size();
+            framebufferInfo.pAttachments = framebufferDesc.attachments.data();
+            framebufferInfo.width = framebufferDesc.width;
+            framebufferInfo.height = framebufferDesc.height;
+            framebufferInfo.layers = 1;
+        }
+        vkCreateFramebuffer(device, &framebufferInfo, nullptr, &framebuffer);
     }
 }

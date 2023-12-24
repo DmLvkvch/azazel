@@ -10,7 +10,9 @@
 #include "render/rhi/vulkan/AZCommandBuffer.h"
 #include "render/rhi/vulkan/AZCommandPool.h"
 #include "render/rhi/vulkan/VKContext.h"
+#include "render/rhi/vulkan/AZDevice.h"
 #include "render/rhi/vulkan/AZSwapChain.h"
+#include "render/rhi/vulkan/AZRenderPass.h"
 
 struct GLFWwindow;
 
@@ -34,11 +36,7 @@ namespace Azazel
         void initGLFWCallbacks(GLFWwindow*);
 
         void initVulkan();
-
-        VkSwapchainKHR createSwapChain(VkPhysicalDevice physicalDevice);
         
-        std::vector<VkImageView> createImageViews(VkDevice, std::vector<VkImage>&);
-        VkRenderPass createRenderPass(VkDevice device, VkFormat swapChainImageFormat);
         VkPipeline createGraphicsPipeline(VkDevice device);
 
         void drawFrame() override;
@@ -47,11 +45,8 @@ namespace Azazel
 
         std::vector<VkFramebuffer> createFramebuffers();
 
-        AZCommandPool createCommandPool();
-
         void recordCommandBuffer(AZCommandBuffer & azCommandBuffer, uint32_t imageIndex);
         void createSyncObjects();
-        void createDescriptorSetLayout();
 
         void destroyGLFW();
     private:
@@ -70,12 +65,8 @@ namespace Azazel
 
         VkDevice device;
 
-        std::vector<VkImageView> swapChainImageViews;
         std::vector<VkFramebuffer> swapChainFramebuffers;
 
-        VkRenderPass renderPass;
-
-        VkDescriptorSetLayout descriptorSetLayout;
         VkPipelineLayout pipelineLayout;
         VkPipeline graphicsPipeline;
 
@@ -86,8 +77,6 @@ namespace Azazel
         VkSemaphore renderFinishedSemaphore;
         VkFence inFlightFence;
 
-        VkDescriptorPool descriptorPool;
-
         AZSwapChain swapChain;
         VulkanDevice azDevice;
         VulkanSurface azSurface;
@@ -95,5 +84,7 @@ namespace Azazel
         PhysicalDevice azPhysicalDevice;
         AZVertexBuffer vertexBuffer;
         AZIndexBuffer indexBuffer;
+
+        AZRenderPass renderPass;
     };
 }

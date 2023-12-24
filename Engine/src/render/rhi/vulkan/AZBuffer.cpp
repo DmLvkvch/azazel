@@ -45,10 +45,7 @@ namespace Azazel
         bufferInfo.usage = usage;
         bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-        if (vkCreateBuffer(device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) 
-        {
-            throw std::runtime_error("failed to create buffer!");
-        }
+        vkCreateBuffer(device, &bufferInfo, nullptr, &buffer);
 
         VkMemoryRequirements memRequirements;
         vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
@@ -58,10 +55,7 @@ namespace Azazel
         allocInfo.allocationSize = memRequirements.size;
         allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties);
 
-        if (vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) 
-        {
-            throw std::runtime_error("failed to allocate buffer memory!");
-        }
+        vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory);
 
         vkBindBufferMemory(device, buffer, bufferMemory, 0);
     }

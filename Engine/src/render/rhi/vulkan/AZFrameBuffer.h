@@ -1,18 +1,37 @@
 #pragma once
 
-#include "render/FrameBuffer.h"
+#include "vk_headers.h"
 
 namespace Azazel
 {
-    class AZFrameBuffer
+    struct FramebufferDesc
+    {
+        uint32_t width;
+        uint32_t height;
+        VkRenderPass renderPass;
+        std::vector<VkImageView> attachments;
+    };
+
+    class AZFramebuffer
     {
     public:
-        AZFrameBuffer(Texture* texture);
-        AZFrameBuffer(Texture* texture, FrameBufferTarget* depthTarget);
-        AZFrameBuffer(Texture* texture, Texture* depthTarget){}
+        AZFramebuffer(VkDevice & device, FramebufferDesc & framebufferDesc);
 
-        ~AZFrameBuffer();
-    private:
-        unsigned int rendererID;
+        ~AZFramebuffer()
+        {
+
+        }
+
+        void destroy()
+        {
+            vkDestroyFramebuffer(nullptr, framebuffer, nullptr);
+        }
+
+        VkFramebuffer get()
+        {
+            return framebuffer;
+        }
+
+        VkFramebuffer framebuffer;
     };
 }

@@ -12,19 +12,18 @@ namespace Azazel
 
         }
 
-        AZQyeye()
-        {
-
-        }
+        AZQueue(VkDevice device, uint32_t queueFamilyIndex);
 
         ~AZQueue()
         {
 
         }
 
+        VkQueue createQueue(VkDevice device, uint32_t queueFamilyIndex);
+
         VkQueue get()
         {
-            retyrn queue;
+            return queue;
         }
 
         VkQueue queue;
