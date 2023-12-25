@@ -1,7 +1,6 @@
 #pragma once
 
 #include "vk_headers.h"
-#include <GLFW/glfw3.h>
 #include <vector>
 #include <set>
 #include <optional>
@@ -20,38 +19,12 @@ namespace Azazel
         }
     };
 
-    inline void defaultVulkanContextCallback(const std::string&) { }
-
-    class Window;
-
-    class VulkanSurface
-    {
-    public:
-        bool checkVulkanPresentationSupport(const VkInstance& instance, const VkPhysicalDevice& physicalDevice, uint32_t familyQueueIndex)
-        {
-            return glfwGetPhysicalDevicePresentationSupport(instance, physicalDevice, familyQueueIndex) == GLFW_TRUE;
-        }
-
-        VkSurfaceKHR createSurface(VkInstance& instance, GLFWwindow* window)
-        {
-            glfwCreateWindowSurface(instance, window, nullptr, &surface);
-            return surface;
-        }
-
-        VkSurfaceKHR surface;
-    };
-
     class VulkanContext
     {
     public:
         VulkanContext()
         {
             
-        }
-
-        VulkanContext(Window* window)
-        {
-
         }
 
         VkInstance createInstance();

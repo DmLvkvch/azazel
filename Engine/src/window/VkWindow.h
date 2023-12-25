@@ -10,6 +10,7 @@
 #include "render/rhi/vulkan/AZCommandBuffer.h"
 #include "render/rhi/vulkan/AZCommandPool.h"
 #include "render/rhi/vulkan/VKContext.h"
+#include "render/rhi/vulkan/AZSurface.h"
 #include "render/rhi/vulkan/AZDevice.h"
 #include "render/rhi/vulkan/AZSwapChain.h"
 #include "render/rhi/vulkan/AZRenderPass.h"
@@ -79,7 +80,7 @@ namespace Azazel
 
         AZSwapChain swapChain;
         VulkanDevice azDevice;
-        VulkanSurface azSurface;
+        AZSurface azSurface;
         VulkanContext context;
         PhysicalDevice azPhysicalDevice;
         AZVertexBuffer vertexBuffer;

@@ -3,7 +3,6 @@
 #include "events/ApplicationEvent.h"
 #include "events/KeyEvent.h"
 #include "events/MouseEvent.h"
-#include <GLFW/glfw3.h>
 #include <iostream>
 #include "IO/KeyCodes.h"
 
@@ -196,7 +195,7 @@ namespace Azazel
         context = VulkanContext();
         context.instance = context.createInstance();
 
-        azSurface = VulkanSurface();
+        azSurface = AZSurface();
 
         azSurface.createSurface(context.instance, window);
 
@@ -429,6 +428,10 @@ namespace Azazel
 
         vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
+        renderPass.endRenderPass(azCommandBuffer);
+        renderPass.beginRenderPass(azCommandBuffer, swapChainFramebuffers[imageIndex], swapChain.swapChainExtent);
+
+
         viewport.x = 0.0f;
         viewport.y = 0.0f;
         viewport.width = (float) swapChain.swapChainExtent.width / 2;
@@ -438,9 +441,9 @@ namespace Azazel
 
         vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
-        //vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-        //vkCmdBindIndexBuffer(commandBuffer, indexBuffer.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+        vkCmdBindIndexBuffer(commandBuffer, indexBuffer.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
         vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 

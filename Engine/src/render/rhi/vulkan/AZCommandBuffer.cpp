@@ -16,10 +16,7 @@ namespace Azazel
             allocInfo.commandBufferCount = 1;
         }
 
-        if (vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer) != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to allocate command buffers!");
-        }
+        vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer);
     }
     AZCommandBuffer::~AZCommandBuffer()
     {
@@ -36,6 +33,7 @@ namespace Azazel
         beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
         vkBeginCommandBuffer(commandBuffer, &beginInfo);
     }
+
     void AZCommandBuffer::end()
     {
         vkEndCommandBuffer(commandBuffer);
@@ -45,6 +43,7 @@ namespace Azazel
     {
         vkResetCommandBuffer(commandBuffer, 0);
     }
+
     void* AZCommandBuffer::getAPIBuffer()
     {
         return (void*)&commandBuffer;

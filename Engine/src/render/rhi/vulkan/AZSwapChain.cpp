@@ -4,13 +4,13 @@
 
 namespace Azazel
 {
-    AZSwapChain::AZSwapChain(GLFWwindow* window, VulkanSurface& surface, PhysicalDevice& physicalDevice, VulkanDevice& device)
+    AZSwapChain::AZSwapChain(GLFWwindow* window, AZSurface& surface, PhysicalDevice& physicalDevice, VulkanDevice& device)
     {
         this->swapChain = createSwapChain(window, surface, physicalDevice, device);
         this->swapChainImageViews = createImageViews(device.device, swapChainImages, swapChainImageFormat);
     }
 
-    VkSwapchainKHR AZSwapChain::createSwapChain(GLFWwindow* window, VulkanSurface& surface, PhysicalDevice& physicalDevice, VulkanDevice& device)
+    VkSwapchainKHR AZSwapChain::createSwapChain(GLFWwindow* window, AZSurface& surface, PhysicalDevice& physicalDevice, VulkanDevice& device)
     {
         VkSwapchainKHR swapChain;
         SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice.physicalDevice, surface);
@@ -91,7 +91,7 @@ namespace Azazel
         return swapChainImageViews;
     }
 
-    SwapChainSupportDetails AZSwapChain::querySwapChainSupport(VkPhysicalDevice device, VulkanSurface& azSurface)
+    SwapChainSupportDetails AZSwapChain::querySwapChainSupport(VkPhysicalDevice device, AZSurface& azSurface)
     {
         SwapChainSupportDetails details;
         VkSurfaceKHR surface = azSurface.surface;

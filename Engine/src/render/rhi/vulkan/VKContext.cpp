@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <exception>
+#include <GLFW/glfw3.h>
 
 namespace Azazel
 {
@@ -41,10 +42,7 @@ namespace Azazel
         VkInstanceCreateInfo createInfo = createVkInstanceCreateInfo(&appInfo, extensions, validationLayers);
         
         VkInstance instance;
-        if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to create instance!");
-        }
+        vkCreateInstance(&createInfo, nullptr, &instance);
         return instance;
     }
 
