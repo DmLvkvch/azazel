@@ -1,7 +1,6 @@
 #pragma once
 
-#include "render/Shader.h"
-#include <unordered_map>
+#include "vk_headers.h"
 
 namespace Azazel
 {
@@ -9,8 +8,15 @@ namespace Azazel
     {
     public:
 
+        AZShader()
+        {
+
+        }
+
         AZShader(const std::string& vertexShader, const std::string& fragmentShader);
 
         ~AZShader();
+
+        VkShaderModule createShaderModule(VkDevice device, const std::vector<char>& code);
     };
 }

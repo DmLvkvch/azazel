@@ -18,6 +18,7 @@ namespace Azazel
         PhysicalDevice(VkInstance instance, VkSurfaceKHR surface)
         {
             physicalDevice = createPhysicalDevice(instance, surface);
+            vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
         }
 
         ~PhysicalDevice()
@@ -27,13 +28,25 @@ namespace Azazel
 
         VkPhysicalDevice createPhysicalDevice(VkInstance instance, VkSurfaceKHR surface);
 
-        bool isDeviceSuitable(VkPhysicalDevice & device, VkSurfaceKHR surface, std::vector<const char*>& deviceExtensions);
+        bool isDeviceSuitable(VkPhysicalDevice& device, VkSurfaceKHR surface, std::vector<const char*>& deviceExtensions);
 
-        bool checkDeviceExtensionSupport(VkPhysicalDevice & physicalDevice, std::vector<const char*>& deviceExtensions);
+        bool checkDeviceExtensionSupport(VkPhysicalDevice& physicalDevice, std::vector<const char*>& deviceExtensions);
 
-        QueueFamilyIndices findQueueFamilies(VkPhysicalDevice & physicalDevice);
+        std::vector<VkQueueFamilyProperties> findQueueFamilies(VkPhysicalDevice& physicalDevice);
 
         std::optional<uint32_t> findPresentQueue(VkPhysicalDevice & physicalDevice, VkSurfaceKHR surface);
+
+        uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
+        {
+            for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++) {
+                if ((typeFilter & (1 << i)) && (memoryProperties.memoryTypes[i].propertyFlags & properties) == properties) 
+                {
+                    return i;
+                }
+            }
+
+            throw std::runtime_error("failed to find suitable memory type!");
+        }
 
         std::vector<const char*> deviceExtensions =
         {
@@ -45,6 +58,7 @@ namespace Azazel
 
         VkPhysicalDevice physicalDevice;
         QueueFamilyIndices indices;
+        VkPhysicalDeviceMemoryProperties memoryProperties;
     };
 
     class VulkanDevice

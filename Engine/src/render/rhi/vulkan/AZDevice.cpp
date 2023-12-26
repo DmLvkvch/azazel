@@ -7,12 +7,10 @@ namespace Azazel
         uint32_t deviceCount = 0;
         VkPhysicalDevice physicalDevice = nullptr;
         vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
-
         if (!deviceCount)
         {
             throw std::runtime_error("failed to find GPUs with Vulkan support!");
         }
-
         std::vector<VkPhysicalDevice> devices(deviceCount);
         vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
 
@@ -24,7 +22,6 @@ namespace Azazel
                 break;
             }
         }
-
         if (!physicalDevice)
         {
             throw std::runtime_error("failed to find a suitable GPU!");
@@ -34,7 +31,22 @@ namespace Azazel
 
     bool PhysicalDevice::isDeviceSuitable(VkPhysicalDevice & device, VkSurfaceKHR surface, std::vector<const char*>& deviceExtensions)
     {
-        indices = findQueueFamilies(device);
+        auto queueFamilies = findQueueFamilies(device);
+        
+        for (int i = 0; i < queueFamilies.size(); i++)
+        {
+            const auto& queueFamily = queueFamilies[i];
+
+            if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+            {
+                indices.graphicsFamily = i;
+            }
+
+            if (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT)
+            {
+                indices.computeQueue = i;
+            }
+        }
 
         indices.presentFamily = findPresentQueue(device, surface);
 
@@ -61,7 +73,7 @@ namespace Azazel
         return requiredExtensions.empty();
     }
 
-    QueueFamilyIndices PhysicalDevice::findQueueFamilies(VkPhysicalDevice & physicalDevice)
+    std::vector<VkQueueFamilyProperties> PhysicalDevice::findQueueFamilies(VkPhysicalDevice & physicalDevice)
     {
         QueueFamilyIndices indices {};
         uint32_t queueFamilyCount = 0;
@@ -69,22 +81,7 @@ namespace Azazel
 
         std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
         vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilies.data());
-
-        for (int i = 0; i < queueFamilies.size() && !indices.graphicsFamily; i++)
-        {
-            const auto& queueFamily = queueFamilies[i];
-
-            if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
-            {
-                indices.graphicsFamily = i;
-            }
-
-            if (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT)
-            {
-                indices.computeQueue = i;
-            }
-        }
-        return indices;
+        return queueFamilies;
     }
 
     std::optional<uint32_t> PhysicalDevice::findPresentQueue(VkPhysicalDevice & physicalDevice, VkSurfaceKHR surface)

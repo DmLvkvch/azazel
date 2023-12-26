@@ -10,4 +10,9 @@ namespace Azazel
 	AZShader::~AZShader()
 	{
 	}
+
+    VkShaderModule AZShader::createShaderModule(VkDevice device, const std::vector<char>& code)
+	{
+
+	}
 }

@@ -43,6 +43,9 @@ namespace Azazel
         
         VkInstance instance;
         vkCreateInstance(&createInfo, nullptr, &instance);
+
+        setupDebugMessenger(instance);
+
         return instance;
     }
 

@@ -15,7 +15,9 @@
 #include <limits>
 #include <optional>
 #include <set>
+#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace Azazel
 {
@@ -211,13 +213,17 @@ namespace Azazel
 
         swapChainFramebuffers = createFramebuffers();
 
+        createUniformBuffers();
+        createDescriptorSetLayout();
+        createDescriptoPool();
+        createDescriptorSets();
         graphicsPipeline = createGraphicsPipeline(device);
 
         commandPool = AZCommandPool(device, azPhysicalDevice.indices.graphicsFamily.value());
         
-        vertexBuffer = AZVertexBuffer(device, azPhysicalDevice.physicalDevice, commandPool.commandPool, azDevice.graphicsQueue.queue, BufferDesc{ (void*)vertices.data(), sizeof(vertices[0]) * vertices.size() } );
+        vertexBuffer = AZVertexBuffer(device, azPhysicalDevice, commandPool.commandPool, azDevice.graphicsQueue.queue, BufferDesc{ (void*)vertices.data(), sizeof(vertices[0]) * vertices.size() } );
 
-        indexBuffer = AZIndexBuffer(device, azPhysicalDevice.physicalDevice, commandPool.commandPool, azDevice.graphicsQueue.queue, (void*) indices.data(), 6);
+        indexBuffer = AZIndexBuffer(device, azPhysicalDevice, commandPool.commandPool, azDevice.graphicsQueue.queue, (void*) indices.data(), 6);
 
         commandBuffer = AZCommandBuffer(device, commandPool.commandPool);
         createSyncObjects();
@@ -241,6 +247,145 @@ namespace Azazel
         file.close();
 
         return buffer;
+    }
+
+    void VkWindow::createDescriptoPool()
+    {
+        VkDescriptorPoolSize poolSize {};
+        poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        poolSize.descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+
+        VkDescriptorPoolCreateInfo poolInfo {};
+        poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+        poolInfo.poolSizeCount = 1;
+        poolInfo.pPoolSizes = &poolSize;
+        poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+        vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool);
+    }
+
+    struct UniformBufferObject {
+        glm::mat4 model;
+        glm::mat4 view;
+        glm::mat4 proj;
+    };
+    
+    void VkWindow::createDescriptorSets()
+    {
+        std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, descriptorSetLayout);
+        VkDescriptorSetAllocateInfo allocInfo {};
+        allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+        allocInfo.descriptorPool = descriptorPool;
+        allocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+        allocInfo.pSetLayouts = layouts.data();
+
+        descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
+        vkAllocateDescriptorSets(device, &allocInfo, descriptorSets.data());
+
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) 
+        {
+            VkDescriptorBufferInfo bufferInfo{};
+            bufferInfo.buffer = uniformBuffers[i];
+            bufferInfo.offset = 0;
+            bufferInfo.range = sizeof(UniformBufferObject);
+
+            VkWriteDescriptorSet descriptorWrite{};
+            descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            descriptorWrite.dstSet = descriptorSets[i];
+            descriptorWrite.dstBinding = 0;
+            descriptorWrite.dstArrayElement = 0;
+            descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+            descriptorWrite.descriptorCount = 1;
+            descriptorWrite.pBufferInfo = &bufferInfo;
+
+            vkUpdateDescriptorSets(device, 1, &descriptorWrite, 0, nullptr);
+        }
+    }
+
+    void VkWindow::createDescriptorSetLayout()
+    {
+        VkDescriptorSetLayoutBinding uboLayoutBinding {};
+        uboLayoutBinding.binding = 0;
+        uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        uboLayoutBinding.descriptorCount = 1;
+        uboLayoutBinding.pImmutableSamplers = nullptr;
+        uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+        VkDescriptorSetLayoutCreateInfo layoutInfo {};
+        layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+        layoutInfo.bindingCount = 1;
+        layoutInfo.pBindings = &uboLayoutBinding;
+
+        vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &descriptorSetLayout);
+    }
+
+    uint32_t findMemoryType(VkPhysicalDevice physicalDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties)
+    {
+        VkPhysicalDeviceMemoryProperties memProperties;
+        vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
+
+        for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+            if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) 
+            {
+                return i;
+            }
+        }
+
+        throw std::runtime_error("failed to find suitable memory type!");
+    }
+
+    void createBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
+    {
+        VkBufferCreateInfo bufferInfo{};
+        bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        bufferInfo.size = size;
+        bufferInfo.usage = usage;
+        bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+        vkCreateBuffer(device, &bufferInfo, nullptr, &buffer);
+
+        VkMemoryRequirements memRequirements;
+        vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
+
+        VkMemoryAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        allocInfo.allocationSize = memRequirements.size;
+        allocInfo.memoryTypeIndex = findMemoryType(physicalDevice, memRequirements.memoryTypeBits, properties);
+
+        vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory);
+
+        vkBindBufferMemory(device, buffer, bufferMemory, 0);
+    }
+    
+    void VkWindow::createUniformBuffers()
+    {
+        VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+
+        uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+        uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+        uniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
+
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) 
+        {
+            createBuffer(device, azPhysicalDevice.physicalDevice, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, uniformBuffers[i], uniformBuffersMemory[i]);
+
+            vkMapMemory(device, uniformBuffersMemory[i], 0, bufferSize, 0, &uniformBuffersMapped[i]);
+        }
+    }
+
+    void VkWindow::updateUniformBuffer(uint32_t currentImage)
+    {
+        static auto startTime = std::chrono::high_resolution_clock::now();
+
+        auto currentTime = std::chrono::high_resolution_clock::now();
+        float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+        UniformBufferObject ubo {};
+        ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        ubo.proj = glm::perspective(glm::radians(45.0f), swapChain.swapChainExtent.width / (float) swapChain.swapChainExtent.height, 0.1f, 10.0f);
+        ubo.proj[1][1] *= -1;
+
+        memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
     }
 
     VkShaderModule VkWindow::createShaderModule(VkDevice device, const std::vector<char>& code)
@@ -307,7 +452,7 @@ namespace Azazel
         rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
         rasterizer.lineWidth = 1.0f;
         rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-        rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+        rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
         rasterizer.depthBiasEnable = VK_FALSE;
 
         VkPipelineMultisampleStateCreateInfo multisampling {};
@@ -340,10 +485,10 @@ namespace Azazel
         dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
         dynamicState.pDynamicStates = dynamicStates.data();        
 
-        VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
+        VkPipelineLayoutCreateInfo pipelineLayoutInfo {};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-        pipelineLayoutInfo.setLayoutCount = 0;
-        pipelineLayoutInfo.pushConstantRangeCount = 0;
+        pipelineLayoutInfo.setLayoutCount = 1;
+        pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
 
         vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout);
 
@@ -370,36 +515,32 @@ namespace Azazel
         return graphicsPipeline;
     }
 
-    std::vector<VkFramebuffer> VkWindow::createFramebuffers()
+    std::vector<AZFramebuffer> VkWindow::createFramebuffers()
     {
-        std::vector<VkFramebuffer> swapChainFramebuffers;
+        std::vector<AZFramebuffer> swapChainFramebuffers;
+
         auto& swapChainImageViews = swapChain.swapChainImageViews;
         swapChainFramebuffers.resize(swapChainImageViews.size());
 
         for (size_t i = 0; i < swapChainImageViews.size(); i++)
         {
-            VkFramebufferCreateInfo framebufferInfo {};
-            {
-                framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-                framebufferInfo.renderPass = renderPass.renderPass;
-                framebufferInfo.attachmentCount = 1;
-                framebufferInfo.pAttachments = &swapChainImageViews[i];
-                framebufferInfo.width = swapChain.swapChainExtent.width;
-                framebufferInfo.height = swapChain.swapChainExtent.height;
-                framebufferInfo.layers = 1;
-            }
-            vkCreateFramebuffer(device, &framebufferInfo, nullptr, &swapChainFramebuffers[i]);
+            uint32_t width = swapChain.swapChainExtent.width;
+            uint32_t height = swapChain.swapChainExtent.height;
+            auto& imageView = swapChainImageViews[i];
+            AZFramebufferDesc fboDesc {width, height, renderPass.renderPass, {imageView}};
+            AZFramebuffer fb(azDevice.device, fboDesc);
+            swapChainFramebuffers[i] = fb;
         }
         return swapChainFramebuffers;
     }
 
-    void VkWindow::recordCommandBuffer(AZCommandBuffer & azCommandBuffer, uint32_t imageIndex)
+    void VkWindow::recordCommandBuffer(AZCommandBuffer& azCommandBuffer, uint32_t imageIndex)
     {
         azCommandBuffer.begin();
         
         VkCommandBuffer commandBuffer = azCommandBuffer.commandBuffer;
 
-        renderPass.beginRenderPass(azCommandBuffer, swapChainFramebuffers[imageIndex], swapChain.swapChainExtent);
+        renderPass.beginRenderPass(azCommandBuffer, swapChainFramebuffers[imageIndex].framebuffer, swapChain.swapChainExtent);
 
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
@@ -426,11 +567,8 @@ namespace Azazel
 
         vkCmdBindIndexBuffer(commandBuffer, indexBuffer.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
+        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[imageIndex % MAX_FRAMES_IN_FLIGHT], 0, nullptr);
         vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
-
-        renderPass.endRenderPass(azCommandBuffer);
-        renderPass.beginRenderPass(azCommandBuffer, swapChainFramebuffers[imageIndex], swapChain.swapChainExtent);
-
 
         viewport.x = 0.0f;
         viewport.y = 0.0f;
@@ -445,6 +583,7 @@ namespace Azazel
 
         vkCmdBindIndexBuffer(commandBuffer, indexBuffer.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
+        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[imageIndex % MAX_FRAMES_IN_FLIGHT], 0, nullptr);
         vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
         renderPass.endRenderPass(azCommandBuffer);
@@ -477,6 +616,8 @@ namespace Azazel
 
         uint32_t imageIndex;
         vkAcquireNextImageKHR(device, swapChain.swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+
+        updateUniformBuffer(imageIndex % MAX_FRAMES_IN_FLIGHT);
 
         commandBuffer.reset();
         recordCommandBuffer(commandBuffer, imageIndex);

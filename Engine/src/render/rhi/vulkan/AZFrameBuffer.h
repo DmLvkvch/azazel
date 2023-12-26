@@ -4,7 +4,7 @@
 
 namespace Azazel
 {
-    struct FramebufferDesc
+    struct AZFramebufferDesc
     {
         uint32_t width;
         uint32_t height;
@@ -15,7 +15,8 @@ namespace Azazel
     class AZFramebuffer
     {
     public:
-        AZFramebuffer(VkDevice & device, FramebufferDesc & framebufferDesc);
+        AZFramebuffer() {}
+        AZFramebuffer(VkDevice& device, AZFramebufferDesc& framebufferDesc);
 
         ~AZFramebuffer()
         {
@@ -24,7 +25,7 @@ namespace Azazel
 
         void destroy()
         {
-            vkDestroyFramebuffer(nullptr, framebuffer, nullptr);
+            //vkDestroyFramebuffer(nullptr, framebuffer, nullptr);
         }
 
         VkFramebuffer get()
