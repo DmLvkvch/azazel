@@ -35,6 +35,9 @@ namespace Azazel
         void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
         void createVertexBuffer(PhysicalDevice& physicalDevice, const void* vertices, uint64_t size);
         void createBuffer(PhysicalDevice& physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+        void map(VkDeviceSize size);
+        void unmap();
+        
         void destroy();
 
     public:
@@ -43,6 +46,7 @@ namespace Azazel
         VkBuffer vertexBuffer;
         VkDeviceMemory vertexBufferMemory;
         VkDevice device;
+        void* hostVisibleData = nullptr;
     };
 
     class AZIndexBuffer
@@ -67,6 +71,9 @@ namespace Azazel
         void createIndexBuffer(PhysicalDevice& physicalDevice, const void* indices, uint64_t size);
         void createBuffer(PhysicalDevice& physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 
+        void map(VkDeviceSize size);
+        void unmap();
+
         size_t count;
 
         VkCommandPool commandPool;
@@ -74,6 +81,8 @@ namespace Azazel
         VkDevice device;
         VkBuffer indexBuffer;
         VkDeviceMemory indexBufferMemory;
+
+        void* hostVisibleData = nullptr;
     };
 
     class AZUniformBuffer
@@ -84,27 +93,18 @@ namespace Azazel
 
         }
 
-        AZUniformBuffer(VkDeviceSize size)
+        AZUniformBuffer(VkDevice device, 
+                        PhysicalDevice& physicalDevice, 
+                        VkDeviceSize size, 
+                        const void* data)
+        : device(device)
         {
-            
+            VkMemoryPropertyFlags memoryPropertyFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+            VkBufferUsageFlagBits bufferUsageFlagBits = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+            createBuffer(device, physicalDevice, size, bufferUsageFlagBits, memoryPropertyFlags, uniformBuffer, uniformBufferMemory);
         }
 
-        uint32_t findMemoryType(VkPhysicalDevice physicalDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties)
-        {
-            VkPhysicalDeviceMemoryProperties memProperties;
-            vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
-
-            for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
-                if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) 
-                {
-                    return i;
-                }
-            }
-
-            throw std::runtime_error("failed to find suitable memory type!");
-        }
-
-        void createBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
+        void createBuffer(VkDevice device, PhysicalDevice& physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& uniformBufferMemory)
         {
             VkBufferCreateInfo bufferInfo{};
             bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -120,16 +120,38 @@ namespace Azazel
             VkMemoryAllocateInfo allocInfo{};
             allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
             allocInfo.allocationSize = memRequirements.size;
-            allocInfo.memoryTypeIndex = findMemoryType(physicalDevice, memRequirements.memoryTypeBits, properties);
+            allocInfo.memoryTypeIndex = physicalDevice.findMemoryType(memRequirements.memoryTypeBits, properties);
 
-            vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory);
+            vkAllocateMemory(device, &allocInfo, nullptr, &uniformBufferMemory);
 
-            vkBindBufferMemory(device, buffer, bufferMemory, 0);
+            vkBindBufferMemory(device, buffer, uniformBufferMemory, 0);
+
+            map(size);
+        }
+
+        void updateData(const void* data, VkDeviceSize size)
+        {
+            memcpy(hostVisibleData, data, size);
+        }
+
+        void map(VkDeviceSize size)
+        {
+            vkMapMemory(device, uniformBufferMemory, 0, size, 0, &hostVisibleData);
+        }
+
+        void unmap()
+        {
+
         }
 
         ~AZUniformBuffer()
         {
 
         }
+
+        VkDevice device;
+        void* hostVisibleData = nullptr;
+        VkBuffer uniformBuffer;
+        VkDeviceMemory uniformBufferMemory;
     };
 }

@@ -92,6 +92,16 @@ namespace Azazel
         vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
     }
 
+    void AZVertexBuffer::map(VkDeviceSize size)
+    {
+        vkMapMemory(device, vertexBufferMemory, 0, size, 0, &hostVisibleData);
+    }
+
+    void AZVertexBuffer::unmap()
+    {
+        vkUnmapMemory(device, vertexBufferMemory);
+    }
+
     AZVertexBuffer::~AZVertexBuffer()
     {
         //vkDestroyBuffer(device, vertexBuffer, nullptr);
@@ -195,6 +205,16 @@ namespace Azazel
         vkQueueWaitIdle(graphicsQueue);
 
         vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
+    }
+
+    void AZIndexBuffer::map(VkDeviceSize size)
+    {
+        vkMapMemory(device, indexBufferMemory, 0, size, 0, &hostVisibleData);
+    }
+
+    void AZIndexBuffer::unmap()
+    {
+        vkUnmapMemory(device, indexBufferMemory);
     }
 
     AZIndexBuffer::~AZIndexBuffer()

@@ -36,17 +36,7 @@ namespace Azazel
 
         std::optional<uint32_t> findPresentQueue(VkPhysicalDevice & physicalDevice, VkSurfaceKHR surface);
 
-        uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
-        {
-            for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++) {
-                if ((typeFilter & (1 << i)) && (memoryProperties.memoryTypes[i].propertyFlags & properties) == properties) 
-                {
-                    return i;
-                }
-            }
-
-            throw std::runtime_error("failed to find suitable memory type!");
-        }
+        uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
         std::vector<const char*> deviceExtensions =
         {

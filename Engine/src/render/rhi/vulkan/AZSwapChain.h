@@ -44,6 +44,11 @@ namespace Azazel
 
         VkExtent2D chooseSwapExtent(GLFWwindow* window, const VkSurfaceCapabilitiesKHR& capabilities);
 
+        uint32_t acquireNextImage()
+        {
+            
+        }
+
         VkSwapchainKHR swapChain;
 
         std::vector<VkImage> swapChainImages;

@@ -38,16 +38,9 @@ namespace Azazel
 
         ~AZCommandBuffer();
 
-        void init();
-    
         void begin();
 
         void end();
-
-        void execute()
-        {
-
-        }
 
         void reset();
 

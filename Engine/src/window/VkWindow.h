@@ -8,7 +8,6 @@
 
 #include "render/rhi/vulkan/AZBuffer.h"
 #include "render/rhi/vulkan/AZCommandBuffer.h"
-#include "render/rhi/vulkan/AZCommandPool.h"
 #include "render/rhi/vulkan/VKContext.h"
 #include "render/rhi/vulkan/AZSurface.h"
 #include "render/rhi/vulkan/AZDevice.h"
@@ -42,7 +41,6 @@ namespace Azazel
         void createDescriptoPool();
         void createDescriptorSets();
         void createDescriptorSetLayout();
-        void createUniformBuffers();
         void updateUniformBuffer(uint32_t currentImage);
         VkPipeline createGraphicsPipeline(VkDevice device);
 
@@ -99,8 +97,6 @@ namespace Azazel
         VkDescriptorSetLayout descriptorSetLayout;
         VkPipelineLayout pipelineLayout;
 
-        std::vector<VkBuffer> uniformBuffers;
-        std::vector<VkDeviceMemory> uniformBuffersMemory;
-        std::vector<void*> uniformBuffersMapped;
+        AZUniformBuffer uniformBuffer;
     };
 }
