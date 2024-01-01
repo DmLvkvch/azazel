@@ -13,6 +13,6 @@ namespace Azazel
 
     VkShaderModule AZShader::createShaderModule(VkDevice device, const std::vector<char>& code)
 	{
-
+		return VK_NULL_HANDLE;
 	}
 }

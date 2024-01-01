@@ -7,24 +7,13 @@
 
 namespace Azazel
 {
-    struct QueueFamilyIndices
-    {
-        std::optional<uint32_t> presentFamily;
-        std::optional<uint32_t> graphicsFamily;
-        std::optional<uint32_t> computeQueue;
-
-        bool isComplete()
-        {
-            return presentFamily.has_value() && graphicsFamily.has_value();
-        }
-    };
 
     class VulkanContext
     {
     public:
         VulkanContext()
         {
-            
+            instance = createInstance();
         }
 
         VkInstance createInstance();

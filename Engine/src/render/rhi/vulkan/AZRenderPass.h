@@ -5,12 +5,12 @@
 
 namespace Azazel
 {
-    class AZAttachmentDesc
+    struct AZAttachmentDesc
     {
 
     };
 
-    class AZRenderPassDesc
+    struct AZRenderPassDesc
     {
 
     };

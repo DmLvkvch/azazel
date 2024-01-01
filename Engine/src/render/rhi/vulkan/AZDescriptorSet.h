@@ -34,6 +34,11 @@ namespace Azazel
         VkDescriptorPool descriptorPool;
     };
 
+    class DescriptorSetLayout
+    {
+
+    };
+
     class DescriptorSet
     {
 

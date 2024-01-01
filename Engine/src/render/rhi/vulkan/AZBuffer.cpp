@@ -226,4 +226,40 @@ namespace Azazel
     {
 
     }
+    void AZUniformBuffer::createBuffer(VkDevice device, PhysicalDevice& physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& uniformBufferMemory)
+    {
+        VkBufferCreateInfo bufferInfo{};
+        bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        bufferInfo.size = size;
+        bufferInfo.usage = usage;
+        bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+        vkCreateBuffer(device, &bufferInfo, nullptr, &buffer);
+
+        VkMemoryRequirements memRequirements;
+        vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
+
+        VkMemoryAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        allocInfo.allocationSize = memRequirements.size;
+        allocInfo.memoryTypeIndex = physicalDevice.findMemoryType(memRequirements.memoryTypeBits, properties);
+
+        vkAllocateMemory(device, &allocInfo, nullptr, &uniformBufferMemory);
+
+        vkBindBufferMemory(device, buffer, uniformBufferMemory, 0);
+
+        map(size);
+    }
+    void AZUniformBuffer::updateData(const void* data, VkDeviceSize size)
+    {
+        memcpy(hostVisibleData, data, size);
+    }
+    void AZUniformBuffer::map(VkDeviceSize size)
+    {
+        vkMapMemory(device, uniformBufferMemory, 0, size, 0, &hostVisibleData);
+    }
+    void AZUniformBuffer::unmap()
+    {
+        vkUnmapMemory(device, uniformBufferMemory);
+    }
 }

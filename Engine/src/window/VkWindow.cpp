@@ -19,6 +19,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <chrono>
+
 namespace Azazel
 {
 
@@ -201,38 +203,33 @@ namespace Azazel
     {
         
         context = VulkanContext();
-        context.instance = context.createInstance();
 
-        azSurface = AZSurface();
+        azSurface = std::make_unique<AZSurface>(context.instance, window);
 
-        azSurface.createSurface(context.instance, window);
+        physicalDevice = std::make_unique<PhysicalDevice>(context.instance, azSurface->surface);
 
-        azPhysicalDevice = PhysicalDevice(context.instance, azSurface.surface);
+        device = std::make_unique<VulkanDevice>(context, *physicalDevice);
 
-        azDevice = VulkanDevice(context, azPhysicalDevice);
-
-        device = azDevice.device;
-
-        swapChain = AZSwapChain(window, azSurface, azPhysicalDevice, azDevice);;
+        swapChain = std::make_unique<AZSwapChain>(window, *azSurface, *physicalDevice, *device);
         
-        renderPass.initRenderPass(device, swapChain.swapChainImageFormat);
+        renderPass.initRenderPass(device->device, swapChain->swapChainImageFormat);
 
         swapChainFramebuffers = createFramebuffers();
 
-        uniformBuffer = AZUniformBuffer(device, azPhysicalDevice, sizeof(UniformBufferObject), nullptr);
+        uniformBuffer = AZUniformBuffer(device->device, *physicalDevice, sizeof(UniformBufferObject), nullptr);
 
         createDescriptorSetLayout();
         createDescriptoPool();
         createDescriptorSets();
-        graphicsPipeline = createGraphicsPipeline(device);
-
-        commandPool = AZCommandPool(device, azPhysicalDevice.indices.graphicsFamily.value());
+        graphicsPipeline = createGraphicsPipeline(device->device);
+                                                    
+        commandPool = AZCommandPool(device->device, physicalDevice->indices.graphicsFamily.value());
         
-        vertexBuffer = AZVertexBuffer(device, azPhysicalDevice, commandPool.commandPool, azDevice.graphicsQueue.queue, BufferDesc{ (void*)vertices.data(), sizeof(vertices[0]) * vertices.size() } );
+        vertexBuffer = AZVertexBuffer(device->device, *physicalDevice, commandPool.commandPool, device->graphicsQueue.queue, BufferDesc{ (void*)vertices.data(), sizeof(vertices[0]) * vertices.size() } );
 
-        indexBuffer = AZIndexBuffer(device, azPhysicalDevice, commandPool.commandPool, azDevice.graphicsQueue.queue, (void*) indices.data(), 6);
+        indexBuffer = AZIndexBuffer(device->device, *physicalDevice, commandPool.commandPool, device->graphicsQueue.queue, (void*) indices.data(), 6);
 
-        commandBuffer = AZCommandBuffer(device, commandPool.commandPool);
+        commandBuffer = AZCommandBuffer(device->device, commandPool.commandPool);
         createSyncObjects();
     }
 
@@ -267,7 +264,7 @@ namespace Azazel
         poolInfo.poolSizeCount = 1;
         poolInfo.pPoolSizes = &poolSize;
         poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
-        vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool);
+        vkCreateDescriptorPool(device->device, &poolInfo, nullptr, &descriptorPool);
     }
     
     void VkWindow::createDescriptorSets()
@@ -280,7 +277,7 @@ namespace Azazel
         allocInfo.pSetLayouts = layouts.data();
 
         descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
-        vkAllocateDescriptorSets(device, &allocInfo, descriptorSets.data());
+        vkAllocateDescriptorSets(device->device, &allocInfo, descriptorSets.data());
 
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) 
         {
@@ -298,7 +295,7 @@ namespace Azazel
             descriptorWrite.descriptorCount = 1;
             descriptorWrite.pBufferInfo = &bufferInfo;
 
-            vkUpdateDescriptorSets(device, 1, &descriptorWrite, 0, nullptr);
+            vkUpdateDescriptorSets(device->device, 1, &descriptorWrite, 0, nullptr);
         }
     }
 
@@ -316,7 +313,7 @@ namespace Azazel
         layoutInfo.bindingCount = 1;
         layoutInfo.pBindings = &uboLayoutBinding;
 
-        vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &descriptorSetLayout);
+        vkCreateDescriptorSetLayout(device->device, &layoutInfo, nullptr, &descriptorSetLayout);
     }
 
     void VkWindow::updateUniformBuffer(uint32_t currentImage)
@@ -329,7 +326,7 @@ namespace Azazel
         UniformBufferObject ubo {};
         ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-        ubo.proj = glm::perspective(glm::radians(45.0f), swapChain.swapChainExtent.width / (float) swapChain.swapChainExtent.height, 0.1f, 10.0f);
+        ubo.proj = glm::perspective(glm::radians(45.0f), 1.5f, 0.1f, 10.0f);
         ubo.proj[1][1] *= -1;
 
         uniformBuffer.updateData(&ubo, sizeof(UniformBufferObject));
@@ -466,16 +463,16 @@ namespace Azazel
     {
         std::vector<AZFramebuffer> swapChainFramebuffers;
 
-        auto& swapChainImageViews = swapChain.swapChainImageViews;
+        auto& swapChainImageViews = swapChain->swapChainImageViews;
         swapChainFramebuffers.resize(swapChainImageViews.size());
 
         for (size_t i = 0; i < swapChainImageViews.size(); i++)
         {
-            uint32_t width = swapChain.swapChainExtent.width;
-            uint32_t height = swapChain.swapChainExtent.height;
+            uint32_t width = swapChain->swapChainExtent.width;
+            uint32_t height = swapChain->swapChainExtent.height;
             auto& imageView = swapChainImageViews[i];
-            AZFramebufferDesc fboDesc {width, height, renderPass.renderPass, {imageView}};
-            AZFramebuffer fb(azDevice.device, fboDesc);
+            AZFramebufferDesc fboDesc { {imageView}, renderPass.renderPass, width, height };
+            AZFramebuffer fb(device->device, fboDesc);
             swapChainFramebuffers[i] = fb;
         }
         return swapChainFramebuffers;
@@ -487,15 +484,15 @@ namespace Azazel
         
         VkCommandBuffer commandBuffer = azCommandBuffer.commandBuffer;
 
-        renderPass.beginRenderPass(azCommandBuffer, swapChainFramebuffers[imageIndex].framebuffer, swapChain.swapChainExtent);
+        renderPass.beginRenderPass(azCommandBuffer, swapChainFramebuffers[imageIndex].framebuffer, swapChain->swapChainExtent);
 
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
         VkViewport viewport {};
         viewport.x = 0.0f;
         viewport.y = 0.0f;
-        viewport.width = (float) swapChain.swapChainExtent.width;
-        viewport.height = (float) swapChain.swapChainExtent.height;
+        viewport.width = (float) swapChain->swapChainExtent.width;
+        viewport.height = (float) swapChain->swapChainExtent.height;
         viewport.minDepth = 0.0f;
         viewport.maxDepth = 1.0f;
 
@@ -503,7 +500,7 @@ namespace Azazel
 
         VkRect2D scissor {};
         scissor.offset = {0, 0};
-        scissor.extent = swapChain.swapChainExtent;
+        scissor.extent = swapChain->swapChainExtent;
 
         vkCmdSetScissor(commandBuffer, 0, 1, &scissor);            
 
@@ -519,8 +516,8 @@ namespace Azazel
 
         viewport.x = 0.0f;
         viewport.y = 0.0f;
-        viewport.width = (float) swapChain.swapChainExtent.width / 2;
-        viewport.height = (float) swapChain.swapChainExtent.height / 2;
+        viewport.width = (float) swapChain->swapChainExtent.width / 2;
+        viewport.height = (float) swapChain->swapChainExtent.height / 2;
         viewport.minDepth = 0.0f;
         viewport.maxDepth = 1.0f;
 
@@ -551,18 +548,19 @@ namespace Azazel
             fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
         }
 
-        vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphore);
-        vkCreateSemaphore(device, &semaphoreInfo, nullptr, &renderFinishedSemaphore);
-        vkCreateFence(device, &fenceInfo, nullptr, &inFlightFence);
+        vkCreateSemaphore(device->device, &semaphoreInfo, nullptr, &imageAvailableSemaphore);
+        vkCreateSemaphore(device->device, &semaphoreInfo, nullptr, &renderFinishedSemaphore);
+        vkCreateFence(device->device, &fenceInfo, nullptr, &inFlightFence);
     }
 
     void VkWindow::drawFrame() 
     {
+        VkDevice device = this->device->device;
         vkWaitForFences(device, 1, &inFlightFence, VK_TRUE, UINT64_MAX);
         vkResetFences(device, 1, &inFlightFence);
 
         uint32_t imageIndex;
-        vkAcquireNextImageKHR(device, swapChain.swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+        vkAcquireNextImageKHR(device, swapChain->swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
 
         updateUniformBuffer(imageIndex % MAX_FRAMES_IN_FLIGHT);
 
@@ -585,7 +583,7 @@ namespace Azazel
         submitInfo.signalSemaphoreCount = 1;
         submitInfo.pSignalSemaphores = signalSemaphores;
 
-        vkQueueSubmit(azDevice.graphicsQueue.queue, 1, &submitInfo, inFlightFence);
+        vkQueueSubmit(this->device->graphicsQueue.queue, 1, &submitInfo, inFlightFence);
 
         VkPresentInfoKHR presentInfo{};
         presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -594,11 +592,11 @@ namespace Azazel
         presentInfo.pWaitSemaphores = signalSemaphores;
 
         presentInfo.swapchainCount = 1;
-        presentInfo.pSwapchains = &swapChain.swapChain;
+        presentInfo.pSwapchains = &swapChain->swapChain;
 
         presentInfo.pImageIndices = &imageIndex;
 
-        vkQueuePresentKHR(azDevice.presentQueue.queue, &presentInfo);
+        vkQueuePresentKHR(this->device->presentQueue.queue, &presentInfo);
     }
 
     VkWindow::~VkWindow()

@@ -49,6 +49,11 @@ namespace Azazel
             
         }
 
+        void recreate()
+        {
+
+        }
+
         VkSwapchainKHR swapChain;
 
         std::vector<VkImage> swapChainImages;

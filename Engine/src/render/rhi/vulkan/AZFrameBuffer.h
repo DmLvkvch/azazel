@@ -6,10 +6,10 @@ namespace Azazel
 {
     struct AZFramebufferDesc
     {
+        std::vector<VkImageView> attachments;
+        VkRenderPass renderPass;
         uint32_t width;
         uint32_t height;
-        VkRenderPass renderPass;
-        std::vector<VkImageView> attachments;
     };
 
     class AZFramebuffer

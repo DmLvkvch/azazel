@@ -1,12 +1,23 @@
 #pragma once
 
-#include "VKContext.h"
 #include "AZQueue.h"
-#include <set>
+#include "VKContext.h"
 #include <optional>
+#include <set>
 
 namespace Azazel
 {
+    struct QueueFamilyIndices
+    {
+        std::optional<uint32_t> presentFamily;
+        std::optional<uint32_t> graphicsFamily;
+        std::optional<uint32_t> computeQueue;
+
+        bool isComplete() const
+        {
+            return presentFamily.has_value() && graphicsFamily.has_value();
+        }
+    };
 
     class PhysicalDevice
     {

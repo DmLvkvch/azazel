@@ -104,45 +104,21 @@ namespace Azazel
             createBuffer(device, physicalDevice, size, bufferUsageFlagBits, memoryPropertyFlags, uniformBuffer, uniformBufferMemory);
         }
 
-        void createBuffer(VkDevice device, PhysicalDevice& physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& uniformBufferMemory)
-        {
-            VkBufferCreateInfo bufferInfo{};
-            bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-            bufferInfo.size = size;
-            bufferInfo.usage = usage;
-            bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        void createBuffer(VkDevice device, 
+                          PhysicalDevice& physicalDevice,
+                          VkDeviceSize size, 
+                          VkBufferUsageFlags usage,
+                          VkMemoryPropertyFlags properties, 
+                          VkBuffer& buffer, 
+                          VkDeviceMemory& uniformBufferMemory);
 
-            vkCreateBuffer(device, &bufferInfo, nullptr, &buffer);
+        void updateData(const void* data, VkDeviceSize size);
 
-            VkMemoryRequirements memRequirements;
-            vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
+        void map(VkDeviceSize size);
 
-            VkMemoryAllocateInfo allocInfo{};
-            allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-            allocInfo.allocationSize = memRequirements.size;
-            allocInfo.memoryTypeIndex = physicalDevice.findMemoryType(memRequirements.memoryTypeBits, properties);
+        void unmap();
 
-            vkAllocateMemory(device, &allocInfo, nullptr, &uniformBufferMemory);
-
-            vkBindBufferMemory(device, buffer, uniformBufferMemory, 0);
-
-            map(size);
-        }
-
-        void updateData(const void* data, VkDeviceSize size)
-        {
-            memcpy(hostVisibleData, data, size);
-        }
-
-        void map(VkDeviceSize size)
-        {
-            vkMapMemory(device, uniformBufferMemory, 0, size, 0, &hostVisibleData);
-        }
-
-        void unmap()
-        {
-
-        }
+        void destroy();
 
         ~AZUniformBuffer()
         {

@@ -68,8 +68,6 @@ namespace Azazel
 
         WindowData windowData;
 
-        VkDevice device;
-
         VkPipeline graphicsPipeline;
 
         AZCommandPool commandPool;
@@ -79,11 +77,14 @@ namespace Azazel
         VkSemaphore renderFinishedSemaphore;
         VkFence inFlightFence;
 
-        AZSwapChain swapChain;
-        VulkanDevice azDevice;
-        AZSurface azSurface;
+        std::unique_ptr<AZSwapChain> swapChain;
+        std::unique_ptr<AZSurface> azSurface;
+
+        std::unique_ptr<VulkanDevice> device;
+        std::unique_ptr<PhysicalDevice> physicalDevice;
+
         VulkanContext context;
-        PhysicalDevice azPhysicalDevice;
+        
         AZVertexBuffer vertexBuffer;
         AZIndexBuffer indexBuffer;
 
