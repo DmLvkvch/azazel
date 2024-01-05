@@ -13,7 +13,7 @@ namespace Azazel
     VkSwapchainKHR AZSwapChain::createSwapChain(GLFWwindow* window, AZSurface& surface, PhysicalDevice& physicalDevice, VulkanDevice& device)
     {
         VkSwapchainKHR swapChain;
-        SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice.physicalDevice, surface);
+        SwapChainSupportDetails swapChainSupport = surface.querySwapChainSupport(physicalDevice.physicalDevice);
         VkSurfaceFormatKHR surfaceFormat         = chooseSwapSurfaceFormat(swapChainSupport.formats);
         VkPresentModeKHR presentMode             = chooseSwapPresentMode(swapChainSupport.presentModes);
         VkExtent2D extent                        = chooseSwapExtent(window, swapChainSupport.capabilities);
@@ -89,30 +89,6 @@ namespace Azazel
             vkCreateImageView(device, &createInfo, nullptr, &swapChainImageViews[i]);
         }
         return swapChainImageViews;
-    }
-
-    SwapChainSupportDetails AZSwapChain::querySwapChainSupport(VkPhysicalDevice device, AZSurface& azSurface)
-    {
-        SwapChainSupportDetails details;
-        VkSurfaceKHR surface = azSurface.surface;
-        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
-        
-        uint32_t formatCount;
-        vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, nullptr);
-        if (formatCount != 0)
-        {
-            details.formats.resize(formatCount);
-            vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, details.formats.data());
-        }
-
-        uint32_t presentModeCount;
-        vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, nullptr);
-        if (presentModeCount != 0)
-        {
-            details.presentModes.resize(presentModeCount);
-            vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, details.presentModes.data());
-        }
-        return details;
     }
 
     VkSurfaceFormatKHR AZSwapChain::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats)

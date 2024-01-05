@@ -104,6 +104,10 @@ namespace Azazel
             createBuffer(device, physicalDevice, size, bufferUsageFlagBits, memoryPropertyFlags, uniformBuffer, uniformBufferMemory);
         }
 
+        void destroy();
+
+        ~AZUniformBuffer();
+
         void createBuffer(VkDevice device, 
                           PhysicalDevice& physicalDevice,
                           VkDeviceSize size, 
@@ -117,13 +121,6 @@ namespace Azazel
         void map(VkDeviceSize size);
 
         void unmap();
-
-        void destroy();
-
-        ~AZUniformBuffer()
-        {
-
-        }
 
         VkDevice device;
         void* hostVisibleData = nullptr;

@@ -14,13 +14,25 @@ namespace Azazel
         createVertexBuffer(physicalDevice, bufferDesc.data, bufferDesc.size);
     }
 
+    AZVertexBuffer::~AZVertexBuffer()
+    {
+        //vkDestroyBuffer(device, vertexBuffer, nullptr);
+        //vkFreeMemory(device, vertexBufferMemory, nullptr);
+    }
+
+    void AZVertexBuffer::destroy()
+    {
+
+    }
+
     void AZVertexBuffer::createVertexBuffer(PhysicalDevice& physicalDevice, const void* vertices, uint64_t size)
     {        
         VkDeviceSize bufferSize = size;
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingBufferMemory;
-        createBuffer(physicalDevice, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+        VkMemoryPropertyFlags properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+        createBuffer(physicalDevice, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, properties, stagingBuffer, stagingBufferMemory);
 
         void* data;
         vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
@@ -102,16 +114,11 @@ namespace Azazel
         vkUnmapMemory(device, vertexBufferMemory);
     }
 
-    AZVertexBuffer::~AZVertexBuffer()
-    {
-        //vkDestroyBuffer(device, vertexBuffer, nullptr);
-        //vkFreeMemory(device, vertexBufferMemory, nullptr);
-    }
-
-    void AZVertexBuffer::destroy()
-    {
-
-    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     AZIndexBuffer::AZIndexBuffer(VkDevice device,
                                  PhysicalDevice& physicalDevice, 
@@ -125,6 +132,16 @@ namespace Azazel
     {
         this->count = indicesCount;
         createIndexBuffer(physicalDevice, indices, sizeof(unsigned int) * indicesCount);
+    }
+
+    AZIndexBuffer::~AZIndexBuffer()
+    {
+        //vkDestroyBuffer(device, indexBuffer, nullptr);
+    }
+
+    void AZIndexBuffer::destroy()
+    {
+
     }
     
     void AZIndexBuffer::createIndexBuffer(PhysicalDevice& physicalDevice, const void* indices, uint64_t size)
@@ -217,15 +234,22 @@ namespace Azazel
         vkUnmapMemory(device, indexBufferMemory);
     }
 
-    AZIndexBuffer::~AZIndexBuffer()
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+
+    AZUniformBuffer::~AZUniformBuffer()
     {
-        //vkDestroyBuffer(device, indexBuffer, nullptr);
+        destroy();
     }
 
-    void AZIndexBuffer::destroy()
+    void AZUniformBuffer::destroy()
     {
 
     }
+
     void AZUniformBuffer::createBuffer(VkDevice device, PhysicalDevice& physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& uniformBufferMemory)
     {
         VkBufferCreateInfo bufferInfo{};
@@ -250,14 +274,17 @@ namespace Azazel
 
         map(size);
     }
+    
     void AZUniformBuffer::updateData(const void* data, VkDeviceSize size)
     {
         memcpy(hostVisibleData, data, size);
     }
+    
     void AZUniformBuffer::map(VkDeviceSize size)
     {
         vkMapMemory(device, uniformBufferMemory, 0, size, 0, &hostVisibleData);
     }
+
     void AZUniformBuffer::unmap()
     {
         vkUnmapMemory(device, uniformBufferMemory);

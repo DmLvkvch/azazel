@@ -3,9 +3,10 @@
 
 #include <GLFW/glfw3.h>
 
-
 namespace Azazel
 {
+    class SwapChainSupportDetails;
+
     class AZSurface
     {
     public:
@@ -13,6 +14,8 @@ namespace Azazel
         {
             surface = createSurface(instance, window);
         }
+
+        SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
 
         VkSurfaceKHR createSurface(VkInstance& instance, GLFWwindow* window);
 

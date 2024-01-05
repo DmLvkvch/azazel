@@ -78,12 +78,12 @@ namespace Azazel
         VkFence inFlightFence;
 
         std::unique_ptr<AZSwapChain> swapChain;
-        std::unique_ptr<AZSurface> azSurface;
+        std::unique_ptr<AZSurface> surface;
 
         std::unique_ptr<VulkanDevice> device;
         std::unique_ptr<PhysicalDevice> physicalDevice;
 
-        VulkanContext context;
+        std::unique_ptr<VulkanContext> context;
         
         AZVertexBuffer vertexBuffer;
         AZIndexBuffer indexBuffer;

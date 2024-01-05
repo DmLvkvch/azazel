@@ -15,7 +15,7 @@
 #include <limits>
 #include <optional>
 #include <set>
-#define GLM_FORCE_RADIANS
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -202,15 +202,15 @@ namespace Azazel
     void VkWindow::initVulkan()
     {
         
-        context = VulkanContext();
+        context = std::make_unique<VulkanContext>();
 
-        azSurface = std::make_unique<AZSurface>(context.instance, window);
+        surface = std::make_unique<AZSurface>(context->instance, window);
 
-        physicalDevice = std::make_unique<PhysicalDevice>(context.instance, azSurface->surface);
+        physicalDevice = std::make_unique<PhysicalDevice>(context->instance, surface->surface);
 
-        device = std::make_unique<VulkanDevice>(context, *physicalDevice);
+        device = std::make_unique<VulkanDevice>(*context, *physicalDevice);
 
-        swapChain = std::make_unique<AZSwapChain>(window, *azSurface, *physicalDevice, *device);
+        swapChain = std::make_unique<AZSwapChain>(window, *surface, *physicalDevice, *device);
         
         renderPass.initRenderPass(device->device, swapChain->swapChainImageFormat);
 
@@ -281,7 +281,7 @@ namespace Azazel
 
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) 
         {
-            VkDescriptorBufferInfo bufferInfo{};
+            VkDescriptorBufferInfo bufferInfo {};
             bufferInfo.buffer = uniformBuffer.uniformBuffer;
             bufferInfo.offset = 0;
             bufferInfo.range = sizeof(UniformBufferObject);

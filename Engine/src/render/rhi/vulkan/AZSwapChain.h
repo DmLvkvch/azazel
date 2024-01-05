@@ -4,7 +4,6 @@
 #include "AZSurface.h"
 #include "AZDevice.h"
 
-
 namespace Azazel
 {
     struct SwapChainSupportDetails
@@ -36,8 +35,6 @@ namespace Azazel
 
         std::vector<VkImageView> createImageViews(VkDevice device, std::vector<VkImage>& swapChainImages, VkFormat format);
 
-        SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device, AZSurface& azSurface);
-
         VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 
         VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
@@ -46,7 +43,7 @@ namespace Azazel
 
         uint32_t acquireNextImage()
         {
-            
+            return 0;
         }
 
         void recreate()
