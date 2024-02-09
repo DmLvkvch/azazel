@@ -1,4 +1,4 @@
-#include "VKContext.h"
+#include "AZInstance.h"
 
 #include <iostream>
 #include <exception>
@@ -28,7 +28,7 @@ namespace Azazel
         }
     }
 
-    VkInstance VulkanContext::createInstance() 
+    VkInstance AZInstance::createInstance() 
     {
         if (!checkValidationLayerSupport(validationLayers)) 
         {
@@ -49,13 +49,13 @@ namespace Azazel
         return instance;
     }
 
-    void VulkanContext::destroy()
+    void AZInstance::destroy()
     {
         DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
         vkDestroyInstance(instance, nullptr);
     }
 
-    bool VulkanContext::checkValidationLayerSupport(std::vector<const char*> & validationLayers)
+    bool AZInstance::checkValidationLayerSupport(std::vector<const char*> & validationLayers)
     {
         uint32_t layerCount = 0;
         vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
@@ -80,7 +80,7 @@ namespace Azazel
         return true;
     }
 
-    VkApplicationInfo VulkanContext::createVkApplicationInfo(const char* applicationName, const char* engineName)
+    VkApplicationInfo AZInstance::createVkApplicationInfo(const char* applicationName, const char* engineName)
     {
         VkApplicationInfo appInfo {};
         {
@@ -94,7 +94,7 @@ namespace Azazel
         return appInfo;
     }
 
-    std::vector<const char*> VulkanContext::getRequiredExtensions()
+    std::vector<const char*> AZInstance::getRequiredExtensions()
     {
         uint32_t glfwExtensionCount = 0;
         const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
@@ -108,7 +108,7 @@ namespace Azazel
         return extensions;
     }
 
-    VkInstanceCreateInfo VulkanContext::createVkInstanceCreateInfo(VkApplicationInfo* appInfo,
+    VkInstanceCreateInfo AZInstance::createVkInstanceCreateInfo(VkApplicationInfo* appInfo,
                                                               std::vector<const char*>& extensions,   
                                                               std::vector<const char*>& validationLayers)
     {
@@ -136,7 +136,7 @@ namespace Azazel
         return VK_FALSE;
     }
 
-    void VulkanContext::setupDebugMessenger(VkInstance instance) 
+    void AZInstance::setupDebugMessenger(VkInstance instance) 
     {
         VkDebugUtilsMessengerCreateInfoEXT createInfo {};
         createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;

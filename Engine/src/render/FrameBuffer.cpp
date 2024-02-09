@@ -3,7 +3,7 @@
 #ifdef AZAZEL_GL
 #include "render/rhi/gl/GLESFrameBuffer.h"
 #else
-#include "render/rhi/vulkan/AZFrameBuffer.h"
+#include "render/rhi/vulkan/AZFramebuffer.h"
 #endif
 
 namespace Azazel

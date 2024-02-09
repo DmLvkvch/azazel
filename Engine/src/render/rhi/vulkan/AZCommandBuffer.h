@@ -38,6 +38,8 @@ namespace Azazel
 
         ~AZCommandBuffer();
 
+        static AZCommandBuffer* createCommandBuffer(VkDevice deviec, VkCommandPool commandPool);
+
         void begin();
 
         void end();

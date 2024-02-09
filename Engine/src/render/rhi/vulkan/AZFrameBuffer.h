@@ -16,6 +16,7 @@ namespace Azazel
     {
     public:
         AZFramebuffer() {}
+
         AZFramebuffer(VkDevice& device, AZFramebufferDesc& framebufferDesc);
 
         ~AZFramebuffer()
@@ -25,14 +26,14 @@ namespace Azazel
 
         void destroy()
         {
-            //vkDestroyFramebuffer(nullptr, framebuffer, nullptr);
+            vkDestroyFramebuffer(device, framebuffer, nullptr);
         }
 
         VkFramebuffer get()
         {
             return framebuffer;
         }
-
+        VkDevice device;
         VkFramebuffer framebuffer;
     };
 }

@@ -7,30 +7,30 @@
 
 namespace Azazel
 {
-
-    class VulkanContext
+    class AZInstance
     {
     public:
-        VulkanContext()
+        AZInstance()
         {
             instance = createInstance();
         }
 
+        ~AZInstance()
+        {
+            
+        }
+
         VkInstance createInstance();
-
         void destroy();
-
         bool checkValidationLayerSupport(std::vector<const char*> & validationLayers);
         VkApplicationInfo createVkApplicationInfo(const char* applicationName, const char* engineName);
         VkInstanceCreateInfo createVkInstanceCreateInfo(VkApplicationInfo* appInfo,
                                                         std::vector<const char*>& extensions, 
                                                         std::vector<const char*>& validationLayers);
-
         std::vector<const char*> getRequiredExtensions();
         void setupDebugMessenger(VkInstance instance);
 
         VkInstance instance;
-
         VkDebugUtilsMessengerEXT debugMessenger;
 
         std::vector<const char*> validationLayers =

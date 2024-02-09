@@ -16,6 +16,18 @@ namespace Azazel
         uint64_t size;
     };
 
+    class AZStageBuffer
+    {
+    public:
+        AZStageBuffer(VkDevice device, 
+                      PhysicalDevice& physicalDevice, 
+                      VkDeviceSize size, 
+                      const void* data)
+        {
+
+        }
+    };
+
     class AZVertexBuffer
     {
     public:

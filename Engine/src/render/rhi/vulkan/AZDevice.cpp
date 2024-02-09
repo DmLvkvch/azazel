@@ -44,7 +44,7 @@ namespace Azazel
 
             if (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT)
             {
-                indices.computeQueue = i;
+                indices.computeFamily = i;
             }
         }
 
@@ -75,7 +75,7 @@ namespace Azazel
 
     std::vector<VkQueueFamilyProperties> PhysicalDevice::findQueueFamilies(VkPhysicalDevice & physicalDevice)
     {
-        QueueFamilyIndices indices {};
+        QueueFamilyIndices indices{};
         uint32_t queueFamilyCount = 0;
         vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
 
@@ -121,14 +121,14 @@ namespace Azazel
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    VulkanDevice::VulkanDevice(VulkanContext& context, PhysicalDevice& physicalDevice)
+    VulkanDevice::VulkanDevice(AZInstance& context, PhysicalDevice& physicalDevice)
     {
         device = createDevice(context, physicalDevice);
         graphicsQueue = AZQueue(device, physicalDevice.indices.graphicsFamily.value());
         presentQueue = AZQueue(device, physicalDevice.indices.presentFamily.value());
     }
 
-    VkDevice VulkanDevice::createDevice(VulkanContext& context, PhysicalDevice& physicalDevice)
+    VkDevice VulkanDevice::createDevice(AZInstance& context, PhysicalDevice& physicalDevice)
     {
         VkDevice device;
         QueueFamilyIndices indices = physicalDevice.indices;

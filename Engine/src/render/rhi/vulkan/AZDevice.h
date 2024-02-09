@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AZQueue.h"
-#include "VKContext.h"
+#include "AZInstance.h"
 #include <optional>
 #include <set>
 
@@ -11,7 +11,7 @@ namespace Azazel
     {
         std::optional<uint32_t> presentFamily;
         std::optional<uint32_t> graphicsFamily;
-        std::optional<uint32_t> computeQueue;
+        std::optional<uint32_t> computeFamily;
 
         bool isComplete() const
         {
@@ -70,9 +70,9 @@ namespace Azazel
 
         }
 
-        VulkanDevice(VulkanContext& context, PhysicalDevice& physicalDevice);
+        VulkanDevice(AZInstance& context, PhysicalDevice& physicalDevice);
 
-        VkDevice createDevice(VulkanContext& context, PhysicalDevice& physicalDevice);
+        VkDevice createDevice(AZInstance& context, PhysicalDevice& physicalDevice);
         void destroy();
 
         AZQueue graphicsQueue;

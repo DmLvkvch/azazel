@@ -1,6 +1,6 @@
 #pragma once
 
-#include "VKContext.h"
+#include "AZInstance.h"
 #include "AZSurface.h"
 #include "AZDevice.h"
 

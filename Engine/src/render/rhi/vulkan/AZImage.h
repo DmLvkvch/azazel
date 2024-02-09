@@ -2,15 +2,20 @@
 
 namespace Azazel
 {
-    class ImageView
+    class AZTextureSampler
+    {
+
+    };
+    
+    class AZImageView
     {
     public:
-        ImageView()
+        AZImageView()
         {
 
         }
 
-        ~ImageView()
+        ~AzImageView()
         {
 
         }
@@ -19,8 +24,8 @@ namespace Azazel
     class AZImage
     {
     public:
-        Image() {}
+        AZImage() {}
 
-        ~Image() {}
+        ~AZImage() {}
     };
 }

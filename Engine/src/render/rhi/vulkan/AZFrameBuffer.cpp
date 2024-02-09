@@ -3,6 +3,7 @@
 namespace Azazel
 {
     AZFramebuffer::AZFramebuffer(VkDevice& device, AZFramebufferDesc& framebufferDesc)
+    : device(device)
     {
         VkFramebufferCreateInfo framebufferInfo{};
         {

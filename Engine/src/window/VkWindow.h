@@ -8,7 +8,7 @@
 
 #include "render/rhi/vulkan/AZBuffer.h"
 #include "render/rhi/vulkan/AZCommandBuffer.h"
-#include "render/rhi/vulkan/VKContext.h"
+#include "render/rhi/vulkan/AZInstance.h"
 #include "render/rhi/vulkan/AZSurface.h"
 #include "render/rhi/vulkan/AZDevice.h"
 #include "render/rhi/vulkan/AZSwapChain.h"
@@ -54,6 +54,23 @@ namespace Azazel
         void createSyncObjects();
 
         void destroyGLFW();
+
+        void createTextureImage();
+        void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
+
+        VkImageView createImageView(VkImage image, VkFormat format);
+        void createTextureSampler();
+        void createTextureImageView();
+        void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
+        void endSingleTimeCommands(VkCommandBuffer commandBuffer);
+        VkCommandBuffer beginSingleTimeCommands();
+        void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+    void createBuffer(PhysicalDevice& physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+
+        VkImageView textureImageView;
+        VkImage textureImage;
+        VkSampler textureSampler;
+        VkDeviceMemory textureImageMemory;
     private:
 
         GLFWwindow* window;
@@ -83,12 +100,12 @@ namespace Azazel
         std::unique_ptr<VulkanDevice> device;
         std::unique_ptr<PhysicalDevice> physicalDevice;
 
-        std::unique_ptr<VulkanContext> context;
+        std::unique_ptr<AZInstance> instance;
         
         AZVertexBuffer vertexBuffer;
         AZIndexBuffer indexBuffer;
 
-        AZRenderPass renderPass;
+        std::unique_ptr<AZRenderPass> renderPass;
         std::vector<AZFramebuffer> swapChainFramebuffers;
 
         VkDescriptorPool descriptorPool;

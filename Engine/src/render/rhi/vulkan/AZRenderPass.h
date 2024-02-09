@@ -18,8 +18,9 @@ namespace Azazel
     class AZRenderPass
     {
     public:
-        AZRenderPass()
+        AZRenderPass(VkDevice device, VkFormat format)
         {
+            initRenderPass(device, format);
         }
 
         ~AZRenderPass()
