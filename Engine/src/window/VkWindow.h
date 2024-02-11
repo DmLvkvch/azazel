@@ -59,13 +59,13 @@ namespace Azazel
         void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 
         VkImageView createImageView(VkImage image, VkFormat format);
+
         void createTextureSampler();
         void createTextureImageView();
         void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
-        void endSingleTimeCommands(VkCommandBuffer commandBuffer);
-        VkCommandBuffer beginSingleTimeCommands();
+
         void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
-    void createBuffer(PhysicalDevice& physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+        void createBuffer(PhysicalDevice& physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 
         VkImageView textureImageView;
         VkImage textureImage;
@@ -88,7 +88,7 @@ namespace Azazel
         VkPipeline graphicsPipeline;
 
         AZCommandPool commandPool;
-        AZCommandBuffer commandBuffer;
+        std::unique_ptr<AZCommandBuffer> commandBuffer;
 
         VkSemaphore imageAvailableSemaphore;
         VkSemaphore renderFinishedSemaphore;

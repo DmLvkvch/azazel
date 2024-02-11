@@ -4,6 +4,8 @@
 
 namespace Azazel
 {
+    class VulkanDevice;
+    class AZCommandBuffer;
 
     class AZCommandPool
     {
@@ -19,6 +21,8 @@ namespace Azazel
         {
 
         }
+
+        AZCommandBuffer* allocateCommandBuffer(VkDevice device);
 
         void reset();
 
@@ -38,7 +42,7 @@ namespace Azazel
 
         ~AZCommandBuffer();
 
-        static AZCommandBuffer* createCommandBuffer(VkDevice deviec, VkCommandPool commandPool);
+        static AZCommandBuffer* createCommandBuffer(VkDevice device, VkCommandPool commandPool);
 
         void begin();
 
@@ -47,6 +51,10 @@ namespace Azazel
         void reset();
 
         void* getAPIBuffer();
+
+        static VkCommandBuffer beginSingleTimeCommands(VulkanDevice& device, AZCommandPool& commandPool);
+
+        static void endSingleTimeCommands(VulkanDevice& device, AZCommandPool& commandPool, VkCommandBuffer commandBuffer);
 
     public:
         VkCommandBuffer commandBuffer;

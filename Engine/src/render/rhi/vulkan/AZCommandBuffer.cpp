@@ -1,4 +1,5 @@
 #include "AZCommandBuffer.h"
+#include "AZDevice.h"
 
 namespace Azazel
 {
@@ -12,6 +13,11 @@ namespace Azazel
         poolInfo.queueFamilyIndex = queueIndex;
         
         vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool);
+    }
+
+    AZCommandBuffer* AZCommandPool::allocateCommandBuffer(VkDevice device)
+    {
+        return new AZCommandBuffer(device, commandPool);
     }
 
     void AZCommandPool::reset()
@@ -70,5 +76,40 @@ namespace Azazel
     void* AZCommandBuffer::getAPIBuffer()
     {
         return (void*)&commandBuffer;
+    }
+
+    VkCommandBuffer AZCommandBuffer::beginSingleTimeCommands(VulkanDevice& device, AZCommandPool & commandPool)
+    {
+        VkCommandBufferAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        allocInfo.commandPool = commandPool.commandPool;
+        allocInfo.commandBufferCount = 1;
+
+        VkCommandBuffer commandBuffer;
+        vkAllocateCommandBuffers(device.device, &allocInfo, &commandBuffer);
+
+        VkCommandBufferBeginInfo beginInfo{};
+        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+        vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+        return commandBuffer;
+    }
+
+    void AZCommandBuffer::endSingleTimeCommands(VulkanDevice& device, AZCommandPool& commandPool, VkCommandBuffer commandBuffer)
+    {
+        vkEndCommandBuffer(commandBuffer);
+
+        VkSubmitInfo submitInfo{};
+        submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        submitInfo.commandBufferCount = 1;
+        submitInfo.pCommandBuffers = &commandBuffer;
+
+        vkQueueSubmit(device.graphicsQueue.queue, 1, &submitInfo, VK_NULL_HANDLE);
+        vkQueueWaitIdle(device.graphicsQueue.queue);
+
+        vkFreeCommandBuffers(device.device, commandPool.commandPool, 1, &commandBuffer);
     }
 }
