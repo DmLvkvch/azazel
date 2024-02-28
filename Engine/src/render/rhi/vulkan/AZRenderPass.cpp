@@ -41,13 +41,13 @@ namespace Azazel
 
         VkRenderPassCreateInfo renderPassInfo{};
         {
-            renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+            renderPassInfo.sType           = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
             renderPassInfo.attachmentCount = 1;
-            renderPassInfo.pAttachments = &colorAttachment;
-            renderPassInfo.subpassCount = 1;
-            renderPassInfo.pSubpasses = &subpass;
+            renderPassInfo.pAttachments    = &colorAttachment;
+            renderPassInfo.subpassCount    = 1;
+            renderPassInfo.pSubpasses      = &subpass;
             renderPassInfo.dependencyCount = 1;
-            renderPassInfo.pDependencies = &dependency;
+            renderPassInfo.pDependencies   = &dependency;
         }
         vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass);
     }
@@ -55,9 +55,9 @@ namespace Azazel
     void AZRenderPass::beginRenderPass(AZCommandBuffer& commandBuffer, VkFramebuffer& framebuffer, VkExtent2D extent)
     {
         VkRenderPassBeginInfo renderPassInfo {};
-        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        renderPassInfo.renderPass = renderPass;
-        renderPassInfo.framebuffer = framebuffer;
+        renderPassInfo.sType             = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+        renderPassInfo.renderPass        = renderPass;
+        renderPassInfo.framebuffer       = framebuffer;
         renderPassInfo.renderArea.offset = { 0, 0 };
         renderPassInfo.renderArea.extent = extent;
    

@@ -24,6 +24,12 @@
 
 #include "render/Vertex.h"
 
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_vulkan.h>
+#define GLFW_INCLUDE_NONE
+#define GLFW_INCLUDE_VULKAN
+
 namespace Azazel
 {
 
@@ -168,6 +174,8 @@ namespace Azazel
         glm::mat4 proj;
     };
 
+    static ImGui_ImplVulkanH_Window g_MainWindowData;
+
     void VkWindow::initVulkan()
     {
         
@@ -187,7 +195,7 @@ namespace Azazel
 
         uniformBuffer = AZUniformBuffer(device->device, *physicalDevice, sizeof(UniformBufferObject), nullptr);
 
-        commandPool = AZCommandPool(device->device, physicalDevice->indices.graphicsFamily.value());
+        commandPool = std::make_unique<AZCommandPool>(device->device, physicalDevice->indices.graphicsFamily.value());
 
         createTextureImage();
         createTextureImageView();
@@ -199,18 +207,55 @@ namespace Azazel
 
         graphicsPipeline = createGraphicsPipeline(device->device);
                                                     
-        vertexBuffer = AZVertexBuffer(device->device, *physicalDevice, commandPool.commandPool, device->graphicsQueue.queue, BufferDesc{ (void*)vertices.data(), sizeof(vertices[0]) * vertices.size() } );
+        vertexBuffer = AZVertexBuffer(device->device, *physicalDevice, commandPool->commandPool, device->graphicsQueue.queue, BufferDesc{ (void*)vertices.data(), sizeof(vertices[0]) * vertices.size() } );
 
-        indexBuffer = AZIndexBuffer(device->device, *physicalDevice, commandPool.commandPool, device->graphicsQueue.queue, (void*) indices.data(), 6);
+        indexBuffer = AZIndexBuffer(device->device, *physicalDevice, commandPool->commandPool, device->graphicsQueue.queue, (void*) indices.data(), 6);
 
-        commandBuffer = std::unique_ptr<AZCommandBuffer>(commandPool.allocateCommandBuffer(device->device));
+        commandBuffer = std::unique_ptr<AZCommandBuffer>(commandPool->allocateCommandBuffer(device->device));
         createSyncObjects();
+
+        auto presentMode = VK_PRESENT_MODE_MAILBOX_KHR;
+
+        g_MainWindowData.Surface = surface->surface;
+        g_MainWindowData.SurfaceFormat = swapChain->surfaceFormat;
+
+        g_MainWindowData.PresentMode = ImGui_ImplVulkanH_SelectPresentMode(physicalDevice->physicalDevice, surface->surface, &presentMode, 1);
+
+        ImGui_ImplVulkanH_CreateOrResizeWindow(instance->instance, physicalDevice->physicalDevice, device->device, &g_MainWindowData, device->graphicsQueue.queueFamilyIndex, nullptr, width, height, 2);
+
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO(); (void)io;
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+
+        ImGui::StyleColorsDark();
+
+        ImGui_ImplGlfw_InitForVulkan(window, true);
+        ImGui_ImplVulkan_InitInfo init_info = {};
+        init_info.Instance = instance->instance;
+        init_info.PhysicalDevice = physicalDevice->physicalDevice;
+        init_info.Device = device->device;
+        init_info.QueueFamily = device->graphicsQueue.queueFamilyIndex;
+        init_info.Queue = device->graphicsQueue.queue;
+        init_info.PipelineCache = nullptr;
+        init_info.DescriptorPool = descriptorPool;
+        init_info.Subpass = 0;
+        init_info.RenderPass = g_MainWindowData.RenderPass;
+        init_info.MinImageCount = 2;
+        init_info.ImageCount = g_MainWindowData.ImageCount;
+        init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+        init_info.Allocator = nullptr;
+        init_info.CheckVkResultFn = nullptr;
+        ImGui_ImplVulkan_Init(&init_info);
+        io.Fonts->AddFontFromFileTTF("fonts/Arial.ttf", 18.0f);
+        std::cout<<io.Fonts->IsBuilt();
     }
 
     void VkWindow::createTextureImage()
     {
         int texWidth, texHeight, texChannels;
-        unsigned char* pixels = stbi_load("images/awesomeface.png", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+        unsigned char* pixels = stbi_load("textures/awesomeface.png", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
         VkDeviceSize imageSize = texWidth * texHeight * 4;
 
         if (!pixels) 
@@ -354,7 +399,7 @@ namespace Azazel
 
     void VkWindow::transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) 
     {
-        VkCommandBuffer commandBuffer = AZCommandBuffer::beginSingleTimeCommands(*device, commandPool);
+        VkCommandBuffer commandBuffer = AZCommandBuffer::beginSingleTimeCommands(*device, *commandPool);
 
         VkImageMemoryBarrier barrier{};
         barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -402,13 +447,12 @@ namespace Azazel
             1, &barrier
         );
 
-        AZCommandBuffer::endSingleTimeCommands(*device, commandPool, commandBuffer);
+        AZCommandBuffer::endSingleTimeCommands(*device, *commandPool, commandBuffer);
     }
 
     void VkWindow::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height)
     {
-        VkCommandBuffer commandBuffer = AZCommandBuffer::beginSingleTimeCommands(*device, commandPool);
-
+        VkCommandBuffer commandBuffer = AZCommandBuffer::beginSingleTimeCommands(*device, *commandPool);
         VkBufferImageCopy region{};
         region.bufferOffset = 0;
         region.bufferRowLength = 0;
@@ -418,15 +462,11 @@ namespace Azazel
         region.imageSubresource.baseArrayLayer = 0;
         region.imageSubresource.layerCount = 1;
         region.imageOffset = {0, 0, 0};
-        region.imageExtent = {
-            width,
-            height,
-            1
-        };
+        region.imageExtent = { width, height, 1 };
 
         vkCmdCopyBufferToImage(commandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
-        AZCommandBuffer::endSingleTimeCommands(*device, commandPool, commandBuffer);
+        AZCommandBuffer::endSingleTimeCommands(*device, *commandPool, commandBuffer);
     }
 
     static std::vector<char> readFile(const std::string& filename)
@@ -451,17 +491,26 @@ namespace Azazel
 
     void VkWindow::createDescriptoPool()
     {
-        std::array<VkDescriptorPoolSize, 2> poolSizes{};
-        poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        poolSizes[0].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
-        poolSizes[1].type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        poolSizes[1].descriptorCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+      VkDescriptorPoolSize pool_sizes[] =
+          {
+              {VK_DESCRIPTOR_TYPE_SAMPLER, 1000},
+              {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000},
+              {VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1000},
+              {VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000},
+              {VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000},
+              {VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000},
+              {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000},
+              {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000},
+              {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000},
+              {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000},
+              {VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 1000}};
 
-        VkDescriptorPoolCreateInfo poolInfo{};
+        VkDescriptorPoolCreateInfo poolInfo = {};
         poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-        poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
-        poolInfo.pPoolSizes = poolSizes.data();
-        poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+        poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+        poolInfo.maxSets = 1000 * IM_ARRAYSIZE(pool_sizes);
+        poolInfo.poolSizeCount = (uint32_t)IM_ARRAYSIZE(pool_sizes);
+        poolInfo.pPoolSizes = pool_sizes;
 
         vkCreateDescriptorPool(device->device, &poolInfo, nullptr, &descriptorPool);
     }
@@ -634,7 +683,6 @@ namespace Azazel
         colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
         colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
         colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
-
         VkPipelineColorBlendStateCreateInfo colorBlending{};
         colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
         colorBlending.logicOpEnable = VK_FALSE;
@@ -708,11 +756,10 @@ namespace Azazel
 
     void VkWindow::recordCommandBuffer(AZCommandBuffer& azCommandBuffer, uint32_t imageIndex)
     {
-        azCommandBuffer.begin();
         
         VkCommandBuffer commandBuffer = azCommandBuffer.commandBuffer;
 
-        renderPass->beginRenderPass(azCommandBuffer, swapChainFramebuffers[imageIndex].framebuffer, swapChain->swapChainExtent);
+        //renderPass->beginRenderPass(azCommandBuffer, swapChainFramebuffers[imageIndex].framebuffer, swapChain->swapChainExtent);
 
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
@@ -742,9 +789,8 @@ namespace Azazel
         vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[imageIndex % MAX_FRAMES_IN_FLIGHT], 0, nullptr);
         vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
-        renderPass->endRenderPass(azCommandBuffer);
+        //renderPass->endRenderPass(azCommandBuffer);
 
-        azCommandBuffer.end();
     }
 
     void VkWindow::createSyncObjects()
@@ -777,7 +823,37 @@ namespace Azazel
         updateUniformBuffer(imageIndex % MAX_FRAMES_IN_FLIGHT);
 
         commandBuffer->reset();
+        commandBuffer->begin();
+        renderPass->beginRenderPass(*commandBuffer, swapChainFramebuffers[imageIndex].framebuffer, swapChain->swapChainExtent);
+        
         recordCommandBuffer(*commandBuffer, imageIndex);
+
+        ImGui_ImplVulkan_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+
+        ImGui::Begin("Hello, world!");
+        ImGui::Text("This is some useful text.");
+        ImGui::Button("Button");
+        ImGui::SameLine();
+        ImGui::Text("counter = %d", 111);
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f, 123.0f);
+        ImGui::End();
+        
+
+        ImGui::Render();
+        ImDrawData* draw_data = ImGui::GetDrawData();
+        g_MainWindowData.ClearValue.color.float32[0] = 1;
+        g_MainWindowData.ClearValue.color.float32[1] = 1;
+        g_MainWindowData.ClearValue.color.float32[2] = 1;
+        g_MainWindowData.ClearValue.color.float32[3] = 1;
+        
+        ImGui_ImplVulkan_RenderDrawData(draw_data, commandBuffer->commandBuffer);
+
+        renderPass->endRenderPass(*commandBuffer);
+
+        commandBuffer->end();
 
         VkSubmitInfo submitInfo {};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -795,7 +871,7 @@ namespace Azazel
         submitInfo.signalSemaphoreCount = 1;
         submitInfo.pSignalSemaphores = signalSemaphores;
 
-        vkQueueSubmit(this->device->graphicsQueue.queue, 1, &submitInfo, inFlightFence);
+        this->device->graphicsQueue.submit(1, &submitInfo, inFlightFence);
 
         VkPresentInfoKHR presentInfo{};
         presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;

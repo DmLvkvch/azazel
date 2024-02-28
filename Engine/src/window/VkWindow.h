@@ -17,6 +17,9 @@
 
 struct GLFWwindow;
 
+class ImGui_ImplVulkanH_Window;
+class ImDrawData;
+
 namespace Azazel
 {
     class VkWindow : public Window
@@ -87,7 +90,7 @@ namespace Azazel
 
         VkPipeline graphicsPipeline;
 
-        AZCommandPool commandPool;
+        std::unique_ptr<AZCommandPool> commandPool;
         std::unique_ptr<AZCommandBuffer> commandBuffer;
 
         VkSemaphore imageAvailableSemaphore;

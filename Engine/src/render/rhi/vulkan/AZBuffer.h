@@ -58,6 +58,18 @@ namespace Azazel
 
             vkBindBufferMemory(device, buffer, bufferMemory, 0);
         }
+
+        ~AZStageBuffer()
+        {
+
+        }
+
+        void destroy()
+        {
+
+        }
+
+        
     };
 
     class AZVertexBuffer

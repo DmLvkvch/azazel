@@ -48,7 +48,6 @@ namespace Azazel
 
         void recreate()
         {
-
         }
 
         VkSwapchainKHR swapChain;
@@ -56,7 +55,35 @@ namespace Azazel
         std::vector<VkImage> swapChainImages;
         std::vector<VkImageView> swapChainImageViews;
 
+        VkSurfaceFormatKHR surfaceFormat;
         VkFormat swapChainImageFormat;
         VkExtent2D swapChainExtent;
+    };
+
+    struct VirtualFrame
+    {
+
+        vk::Fence CommandQueueFence;
+    };
+
+    class VirtualFrameProvider
+    {
+        std::vector<VirtualFrame> virtualFrames;
+        uint32_t presentImageIndex = 0;
+        bool isFrameRunning = false;
+        size_t currentFrame = 0;
+    public:
+        void Init(size_t frameCount, size_t stageBufferSize);
+        void Destroy();
+
+        void StartFrame();
+        VirtualFrame& GetCurrentFrame();
+        VirtualFrame& GetNextFrame();
+        const VirtualFrame& GetCurrentFrame() const;
+        const VirtualFrame& GetNextFrame() const;
+        uint32_t GetPresentImageIndex() const;
+        bool IsFrameRunning() const;
+        size_t GetFrameCount() const;
+        void EndFrame();
     };
 }

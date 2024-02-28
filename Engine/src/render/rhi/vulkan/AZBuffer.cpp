@@ -16,13 +16,13 @@ namespace Azazel
 
     AZVertexBuffer::~AZVertexBuffer()
     {
-        //vkDestroyBuffer(device, vertexBuffer, nullptr);
-        //vkFreeMemory(device, vertexBufferMemory, nullptr);
+
     }
 
     void AZVertexBuffer::destroy()
     {
-
+        vkDestroyBuffer(device, vertexBuffer, nullptr);
+        vkFreeMemory(device, vertexBufferMemory, nullptr);
     }
 
     void AZVertexBuffer::createVertexBuffer(PhysicalDevice& physicalDevice, const void* vertices, uint64_t size)

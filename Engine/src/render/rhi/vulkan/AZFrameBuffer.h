@@ -33,6 +33,7 @@ namespace Azazel
         {
             return framebuffer;
         }
+        
         VkDevice device;
         VkFramebuffer framebuffer;
     };

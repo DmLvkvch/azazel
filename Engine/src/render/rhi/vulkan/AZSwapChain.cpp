@@ -58,6 +58,7 @@ namespace Azazel
         swapChainImages.resize(imageCount);
         vkGetSwapchainImagesKHR(device.device, swapChain, &imageCount, swapChainImages.data());
 
+        this->surfaceFormat = surfaceFormat;
         swapChainImageFormat = surfaceFormat.format;
         swapChainExtent = extent;
         return swapChain;
