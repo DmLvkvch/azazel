@@ -29,15 +29,13 @@ include_directories ("vendor/glad/include"
                      "vendor/imgui/imgui/backends"
                      "vendor/assimp"
                      "vendor/stb_image"
-                     "vendor/astc-encoder/Source"
                      "vendor/json/include"
                      "src")
 
 OPTION (ASSIMP_BUILD_TESTS "If the test suite for Assimp is built in addition to the library." OFF)
 OPTION (ASSIMP_WARNINGS_AS_ERRORS "Treat all warnings as errors." OFF)
-OPTION( ASSIMP_INSTALL "Disable this if you want to use assimp as a submodule." OFF )
-OPTION( ASTCENC_SHAREDLIB "Enable astcenc builds with core library shared objects" ON )
-
+OPTION (ASSIMP_INSTALL "Disable this if you want to use assimp as a submodule." OFF )
+OPTION (ASTCENC_SHAREDLIB "Enable astcenc builds with core library shared objects" ON )
 
 add_subdirectory(vendor/glad)
 add_subdirectory(vendor/glslang)
@@ -47,8 +45,6 @@ add_subdirectory(vendor/stb_image)
 add_subdirectory(vendor/freetype)
 add_subdirectory(vendor/assimp)
 add_subdirectory(vendor/imgui)
-add_subdirectory(vendor/astc-encoder)
-
 
 if (APPLE)
     set(CMAKE_C_ARCHIVE_FINISH   "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
@@ -77,7 +73,7 @@ if (APPLE)
     target_link_libraries(${PROJECT_NAME} "-framework IOKit")
 endif ()
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} Vulkan::Vulkan glfw SPIRV assimp stb_image glad glm::glm freetype IMGUI OpenGL::GL astcenc-neon-static)
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} Vulkan::Vulkan glfw SPIRV assimp stb_image glad glm::glm freetype IMGUI OpenGL::GL)
 
 file(REMOVE ${CMAKE_BINARY_DIR}/shaders)
 file(REMOVE ${CMAKE_BINARY_DIR}/images)

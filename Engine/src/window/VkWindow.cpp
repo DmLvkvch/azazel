@@ -214,7 +214,7 @@ namespace Azazel
         commandBuffer = std::unique_ptr<AZCommandBuffer>(commandPool->allocateCommandBuffer(device->device));
         createSyncObjects();
 
-        auto presentMode = VK_PRESENT_MODE_MAILBOX_KHR;
+        VkPresentModeKHR presentMode = VK_PRESENT_MODE_MAILBOX_KHR;
 
         g_MainWindowData.Surface = surface->surface;
         g_MainWindowData.SurfaceFormat = swapChain->surfaceFormat;
@@ -232,7 +232,7 @@ namespace Azazel
         ImGui::StyleColorsDark();
 
         ImGui_ImplGlfw_InitForVulkan(window, true);
-        ImGui_ImplVulkan_InitInfo init_info = {};
+        ImGui_ImplVulkan_InitInfo init_info{};
         init_info.Instance = instance->instance;
         init_info.PhysicalDevice = physicalDevice->physicalDevice;
         init_info.Device = device->device;
@@ -248,8 +248,7 @@ namespace Azazel
         init_info.Allocator = nullptr;
         init_info.CheckVkResultFn = nullptr;
         ImGui_ImplVulkan_Init(&init_info);
-        io.Fonts->AddFontFromFileTTF("fonts/Arial.ttf", 18.0f);
-        std::cout<<io.Fonts->IsBuilt();
+
     }
 
     void VkWindow::createTextureImage()
@@ -438,14 +437,7 @@ namespace Azazel
             throw std::invalid_argument("unsupported layout transition!");
         }
 
-        vkCmdPipelineBarrier(
-            commandBuffer,
-            sourceStage, destinationStage,
-            0,
-            0, nullptr,
-            0, nullptr,
-            1, &barrier
-        );
+        vkCmdPipelineBarrier(commandBuffer, sourceStage, destinationStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
 
         AZCommandBuffer::endSingleTimeCommands(*device, *commandPool, commandBuffer);
     }
@@ -491,26 +483,27 @@ namespace Azazel
 
     void VkWindow::createDescriptoPool()
     {
-      VkDescriptorPoolSize pool_sizes[] =
-          {
-              {VK_DESCRIPTOR_TYPE_SAMPLER, 1000},
-              {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000},
-              {VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1000},
-              {VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000},
-              {VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000},
-              {VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000},
-              {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000},
-              {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000},
-              {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000},
-              {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000},
-              {VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 1000}};
+        std::array<VkDescriptorPoolSize, 11> pool_sizes 
+        {{
+            {VK_DESCRIPTOR_TYPE_SAMPLER, 2048},
+            {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 2048},
+            {VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 2048},
+            {VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 2048},
+            {VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 2048},
+            {VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 2048},
+            {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 2048},
+            {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 2048},
+            {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 2048},
+            {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 2048},
+            {VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 2048}
+        }};
 
         VkDescriptorPoolCreateInfo poolInfo = {};
         poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
         poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
-        poolInfo.maxSets = 1000 * IM_ARRAYSIZE(pool_sizes);
-        poolInfo.poolSizeCount = (uint32_t)IM_ARRAYSIZE(pool_sizes);
-        poolInfo.pPoolSizes = pool_sizes;
+        poolInfo.maxSets = 2048 * pool_sizes.size();
+        poolInfo.poolSizeCount = pool_sizes.size();
+        poolInfo.pPoolSizes = pool_sizes.data();
 
         vkCreateDescriptorPool(device->device, &poolInfo, nullptr, &descriptorPool);
     }
