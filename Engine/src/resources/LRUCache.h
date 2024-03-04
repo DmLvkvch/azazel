@@ -14,8 +14,8 @@ namespace Azazel
         using key_value_pair_t = std::pair<key_t, value_t>;
         using list_iterator_t = typename std::list<key_value_pair_t>::iterator;
 
-        LRUCache(int size = 50): 
-        sz(size)
+        LRUCache(int size = 50)
+        : sz(size)
         {
         }
 

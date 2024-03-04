@@ -34,15 +34,20 @@ namespace Azazel
 {
 
     const std::vector<Vertex> vertices = {
-        {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
-        {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
-        {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},
-        {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}}
+        {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+        {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+        {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+        {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
+
+        {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+        {{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+        {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+        {{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
     };
 
-    const std::vector<uint32_t> indices = 
-    {
-        0, 1, 2, 2, 3, 0
+    const std::vector<uint32_t> indices = {
+        0, 1, 2, 2, 3, 0,
+        4, 5, 6, 6, 7, 4
     };
 
     static bool initialized = false;
@@ -209,7 +214,7 @@ namespace Azazel
                                                     
         vertexBuffer = AZVertexBuffer(device->device, *physicalDevice, commandPool->commandPool, device->graphicsQueue.queue, BufferDesc{ (void*)vertices.data(), sizeof(vertices[0]) * vertices.size() } );
 
-        indexBuffer = AZIndexBuffer(device->device, *physicalDevice, commandPool->commandPool, device->graphicsQueue.queue, (void*) indices.data(), 6);
+        indexBuffer = AZIndexBuffer(device->device, *physicalDevice, commandPool->commandPool, device->graphicsQueue.queue, (void*) indices.data(), indices.size());
 
         commandBuffer = std::unique_ptr<AZCommandBuffer>(commandPool->allocateCommandBuffer(device->device));
         createSyncObjects();
