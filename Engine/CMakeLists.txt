@@ -36,6 +36,7 @@ OPTION (ASSIMP_BUILD_TESTS "If the test suite for Assimp is built in addition to
 OPTION (ASSIMP_WARNINGS_AS_ERRORS "Treat all warnings as errors." OFF)
 OPTION (ASSIMP_INSTALL "Disable this if you want to use assimp as a submodule." OFF )
 OPTION (ASTCENC_SHAREDLIB "Enable astcenc builds with core library shared objects" ON )
+OPTION (FT_DISABLE_HARFBUZZ "DISABLE HARFBUZZ" ON)
 
 add_subdirectory(vendor/glad)
 add_subdirectory(vendor/glslang)

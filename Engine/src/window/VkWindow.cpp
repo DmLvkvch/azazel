@@ -380,10 +380,7 @@ namespace Azazel
         imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
         imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-        if (vkCreateImage(device->device, &imageInfo, nullptr, &image) != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to create image!");
-        }
+        vkCreateImage(device->device, &imageInfo, nullptr, &image);
 
         VkMemoryRequirements memRequirements;
         vkGetImageMemoryRequirements(device->device, image, &memRequirements);
@@ -393,10 +390,7 @@ namespace Azazel
         allocInfo.allocationSize = memRequirements.size;
         allocInfo.memoryTypeIndex = physicalDevice->findMemoryType(memRequirements.memoryTypeBits, properties);
 
-        if (vkAllocateMemory(device->device, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS) 
-        {
-            throw std::runtime_error("failed to allocate image memory!");
-        }
+        vkAllocateMemory(device->device, &allocInfo, nullptr, &imageMemory);
 
         vkBindImageMemory(device->device, image, imageMemory, 0);
     }
@@ -437,10 +431,6 @@ namespace Azazel
             sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
             destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
         }
-        else
-        {
-            throw std::invalid_argument("unsupported layout transition!");
-        }
 
         vkCmdPipelineBarrier(commandBuffer, sourceStage, destinationStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
 
@@ -469,20 +459,15 @@ namespace Azazel
     static std::vector<char> readFile(const std::string& filename)
     {
         std::ifstream file(filename, std::ios::ate | std::ios::binary);
-
         if (!file.is_open())
         {
             throw std::runtime_error("failed to open file!");
         }
-
         size_t fileSize = (size_t) file.tellg();
         std::vector<char> buffer(fileSize);
-
         file.seekg(0);
         file.read(buffer.data(), fileSize);
-
         file.close();
-
         return buffer;
     }
 
@@ -757,8 +742,6 @@ namespace Azazel
         
         VkCommandBuffer commandBuffer = azCommandBuffer.commandBuffer;
 
-        //renderPass->beginRenderPass(azCommandBuffer, swapChainFramebuffers[imageIndex].framebuffer, swapChain->swapChainExtent);
-
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
         VkViewport viewport{};
@@ -784,11 +767,8 @@ namespace Azazel
 
         vkCmdBindIndexBuffer(commandBuffer, indexBuffer.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[imageIndex % MAX_FRAMES_IN_FLIGHT], 0, nullptr);
+        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[imageIndex], 0, nullptr);
         vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
-
-        //renderPass->endRenderPass(azCommandBuffer);
-
     }
 
     void VkWindow::createSyncObjects()
@@ -824,7 +804,7 @@ namespace Azazel
         commandBuffer->begin();
         renderPass->beginRenderPass(*commandBuffer, swapChainFramebuffers[imageIndex].framebuffer, swapChain->swapChainExtent);
         
-        recordCommandBuffer(*commandBuffer, imageIndex);
+        recordCommandBuffer(*commandBuffer, imageIndex % MAX_FRAMES_IN_FLIGHT);
 
         ImGui_ImplVulkan_NewFrame();
         ImGui_ImplGlfw_NewFrame();

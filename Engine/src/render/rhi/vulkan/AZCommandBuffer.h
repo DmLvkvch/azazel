@@ -42,8 +42,6 @@ namespace Azazel
 
         ~AZCommandBuffer();
 
-        static AZCommandBuffer* createCommandBuffer(VkDevice device, VkCommandPool commandPool);
-
         void begin();
 
         void end();
