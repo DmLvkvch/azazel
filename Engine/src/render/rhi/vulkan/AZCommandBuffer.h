@@ -15,14 +15,14 @@ namespace Azazel
 
         }
 
-        AZCommandPool(VkDevice device, int queueIndex);
+        AZCommandPool(VulkanDevice& device, int queueIndex);
 
         ~AZCommandPool()
         {
 
         }
 
-        AZCommandBuffer* allocateCommandBuffer(VkDevice device);
+        AZCommandBuffer* allocateCommandBuffer(VulkanDevice& device);
 
         void reset();
 
@@ -38,7 +38,7 @@ namespace Azazel
     public:
         AZCommandBuffer();
 
-        AZCommandBuffer(VkDevice device, VkCommandPool commandPool);
+        AZCommandBuffer(VulkanDevice& device, AZCommandPool& commandPool);
 
         ~AZCommandBuffer();
 

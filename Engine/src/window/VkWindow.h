@@ -14,6 +14,7 @@
 #include "render/rhi/vulkan/AZSwapChain.h"
 #include "render/rhi/vulkan/AZRenderPass.h"
 #include "render/rhi/vulkan/AZFramebuffer.h"
+#include "render/rhi/vulkan/AZDescriptorSet.h"
 
 struct GLFWwindow;
 
@@ -41,7 +42,6 @@ namespace Azazel
 
         void initVulkan();
         
-        void createDescriptoPool();
         void createDescriptorSets();
         void createDescriptorSetLayout();
         void updateUniformBuffer(uint32_t currentImage);
@@ -105,19 +105,18 @@ namespace Azazel
 
         std::unique_ptr<AZInstance> instance;
         
-        AZVertexBuffer vertexBuffer;
-        AZIndexBuffer indexBuffer;
+        std::unique_ptr<AZDescriptorPool> descriptorPool;
 
         std::unique_ptr<AZRenderPass> renderPass;
         std::vector<AZFramebuffer> swapChainFramebuffers;
 
-        VkDescriptorPool descriptorPool;
         std::vector<VkDescriptorSet> descriptorSets;
-
 
         VkDescriptorSetLayout descriptorSetLayout;
         VkPipelineLayout pipelineLayout;
 
+        AZVertexBuffer vertexBuffer;
+        AZIndexBuffer indexBuffer;
         AZUniformBuffer uniformBuffer;
     };
 }

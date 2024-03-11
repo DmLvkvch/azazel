@@ -200,14 +200,15 @@ namespace Azazel
 
         uniformBuffer = AZUniformBuffer(device->device, *physicalDevice, sizeof(UniformBufferObject), nullptr);
 
-        commandPool = std::make_unique<AZCommandPool>(device->device, physicalDevice->indices.graphicsFamily.value());
+        commandPool = std::make_unique<AZCommandPool>(*device, physicalDevice->indices.graphicsFamily.value());
+
+        descriptorPool = std::make_unique<AZDescriptorPool>(*device);
 
         createTextureImage();
         createTextureImageView();
         createTextureSampler();
 
         createDescriptorSetLayout();
-        createDescriptoPool();
         createDescriptorSets();
 
         graphicsPipeline = createGraphicsPipeline(device->device);
@@ -216,7 +217,7 @@ namespace Azazel
 
         indexBuffer = AZIndexBuffer(device->device, *physicalDevice, commandPool->commandPool, device->graphicsQueue.queue, (void*) indices.data(), indices.size());
 
-        commandBuffer = std::unique_ptr<AZCommandBuffer>(commandPool->allocateCommandBuffer(device->device));
+        commandBuffer = std::unique_ptr<AZCommandBuffer>(commandPool->allocateCommandBuffer(*device));
         createSyncObjects();
 
         VkPresentModeKHR presentMode = VK_PRESENT_MODE_MAILBOX_KHR;
@@ -244,7 +245,7 @@ namespace Azazel
         init_info.QueueFamily = device->graphicsQueue.queueFamilyIndex;
         init_info.Queue = device->graphicsQueue.queue;
         init_info.PipelineCache = nullptr;
-        init_info.DescriptorPool = descriptorPool;
+        init_info.DescriptorPool = descriptorPool->descriptorPool;
         init_info.Subpass = 0;
         init_info.RenderPass = g_MainWindowData.RenderPass;
         init_info.MinImageCount = 2;
@@ -471,39 +472,12 @@ namespace Azazel
         return buffer;
     }
 
-    void VkWindow::createDescriptoPool()
-    {
-        std::array<VkDescriptorPoolSize, 11> pool_sizes 
-        {{
-            {VK_DESCRIPTOR_TYPE_SAMPLER, 2048},
-            {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 2048},
-            {VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 2048},
-            {VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 2048},
-            {VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 2048},
-            {VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 2048},
-            {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 2048},
-            {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 2048},
-            {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 2048},
-            {VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 2048},
-            {VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 2048}
-        }};
-
-        VkDescriptorPoolCreateInfo poolInfo = {};
-        poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-        poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
-        poolInfo.maxSets = 2048 * pool_sizes.size();
-        poolInfo.poolSizeCount = pool_sizes.size();
-        poolInfo.pPoolSizes = pool_sizes.data();
-
-        vkCreateDescriptorPool(device->device, &poolInfo, nullptr, &descriptorPool);
-    }
-    
     void VkWindow::createDescriptorSets()
     {
         std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, descriptorSetLayout);
         VkDescriptorSetAllocateInfo allocInfo {};
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-        allocInfo.descriptorPool = descriptorPool;
+        allocInfo.descriptorPool = descriptorPool->descriptorPool;
         allocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
         allocInfo.pSetLayouts = layouts.data();
 

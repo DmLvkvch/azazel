@@ -56,24 +56,8 @@ namespace Azazel
         return 0;
     }
 
-    // TODO remove opengl dependency
     static int shaderTypeToGLType(ShaderDataType type)
     {
-        switch(type)
-        {
-            // case ShaderDataType::FLOAT:  return GL_FLOAT;
-            // case ShaderDataType::FLOAT2: return GL_FLOAT;
-            // case ShaderDataType::FLOAT3: return GL_FLOAT;
-            // case ShaderDataType::FLOAT4: return GL_FLOAT;
-            // case ShaderDataType::MAT3:   return GL_FLOAT;
-            // case ShaderDataType::MAT4:   return GL_FLOAT;
-            // case ShaderDataType::INT:    return GL_INT;
-            // case ShaderDataType::INT2:   return GL_INT;
-            // case ShaderDataType::INT3:   return GL_INT;
-            // case ShaderDataType::INT4:   return GL_INT;
-            // case ShaderDataType::BOOL:   return GL_BOOL;
-            case ShaderDataType::None:   throw std::invalid_argument("Invalid type None");
-        }
         return 0;
     }
 
