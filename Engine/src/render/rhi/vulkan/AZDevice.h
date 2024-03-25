@@ -47,8 +47,19 @@ namespace Azazel
 
         std::optional<uint32_t> findPresentQueue(VkPhysicalDevice & physicalDevice, VkSurfaceKHR surface);
 
-        uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+        uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const;
 
+        VkPhysicalDevice get() const
+        {
+            return physicalDevice;
+        }
+
+        const QueueFamilyIndices& getQueueFamilyIndices() const
+        {
+            return indices;
+        }
+
+    private:
         std::vector<const char*> deviceExtensions =
         {
             VK_KHR_SWAPCHAIN_EXTENSION_NAME,

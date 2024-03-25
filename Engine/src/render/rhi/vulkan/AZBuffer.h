@@ -5,10 +5,6 @@
 
 namespace Azazel
 {
-    enum BufferType
-    {
-        VERTEX
-    };
 
     struct BufferDesc
     {
@@ -17,18 +13,15 @@ namespace Azazel
     };
 
 
-
     class AZStageBuffer
     {
     public:
         AZStageBuffer(VkDevice device, 
-                      PhysicalDevice& physicalDevice, 
+                      const PhysicalDevice& physicalDevice, 
                       VkDeviceSize size, 
                       const void* bufferData)
         {
-            VkBuffer stagingBuffer;
-            VkDeviceMemory stagingBufferMemory;
-            createBuffer(device, physicalDevice, size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+            createBuffer(device, physicalDevice, size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
             void* data;
             vkMapMemory(device, stagingBufferMemory, 0, size, 0, &data);
@@ -36,7 +29,11 @@ namespace Azazel
             vkUnmapMemory(device, stagingBufferMemory);
         }
 
-        void createBuffer(VkDevice device, PhysicalDevice& physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
+        void createBuffer(VkDevice device, 
+                          const PhysicalDevice& physicalDevice,
+                          VkDeviceSize size,
+                          VkBufferUsageFlags usage, 
+                          VkMemoryPropertyFlags properties)
         {
             VkBufferCreateInfo bufferInfo{};
             bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -44,19 +41,19 @@ namespace Azazel
             bufferInfo.usage = usage;
             bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-            vkCreateBuffer(device, &bufferInfo, nullptr, &buffer);
+            vkCreateBuffer(device, &bufferInfo, nullptr, &stagingBuffer);
 
             VkMemoryRequirements memRequirements;
-            vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
+            vkGetBufferMemoryRequirements(device, stagingBuffer, &memRequirements);
 
             VkMemoryAllocateInfo allocInfo{};
             allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
             allocInfo.allocationSize = memRequirements.size;
             allocInfo.memoryTypeIndex = physicalDevice.findMemoryType(memRequirements.memoryTypeBits, properties);
 
-            vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory);
+            vkAllocateMemory(device, &allocInfo, nullptr, &stagingBufferMemory);
 
-            vkBindBufferMemory(device, buffer, bufferMemory, 0);
+            vkBindBufferMemory(device, stagingBuffer, stagingBufferMemory, 0);
         }
 
         ~AZStageBuffer()
@@ -66,9 +63,12 @@ namespace Azazel
 
         void destroy()
         {
-
+            // vkDestroyBuffer(device.device, stagingBuffer, nullptr);
+            // vkFreeMemory(device.device, stagingBufferMemory, nullptr);
         }
-        
+    private:
+        VkBuffer stagingBuffer;
+        VkDeviceMemory stagingBufferMemory;
     };
 
     class AZVertexBuffer
@@ -79,7 +79,7 @@ namespace Azazel
         }
         
         AZVertexBuffer(VkDevice device,
-                       PhysicalDevice& physicalDevice, 
+                       const PhysicalDevice& physicalDevice, 
                        VkCommandPool commandPool, 
                        VkQueue graphicsQueue,
                        BufferDesc bufferDesc);
@@ -88,8 +88,13 @@ namespace Azazel
     
     private:
         void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-        void createVertexBuffer(PhysicalDevice& physicalDevice, const void* vertices, uint64_t size);
-        void createBuffer(PhysicalDevice& physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+        void createVertexBuffer(const PhysicalDevice& physicalDevice, const void* vertices, uint64_t size);
+        void createBuffer(const PhysicalDevice& physicalDevice, 
+                          VkDeviceSize size, 
+                          VkBufferUsageFlags usage, 
+                          VkMemoryPropertyFlags properties, 
+                          VkBuffer& buffer, 
+                          VkDeviceMemory& bufferMemory);
         void map(VkDeviceSize size);
         void unmap();
         
@@ -112,10 +117,10 @@ namespace Azazel
         }
         
         AZIndexBuffer(VkDevice device, 
-                      PhysicalDevice& physicalDevice, 
+                      const PhysicalDevice& physicalDevice, 
                       VkCommandPool commandPool, 
                       VkQueue graphicsQueue, 
-                      const void* indices, 
+                      const void* indices,
                       size_t indicesCount);
 
         ~AZIndexBuffer();
@@ -123,8 +128,8 @@ namespace Azazel
         void destroy();
 
         void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-        void createIndexBuffer(PhysicalDevice& physicalDevice, const void* indices, uint64_t size);
-        void createBuffer(PhysicalDevice& physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+        void createIndexBuffer(const PhysicalDevice& physicalDevice, const void* indices, uint64_t size);
+        void createBuffer(const PhysicalDevice& physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 
         void map(VkDeviceSize size);
         void unmap();
@@ -136,7 +141,6 @@ namespace Azazel
         VkDevice device;
         VkBuffer indexBuffer;
         VkDeviceMemory indexBufferMemory;
-
         void* hostVisibleData = nullptr;
     };
 
@@ -149,7 +153,7 @@ namespace Azazel
         }
 
         AZUniformBuffer(VkDevice device, 
-                        PhysicalDevice& physicalDevice, 
+                        const PhysicalDevice& physicalDevice, 
                         VkDeviceSize size, 
                         const void* data)
         : device(device)
@@ -164,7 +168,7 @@ namespace Azazel
         ~AZUniformBuffer();
 
         void createBuffer(VkDevice device, 
-                          PhysicalDevice& physicalDevice,
+                          const PhysicalDevice& physicalDevice,
                           VkDeviceSize size, 
                           VkBufferUsageFlags usage,
                           VkMemoryPropertyFlags properties, 

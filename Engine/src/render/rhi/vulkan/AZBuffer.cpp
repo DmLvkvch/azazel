@@ -3,7 +3,7 @@
 namespace Azazel
 {
     AZVertexBuffer::AZVertexBuffer(VkDevice device,
-                                   PhysicalDevice& physicalDevice, 
+                                   const PhysicalDevice& physicalDevice, 
                                    VkCommandPool commandPool, 
                                    VkQueue graphicsQueue, 
                                    BufferDesc bufferDesc)
@@ -25,7 +25,7 @@ namespace Azazel
         vkFreeMemory(device, vertexBufferMemory, nullptr);
     }
 
-    void AZVertexBuffer::createVertexBuffer(PhysicalDevice& physicalDevice, const void* vertices, uint64_t size)
+    void AZVertexBuffer::createVertexBuffer(const PhysicalDevice& physicalDevice, const void* vertices, uint64_t size)
     {        
         VkDeviceSize bufferSize = size;
 
@@ -47,7 +47,8 @@ namespace Azazel
         vkFreeMemory(device, stagingBufferMemory, nullptr);
     }
 
-    void AZVertexBuffer::createBuffer(PhysicalDevice& physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
+    void AZVertexBuffer::createBuffer(const PhysicalDevice& physicalDevice, 
+                                    VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
     {
         VkBufferCreateInfo bufferInfo{};
         bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -121,9 +122,9 @@ namespace Azazel
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     AZIndexBuffer::AZIndexBuffer(VkDevice device,
-                                 PhysicalDevice& physicalDevice, 
-                                 VkCommandPool commandPool, 
-                                 VkQueue graphicsQueue, 
+                                 const PhysicalDevice& physicalDevice,
+                                 VkCommandPool commandPool,
+                                 VkQueue graphicsQueue,
                                  const void* indices, 
                                  size_t indicesCount)
     : device(device), 
@@ -144,7 +145,7 @@ namespace Azazel
 
     }
     
-    void AZIndexBuffer::createIndexBuffer(PhysicalDevice& physicalDevice, const void* indices, uint64_t size)
+    void AZIndexBuffer::createIndexBuffer(const PhysicalDevice& physicalDevice, const void* indices, uint64_t size)
     {
         VkDeviceSize bufferSize = size;
 
@@ -165,7 +166,7 @@ namespace Azazel
         vkFreeMemory(device, stagingBufferMemory, nullptr);
     }
 
-    void AZIndexBuffer::createBuffer(PhysicalDevice& physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
+    void AZIndexBuffer::createBuffer(const PhysicalDevice& physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
     {
         VkBufferCreateInfo bufferInfo{};
         bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -250,7 +251,7 @@ namespace Azazel
 
     }
 
-    void AZUniformBuffer::createBuffer(VkDevice device, PhysicalDevice& physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& uniformBufferMemory)
+    void AZUniformBuffer::createBuffer(VkDevice device, const PhysicalDevice& physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& uniformBufferMemory)
     {
         VkBufferCreateInfo bufferInfo{};
         bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;

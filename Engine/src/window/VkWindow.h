@@ -6,20 +6,7 @@
 #include <vector>
 #include <optional>
 
-#include "render/rhi/vulkan/AZBuffer.h"
-#include "render/rhi/vulkan/AZCommandBuffer.h"
-#include "render/rhi/vulkan/AZInstance.h"
-#include "render/rhi/vulkan/AZSurface.h"
-#include "render/rhi/vulkan/AZDevice.h"
-#include "render/rhi/vulkan/AZSwapChain.h"
-#include "render/rhi/vulkan/AZRenderPass.h"
-#include "render/rhi/vulkan/AZFramebuffer.h"
-#include "render/rhi/vulkan/AZDescriptorSet.h"
-
 struct GLFWwindow;
-
-class ImGui_ImplVulkanH_Window;
-class ImDrawData;
 
 namespace Azazel
 {
@@ -40,46 +27,14 @@ namespace Azazel
         GLFWwindow* initGLFW(int width, int height, const std::string& title);
         void initGLFWCallbacks(GLFWwindow*);
 
-        void initVulkan();
-        
-        void createDescriptorSets();
-        void createDescriptorSetLayout();
-        void updateUniformBuffer(uint32_t currentImage);
-        VkPipeline createGraphicsPipeline(VkDevice device);
-
-        void drawFrame() override;
-
-        VkShaderModule createShaderModule(VkDevice device, const std::vector<char>& code);
-
-        std::vector<AZFramebuffer> createFramebuffers();
-
-        void recordCommandBuffer(AZCommandBuffer & azCommandBuffer, uint32_t imageIndex);
-        void createSyncObjects();
-
         void destroyGLFW();
 
-        void createTextureImage();
-        void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
-
-        VkImageView createImageView(VkImage image, VkFormat format);
-
-        void createTextureSampler();
-        void createTextureImageView();
-        void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
-
-        void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
-        void createBuffer(PhysicalDevice& physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
-
-        VkImageView textureImageView;
-        VkImage textureImage;
-        VkSampler textureSampler;
-        VkDeviceMemory textureImageMemory;
     private:
+        std::string title;
 
         GLFWwindow* window;
         int width;
         int height;
-        std::string title;
 
         struct WindowData
         {
@@ -87,36 +42,5 @@ namespace Azazel
         };
 
         WindowData windowData;
-
-        VkPipeline graphicsPipeline;
-
-        std::unique_ptr<AZCommandPool> commandPool;
-        std::unique_ptr<AZCommandBuffer> commandBuffer;
-
-        VkSemaphore imageAvailableSemaphore;
-        VkSemaphore renderFinishedSemaphore;
-        VkFence inFlightFence;
-
-        std::unique_ptr<AZSwapChain> swapChain;
-        std::unique_ptr<AZSurface> surface;
-
-        std::unique_ptr<VulkanDevice> device;
-        std::unique_ptr<PhysicalDevice> physicalDevice;
-
-        std::unique_ptr<AZInstance> instance;
-        
-        std::unique_ptr<AZDescriptorPool> descriptorPool;
-
-        std::unique_ptr<AZRenderPass> renderPass;
-        std::vector<AZFramebuffer> swapChainFramebuffers;
-
-        std::vector<VkDescriptorSet> descriptorSets;
-
-        VkDescriptorSetLayout descriptorSetLayout;
-        VkPipelineLayout pipelineLayout;
-
-        AZVertexBuffer vertexBuffer;
-        AZIndexBuffer indexBuffer;
-        AZUniformBuffer uniformBuffer;
     };
 }

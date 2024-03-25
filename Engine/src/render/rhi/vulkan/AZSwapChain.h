@@ -19,11 +19,6 @@ namespace Azazel
     {
     public:
 
-        AZSwapChain()
-        {
-
-        }
-
         AZSwapChain(GLFWwindow* window, AZSurface& surface, PhysicalDevice& physicalDevice, VulkanDevice& device);
 
         ~AZSwapChain()
@@ -62,8 +57,6 @@ namespace Azazel
 
     struct VirtualFrame
     {
-
-        vk::Fence CommandQueueFence;
     };
 
     class VirtualFrameProvider

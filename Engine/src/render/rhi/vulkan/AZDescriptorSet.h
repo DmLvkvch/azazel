@@ -10,10 +10,6 @@ namespace Azazel
     class AZDescriptorPool
     {
     public:
-        AZDescriptorPool()
-        {
-
-        }
 
         AZDescriptorPool(VulkanDevice& device);
 
@@ -28,9 +24,6 @@ namespace Azazel
     class DescriptorSetLayout
     {
     public:
-        DescriptorSetLayout()
-        {
-        }
 
         ~DescriptorSetLayout()
         {

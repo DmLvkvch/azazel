@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include "window/Window.h"
+
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_vulkan.h>
@@ -11,6 +13,8 @@
 namespace Azazel
 {
     static AZContext* context = nullptr;
+    static ImGui_ImplVulkanH_Window imguiVulkan;
+
 
     void setVulkanContext(AZContext& ctx)
     {
@@ -22,41 +26,30 @@ namespace Azazel
         return *context;
     }
 
-    static ImGui_ImplVulkanH_Window g_MainWindowData;
-
-    void ImGuiContext::init(GLFWwindow* window)
+    void AZContext::init(Window& window)
     {
-        // VkPresentModeKHR presentMode = VK_PRESENT_MODE_MAILBOX_KHR;
-        // g_MainWindowData.Surface = surface->surface;
-        // g_MainWindowData.SurfaceFormat = swapChain->surfaceFormat;
-        // g_MainWindowData.PresentMode = ImGui_ImplVulkanH_SelectPresentMode(physicalDevice->physicalDevice, surface->surface, &presentMode, 1);
-        // ImGui_ImplVulkanH_CreateOrResizeWindow(instance->instance, physicalDevice->physicalDevice, device->device, &g_MainWindowData, device->graphicsQueue.queueFamilyIndex, nullptr, width, height, 2);
+        instance = std::make_unique<AZInstance>();
+        surface = std::make_unique<AZSurface>(instance->instance, static_cast<GLFWwindow*>(window.getNativeWindow()));
+        physicalDevice = std::make_unique<PhysicalDevice>(instance->instance, surface->surface);
+        device = std::make_unique<VulkanDevice>(*instance, *physicalDevice);
+        swapChain = std::make_unique<AZSwapChain>(static_cast<GLFWwindow*>(window.getNativeWindow()), *surface, *physicalDevice, *device);
+        renderPass = std::make_unique<AZRenderPass>(device->device, swapChain->swapChainImageFormat);
 
-        // IMGUI_CHECKVERSION();
-        // ImGui::CreateContext();
-        // ImGuiIO& io = ImGui::GetIO(); (void)io;
-        // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-        // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+        auto& swapChainImageViews = swapChain->swapChainImageViews;
+        swapChainFramebuffers.resize(swapChainImageViews.size());
 
-        // ImGui::StyleColorsDark();
+        for (size_t i = 0; i < swapChainImageViews.size(); i++)
+        {
+            uint32_t width = swapChain->swapChainExtent.width;
+            uint32_t height = swapChain->swapChainExtent.height;
+            auto& imageView = swapChainImageViews[i];
+            AZFramebufferDesc fboDesc{ {imageView}, renderPass->renderPass, width, height };
+            swapChainFramebuffers[i] = AZFramebuffer(device->device, fboDesc);
+        }
 
-        // ImGui_ImplGlfw_InitForVulkan(window, true);
-        // ImGui_ImplVulkan_InitInfo init_info{};
-        // init_info.Instance = instance->instance;
-        // init_info.PhysicalDevice = physicalDevice->physicalDevice;
-        // init_info.Device = device->device;
-        // init_info.QueueFamily = device->graphicsQueue.queueFamilyIndex;
-        // init_info.Queue = device->graphicsQueue.queue;
-        // init_info.PipelineCache = nullptr;
-        // init_info.DescriptorPool = descriptorPool;
-        // init_info.Subpass = 0;
-        // init_info.RenderPass = g_MainWindowData.RenderPass;
-        // init_info.MinImageCount = 2;
-        // init_info.ImageCount = g_MainWindowData.ImageCount;
-        // init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
-        // init_info.Allocator = nullptr;
-        // init_info.CheckVkResultFn = nullptr;
-        // ImGui_ImplVulkan_Init(&init_info);
+        commandPool = std::make_unique<AZCommandPool>(*device, physicalDevice->indices.graphicsFamily.value());
+
+        descriptorPool = std::make_unique<AZDescriptorPool>(*device);
     }
 
 }

@@ -22,6 +22,7 @@ set_property (TARGET glslang::validator PROPERTY IMPORTED_LOCATION "${GLSLANG_VA
 include_directories ("vendor/glad/include"
                      "vendor/glslang/glslang/Public" 
                      "vendor/glslang/SPIRV" 
+                     "vendor/VulkanMemoryAllocator/include" 
                      "vendor/glfw"
                      "vendor/glm"
                      "vendor/freetype"
@@ -46,6 +47,7 @@ add_subdirectory(vendor/stb_image)
 add_subdirectory(vendor/freetype)
 add_subdirectory(vendor/assimp)
 add_subdirectory(vendor/imgui)
+add_subdirectory(vendor/VulkanMemoryAllocator)
 
 if (APPLE)
     set(CMAKE_C_ARCHIVE_FINISH   "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
@@ -74,7 +76,7 @@ if (APPLE)
     target_link_libraries(${PROJECT_NAME} "-framework IOKit")
 endif ()
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} Vulkan::Vulkan glfw SPIRV assimp stb_image glad glm::glm freetype IMGUI OpenGL::GL)
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} Vulkan::Vulkan glfw SPIRV assimp stb_image glad glm::glm freetype IMGUI OpenGL::GL VulkanMemoryAllocator)
 
 file(REMOVE ${CMAKE_BINARY_DIR}/shaders)
 file(REMOVE ${CMAKE_BINARY_DIR}/images)

@@ -4,7 +4,7 @@
 namespace Azazel
 {
 
-    AZCommandPool::AZCommandPool(VulkanDevice& device, int queueIndex)
+    AZCommandPool::AZCommandPool(const VulkanDevice& device, int queueIndex)
     {
         VkCommandPoolCreateInfo poolInfo {};
         
@@ -15,7 +15,7 @@ namespace Azazel
         vkCreateCommandPool(device.device, &poolInfo, nullptr, &commandPool);
     }
 
-    AZCommandBuffer* AZCommandPool::allocateCommandBuffer(VulkanDevice& device)
+    AZCommandBuffer* AZCommandPool::allocateCommandBuffer(const VulkanDevice& device)
     {
         return new AZCommandBuffer(device, *this);
     }
@@ -40,7 +40,7 @@ namespace Azazel
     {
     }
 
-    AZCommandBuffer::AZCommandBuffer(VulkanDevice& device, AZCommandPool& commandPool)
+    AZCommandBuffer::AZCommandBuffer(const VulkanDevice& device, const AZCommandPool& commandPool)
     {
         VkCommandBufferAllocateInfo allocInfo {};
         
@@ -78,7 +78,7 @@ namespace Azazel
         return (void*)&commandBuffer;
     }
 
-    VkCommandBuffer AZCommandBuffer::beginSingleTimeCommands(VulkanDevice& device, AZCommandPool & commandPool)
+    VkCommandBuffer AZCommandBuffer::beginSingleTimeCommands(const VulkanDevice& device, const AZCommandPool & commandPool)
     {
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -98,7 +98,7 @@ namespace Azazel
         return commandBuffer;
     }
 
-    void AZCommandBuffer::endSingleTimeCommands(VulkanDevice& device, AZCommandPool& commandPool, VkCommandBuffer commandBuffer)
+    void AZCommandBuffer::endSingleTimeCommands(const VulkanDevice& device, const AZCommandPool& commandPool, const VkCommandBuffer commandBuffer)
     {
         vkEndCommandBuffer(commandBuffer);
 

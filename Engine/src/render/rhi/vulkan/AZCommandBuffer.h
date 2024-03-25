@@ -15,14 +15,14 @@ namespace Azazel
 
         }
 
-        AZCommandPool(VulkanDevice& device, int queueIndex);
+        AZCommandPool(const VulkanDevice& device, int queueIndex);
 
         ~AZCommandPool()
         {
 
         }
 
-        AZCommandBuffer* allocateCommandBuffer(VulkanDevice& device);
+        AZCommandBuffer* allocateCommandBuffer(const VulkanDevice& device);
 
         void reset();
 
@@ -38,7 +38,7 @@ namespace Azazel
     public:
         AZCommandBuffer();
 
-        AZCommandBuffer(VulkanDevice& device, AZCommandPool& commandPool);
+        AZCommandBuffer(const VulkanDevice& device, const AZCommandPool& commandPool);
 
         ~AZCommandBuffer();
 
@@ -50,9 +50,9 @@ namespace Azazel
 
         void* getAPIBuffer();
 
-        static VkCommandBuffer beginSingleTimeCommands(VulkanDevice& device, AZCommandPool& commandPool);
+        static VkCommandBuffer beginSingleTimeCommands(const VulkanDevice& device, const AZCommandPool& commandPool);
 
-        static void endSingleTimeCommands(VulkanDevice& device, AZCommandPool& commandPool, VkCommandBuffer commandBuffer);
+        static void endSingleTimeCommands(const VulkanDevice& device, const AZCommandPool& commandPool, const VkCommandBuffer commandBuffer);
 
     public:
         VkCommandBuffer commandBuffer;

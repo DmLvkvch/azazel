@@ -103,7 +103,7 @@ namespace Azazel
         return presentFamily;
     }
 
-    uint32_t PhysicalDevice::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
+    uint32_t PhysicalDevice::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const
     {
         for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++) 
         {
