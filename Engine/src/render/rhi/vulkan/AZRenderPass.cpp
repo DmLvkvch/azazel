@@ -1,4 +1,5 @@
 #include "AZRenderPass.h"
+#include "AZContext.h"
 
 namespace Azazel
 {
@@ -52,7 +53,7 @@ namespace Azazel
         vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass);
     }
 
-    void AZRenderPass::beginRenderPass(AZCommandBuffer& commandBuffer, VkFramebuffer& framebuffer, VkExtent2D extent)
+    void AZRenderPass::beginRenderPass(const AZCommandBuffer& commandBuffer, VkFramebuffer framebuffer, VkExtent2D extent) const
     {
         VkRenderPassBeginInfo renderPassInfo {};
         renderPassInfo.sType             = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -68,8 +69,13 @@ namespace Azazel
         vkCmdBeginRenderPass(commandBuffer.commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
     }
 
-    void AZRenderPass::endRenderPass(AZCommandBuffer& commandBuffer)
+    void AZRenderPass::endRenderPass(const AZCommandBuffer& commandBuffer) const
     {
         vkCmdEndRenderPass(commandBuffer.commandBuffer);
+    }
+
+    void AZRenderPass::destroy()
+    {
+        vkDestroyRenderPass(getVulkanContext().getVulkanDevice().device, renderPass, nullptr);
     }
 }

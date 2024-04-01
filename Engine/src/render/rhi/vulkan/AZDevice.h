@@ -22,14 +22,12 @@ namespace Azazel
     class PhysicalDevice
     {
     public:
-        PhysicalDevice()
-        {
-        }
-
         PhysicalDevice(VkInstance instance, VkSurfaceKHR surface)
         {
             physicalDevice = createPhysicalDevice(instance, surface);
             vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
+            vkGetPhysicalDeviceProperties(physicalDevice, &properties);
+            vkGetPhysicalDeviceFeatures(physicalDevice, &features);
         }
 
         ~PhysicalDevice()
@@ -48,6 +46,16 @@ namespace Azazel
         std::optional<uint32_t> findPresentQueue(VkPhysicalDevice & physicalDevice, VkSurfaceKHR surface);
 
         uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const;
+
+        const VkPhysicalDeviceProperties& getPhysicalDeviceProperties() const
+        {
+            return properties;
+        }
+
+        const VkPhysicalDeviceFeatures& getPhysicalDeviceFeatures() const
+        {
+            return features;
+        }
 
         VkPhysicalDevice get() const
         {
@@ -71,24 +79,20 @@ namespace Azazel
         VkPhysicalDevice physicalDevice;
         QueueFamilyIndices indices;
         VkPhysicalDeviceMemoryProperties memoryProperties;
+        VkPhysicalDeviceProperties properties;
+        VkPhysicalDeviceFeatures features;
     };
 
     class VulkanDevice
     {
     public:
-        VulkanDevice()
-        {
-
-        }
-
         VulkanDevice(AZInstance& context, PhysicalDevice& physicalDevice);
 
         VkDevice createDevice(AZInstance& context, PhysicalDevice& physicalDevice);
         void destroy();
-
+    
         AZQueue graphicsQueue;
         AZQueue presentQueue;
-
         VkDevice device;
     };
 }

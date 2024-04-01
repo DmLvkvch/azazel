@@ -29,14 +29,11 @@ namespace Azazel
 
         void initRenderPass(VkDevice device, VkFormat format);
 
-        void beginRenderPass(AZCommandBuffer& commandBuffer, VkFramebuffer& framebuffer, VkExtent2D extent);
+        void beginRenderPass(const AZCommandBuffer& commandBuffer, VkFramebuffer framebuffer, VkExtent2D extent) const;
 
-        void endRenderPass(AZCommandBuffer& commandBuffer);
+        void endRenderPass(const AZCommandBuffer& commandBuffer) const;
 
-        void destroy()
-        {
-            vkDestroyRenderPass(nullptr, renderPass, nullptr);
-        }
+        void destroy();
 
         VkRenderPass renderPass;
     };

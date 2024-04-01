@@ -5,21 +5,6 @@
 #include "events/MouseEvent.h"
 #include <iostream>
 #include "IO/KeyCodes.h"
-
-#include <fstream>
-#include <stdexcept>
-#include <algorithm>
-#include <cstring>
-#include <cstdlib>
-#include <cstdint>
-#include <limits>
-#include <optional>
-#include <set>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
-#include <chrono>
 #include <GLFW/glfw3.h>
 
 namespace Azazel

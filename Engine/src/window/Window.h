@@ -29,12 +29,10 @@ namespace Azazel
         using EventCallbackFn = std::function<void(Event&)>;
         Window() 
         {
-            std::cout << "Window constructor" << std::endl;
         }
 
         virtual ~Window()
         {
-            std::cout << "Window destructor" << std::endl;
         }
 
         virtual void onUpdate(float delta) = 0;

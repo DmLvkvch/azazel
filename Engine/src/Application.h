@@ -14,6 +14,7 @@
 #include "render/rhi/vulkan/AZRenderPass.h"
 #include "render/rhi/vulkan/AZFramebuffer.h"
 #include "render/rhi/vulkan/AZDescriptorSet.h"
+#include "render/rhi/vulkan/AZImage.h"
 #include <vulkan/vulkan.h>
 
 namespace Azazel
@@ -21,24 +22,16 @@ namespace Azazel
     class Application
     {
     public:
-        Application();
+        Application(Window& window);
         ~Application();
         void run();
         void onEvent(Event& e);
         void pushLayer(Layer* layer);
         Window* getWindow();
+        static  void setApplication(Application* application);
         static Application* getApplication();
         unsigned long long subscribe(const std::function<void(Event&)>& func);
         unsigned long long subscribe(const std::function<void(float)>& func);
-
-        void createTextureImage();
-        void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
-
-        VkImageView createImageView(VkImage image, VkFormat format);
-
-        void createTextureSampler();
-        void createTextureImageView();
-        void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
 
         void createDescriptorSets();
 
@@ -50,16 +43,12 @@ namespace Azazel
 
         VkPipeline createGraphicsPipeline(VkDevice device);
 
-        std::vector<AZFramebuffer> createFramebuffers();
-
-        void recordCommandBuffer(AZCommandBuffer& azCommandBuffer, uint32_t imageIndex);
+        void recordCommandBuffer(const AZCommandBuffer& azCommandBuffer, uint32_t imageIndex);
 
         void createSyncObjects();
 
         void drawFrame();
 
-        void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
-        void createBuffer(PhysicalDevice& physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 
         VkPipeline graphicsPipeline;
 
@@ -76,10 +65,9 @@ namespace Azazel
         AZIndexBuffer indexBuffer;
         AZUniformBuffer uniformBuffer;
 
-        VkImageView textureImageView;
-        VkImage textureImage;
-        VkSampler textureSampler;
-        VkDeviceMemory textureImageMemory;
+        std::unique_ptr<AZImageView> textureImageView;
+        std::unique_ptr<AZImage> textureImage;
+        std::unique_ptr<AZTextureSampler> textureSampler;
 
         void unsubscribe(long long id);
 
@@ -87,7 +75,7 @@ namespace Azazel
         void updateTargets(float delta);
     private:
         unsigned long long id = 0;
-        std::unique_ptr<Window> window;
+        Window& window;
         LayerStack layerStack;
         bool running = true;
         static Application* app;

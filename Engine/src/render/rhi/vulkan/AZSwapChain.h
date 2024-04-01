@@ -3,6 +3,8 @@
 #include "AZInstance.h"
 #include "AZSurface.h"
 #include "AZDevice.h"
+#include "AZFramebuffer.h"
+#include "AZRenderPass.h"
 
 namespace Azazel
 {
@@ -26,33 +28,63 @@ namespace Azazel
 
         }
 
-        VkSwapchainKHR createSwapChain(GLFWwindow* window, AZSurface& surface, PhysicalDevice& physicalDevice, VulkanDevice& device);
-
-        std::vector<VkImageView> createImageViews(VkDevice device, std::vector<VkImage>& swapChainImages, VkFormat format);
-
-        VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
-
-        VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
-
-        VkExtent2D chooseSwapExtent(GLFWwindow* window, const VkSurfaceCapabilitiesKHR& capabilities);
-
-        uint32_t acquireNextImage()
+        uint32_t acquireNextImage(VkSemaphore signalSemaphore) const
         {
-            return 0;
+            uint32_t imageIndex;
+            vkAcquireNextImageKHR(device.device, swapChain, UINT64_MAX, signalSemaphore, VK_NULL_HANDLE, &imageIndex);
+            return imageIndex;
         }
 
-        void recreate()
+        void recreate(uint32_t width, uint32_t height)
         {
+        }
+
+        void cleanupSwapChain() 
+        {
+            for (auto& framebuffer : swapChainFramebuffers) 
+            {
+                vkDestroyFramebuffer(device.device, framebuffer.framebuffer, nullptr);
+            }
+
+            for (auto imageView : swapChainImageViews) 
+            {
+                vkDestroyImageView(device.device, imageView, nullptr);
+            }
+
+            vkDestroySwapchainKHR(device.device, swapChain, nullptr);
         }
 
         VkSwapchainKHR swapChain;
-
         std::vector<VkImage> swapChainImages;
         std::vector<VkImageView> swapChainImageViews;
+        std::vector<AZFramebuffer> swapChainFramebuffers;
 
         VkSurfaceFormatKHR surfaceFormat;
         VkFormat swapChainImageFormat;
         VkExtent2D swapChainExtent;
+
+        void initSwapChainFramebuffers(AZRenderPass& renderPass)
+        {
+            swapChainFramebuffers.resize(swapChainImageViews.size());
+            for (size_t i = 0; i < swapChainImageViews.size(); i++)
+            {
+                uint32_t width = swapChainExtent.width;
+                uint32_t height = swapChainExtent.height;
+                auto& imageView = swapChainImageViews[i];
+                AZFramebufferDesc fboDesc{ {imageView}, renderPass.renderPass, width, height };
+                swapChainFramebuffers[i] = AZFramebuffer(device.device, fboDesc);
+            }
+        }
+    private:
+        VkSwapchainKHR createSwapChain(GLFWwindow* window, AZSurface& surface, PhysicalDevice& physicalDevice, VulkanDevice& device);
+        std::vector<VkImageView> createImageViews(VkDevice device, std::vector<VkImage>& swapChainImages, VkFormat format);
+        VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+        VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+        VkExtent2D chooseSwapExtent(GLFWwindow* window, const VkSurfaceCapabilitiesKHR& capabilities);
+    public:
+    
+    private:
+        VulkanDevice& device;
     };
 
     struct VirtualFrame

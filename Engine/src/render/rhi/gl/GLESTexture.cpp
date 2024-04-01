@@ -71,7 +71,7 @@ namespace Azazel
         }
         if (!data)
         {
-            Log::getLogger()->warnLog("Creating texture with no data provided");
+            Log::getLogger().warnLog("Creating texture with no data provided");
         }
         
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data);

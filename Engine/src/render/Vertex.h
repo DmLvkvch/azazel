@@ -176,7 +176,7 @@ namespace Azazel
         glm::vec3 color;
         glm::vec2 texCoord;
 
-        static VkVertexInputBindingDescription getBindingDescription() 
+        consteval static VkVertexInputBindingDescription getBindingDescription() 
         {
             VkVertexInputBindingDescription bindingDescription{};
             bindingDescription.binding = 0;
@@ -186,7 +186,7 @@ namespace Azazel
             return bindingDescription;
         }
 
-        static std::array<VkVertexInputAttributeDescription, 3> getAttributeDescriptions()
+        consteval static std::array<VkVertexInputAttributeDescription, 3> getAttributeDescriptions()
         {
             std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions{};
 

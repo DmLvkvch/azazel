@@ -56,9 +56,10 @@ namespace Azazel
             std::cout<<green<<"Log::Info. "<<log<<def<<std::endl;
 		}
 
-        static Log* getLogger()
+        static Log& getLogger()
         {
-            return Log::logger.get();
+            static Log logger;
+            return logger;
         }
         
     private:
@@ -66,7 +67,5 @@ namespace Azazel
         Modifier green {Code::FG_GREEN};
         Modifier blue  {Code::FG_BLUE};
         Modifier def   {Code::DEF};
-
-        static std::unique_ptr<Log> logger;
     };
 }

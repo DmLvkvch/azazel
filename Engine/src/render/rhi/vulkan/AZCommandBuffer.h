@@ -10,11 +10,6 @@ namespace Azazel
     class AZCommandPool
     {
     public:
-        AZCommandPool()
-        {
-
-        }
-
         AZCommandPool(const VulkanDevice& device, int queueIndex);
 
         ~AZCommandPool()
@@ -29,7 +24,7 @@ namespace Azazel
         void destroy();
 
     public:
-        VkDevice device;
+        const VulkanDevice& device;
         VkCommandPool commandPool;
     };
 
@@ -42,11 +37,11 @@ namespace Azazel
 
         ~AZCommandBuffer();
 
-        void begin();
+        void begin() const;
 
-        void end();
+        void end() const;
 
-        void reset();
+        void reset() const;
 
         void* getAPIBuffer();
 

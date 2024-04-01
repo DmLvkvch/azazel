@@ -77,6 +77,21 @@ namespace Azazel
             return *renderPass;
         }
 
+        const AZDescriptorPool& getDescriptorPool() const
+        {
+            return *descriptorPool;
+        }
+
+        const AZCommandBuffer& getCommandBuffer() const
+        {
+            return *commandBuffer;
+        }
+
+        std::vector<AZFramebuffer>& getSwapChainFramebuffers()
+        {
+            return swapChainFramebuffers;
+        }
+
         void init(Window& window);
         void destroy();
 
@@ -90,6 +105,7 @@ namespace Azazel
         std::unique_ptr<AZRenderPass> renderPass;
         std::vector<AZFramebuffer> swapChainFramebuffers;
         std::unique_ptr<AZCommandPool> commandPool;
+        std::unique_ptr<AZCommandBuffer> commandBuffer;
 
         VmaAllocator allocator { };
     };

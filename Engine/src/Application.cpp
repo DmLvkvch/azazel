@@ -16,8 +16,6 @@
 
 #include "events/Event.h"
 #include "render/rhi/vulkan/AZContext.h"
-#include <stb_image/stb_image.h>
-
 #include "render/Vertex.h"
 
 #include <imgui.h>
@@ -46,12 +44,13 @@ namespace Azazel
 {
     Application* Application::app = nullptr;
 
+    void Application::setApplication(Application* application)
+    {
+        Application::app = application;
+    }
+
     Application* Application::getApplication()
     {
-        if (!Application::app)
-        {
-            Application::app = new Application();
-        }
         return Application::app;
     }
 
@@ -82,15 +81,15 @@ namespace Azazel
 
     const std::vector<Vertex> vertices = 
     {
-        {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-        {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-        {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
+    {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+    {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+    {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+    {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
 
-        {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-        {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-        {{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
+    {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+    {{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+    {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+    {{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
     };
 
     const std::vector<uint32_t> indices = 
@@ -100,7 +99,7 @@ namespace Azazel
     };
 
     const int MAX_FRAMES_IN_FLIGHT = 2;
-
+ 
     struct UniformBufferObject
     {
         glm::mat4 model;
@@ -110,31 +109,33 @@ namespace Azazel
 
     static ImGui_ImplVulkanH_Window g_MainWindowData;
 
-    Application::Application()
+    Application::Application(Window& window)
+    : window(window)
     {
         delta = 0.0f;
-        window.reset(Window::create());
-        window->setEventCallback(std::bind(&Application::onEvent, this, std::placeholders::_1));
+        window.setEventCallback(std::bind(&Application::onEvent, this, std::placeholders::_1));
         //Render::getRender()->init();
         camera.reset(new Camera());
-        auto context = new AZContext();
-        context->init(*window);
-        setVulkanContext(*context);
-
         auto& ctx = getVulkanContext();
 
         auto& device = ctx.getVulkanDevice();
         auto& physicalDevice = ctx.getPhysicalDevice();
         auto& commandPool = ctx.getCommandPool();
         auto& surface = ctx.getSurface();
-        auto swapChain = ctx.getSwapChain();
+        auto& swapChain = ctx.getSwapChain();
         auto& instance = ctx.getInstance();
 
-        uniformBuffer = AZUniformBuffer(device.device, physicalDevice, sizeof(UniformBufferObject), nullptr);
 
-        createTextureImage();
-        createTextureImageView();
-        createTextureSampler();
+        int w, h, c;
+        unsigned char* pixels = stbi_load("textures/awesomeface.png", &w, &h, &c, STBI_rgb_alpha);
+
+        textureImage = std::make_unique<AZImage>(w, h, pixels);
+        stbi_image_free(pixels);
+        
+        textureImageView = std::make_unique<AZImageView>(textureImage->textureImage, VK_FORMAT_R8G8B8A8_SRGB);
+        textureSampler = std::make_unique<AZTextureSampler>();
+
+        uniformBuffer = AZUniformBuffer(device.device, physicalDevice, sizeof(UniformBufferObject), nullptr);
 
         createDescriptorSetLayout();
         createDescriptorSets();
@@ -145,7 +146,6 @@ namespace Azazel
 
         indexBuffer = AZIndexBuffer(device.device, physicalDevice, commandPool.commandPool, device.graphicsQueue.queue, (void*)indices.data(), indices.size());
 
-        commandBuffer = std::unique_ptr<AZCommandBuffer>(commandPool.allocateCommandBuffer(device));
         createSyncObjects();
 
         VkPresentModeKHR presentMode = VK_PRESENT_MODE_MAILBOX_KHR;
@@ -153,9 +153,9 @@ namespace Azazel
         g_MainWindowData.Surface = surface.surface;
         g_MainWindowData.SurfaceFormat = swapChain.surfaceFormat;
 
-        g_MainWindowData.PresentMode = ImGui_ImplVulkanH_SelectPresentMode(physicalDevice.physicalDevice, surface.surface, &presentMode, 1);
+        g_MainWindowData.PresentMode = ImGui_ImplVulkanH_SelectPresentMode(physicalDevice.get(), surface.surface, &presentMode, 1);
 
-        ImGui_ImplVulkanH_CreateOrResizeWindow(instance.instance, physicalDevice.physicalDevice, device.device, &g_MainWindowData, device->graphicsQueue.queueFamilyIndex, nullptr, window->getWidth(), window->getWidth(), 2);
+        ImGui_ImplVulkanH_CreateOrResizeWindow(instance.instance, physicalDevice.get(), device.device, &g_MainWindowData, device.graphicsQueue.queueFamilyIndex, nullptr, window.getWidth(), window.getWidth(), 2);
 
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
@@ -165,15 +165,15 @@ namespace Azazel
 
         ImGui::StyleColorsDark();
 
-        ImGui_ImplGlfw_InitForVulkan((GLFWwindow*)window->getNativeWindow(), true);
+        ImGui_ImplGlfw_InitForVulkan((GLFWwindow*)window.getNativeWindow(), true);
         ImGui_ImplVulkan_InitInfo init_info{};
         init_info.Instance = instance.instance;
-        init_info.PhysicalDevice = physicalDevice.physicalDevice;
+        init_info.PhysicalDevice = physicalDevice.get();
         init_info.Device = device.device;
         init_info.QueueFamily = device.graphicsQueue.queueFamilyIndex;
         init_info.Queue = device.graphicsQueue.queue;
         init_info.PipelineCache = nullptr;
-        init_info.DescriptorPool = descriptorPool.descriptorPool;
+        init_info.DescriptorPool = getVulkanContext().getDescriptorPool().descriptorPool;
         init_info.Subpass = 0;
         init_info.RenderPass = g_MainWindowData.RenderPass;
         init_info.MinImageCount = 2;
@@ -188,7 +188,6 @@ namespace Azazel
     {
         eventSubscribers.clear();
         updateSubscribers.clear();
-        delete &getVulkanContext();
     }
 
     void Application::onEvent(Event& e)
@@ -210,7 +209,7 @@ namespace Azazel
         while (running)
         {
             camera->onInputUpdate(delta);
-            window->onUpdate(delta);
+            window.onUpdate(delta);
             drawFrame();
 
             auto startTime = std::chrono::high_resolution_clock::now();
@@ -229,7 +228,7 @@ namespace Azazel
 
     Window* Application::getWindow()
     {
-        return this->window.get();
+        return std::addressof(window);
     }
 
     static std::vector<char> readFile(const std::string& filename)
@@ -252,12 +251,13 @@ namespace Azazel
         std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, descriptorSetLayout);
         VkDescriptorSetAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-        allocInfo.descriptorPool = descriptorPool->descriptorPool;
+        allocInfo.descriptorPool =  getVulkanContext().getDescriptorPool().descriptorPool;
         allocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
         allocInfo.pSetLayouts = layouts.data();
 
         descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
-        vkAllocateDescriptorSets(device->device, &allocInfo, descriptorSets.data());
+        auto& device = getVulkanContext().getVulkanDevice();
+        vkAllocateDescriptorSets(device.device, &allocInfo, descriptorSets.data());
 
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
         {
@@ -268,8 +268,8 @@ namespace Azazel
 
             VkDescriptorImageInfo imageInfo{};
             imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-            imageInfo.imageView = textureImageView;
-            imageInfo.sampler = textureSampler;
+            imageInfo.imageView = textureImageView->imageView;
+            imageInfo.sampler = textureSampler->sampler;
 
             std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
 
@@ -289,7 +289,7 @@ namespace Azazel
             descriptorWrites[1].descriptorCount = 1;
             descriptorWrites[1].pImageInfo = &imageInfo;
 
-            vkUpdateDescriptorSets(device->device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+            vkUpdateDescriptorSets(device.device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
         }
     }
 
@@ -315,7 +315,7 @@ namespace Azazel
         layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
         layoutInfo.pBindings = bindings.data();
 
-        vkCreateDescriptorSetLayout(device->device, &layoutInfo, nullptr, &descriptorSetLayout);
+        vkCreateDescriptorSetLayout(getVulkanContext().getVulkanDevice().device, &layoutInfo, nullptr, &descriptorSetLayout);
     }
 
     void Application::updateUniformBuffer(uint32_t currentImage)
@@ -444,6 +444,8 @@ namespace Azazel
 
         vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout);
 
+        auto& renderPass = getVulkanContext().getRenderPass();
+
         VkGraphicsPipelineCreateInfo pipelineInfo{};
         pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
         pipelineInfo.stageCount = 2;
@@ -456,7 +458,7 @@ namespace Azazel
         pipelineInfo.pColorBlendState = &colorBlending;
         pipelineInfo.pDynamicState = &dynamicState;
         pipelineInfo.layout = pipelineLayout;
-        pipelineInfo.renderPass = renderPass->renderPass;
+        pipelineInfo.renderPass = renderPass.renderPass;
         pipelineInfo.subpass = 0;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
@@ -467,37 +469,30 @@ namespace Azazel
         return graphicsPipeline;
     }
 
-    void Application::recordCommandBuffer(AZCommandBuffer& azCommandBuffer, uint32_t imageIndex)
+    void Application::recordCommandBuffer(const AZCommandBuffer& azCommandBuffer, uint32_t imageIndex)
     {
-
         VkCommandBuffer commandBuffer = azCommandBuffer.commandBuffer;
+        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[imageIndex], 0, nullptr);
 
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-
+        auto& swapChain = getVulkanContext().getSwapChain();
         VkViewport viewport{};
         viewport.x = 0.0f;
         viewport.y = 0.0f;
-        viewport.width = (float)swapChain->swapChainExtent.width;
-        viewport.height = (float)swapChain->swapChainExtent.height;
+        viewport.width = (float)swapChain.swapChainExtent.width;
+        viewport.height = (float)swapChain.swapChainExtent.height;
         viewport.minDepth = 0.0f;
         viewport.maxDepth = 1.0f;
 
         vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
-
         VkRect2D scissor{};
         scissor.offset = { 0, 0 };
-        scissor.extent = swapChain->swapChainExtent;
-
+        scissor.extent = swapChain.swapChainExtent;
         vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
-
         VkBuffer vertexBuffers[] = { vertexBuffer.vertexBuffer };
         VkDeviceSize offsets[] = { 0 };
-
         vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-
         vkCmdBindIndexBuffer(commandBuffer, indexBuffer.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
-
-        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[imageIndex], 0, nullptr);
         vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
     }
 
@@ -514,32 +509,38 @@ namespace Azazel
             fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
         }
 
-        vkCreateSemaphore(device->device, &semaphoreInfo, nullptr, &imageAvailableSemaphore);
-        vkCreateSemaphore(device->device, &semaphoreInfo, nullptr, &renderFinishedSemaphore);
-        vkCreateFence(device->device, &fenceInfo, nullptr, &inFlightFence);
+        auto& device = getVulkanContext().getVulkanDevice();
+
+        vkCreateSemaphore(device.device, &semaphoreInfo, nullptr, &imageAvailableSemaphore);
+        vkCreateSemaphore(device.device, &semaphoreInfo, nullptr, &renderFinishedSemaphore);
+        vkCreateFence(device.device, &fenceInfo, nullptr, &inFlightFence);
     }
 
     void Application::drawFrame()
     {
-        VkDevice device = this->device->device;
-        vkWaitForFences(device, 1, &inFlightFence, VK_TRUE, UINT64_MAX);
-        vkResetFences(device, 1, &inFlightFence);
+        auto& ctx = getVulkanContext();
 
-        uint32_t imageIndex;
-        vkAcquireNextImageKHR(device, swapChain->swapChain, UINT64_MAX, imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+        auto& renderPass = ctx.getRenderPass();
+        auto& commandBuffer = ctx.getCommandBuffer();
+        auto& device = ctx.getVulkanDevice();
+        auto& swapChain = ctx.getSwapChain();
+
+        vkWaitForFences(device.device, 1, &inFlightFence, VK_TRUE, UINT64_MAX);
+        vkResetFences(device.device, 1, &inFlightFence);
+
+        uint32_t imageIndex = swapChain.acquireNextImage(imageAvailableSemaphore);
 
         updateUniformBuffer(imageIndex % MAX_FRAMES_IN_FLIGHT);
+        
+        commandBuffer.reset();
+        commandBuffer.begin();
+        renderPass.beginRenderPass(commandBuffer, ctx.getSwapChain().swapChainFramebuffers[imageIndex].framebuffer, swapChain.swapChainExtent);
 
-        commandBuffer->reset();
-        commandBuffer->begin();
-        renderPass->beginRenderPass(*commandBuffer, swapChainFramebuffers[imageIndex].framebuffer, swapChain->swapChainExtent);
-
-        recordCommandBuffer(*commandBuffer, imageIndex % MAX_FRAMES_IN_FLIGHT);
+        recordCommandBuffer(commandBuffer, imageIndex % MAX_FRAMES_IN_FLIGHT);
 
         ImGui_ImplVulkan_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-
 
         ImGui::Begin("Hello, world!");
         ImGui::Text("This is some useful text.");
@@ -549,7 +550,6 @@ namespace Azazel
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f, 123.0f);
         ImGui::End();
 
-
         ImGui::Render();
         ImDrawData* draw_data = ImGui::GetDrawData();
         g_MainWindowData.ClearValue.color.float32[0] = 1;
@@ -557,11 +557,11 @@ namespace Azazel
         g_MainWindowData.ClearValue.color.float32[2] = 1;
         g_MainWindowData.ClearValue.color.float32[3] = 1;
 
-        ImGui_ImplVulkan_RenderDrawData(draw_data, commandBuffer->commandBuffer);
+        ImGui_ImplVulkan_RenderDrawData(draw_data, commandBuffer.commandBuffer);
 
-        renderPass->endRenderPass(*commandBuffer);
+        renderPass.endRenderPass(commandBuffer);
 
-        commandBuffer->end();
+        commandBuffer.end();
 
         VkSubmitInfo submitInfo{};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -573,13 +573,13 @@ namespace Azazel
         submitInfo.pWaitDstStageMask = waitStages;
 
         submitInfo.commandBufferCount = 1;
-        submitInfo.pCommandBuffers = &commandBuffer->commandBuffer;
+        submitInfo.pCommandBuffers = &commandBuffer.commandBuffer;
 
         VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
         submitInfo.signalSemaphoreCount = 1;
         submitInfo.pSignalSemaphores = signalSemaphores;
 
-        this->device->graphicsQueue.submit(1, &submitInfo, inFlightFence);
+        device.graphicsQueue.submit(1, &submitInfo, inFlightFence);
 
         VkPresentInfoKHR presentInfo{};
         presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -588,10 +588,10 @@ namespace Azazel
         presentInfo.pWaitSemaphores = signalSemaphores;
 
         presentInfo.swapchainCount = 1;
-        presentInfo.pSwapchains = &swapChain->swapChain;
+        presentInfo.pSwapchains = &swapChain.swapChain;
 
         presentInfo.pImageIndices = &imageIndex;
 
-        vkQueuePresentKHR(this->device->presentQueue.queue, &presentInfo);
+        vkQueuePresentKHR(device.presentQueue.queue, &presentInfo);
     }
 }

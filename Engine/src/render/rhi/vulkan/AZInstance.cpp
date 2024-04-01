@@ -3,6 +3,7 @@
 #include <iostream>
 #include <exception>
 #include <GLFW/glfw3.h>
+#include "api/logging/Log.h"
 
 namespace Azazel
 {
@@ -30,10 +31,7 @@ namespace Azazel
 
     VkInstance AZInstance::createInstance() 
     {
-        if (!checkValidationLayerSupport(validationLayers)) 
-        {
-            throw std::runtime_error("validation layers requested, but not available!");
-        }
+        (void) checkValidationLayerSupport(validationLayers);
 
         VkApplicationInfo appInfo = createVkApplicationInfo("Azazel", "Azazel Engine");
 
@@ -132,7 +130,7 @@ namespace Azazel
         const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, 
         void* pUserData)
     {
-        std::cout << pCallbackData->pMessage << std::endl;
+        Log::getLogger().errorLog(pCallbackData->pMessage);
         return VK_FALSE;
     }
 

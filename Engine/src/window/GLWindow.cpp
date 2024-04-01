@@ -33,7 +33,7 @@ namespace Azazel
         // INIT GLAD
         if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
         {
-            Log::getLogger()->errorLog("Failed to initialize GLAD!");
+            Log::getLogger().errorLog("Failed to initialize GLAD!");
         }
 
         //INIT IMGUI
@@ -136,7 +136,7 @@ namespace Azazel
         int succes = glfwInit();
         if (succes == GLFW_FALSE)
         {
-            Log::getLogger()->errorLog("Failed to initialize GLFW!");
+            Log::getLogger().errorLog("Failed to initialize GLFW!");
         }
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
@@ -149,7 +149,7 @@ namespace Azazel
         
         if (window == NULL)
         {
-            Log::getLogger()->errorLog("Failed to create GLFW window!");
+            Log::getLogger().errorLog("Failed to create GLFW window!");
             glfwTerminate();
         }
         glfwMakeContextCurrent(window);

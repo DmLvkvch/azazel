@@ -5,6 +5,7 @@
 namespace Azazel
 {
     AZSwapChain::AZSwapChain(GLFWwindow* window, AZSurface& surface, PhysicalDevice& physicalDevice, VulkanDevice& device)
+    : device(device)
     {
         this->swapChain = createSwapChain(window, surface, physicalDevice, device);
         this->swapChainImageViews = createImageViews(device.device, swapChainImages, swapChainImageFormat);
@@ -13,7 +14,7 @@ namespace Azazel
     VkSwapchainKHR AZSwapChain::createSwapChain(GLFWwindow* window, AZSurface& surface, PhysicalDevice& physicalDevice, VulkanDevice& device)
     {
         VkSwapchainKHR swapChain;
-        SwapChainSupportDetails swapChainSupport = surface.querySwapChainSupport(physicalDevice.physicalDevice);
+        SwapChainSupportDetails swapChainSupport = surface.querySwapChainSupport(physicalDevice.get());
         VkSurfaceFormatKHR surfaceFormat         = chooseSwapSurfaceFormat(swapChainSupport.formats);
         VkPresentModeKHR presentMode             = chooseSwapPresentMode(swapChainSupport.presentModes);
         VkExtent2D extent                        = chooseSwapExtent(window, swapChainSupport.capabilities);
@@ -32,7 +33,7 @@ namespace Azazel
             createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
         }
 
-        QueueFamilyIndices indices = physicalDevice.indices;
+        const QueueFamilyIndices& indices = physicalDevice.getQueueFamilyIndices();
         uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
 
         if (indices.graphicsFamily != indices.presentFamily)

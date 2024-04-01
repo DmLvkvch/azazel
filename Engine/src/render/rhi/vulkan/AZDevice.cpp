@@ -124,14 +124,14 @@ namespace Azazel
     VulkanDevice::VulkanDevice(AZInstance& context, PhysicalDevice& physicalDevice)
     {
         device = createDevice(context, physicalDevice);
-        graphicsQueue = AZQueue(device, physicalDevice.indices.graphicsFamily.value());
-        presentQueue = AZQueue(device, physicalDevice.indices.presentFamily.value());
+        graphicsQueue = AZQueue(device, physicalDevice.getQueueFamilyIndices().graphicsFamily.value());
+        presentQueue = AZQueue(device, physicalDevice.getQueueFamilyIndices().presentFamily.value());
     }
 
     VkDevice VulkanDevice::createDevice(AZInstance& context, PhysicalDevice& physicalDevice)
     {
         VkDevice device;
-        QueueFamilyIndices indices = physicalDevice.indices;
+        const QueueFamilyIndices& indices = physicalDevice.getQueueFamilyIndices();
         std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
         std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily.value(), indices.presentFamily.value() };
         float queuePriority = 1.0f;
@@ -144,7 +144,7 @@ namespace Azazel
             queueCreateInfo.pQueuePriorities = &queuePriority;
             queueCreateInfos.push_back(queueCreateInfo);
         }
-        VkPhysicalDeviceFeatures deviceFeatures{};
+        VkPhysicalDeviceFeatures deviceFeatures = physicalDevice.getPhysicalDeviceFeatures();
         auto& deviceExtensions = context.deviceExtensions;
         auto& validationLayers = context.validationLayers;
         VkDeviceCreateInfo createInfo{};
@@ -159,7 +159,7 @@ namespace Azazel
             createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
             createInfo.ppEnabledExtensionNames = deviceExtensions.data();
         }
-        vkCreateDevice(physicalDevice.physicalDevice, &createInfo, nullptr, &device);
+        vkCreateDevice(physicalDevice.get(), &createInfo, nullptr, &device);
         return device;
     }
 

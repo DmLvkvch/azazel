@@ -21,12 +21,12 @@ namespace Azazel
 
         VkQueue createQueue(VkDevice device, uint32_t queueFamilyIndex);
 
-        void submit(uint32_t submitCount, const VkSubmitInfo* submitInfo, VkFence fence)
+        void submit(uint32_t submitCount, const VkSubmitInfo* submitInfo, VkFence fence) const
         {
             vkQueueSubmit(queue, submitCount, submitInfo, fence);
         }
 
-        void submit(std::vector<VkSubmitInfo> & submitInfo, VkFence fence)
+        void submit(std::vector<VkSubmitInfo> & submitInfo, VkFence fence) const
         {
             vkQueueSubmit(queue, submitInfo.size(), submitInfo.data(), fence);
         }

@@ -5,6 +5,7 @@ namespace Azazel
 {
 
     AZCommandPool::AZCommandPool(const VulkanDevice& device, int queueIndex)
+    :device(device)
     {
         VkCommandPoolCreateInfo poolInfo {};
         
@@ -22,12 +23,12 @@ namespace Azazel
 
     void AZCommandPool::reset()
     {
-        vkResetCommandPool(device, commandPool, VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT);
+        vkResetCommandPool(device.device, commandPool, VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT);
     }
     
     void AZCommandPool::destroy()
     {
-        vkDestroyCommandPool(device, commandPool, nullptr);
+        vkDestroyCommandPool(device.device, commandPool, nullptr);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +56,7 @@ namespace Azazel
     {
     }
 
-    void AZCommandBuffer::begin()
+    void AZCommandBuffer::begin() const
     {
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -63,12 +64,12 @@ namespace Azazel
         vkBeginCommandBuffer(commandBuffer, &beginInfo);
     }
 
-    void AZCommandBuffer::end()
+    void AZCommandBuffer::end() const
     {
         vkEndCommandBuffer(commandBuffer);
     }
 
-    void AZCommandBuffer::reset()
+    void AZCommandBuffer::reset() const
     {
         vkResetCommandBuffer(commandBuffer, 0);
     }

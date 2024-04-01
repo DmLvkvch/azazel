@@ -10,6 +10,8 @@
 #define GLFW_INCLUDE_NONE
 #define GLFW_INCLUDE_VULKAN
 
+#include <vk_mem_alloc.h>
+
 namespace Azazel
 {
     static AZContext* context = nullptr;
@@ -34,22 +36,19 @@ namespace Azazel
         device = std::make_unique<VulkanDevice>(*instance, *physicalDevice);
         swapChain = std::make_unique<AZSwapChain>(static_cast<GLFWwindow*>(window.getNativeWindow()), *surface, *physicalDevice, *device);
         renderPass = std::make_unique<AZRenderPass>(device->device, swapChain->swapChainImageFormat);
+        swapChain->initSwapChainFramebuffers(*renderPass);
 
-        auto& swapChainImageViews = swapChain->swapChainImageViews;
-        swapChainFramebuffers.resize(swapChainImageViews.size());
-
-        for (size_t i = 0; i < swapChainImageViews.size(); i++)
-        {
-            uint32_t width = swapChain->swapChainExtent.width;
-            uint32_t height = swapChain->swapChainExtent.height;
-            auto& imageView = swapChainImageViews[i];
-            AZFramebufferDesc fboDesc{ {imageView}, renderPass->renderPass, width, height };
-            swapChainFramebuffers[i] = AZFramebuffer(device->device, fboDesc);
-        }
-
-        commandPool = std::make_unique<AZCommandPool>(*device, physicalDevice->indices.graphicsFamily.value());
+        commandPool = std::make_unique<AZCommandPool>(*device, physicalDevice->getQueueFamilyIndices().graphicsFamily.value());
+        commandBuffer = std::unique_ptr<AZCommandBuffer>(commandPool->allocateCommandBuffer(*device));
 
         descriptorPool = std::make_unique<AZDescriptorPool>(*device);
+
+        VmaAllocatorCreateInfo allocatorInfo = {};
+        allocatorInfo.vulkanApiVersion = VK_MAKE_VERSION(1, 0, 0);
+        allocatorInfo.physicalDevice = physicalDevice->get();
+        allocatorInfo.device = device->device;
+        allocatorInfo.instance = instance->instance;
+        vmaCreateAllocator(&allocatorInfo, &this->allocator);
     }
 
 }
