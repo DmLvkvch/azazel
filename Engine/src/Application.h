@@ -61,9 +61,9 @@ namespace Azazel
         VkDescriptorSetLayout descriptorSetLayout;
         VkPipelineLayout pipelineLayout;
 
-        AZVertexBuffer vertexBuffer;
-        AZIndexBuffer indexBuffer;
-        AZUniformBuffer uniformBuffer;
+        std::unique_ptr<AZVertexBuffer> vertexBuffer;
+        std::unique_ptr<AZIndexBuffer> indexBuffer;
+        std::unique_ptr<AZUniformBuffer> uniformBuffer;
 
         std::unique_ptr<AZImageView> textureImageView;
         std::unique_ptr<AZImage> textureImage;

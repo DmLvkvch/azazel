@@ -12,11 +12,15 @@ namespace Azazel
         uint64_t size;
     };
 
+    class Buffer
+    {
+
+    };
 
     class AZStageBuffer
     {
     public:
-        AZStageBuffer(VkDevice device, 
+        AZStageBuffer(const VulkanDevice& device, 
                       const PhysicalDevice& physicalDevice, 
                       VkDeviceSize size, 
                       const void* bufferData)
@@ -24,12 +28,12 @@ namespace Azazel
             createBuffer(device, physicalDevice, size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
             void* data;
-            vkMapMemory(device, stagingBufferMemory, 0, size, 0, &data);
+            vkMapMemory(device.device, stagingBufferMemory, 0, size, 0, &data);
             memcpy(data, bufferData, static_cast<size_t>(size));
-            vkUnmapMemory(device, stagingBufferMemory);
+            vkUnmapMemory(device.device, stagingBufferMemory);
         }
 
-        void createBuffer(VkDevice device, 
+        void createBuffer(const VulkanDevice& device, 
                           const PhysicalDevice& physicalDevice,
                           VkDeviceSize size,
                           VkBufferUsageFlags usage, 
@@ -41,19 +45,19 @@ namespace Azazel
             bufferInfo.usage = usage;
             bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-            vkCreateBuffer(device, &bufferInfo, nullptr, &stagingBuffer);
+            vkCreateBuffer(device.device, &bufferInfo, nullptr, &stagingBuffer);
 
             VkMemoryRequirements memRequirements;
-            vkGetBufferMemoryRequirements(device, stagingBuffer, &memRequirements);
+            vkGetBufferMemoryRequirements(device.device, stagingBuffer, &memRequirements);
 
             VkMemoryAllocateInfo allocInfo{};
             allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
             allocInfo.allocationSize = memRequirements.size;
             allocInfo.memoryTypeIndex = physicalDevice.findMemoryType(memRequirements.memoryTypeBits, properties);
 
-            vkAllocateMemory(device, &allocInfo, nullptr, &stagingBufferMemory);
+            vkAllocateMemory(device.device, &allocInfo, nullptr, &stagingBufferMemory);
 
-            vkBindBufferMemory(device, stagingBuffer, stagingBufferMemory, 0);
+            vkBindBufferMemory(device.device, stagingBuffer, stagingBufferMemory, 0);
         }
 
         ~AZStageBuffer()
@@ -74,20 +78,13 @@ namespace Azazel
     class AZVertexBuffer
     {
     public:
-        AZVertexBuffer()
-        {
-        }
-        
-        AZVertexBuffer(VkDevice device,
+        AZVertexBuffer(const VulkanDevice& device,
                        const PhysicalDevice& physicalDevice, 
-                       VkCommandPool commandPool, 
-                       VkQueue graphicsQueue,
                        BufferDesc bufferDesc);
 
         ~AZVertexBuffer();
-    
-    private:
-        void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+        
+        void destroy();
         void createVertexBuffer(const PhysicalDevice& physicalDevice, const void* vertices, uint64_t size);
         void createBuffer(const PhysicalDevice& physicalDevice, 
                           VkDeviceSize size, 
@@ -95,95 +92,66 @@ namespace Azazel
                           VkMemoryPropertyFlags properties, 
                           VkBuffer& buffer, 
                           VkDeviceMemory& bufferMemory);
+        void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
         void map(VkDeviceSize size);
         void unmap();
-        
-        void destroy();
-
     public:
-        VkCommandPool commandPool;
-        VkQueue graphicsQueue;
-        VkBuffer vertexBuffer;
-        VkDeviceMemory vertexBufferMemory;
-        VkDevice device;
+        const VulkanDevice& device;
+        VkBuffer buffer;
+        VkDeviceMemory bufferMemory;
         void* hostVisibleData = nullptr;
     };
 
     class AZIndexBuffer
     {
     public:
-        AZIndexBuffer()
-        {
-        }
-        
-        AZIndexBuffer(VkDevice device, 
+        AZIndexBuffer(const VulkanDevice& device, 
                       const PhysicalDevice& physicalDevice, 
-                      VkCommandPool commandPool, 
-                      VkQueue graphicsQueue, 
                       const void* indices,
                       size_t indicesCount);
 
         ~AZIndexBuffer();
 
         void destroy();
-
-        void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
         void createIndexBuffer(const PhysicalDevice& physicalDevice, const void* indices, uint64_t size);
-        void createBuffer(const PhysicalDevice& physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
-
+        void createBuffer(const PhysicalDevice& physicalDevice, 
+                          VkDeviceSize size, VkBufferUsageFlags usage, 
+                          VkMemoryPropertyFlags properties, 
+                          VkBuffer& buffer, 
+                          VkDeviceMemory& bufferMemory);
+        void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
         void map(VkDeviceSize size);
         void unmap();
 
-        size_t count;
-
-        VkCommandPool commandPool;
-        VkQueue graphicsQueue;
-        VkDevice device;
-        VkBuffer indexBuffer;
-        VkDeviceMemory indexBufferMemory;
+        const VulkanDevice& device;
+        VkBuffer buffer;
+        VkDeviceMemory bufferMemory;
         void* hostVisibleData = nullptr;
     };
 
     class AZUniformBuffer
     {
     public:
-        AZUniformBuffer()
-        {
-
-        }
-
-        AZUniformBuffer(VkDevice device, 
+        AZUniformBuffer(const VulkanDevice& device, 
                         const PhysicalDevice& physicalDevice, 
                         VkDeviceSize size, 
-                        const void* data)
-        : device(device)
-        {
-            VkMemoryPropertyFlags memoryPropertyFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-            VkBufferUsageFlagBits bufferUsageFlagBits = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
-            createBuffer(device, physicalDevice, size, bufferUsageFlagBits, memoryPropertyFlags, uniformBuffer, uniformBufferMemory);
-        }
-
+                        const void* data);
         void destroy();
-
         ~AZUniformBuffer();
-
-        void createBuffer(VkDevice device, 
+        void createBuffer(const VulkanDevice& device, 
                           const PhysicalDevice& physicalDevice,
                           VkDeviceSize size, 
                           VkBufferUsageFlags usage,
                           VkMemoryPropertyFlags properties, 
                           VkBuffer& buffer, 
                           VkDeviceMemory& uniformBufferMemory);
-
         void updateData(const void* data, VkDeviceSize size);
-
         void map(VkDeviceSize size);
-
         void unmap();
-
-        VkDevice device;
+    public:
+        const VulkanDevice& device;
+        VkBuffer buffer;
+        VkDeviceMemory bufferMemory;
         void* hostVisibleData = nullptr;
-        VkBuffer uniformBuffer;
-        VkDeviceMemory uniformBufferMemory;
     };
 }

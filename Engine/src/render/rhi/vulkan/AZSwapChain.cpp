@@ -1,17 +1,19 @@
 #include "AZSwapChain.h"
 
 #include <cmath>
+#include "AZImage.h"
+
 
 namespace Azazel
 {
     AZSwapChain::AZSwapChain(GLFWwindow* window, AZSurface& surface, PhysicalDevice& physicalDevice, VulkanDevice& device)
-    : device(device)
+    : device(device), physicalDevice(physicalDevice)
     {
-        this->swapChain = createSwapChain(window, surface, physicalDevice, device);
+        this->swapChain = createSwapChain(window, surface);
         this->swapChainImageViews = createImageViews(device.device, swapChainImages, swapChainImageFormat);
     }
 
-    VkSwapchainKHR AZSwapChain::createSwapChain(GLFWwindow* window, AZSurface& surface, PhysicalDevice& physicalDevice, VulkanDevice& device)
+    VkSwapchainKHR AZSwapChain::createSwapChain(GLFWwindow* window, AZSurface& surface)
     {
         VkSwapchainKHR swapChain;
         SwapChainSupportDetails swapChainSupport = surface.querySwapChainSupport(physicalDevice.get());
@@ -134,5 +136,22 @@ namespace Azazel
         actualExtent.height = std::clamp(actualExtent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
 
         return actualExtent;
+    }
+
+    void AZSwapChain::initSwapChainFramebuffers(AZRenderPass& renderPass)
+    {
+        VkFormat depthFormat = VK_FORMAT_D32_SFLOAT;
+        createImage(swapChainExtent.width, swapChainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage, depthImageMemory);
+        depthImageView = createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
+        
+        swapChainFramebuffers.resize(swapChainImageViews.size());
+        for (size_t i = 0; i < swapChainImageViews.size(); i++)
+        {
+            uint32_t width = swapChainExtent.width;
+            uint32_t height = swapChainExtent.height;
+            auto& imageView = swapChainImageViews[i];
+            AZFramebufferDesc fboDesc{ {imageView, depthImageView}, renderPass.renderPass, width, height };
+            swapChainFramebuffers[i] = AZFramebuffer(device.device, fboDesc);
+        }
     }
 }

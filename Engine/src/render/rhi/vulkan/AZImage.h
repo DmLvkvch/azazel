@@ -6,91 +6,23 @@
 
 namespace Azazel
 {
-    class AZTextureSampler
-    {
-    public:
-        AZTextureSampler()
-        {
-            auto& physicalDevice = getVulkanContext().getPhysicalDevice();
-            auto& device = getVulkanContext().getVulkanDevice();
-
-            VkSamplerCreateInfo samplerInfo{};
-            samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-            samplerInfo.magFilter = VK_FILTER_LINEAR;
-            samplerInfo.minFilter = VK_FILTER_LINEAR;
-            samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-            samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-            samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-            samplerInfo.anisotropyEnable = physicalDevice.getPhysicalDeviceFeatures().samplerAnisotropy;
-            samplerInfo.maxAnisotropy = physicalDevice.getPhysicalDeviceProperties().limits.maxSamplerAnisotropy;
-            samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
-            samplerInfo.unnormalizedCoordinates = VK_FALSE;
-            samplerInfo.compareEnable = VK_FALSE;
-            samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
-            samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-
-            vkCreateSampler(device.device, &samplerInfo, nullptr, &sampler);
-        }
-        VkSampler sampler;
-    };
-    
-    class AZImageView
-    {
-    public:
-        AZImageView(VkImage image, VkFormat format)
-        {
-            this->imageView = createImageView(getVulkanContext().getVulkanDevice(), image, format);
-        }
-
-        ~AZImageView()
-        {
-
-        }
-
-        VkImageView createImageView(const VulkanDevice& device, VkImage image, VkFormat format)
-        {
-            VkImageViewCreateInfo viewInfo{};
-            viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-            viewInfo.image = image;
-            viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-            viewInfo.format = format;
-            viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-            viewInfo.subresourceRange.baseMipLevel = 0;
-            viewInfo.subresourceRange.levelCount = 1;
-            viewInfo.subresourceRange.baseArrayLayer = 0;
-            viewInfo.subresourceRange.layerCount = 1;
-
-            VkImageView imageView;
-            vkCreateImageView(device.device, &viewInfo, nullptr, &imageView);
-            return imageView;
-        }
-
-        VkImageView imageView;
-    };
 
     class AZImage
     {
     public:
-        AZImage(int width, int height, unsigned char* pixels) 
+        AZImage(int width, int height, unsigned char* pixels, VkFormat format) 
         {
-            createTextureImage(width, height, pixels);
+            createTextureImage(width, height, pixels, format);
         }
 
         ~AZImage() {}
     
-        void createTextureImage(int width, int height, unsigned char* pixels)
+        void createTextureImage(int width, int height, unsigned char* pixels, VkFormat format)
         {
-
             uint64_t pixelSize = 4;
-
             VkDeviceSize imageSize = pixelSize * width * height;
             auto& ctx = getVulkanContext();
             auto& device = ctx.getVulkanDevice();
-            auto& physicalDevice = ctx.getPhysicalDevice();
-            auto& commandPool = ctx.getCommandPool();
-            auto& surface = ctx.getSurface();
-            auto& swapChain = ctx.getSwapChain();
-            auto& instance = ctx.getInstance();
 
             VkBuffer stagingBuffer;
             VkDeviceMemory stagingBufferMemory;
@@ -101,11 +33,11 @@ namespace Azazel
             memcpy(data, pixels, static_cast<size_t>(imageSize));
             vkUnmapMemory(device.device, stagingBufferMemory);
 
-            createImage(width, height, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
+            createImage(width, height, format, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
 
-            transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+            transitionImageLayout(textureImage, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
             copyBufferToImage(stagingBuffer, textureImage, static_cast<uint32_t>(width), static_cast<uint32_t>(height));
-            transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+            transitionImageLayout(textureImage, format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
             vkDestroyBuffer(device.device, stagingBuffer, nullptr);
             vkFreeMemory(device.device, stagingBufferMemory, nullptr);
@@ -117,10 +49,6 @@ namespace Azazel
 
             auto& device = ctx.getVulkanDevice();
             auto& physicalDevice = ctx.getPhysicalDevice();
-            auto& commandPool = ctx.getCommandPool();
-            auto& surface = ctx.getSurface();
-            auto& swapChain = ctx.getSwapChain();
-            auto& instance = ctx.getInstance();
 
             VkBufferCreateInfo bufferInfo{};
             bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -254,5 +182,67 @@ namespace Azazel
 
         VkImage textureImage;
         VkDeviceMemory textureImageMemory;
+    };
+
+    class AZTextureSampler
+    {
+    public:
+        AZTextureSampler()
+        {
+            auto& physicalDevice = getVulkanContext().getPhysicalDevice();
+            auto& device = getVulkanContext().getVulkanDevice();
+
+            VkSamplerCreateInfo samplerInfo{};
+            samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+            samplerInfo.magFilter = VK_FILTER_LINEAR;
+            samplerInfo.minFilter = VK_FILTER_LINEAR;
+            samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+            samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+            samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+            samplerInfo.anisotropyEnable = physicalDevice.getPhysicalDeviceFeatures().samplerAnisotropy;
+            samplerInfo.maxAnisotropy = physicalDevice.getPhysicalDeviceProperties().limits.maxSamplerAnisotropy;
+            samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+            samplerInfo.unnormalizedCoordinates = VK_FALSE;
+            samplerInfo.compareEnable = VK_FALSE;
+            samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
+            samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+
+            vkCreateSampler(device.device, &samplerInfo, nullptr, &sampler);
+        }
+        VkSampler sampler;
+    };
+    
+    class AZImageView
+    {
+    public:
+        AZImageView(AZImage& image, VkFormat format, VkImageAspectFlags aspectFlags)
+        {
+            this->imageView = createImageView(getVulkanContext().getVulkanDevice(), image.textureImage, format, aspectFlags);
+        }
+
+        ~AZImageView()
+        {
+
+        }
+
+        VkImageView createImageView(const VulkanDevice& device, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
+        {
+            VkImageViewCreateInfo viewInfo{};
+            viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+            viewInfo.image = image;
+            viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+            viewInfo.format = format;
+            viewInfo.subresourceRange.aspectMask = aspectFlags;
+            viewInfo.subresourceRange.baseMipLevel = 0;
+            viewInfo.subresourceRange.levelCount = 1;
+            viewInfo.subresourceRange.baseArrayLayer = 0;
+            viewInfo.subresourceRange.layerCount = 1;
+
+            VkImageView imageView;
+            vkCreateImageView(device.device, &viewInfo, nullptr, &imageView);
+            return imageView;
+        }
+
+        VkImageView imageView;
     };
 }

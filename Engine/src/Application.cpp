@@ -81,15 +81,15 @@ namespace Azazel
 
     const std::vector<Vertex> vertices = 
     {
-    {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-    {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-    {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-    {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
+        {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+        {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+        {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+        {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
 
-    {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-    {{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-    {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-    {{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
+        {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+        {{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+        {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+        {{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
     };
 
     const std::vector<uint32_t> indices = 
@@ -125,26 +125,24 @@ namespace Azazel
         auto& swapChain = ctx.getSwapChain();
         auto& instance = ctx.getInstance();
 
-
         int w, h, c;
         unsigned char* pixels = stbi_load("textures/awesomeface.png", &w, &h, &c, STBI_rgb_alpha);
-
-        textureImage = std::make_unique<AZImage>(w, h, pixels);
+        textureImage = std::make_unique<AZImage>(w, h, pixels, VK_FORMAT_R8G8B8A8_SRGB);
         stbi_image_free(pixels);
         
-        textureImageView = std::make_unique<AZImageView>(textureImage->textureImage, VK_FORMAT_R8G8B8A8_SRGB);
+        textureImageView = std::make_unique<AZImageView>(*textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
         textureSampler = std::make_unique<AZTextureSampler>();
 
-        uniformBuffer = AZUniformBuffer(device.device, physicalDevice, sizeof(UniformBufferObject), nullptr);
+        uniformBuffer = std::make_unique<AZUniformBuffer>(device, physicalDevice, sizeof(UniformBufferObject), nullptr);
 
         createDescriptorSetLayout();
         createDescriptorSets();
 
         graphicsPipeline = createGraphicsPipeline(device.device);
 
-        vertexBuffer = AZVertexBuffer(device.device, physicalDevice, commandPool.commandPool, device.graphicsQueue.queue, BufferDesc{ (void*)vertices.data(), sizeof(vertices[0]) * vertices.size() });
+        vertexBuffer = std::make_unique<AZVertexBuffer>(device, physicalDevice, BufferDesc{ (void*)vertices.data(), sizeof(vertices[0]) * vertices.size() });
 
-        indexBuffer = AZIndexBuffer(device.device, physicalDevice, commandPool.commandPool, device.graphicsQueue.queue, (void*)indices.data(), indices.size());
+        indexBuffer = std::make_unique<AZIndexBuffer>(device, physicalDevice, (void*) indices.data(), indices.size());
 
         createSyncObjects();
 
@@ -175,7 +173,7 @@ namespace Azazel
         init_info.PipelineCache = nullptr;
         init_info.DescriptorPool = getVulkanContext().getDescriptorPool().descriptorPool;
         init_info.Subpass = 0;
-        init_info.RenderPass = g_MainWindowData.RenderPass;
+        init_info.RenderPass = getVulkanContext().getRenderPass().renderPass;
         init_info.MinImageCount = 2;
         init_info.ImageCount = g_MainWindowData.ImageCount;
         init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
@@ -262,7 +260,7 @@ namespace Azazel
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
         {
             VkDescriptorBufferInfo bufferInfo{};
-            bufferInfo.buffer = uniformBuffer.uniformBuffer;
+            bufferInfo.buffer = uniformBuffer->buffer;
             bufferInfo.offset = 0;
             bufferInfo.range = sizeof(UniformBufferObject);
 
@@ -331,7 +329,7 @@ namespace Azazel
         ubo.proj = glm::perspective(glm::radians(45.0f), 1.5f, 0.1f, 10.0f);
         ubo.proj[1][1] *= -1;
 
-        uniformBuffer.updateData(&ubo, sizeof(UniformBufferObject));
+        uniformBuffer->updateData(&ubo, sizeof(UniformBufferObject));
     }
 
     VkShaderModule Application::createShaderModule(VkDevice device, const std::vector<char>& code)
@@ -415,6 +413,7 @@ namespace Azazel
         colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
         colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
         colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+
         VkPipelineColorBlendStateCreateInfo colorBlending{};
         colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
         colorBlending.logicOpEnable = VK_FALSE;
@@ -425,6 +424,18 @@ namespace Azazel
         colorBlending.blendConstants[1] = 0.0f;
         colorBlending.blendConstants[2] = 0.0f;
         colorBlending.blendConstants[3] = 0.0f;
+
+        VkPipelineDepthStencilStateCreateInfo depthStencil{};
+        depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+        depthStencil.depthTestEnable = VK_TRUE;
+        depthStencil.depthWriteEnable = VK_TRUE;
+        depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+        depthStencil.depthBoundsTestEnable = VK_FALSE;
+        depthStencil.minDepthBounds = 0.0f; // Optional
+        depthStencil.maxDepthBounds = 1.0f; // Optional
+        depthStencil.stencilTestEnable = VK_FALSE;
+        depthStencil.front = {}; // Optional
+        depthStencil.back = {}; // Optional
 
         std::vector<VkDynamicState> dynamicStates =
         {
@@ -461,6 +472,7 @@ namespace Azazel
         pipelineInfo.renderPass = renderPass.renderPass;
         pipelineInfo.subpass = 0;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+        pipelineInfo.pDepthStencilState = &depthStencil;
 
         vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline);
 
@@ -489,10 +501,10 @@ namespace Azazel
         scissor.offset = { 0, 0 };
         scissor.extent = swapChain.swapChainExtent;
         vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
-        VkBuffer vertexBuffers[] = { vertexBuffer.vertexBuffer };
+        VkBuffer vertexBuffers[] = { vertexBuffer->buffer };
         VkDeviceSize offsets[] = { 0 };
         vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-        vkCmdBindIndexBuffer(commandBuffer, indexBuffer.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+        vkCmdBindIndexBuffer(commandBuffer, indexBuffer->buffer, 0, VK_INDEX_TYPE_UINT32);
         vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
     }
 
