@@ -17,11 +17,11 @@ namespace Azazel
     {
         VkSwapchainKHR swapChain;
         SwapChainSupportDetails swapChainSupport = surface.querySwapChainSupport(physicalDevice.get());
-        VkSurfaceFormatKHR surfaceFormat         = chooseSwapSurfaceFormat(swapChainSupport.formats);
-        VkPresentModeKHR presentMode             = chooseSwapPresentMode(swapChainSupport.presentModes);
-        VkExtent2D extent                        = chooseSwapExtent(window, swapChainSupport.capabilities);
+        surfaceFormat   = chooseSwapSurfaceFormat(swapChainSupport.formats);
+        presentMode     = chooseSwapPresentMode(swapChainSupport.presentModes);
+        swapChainExtent = chooseSwapExtent(window, swapChainSupport.capabilities);
 
-        uint32_t imageCount = std::min(swapChainSupport.capabilities.maxImageCount, swapChainSupport.capabilities.minImageCount + 1);
+        imageCount = std::min(swapChainSupport.capabilities.maxImageCount, swapChainSupport.capabilities.minImageCount + 1);
 
         VkSwapchainCreateInfoKHR createInfo{};
         {
@@ -30,19 +30,19 @@ namespace Azazel
             createInfo.minImageCount = imageCount;
             createInfo.imageFormat = surfaceFormat.format;
             createInfo.imageColorSpace = surfaceFormat.colorSpace;
-            createInfo.imageExtent = extent;
+            createInfo.imageExtent = swapChainExtent;
             createInfo.imageArrayLayers = 1;
             createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
         }
 
-        const QueueFamilyIndices& indices = physicalDevice.getQueueFamilyIndices();
-        uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
+        auto& indices = physicalDevice.getQueueFamilyIndices();
+        auto queueFamilyIndices = indices.getIndices();
 
         if (indices.graphicsFamily != indices.presentFamily)
         {
             createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
             createInfo.queueFamilyIndexCount = 2;
-            createInfo.pQueueFamilyIndices = queueFamilyIndices;
+            createInfo.pQueueFamilyIndices = queueFamilyIndices.data();
         }
         else
         {
@@ -61,10 +61,29 @@ namespace Azazel
         swapChainImages.resize(imageCount);
         vkGetSwapchainImagesKHR(device.device, swapChain, &imageCount, swapChainImages.data());
 
-        this->surfaceFormat = surfaceFormat;
         swapChainImageFormat = surfaceFormat.format;
-        swapChainExtent = extent;
         return swapChain;
+    }
+
+    VkImageView AZSwapChain::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
+    {
+        VkImageViewCreateInfo createInfo{};
+        createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        createInfo.image = image;
+        createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        createInfo.format = format;
+        createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.subresourceRange.aspectMask = aspectFlags;
+        createInfo.subresourceRange.baseMipLevel = 0;
+        createInfo.subresourceRange.levelCount = 1;
+        createInfo.subresourceRange.baseArrayLayer = 0;
+        createInfo.subresourceRange.layerCount = 1;
+        VkImageView imageView;
+        vkCreateImageView(device.device, &createInfo, nullptr, &imageView);
+        return imageView;
     }
 
     std::vector<VkImageView> AZSwapChain::createImageViews(VkDevice device, std::vector<VkImage>& swapChainImages, VkFormat format)
@@ -74,23 +93,7 @@ namespace Azazel
 
         for (size_t i = 0; i < swapChainImages.size(); i++)
         {
-            VkImageViewCreateInfo createInfo{};
-            {
-                createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-                createInfo.image = swapChainImages[i];
-                createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-                createInfo.format = format;
-                createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
-                createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
-                createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
-                createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
-                createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-                createInfo.subresourceRange.baseMipLevel = 0;
-                createInfo.subresourceRange.levelCount = 1;
-                createInfo.subresourceRange.baseArrayLayer = 0;
-                createInfo.subresourceRange.layerCount = 1;
-            }
-            vkCreateImageView(device, &createInfo, nullptr, &swapChainImageViews[i]);
+            swapChainImageViews[i] = createImageView(swapChainImages[i], format, VK_IMAGE_ASPECT_COLOR_BIT);
         }
         return swapChainImageViews;
     }
@@ -99,13 +102,11 @@ namespace Azazel
     {
         for (const auto& availableFormat : availableFormats)
         {
-            if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &&
-                availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+            if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
             {
                 return availableFormat;
             }
         }
-
         return availableFormats[0];
     }
 

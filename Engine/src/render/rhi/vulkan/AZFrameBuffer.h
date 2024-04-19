@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vk_headers.h"
+#include <vulkan/vulkan.hpp>
 
 namespace Azazel
 {

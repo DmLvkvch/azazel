@@ -4,6 +4,7 @@
 #include "AZInstance.h"
 #include <optional>
 #include <set>
+#include <array>
 
 namespace Azazel
 {
@@ -17,23 +18,19 @@ namespace Azazel
         {
             return presentFamily.has_value() && graphicsFamily.has_value();
         }
+
+        std::array<uint32_t, 2> getIndices() const
+        {
+            return { presentFamily.value(), graphicsFamily.value() };
+        }
     };
 
     class PhysicalDevice
     {
     public:
-        PhysicalDevice(VkInstance instance, VkSurfaceKHR surface)
-        {
-            physicalDevice = createPhysicalDevice(instance, surface);
-            vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
-            vkGetPhysicalDeviceProperties(physicalDevice, &properties);
-            vkGetPhysicalDeviceFeatures(physicalDevice, &features);
-        }
+        PhysicalDevice(VkInstance instance, VkSurfaceKHR surface);
 
-        ~PhysicalDevice()
-        {
-
-        }
+        ~PhysicalDevice();
 
         VkPhysicalDevice createPhysicalDevice(VkInstance instance, VkSurfaceKHR surface);
 
@@ -87,9 +84,12 @@ namespace Azazel
     {
     public:
         VulkanDevice(AZInstance& context, PhysicalDevice& physicalDevice);
+        ~VulkanDevice();
 
         VkDevice createDevice(AZInstance& context, PhysicalDevice& physicalDevice);
         void destroy();
+
+        VkMemoryRequirements getMemoryRequirements(VkBuffer buffer) const;
     
         AZQueue graphicsQueue;
         AZQueue presentQueue;

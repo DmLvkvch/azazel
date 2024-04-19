@@ -48,7 +48,7 @@ namespace Azazel
         PresentQueue()
         {
 
-        };
+        }
 
         PresentQueue(VkDevice device, uint32_t queueFamilyIndex)
         {

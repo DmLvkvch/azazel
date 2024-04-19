@@ -52,7 +52,7 @@ namespace Azazel
         }
 
         std::optional<Material> material = std::nullopt;
-    private:
+    public:
         std::shared_ptr<VertexArray> vertexArray;
         std::shared_ptr<IndexBuffer> indexBuffer;
     };

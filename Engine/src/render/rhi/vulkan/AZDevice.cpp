@@ -2,6 +2,19 @@
 
 namespace Azazel
 {
+
+    PhysicalDevice::PhysicalDevice(VkInstance instance, VkSurfaceKHR surface)
+    {
+        physicalDevice = createPhysicalDevice(instance, surface);
+        vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
+        vkGetPhysicalDeviceProperties(physicalDevice, &properties);
+        vkGetPhysicalDeviceFeatures(physicalDevice, &features);
+    }
+
+    PhysicalDevice::~PhysicalDevice()
+    {
+    }
+
     VkPhysicalDevice PhysicalDevice::createPhysicalDevice(VkInstance instance, VkSurfaceKHR surface)
     {
         uint32_t deviceCount = 0;
@@ -128,6 +141,11 @@ namespace Azazel
         presentQueue = AZQueue(device, physicalDevice.getQueueFamilyIndices().presentFamily.value());
     }
 
+    VulkanDevice::~VulkanDevice()
+    {
+
+    }
+
     VkDevice VulkanDevice::createDevice(AZInstance& context, PhysicalDevice& physicalDevice)
     {
         VkDevice device;
@@ -167,4 +185,12 @@ namespace Azazel
     {
         vkDestroyDevice(device, nullptr);
     }
+
+    VkMemoryRequirements VulkanDevice::getMemoryRequirements(VkBuffer buffer) const
+    {
+        VkMemoryRequirements memRequirements;
+        vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
+        return memRequirements;
+    }
 }
+

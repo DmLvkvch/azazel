@@ -3,6 +3,11 @@
 
 namespace Azazel
 {
+    AZSurface::AZSurface(VkInstance& instance, GLFWwindow* window)
+    {
+        surface = createSurface(instance, window);
+    }
+
     VkSurfaceKHR AZSurface::createSurface(VkInstance& instance, GLFWwindow* window)
     {
         glfwCreateWindowSurface(instance, window, nullptr, &surface);

@@ -62,7 +62,6 @@ namespace Azazel
 
         ~Model()
         {
-            std::cout<<"Model destr"<<std::endl;
         }
 
     public:
@@ -78,7 +77,7 @@ namespace Azazel
         void processNode(aiNode* node, const aiScene* scene, const std::string& directory);
 
         Mesh processMesh(aiMesh* mesh, const aiScene* scene, const std::string& directory);
-    private:
+    public:
         std::vector<Mesh> meshes;
         std::vector<std::shared_ptr<Texture>> textures;
     };

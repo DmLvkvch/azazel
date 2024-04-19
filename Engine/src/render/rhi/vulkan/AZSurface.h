@@ -10,10 +10,7 @@ namespace Azazel
     class AZSurface
     {
     public:
-        AZSurface(VkInstance& instance, GLFWwindow* window)
-        {
-            surface = createSurface(instance, window);
-        }
+        AZSurface(VkInstance& instance, GLFWwindow* window);
 
         SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
 

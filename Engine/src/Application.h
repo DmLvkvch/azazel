@@ -16,6 +16,7 @@
 #include "render/rhi/vulkan/AZDescriptorSet.h"
 #include "render/rhi/vulkan/AZImage.h"
 #include <vulkan/vulkan.h>
+#include "render/Model.h"
 
 namespace Azazel
 {
@@ -37,7 +38,7 @@ namespace Azazel
 
         void createDescriptorSetLayout();
 
-        void updateUniformBuffer(uint32_t currentImage);
+        void updateUniformBuffer();
 
         VkShaderModule createShaderModule(VkDevice device, const std::vector<char>& code);
 
@@ -83,5 +84,7 @@ namespace Azazel
         EventDispatcher<void, Event&> eventSubscribers;
         EventDispatcher<void , float> updateSubscribers;
         std::unique_ptr<Camera> camera;
+        
+        Model cerberus;
     };
 }

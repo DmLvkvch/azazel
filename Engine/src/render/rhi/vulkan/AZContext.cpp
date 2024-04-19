@@ -15,8 +15,8 @@
 namespace Azazel
 {
     static AZContext* context = nullptr;
-    static ImGui_ImplVulkanH_Window imguiVulkan;
 
+    static ImGui_ImplVulkanH_Window imguiVulkan;
 
     void setVulkanContext(AZContext& ctx)
     {
@@ -51,4 +51,8 @@ namespace Azazel
         vmaCreateAllocator(&allocatorInfo, &this->allocator);
     }
 
+    void AZContext::destroy()
+    {
+        
+    }
 }

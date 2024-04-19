@@ -94,7 +94,7 @@ file(GLOB_RECURSE GLSL_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/res/shaders/* )
 
 find_program(GLSLC glslc)
 
-macro(compile_glsl GLSL)
+macro (compile_glsl GLSL)
 
     get_filename_component(SHADER ${GLSL} NAME)
 
@@ -108,12 +108,12 @@ macro(compile_glsl GLSL)
         COMMAND ${GLSLC} ${current-shader-path} -o ${current-output-path}
         DEPENDS ${current-shader-path}
         COMMENT "Compiling ${GLSL}"
-        )
+    )
 
     list(APPEND SPIRV_BINARY_FILES ${current-output-path})
 endmacro()
 
-foreach(GLSL IN LISTS GLSL_SOURCE_FILES)
+foreach (GLSL IN LISTS GLSL_SOURCE_FILES)
     compile_glsl(${GLSL})
 endforeach()
 

@@ -3,7 +3,6 @@
 #ifdef AZAZEL_GL
 #include "rhi/gl/GLESShader.h"
 #else 
-#include "rhi/vulkan/AZShader.h"
 #endif
 
 namespace Azazel

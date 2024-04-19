@@ -114,7 +114,6 @@ namespace Azazel
     {
         delta = 0.0f;
         window.setEventCallback(std::bind(&Application::onEvent, this, std::placeholders::_1));
-        //Render::getRender()->init();
         camera.reset(new Camera());
         auto& ctx = getVulkanContext();
 
@@ -127,11 +126,11 @@ namespace Azazel
 
         int w, h, c;
         unsigned char* pixels = stbi_load("textures/awesomeface.png", &w, &h, &c, STBI_rgb_alpha);
-        textureImage = std::make_unique<AZImage>(w, h, pixels, VK_FORMAT_R8G8B8A8_SRGB);
+        textureImage = std::make_unique<AZImage>(TextureData{w, h, c, pixels}, VK_FORMAT_R8G8B8A8_SRGB);
         stbi_image_free(pixels);
         
         textureImageView = std::make_unique<AZImageView>(*textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
-        textureSampler = std::make_unique<AZTextureSampler>();
+        textureSampler = std::make_unique<AZTextureSampler>(VK_FILTER_LINEAR, VK_SAMPLER_ADDRESS_MODE_REPEAT);
 
         uniformBuffer = std::make_unique<AZUniformBuffer>(device, physicalDevice, sizeof(UniformBufferObject), nullptr);
 
@@ -139,19 +138,14 @@ namespace Azazel
         createDescriptorSets();
 
         graphicsPipeline = createGraphicsPipeline(device.device);
-
-        vertexBuffer = std::make_unique<AZVertexBuffer>(device, physicalDevice, BufferDesc{ (void*)vertices.data(), sizeof(vertices[0]) * vertices.size() });
-
+        vertexBuffer = std::make_unique<AZVertexBuffer>(BufferDesc{ (void*)vertices.data(), sizeof(vertices[0]) * vertices.size() , VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT});
         indexBuffer = std::make_unique<AZIndexBuffer>(device, physicalDevice, (void*) indices.data(), indices.size());
 
         createSyncObjects();
 
-        VkPresentModeKHR presentMode = VK_PRESENT_MODE_MAILBOX_KHR;
-
         g_MainWindowData.Surface = surface.surface;
         g_MainWindowData.SurfaceFormat = swapChain.surfaceFormat;
-
-        g_MainWindowData.PresentMode = ImGui_ImplVulkanH_SelectPresentMode(physicalDevice.get(), surface.surface, &presentMode, 1);
+        g_MainWindowData.PresentMode = swapChain.presentMode;
 
         ImGui_ImplVulkanH_CreateOrResizeWindow(instance.instance, physicalDevice.get(), device.device, &g_MainWindowData, device.graphicsQueue.queueFamilyIndex, nullptr, window.getWidth(), window.getWidth(), 2);
 
@@ -180,6 +174,7 @@ namespace Azazel
         init_info.Allocator = nullptr;
         init_info.CheckVkResultFn = nullptr;
         ImGui_ImplVulkan_Init(&init_info);
+
     }
 
     Application::~Application()
@@ -206,13 +201,10 @@ namespace Azazel
     {
         while (running)
         {
+            auto startTime = std::chrono::high_resolution_clock::now();
             camera->onInputUpdate(delta);
             window.onUpdate(delta);
-            drawFrame();
-
-            auto startTime = std::chrono::high_resolution_clock::now();
-        
-            //Render::getRender()->endScene();
+            drawFrame();        
             auto stopTime = std::chrono::high_resolution_clock::now();
             delta = std::chrono::duration<float, std::chrono::milliseconds::period>(stopTime - startTime).count();
         }
@@ -242,6 +234,31 @@ namespace Azazel
         file.read(buffer.data(), fileSize);
         file.close();
         return buffer;
+    }
+
+    void Application::createDescriptorSetLayout()
+    {
+        VkDescriptorSetLayoutBinding uboLayoutBinding{};
+        uboLayoutBinding.binding = 0;
+        uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        uboLayoutBinding.descriptorCount = 1;
+        uboLayoutBinding.pImmutableSamplers = nullptr;
+        uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+        VkDescriptorSetLayoutBinding samplerLayoutBinding{};
+        samplerLayoutBinding.binding = 1;
+        samplerLayoutBinding.descriptorCount = 1;
+        samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        samplerLayoutBinding.pImmutableSamplers = nullptr;
+        samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+        std::array<VkDescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, samplerLayoutBinding };
+        VkDescriptorSetLayoutCreateInfo layoutInfo{};
+        layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+        layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
+        layoutInfo.pBindings = bindings.data();
+
+        vkCreateDescriptorSetLayout(getVulkanContext().getVulkanDevice().device, &layoutInfo, nullptr, &descriptorSetLayout);
     }
 
     void Application::createDescriptorSets()
@@ -291,32 +308,7 @@ namespace Azazel
         }
     }
 
-    void Application::createDescriptorSetLayout()
-    {
-        VkDescriptorSetLayoutBinding uboLayoutBinding{};
-        uboLayoutBinding.binding = 0;
-        uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        uboLayoutBinding.descriptorCount = 1;
-        uboLayoutBinding.pImmutableSamplers = nullptr;
-        uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-
-        VkDescriptorSetLayoutBinding samplerLayoutBinding{};
-        samplerLayoutBinding.binding = 1;
-        samplerLayoutBinding.descriptorCount = 1;
-        samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        samplerLayoutBinding.pImmutableSamplers = nullptr;
-        samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-
-        std::array<VkDescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, samplerLayoutBinding };
-        VkDescriptorSetLayoutCreateInfo layoutInfo{};
-        layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-        layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
-        layoutInfo.pBindings = bindings.data();
-
-        vkCreateDescriptorSetLayout(getVulkanContext().getVulkanDevice().device, &layoutInfo, nullptr, &descriptorSetLayout);
-    }
-
-    void Application::updateUniformBuffer(uint32_t currentImage)
+    void Application::updateUniformBuffer()
     {
         static auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -431,11 +423,11 @@ namespace Azazel
         depthStencil.depthWriteEnable = VK_TRUE;
         depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
         depthStencil.depthBoundsTestEnable = VK_FALSE;
-        depthStencil.minDepthBounds = 0.0f; // Optional
-        depthStencil.maxDepthBounds = 1.0f; // Optional
+        depthStencil.minDepthBounds = 0.0f;
+        depthStencil.maxDepthBounds = 1.0f;
         depthStencil.stencilTestEnable = VK_FALSE;
-        depthStencil.front = {}; // Optional
-        depthStencil.back = {}; // Optional
+        depthStencil.front = {};
+        depthStencil.back = {};
 
         std::vector<VkDynamicState> dynamicStates =
         {
@@ -501,7 +493,7 @@ namespace Azazel
         scissor.offset = { 0, 0 };
         scissor.extent = swapChain.swapChainExtent;
         vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
-        VkBuffer vertexBuffers[] = { vertexBuffer->buffer };
+        VkBuffer vertexBuffers[] = { vertexBuffer->buffer.buffer };
         VkDeviceSize offsets[] = { 0 };
         vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
         vkCmdBindIndexBuffer(commandBuffer, indexBuffer->buffer, 0, VK_INDEX_TYPE_UINT32);
@@ -542,7 +534,7 @@ namespace Azazel
 
         uint32_t imageIndex = swapChain.acquireNextImage(imageAvailableSemaphore);
 
-        updateUniformBuffer(imageIndex % MAX_FRAMES_IN_FLIGHT);
+        updateUniformBuffer();
         
         commandBuffer.reset();
         commandBuffer.begin();
@@ -595,13 +587,10 @@ namespace Azazel
 
         VkPresentInfoKHR presentInfo{};
         presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-
         presentInfo.waitSemaphoreCount = 1;
         presentInfo.pWaitSemaphores = signalSemaphores;
-
         presentInfo.swapchainCount = 1;
         presentInfo.pSwapchains = &swapChain.swapChain;
-
         presentInfo.pImageIndices = &imageIndex;
 
         vkQueuePresentKHR(device.presentQueue.queue, &presentInfo);

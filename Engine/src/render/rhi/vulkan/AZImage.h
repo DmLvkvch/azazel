@@ -3,6 +3,7 @@
 #include "vk_headers.h"
 #include "AZContext.h"
 #include <stb_image/stb_image.h>
+#include "render/TextureData.h"
 
 namespace Azazel
 {
@@ -10,9 +11,9 @@ namespace Azazel
     class AZImage
     {
     public:
-        AZImage(int width, int height, unsigned char* pixels, VkFormat format) 
+        AZImage(TextureData textureData, VkFormat format) 
         {
-            createTextureImage(width, height, pixels, format);
+            createTextureImage(textureData.width, textureData.height, textureData.data, format);
         }
 
         ~AZImage() {}
@@ -58,8 +59,7 @@ namespace Azazel
 
             vkCreateBuffer(device.device, &bufferInfo, nullptr, &buffer);
 
-            VkMemoryRequirements memRequirements;
-            vkGetBufferMemoryRequirements(device.device, buffer, &memRequirements);
+            VkMemoryRequirements memRequirements = device.getMemoryRequirements(buffer);
 
             VkMemoryAllocateInfo allocInfo{};
             allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -77,7 +77,6 @@ namespace Azazel
 
             auto& device = ctx.getVulkanDevice();
             auto& physicalDevice = ctx.getPhysicalDevice();
-            auto& commandPool = ctx.getCommandPool();
 
             VkImageCreateInfo imageInfo{};
             imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -114,7 +113,6 @@ namespace Azazel
             auto& ctx = getVulkanContext();
             auto& device = ctx.getVulkanDevice();
             auto& commandPool = ctx.getCommandPool();
-            auto& commantBuffer = ctx.getCommandBuffer();
 
             VkCommandBuffer commandBuffer = AZCommandBuffer::beginSingleTimeCommands(device, commandPool);
 
@@ -161,7 +159,6 @@ namespace Azazel
             auto& ctx = getVulkanContext();
             auto& device = ctx.getVulkanDevice();
             auto& commandPool = ctx.getCommandPool();
-            auto& commantBuffer = ctx.getCommandBuffer();
 
             VkCommandBuffer commandBuffer = AZCommandBuffer::beginSingleTimeCommands(device, commandPool);
             VkBufferImageCopy region{};
@@ -187,18 +184,20 @@ namespace Azazel
     class AZTextureSampler
     {
     public:
-        AZTextureSampler()
+        AZTextureSampler() : sampler(VK_NULL_HANDLE) {}
+
+        AZTextureSampler(VkFilter filter, VkSamplerAddressMode mode)
         {
             auto& physicalDevice = getVulkanContext().getPhysicalDevice();
             auto& device = getVulkanContext().getVulkanDevice();
 
             VkSamplerCreateInfo samplerInfo{};
             samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-            samplerInfo.magFilter = VK_FILTER_LINEAR;
-            samplerInfo.minFilter = VK_FILTER_LINEAR;
-            samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-            samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-            samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+            samplerInfo.magFilter = filter;
+            samplerInfo.minFilter = filter;
+            samplerInfo.addressModeU = mode;
+            samplerInfo.addressModeV = mode;
+            samplerInfo.addressModeW = mode;
             samplerInfo.anisotropyEnable = physicalDevice.getPhysicalDeviceFeatures().samplerAnisotropy;
             samplerInfo.maxAnisotropy = physicalDevice.getPhysicalDeviceProperties().limits.maxSamplerAnisotropy;
             samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
@@ -209,6 +208,17 @@ namespace Azazel
 
             vkCreateSampler(device.device, &samplerInfo, nullptr, &sampler);
         }
+
+        ~AZTextureSampler()
+        {
+            if (sampler != VK_NULL_HANDLE)
+            {
+                //vkDestroySampler(device, sampler, nullptr);
+            }
+        }
+
+        void destroy();
+
         VkSampler sampler;
     };
     

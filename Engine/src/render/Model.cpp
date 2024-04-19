@@ -49,23 +49,6 @@ namespace Azazel
         processNode(scene->mRootNode, scene, directory);
     }
 
-    void Model::draw(Shader& shader)
-    {
-        shader.bind();
-        auto modelMatrix = transform.getTransformMatrix();
-        shader.setMatrix4f("model", modelMatrix);
-        shader.setMatrix4f("u_normal_matrix", glm::transpose(glm::inverse(glm::mat3(modelMatrix))));
-        for (const auto& mesh : meshes)
-        {
-            if (mesh.material)
-            {
-                auto m = mesh.material;
-                m->applyProperties(shader);
-            }
-            Render::getRender()->drawMesh(mesh, shader);
-        }
-    }
-
     void Model::processNode(aiNode* node, const aiScene* scene, const std::string& directory)
     {
         meshes.reserve(meshes.size() + node->mNumMeshes);
@@ -185,4 +168,20 @@ namespace Azazel
         }
     }
 
+    void Model::draw(Shader& shader)
+    {
+        shader.bind();
+        auto modelMatrix = transform.getTransformMatrix();
+        shader.setMatrix4f("model", modelMatrix);
+        shader.setMatrix4f("u_normal_matrix", glm::transpose(glm::inverse(glm::mat3(modelMatrix))));
+        for (const auto& mesh : meshes)
+        {
+            if (mesh.material)
+            {
+                auto m = mesh.material;
+                m->applyProperties(shader);
+            }
+            Render::getRender()->drawMesh(mesh, shader);
+        }
+    }
 }
