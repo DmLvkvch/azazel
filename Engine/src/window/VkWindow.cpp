@@ -10,8 +10,6 @@
 namespace Azazel
 {
 
-    static bool initialized = false;
-
     VkWindow::VkWindow(const WindowProperties& props)
     {
         this->width = props.width;

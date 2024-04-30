@@ -8,7 +8,7 @@ namespace Azazel
 {
     VmaMemoryUsage memoryUsageToNative(MemoryUsage usage)
     {
-        constexpr VmaMemoryUsage mappingTable[] =
+        static VmaMemoryUsage mappingTable[] =
         {
             VMA_MEMORY_USAGE_GPU_ONLY,
             VMA_MEMORY_USAGE_CPU_ONLY,

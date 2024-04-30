@@ -12,10 +12,7 @@ namespace Azazel
     public:
         AZCommandPool(const VulkanDevice& device, int queueIndex);
 
-        ~AZCommandPool()
-        {
-
-        }
+        ~AZCommandPool();
 
         AZCommandBuffer* allocateCommandBuffer(const VulkanDevice& device);
 

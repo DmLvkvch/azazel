@@ -25,21 +25,10 @@ namespace Azazel
 
         ~AZSwapChain()
         {
-
+            destroy();
         }
 
-        uint32_t acquireNextImage(VkSemaphore signalSemaphore) const
-        {
-            uint32_t imageIndex;
-            vkAcquireNextImageKHR(device.device, swapChain, UINT64_MAX, signalSemaphore, VK_NULL_HANDLE, &imageIndex);
-            return imageIndex;
-        }
-
-        void recreate(uint32_t width, uint32_t height)
-        {
-        }
-
-        void cleanupSwapChain() 
+        void destroy()
         {
             for (auto& framebuffer : swapChainFramebuffers) 
             {
@@ -52,6 +41,17 @@ namespace Azazel
             }
 
             vkDestroySwapchainKHR(device.device, swapChain, nullptr);
+        }
+
+        uint32_t acquireNextImage(VkSemaphore signalSemaphore) const
+        {
+            uint32_t imageIndex;
+            vkAcquireNextImageKHR(device.device, swapChain, UINT64_MAX, signalSemaphore, VK_NULL_HANDLE, &imageIndex);
+            return imageIndex;
+        }
+
+        void recreate(uint32_t width, uint32_t height)
+        {
         }
 
         VkSwapchainKHR swapChain;

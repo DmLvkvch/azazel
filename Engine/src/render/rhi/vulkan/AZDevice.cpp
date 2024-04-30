@@ -143,7 +143,7 @@ namespace Azazel
 
     VulkanDevice::~VulkanDevice()
     {
-
+        destroy();
     }
 
     VkDevice VulkanDevice::createDevice(AZInstance& context, PhysicalDevice& physicalDevice)

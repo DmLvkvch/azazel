@@ -28,6 +28,11 @@ namespace Azazel
         return *context;
     }
 
+    AZContext::~AZContext()
+    {
+        destroy();
+    }
+
     void AZContext::init(Window& window)
     {
         instance = std::make_unique<AZInstance>();
@@ -35,7 +40,7 @@ namespace Azazel
         physicalDevice = std::make_unique<PhysicalDevice>(instance->instance, surface->surface);
         device = std::make_unique<VulkanDevice>(*instance, *physicalDevice);
         swapChain = std::make_unique<AZSwapChain>(static_cast<GLFWwindow*>(window.getNativeWindow()), *surface, *physicalDevice, *device);
-        renderPass = std::make_unique<AZRenderPass>(device->device, swapChain->swapChainImageFormat);
+        renderPass = std::make_unique<AZRenderPass>(*device, swapChain->swapChainImageFormat);
         swapChain->initSwapChainFramebuffers(*renderPass);
 
         commandPool = std::make_unique<AZCommandPool>(*device, physicalDevice->getQueueFamilyIndices().graphicsFamily.value());
@@ -53,6 +58,12 @@ namespace Azazel
 
     void AZContext::destroy()
     {
-        
+        descriptorPool.reset();
+        commandPool.reset();
+        renderPass.reset();
+        swapChain.reset();
+        device.reset();
+        surface.reset();
+        instance.reset();
     }
 }

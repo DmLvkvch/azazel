@@ -26,7 +26,8 @@ namespace Azazel
     class AZContext
     {
     public:
-
+        ~AZContext();
+        
         const AZInstance& getInstance() const 
         {
             return *instance;
