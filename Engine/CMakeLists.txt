@@ -9,7 +9,7 @@ set(GLFW_BUILD_DOCS OFF CACHE BOOL  "GLFW lib only")
 set(GLFW_INSTALL OFF CACHE BOOL  "GLFW lib only")
 
 add_definitions(-DAZAZEL_VK)
-#  -fno-rtti"
+#  -fno-rtti  -Wall
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++20")
 
 set(CMAKE_CXX_STANDARD 20)
@@ -37,7 +37,6 @@ include_directories ("vendor/glad/include"
 OPTION (ASSIMP_BUILD_TESTS "If the test suite for Assimp is built in addition to the library." OFF)
 OPTION (ASSIMP_WARNINGS_AS_ERRORS "Treat all warnings as errors." OFF)
 OPTION (ASSIMP_INSTALL "Disable this if you want to use assimp as a submodule." OFF )
-OPTION (ASTCENC_SHAREDLIB "Enable astcenc builds with core library shared objects" ON )
 OPTION (FT_DISABLE_HARFBUZZ "DISABLE HARFBUZZ" ON)
 
 add_subdirectory(vendor/glad)
@@ -76,6 +75,8 @@ if (APPLE)
     target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
     target_link_libraries(${PROJECT_NAME} "-framework IOKit")
 endif ()
+
+#set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_WARNING_AS_ERROR)
 
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} Vulkan::Vulkan glfw SPIRV assimp stb_image glad glm::glm freetype IMGUI OpenGL::GL VulkanMemoryAllocator)
 

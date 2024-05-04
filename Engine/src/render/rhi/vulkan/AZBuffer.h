@@ -23,18 +23,8 @@ namespace Azazel
     class AZBuffer
     {
     public:
-        AZBuffer()
-        {
-
-        }
-
         AZBuffer(const BufferDesc& bufferDesc);
-
-        ~AZBuffer()
-        {
-            destroy();
-        }
-
+        ~AZBuffer();
         void destroy();
         void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties);
         void copy(const AZBuffer& dstBuffer);
@@ -43,8 +33,8 @@ namespace Azazel
         void unmap();
 
         void* hostVisibleData = nullptr;
+        vk::Buffer buffer;
         VkDeviceSize size = 0;
-        VkBuffer buffer = VK_NULL_HANDLE;
         VkDeviceMemory bufferMemory = VK_NULL_HANDLE;
     };
 

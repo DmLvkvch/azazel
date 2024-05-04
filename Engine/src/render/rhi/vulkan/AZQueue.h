@@ -4,6 +4,8 @@
 
 namespace Azazel
 {
+    template <typename T> using AZArrayProxy = vk::ArrayProxy<T>;
+
     class AZQueue
     {
     public:
@@ -13,11 +15,6 @@ namespace Azazel
         }
 
         AZQueue(VkDevice device, uint32_t queueFamilyIndex);
-
-        ~AZQueue()
-        {
-
-        }
 
         VkQueue createQueue(VkDevice device, uint32_t queueFamilyIndex);
 
@@ -36,7 +33,7 @@ namespace Azazel
             return queue;
         }
 
-        VkQueue queue;
+        vk::Queue queue;
         VkQueueFlags flags;
         uint32_t queueFamilyIndex;
         uint32_t queueIndex;

@@ -13,13 +13,48 @@ namespace Azazel
         this->swapChainImageViews = createImageViews(device.device, swapChainImages, swapChainImageFormat);
     }
 
+    AZSwapChain::~AZSwapChain()
+    {
+        destroy();
+    }
+
+    void AZSwapChain::destroy()
+    {
+        vkDestroyImageView(device.device, depthImageView, nullptr);
+        vkDestroyImage(device.device, depthImage, nullptr);
+        vkFreeMemory(device.device, depthImageMemory, nullptr);
+
+        for (auto& framebuffer : swapChainFramebuffers)
+        {
+            vkDestroyFramebuffer(device.device, framebuffer.framebuffer, nullptr);
+        }
+
+        for (auto imageView : swapChainImageViews)
+        {
+            vkDestroyImageView(device.device, imageView, nullptr);
+        }
+
+        vkDestroySwapchainKHR(device.device, swapChain, nullptr);
+    }
+
+    uint32_t AZSwapChain::acquireNextImage(VkSemaphore signalSemaphore) const
+    {
+        uint32_t imageIndex;
+        vkAcquireNextImageKHR(device.device, swapChain, UINT64_MAX, signalSemaphore, VK_NULL_HANDLE, &imageIndex);
+        return imageIndex;
+    }
+
+    void AZSwapChain::recreate(uint32_t width, uint32_t height)
+    {
+    }
+
     VkSwapchainKHR AZSwapChain::createSwapChain(GLFWwindow* window, AZSurface& surface)
     {
         VkSwapchainKHR swapChain;
         SwapChainSupportDetails swapChainSupport = surface.querySwapChainSupport(physicalDevice.get());
-        surfaceFormat   = chooseSwapSurfaceFormat(swapChainSupport.formats);
-        presentMode     = chooseSwapPresentMode(swapChainSupport.presentModes);
-        swapChainExtent = chooseSwapExtent(window, swapChainSupport.capabilities);
+        surfaceFormat   = chooseSurfaceFormat(swapChainSupport.formats);
+        presentMode     = choosePresentMode(swapChainSupport.presentModes);
+        swapChainExtent = chooseExtent(window, swapChainSupport.capabilities);
 
         imageCount = std::min(swapChainSupport.capabilities.maxImageCount, swapChainSupport.capabilities.minImageCount + 1);
 
@@ -86,6 +121,35 @@ namespace Azazel
         return imageView;
     }
 
+    void AZSwapChain::createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory)
+    {
+        VkImageCreateInfo imageInfo{};
+        imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+        imageInfo.imageType = VK_IMAGE_TYPE_2D;
+        imageInfo.extent = { width, height, 1 };
+        imageInfo.mipLevels = 1;
+        imageInfo.arrayLayers = 1;
+        imageInfo.format = format;
+        imageInfo.tiling = tiling;
+        imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        imageInfo.usage = usage;
+        imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+        imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+        vkCreateImage(device.device, &imageInfo, nullptr, &image);
+
+        VkMemoryRequirements memRequirements;
+        vkGetImageMemoryRequirements(device.device, image, &memRequirements);
+
+        VkMemoryAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        allocInfo.allocationSize = memRequirements.size;
+        allocInfo.memoryTypeIndex = physicalDevice.findMemoryType(memRequirements.memoryTypeBits, properties);
+
+        vkAllocateMemory(device.device, &allocInfo, nullptr, &imageMemory);
+        vkBindImageMemory(device.device, image, imageMemory, 0);
+    }
+
     std::vector<VkImageView> AZSwapChain::createImageViews(VkDevice device, std::vector<VkImage>& swapChainImages, VkFormat format)
     {
         std::vector<VkImageView> swapChainImageViews;
@@ -98,7 +162,7 @@ namespace Azazel
         return swapChainImageViews;
     }
 
-    VkSurfaceFormatKHR AZSwapChain::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats)
+    VkSurfaceFormatKHR AZSwapChain::chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats)
     {
         for (const auto& availableFormat : availableFormats)
         {
@@ -110,7 +174,7 @@ namespace Azazel
         return availableFormats[0];
     }
 
-    VkPresentModeKHR AZSwapChain::chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes)
+    VkPresentModeKHR AZSwapChain::choosePresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes)
     {
         for (const auto& availablePresentMode : availablePresentModes)
         {
@@ -122,7 +186,7 @@ namespace Azazel
         return VK_PRESENT_MODE_FIFO_KHR;
     }
 
-    VkExtent2D AZSwapChain::chooseSwapExtent(GLFWwindow* window, const VkSurfaceCapabilitiesKHR& capabilities)
+    VkExtent2D AZSwapChain::chooseExtent(GLFWwindow* window, const VkSurfaceCapabilitiesKHR& capabilities)
     {
         if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
         {
@@ -152,7 +216,7 @@ namespace Azazel
             uint32_t height = swapChainExtent.height;
             auto& imageView = swapChainImageViews[i];
             AZFramebufferDesc fboDesc{ {imageView, depthImageView}, renderPass.renderPass, width, height };
-            swapChainFramebuffers[i] = AZFramebuffer(device.device, fboDesc);
+            swapChainFramebuffers[i] = AZFramebuffer(device, fboDesc);
         }
     }
 }

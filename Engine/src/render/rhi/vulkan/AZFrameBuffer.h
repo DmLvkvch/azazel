@@ -2,6 +2,7 @@
 
 #include "vk_headers.h"
 #include <vulkan/vulkan.hpp>
+#include "AZDevice.h"
 
 namespace Azazel
 {
@@ -16,9 +17,24 @@ namespace Azazel
     class AZFramebuffer
     {
     public:
-        AZFramebuffer() {}
+        AZFramebuffer()
+            : framebuffer(vk::Framebuffer{})
+        {
 
-        AZFramebuffer(VkDevice& device, AZFramebufferDesc& framebufferDesc);
+        }
+
+        AZFramebuffer(VulkanDevice& device, AZFramebufferDesc& framebufferDesc);
+        
+        AZFramebuffer(const AZFramebuffer& fb)
+            : framebuffer(fb.framebuffer)
+        {
+        }
+
+        AZFramebuffer& operator=(const AZFramebuffer& fb)
+        {
+            framebuffer = fb.framebuffer;
+            return *this;
+        }
 
         ~AZFramebuffer()
         {
@@ -27,7 +43,7 @@ namespace Azazel
 
         void destroy()
         {
-            vkDestroyFramebuffer(device, framebuffer, nullptr);
+            //device.device.destroyFramebuffer(framebuffer);
         }
 
         VkFramebuffer get()
@@ -35,7 +51,6 @@ namespace Azazel
             return framebuffer;
         }
         
-        VkDevice device;
-        VkFramebuffer framebuffer;
+        vk::Framebuffer framebuffer;
     };
 }

@@ -44,7 +44,7 @@ namespace Azazel
         swapChain->initSwapChainFramebuffers(*renderPass);
 
         commandPool = std::make_unique<AZCommandPool>(*device, physicalDevice->getQueueFamilyIndices().graphicsFamily.value());
-        commandBuffer = std::unique_ptr<AZCommandBuffer>(commandPool->allocateCommandBuffer(*device));
+        commandBuffer = std::make_unique<AZCommandBuffer>(commandPool->allocateCommandBuffer(*device));
 
         descriptorPool = std::make_unique<AZDescriptorPool>(*device);
 

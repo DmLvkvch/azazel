@@ -93,6 +93,6 @@ namespace Azazel
     
         AZQueue graphicsQueue;
         AZQueue presentQueue;
-        VkDevice device;
+        vk::Device device;
     };
 }

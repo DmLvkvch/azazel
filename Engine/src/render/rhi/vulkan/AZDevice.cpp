@@ -136,7 +136,7 @@ namespace Azazel
 
     VulkanDevice::VulkanDevice(AZInstance& context, PhysicalDevice& physicalDevice)
     {
-        device = createDevice(context, physicalDevice);
+        device = vk::Device{ createDevice(context, physicalDevice) };
         graphicsQueue = AZQueue(device, physicalDevice.getQueueFamilyIndices().graphicsFamily.value());
         presentQueue = AZQueue(device, physicalDevice.getQueueFamilyIndices().presentFamily.value());
     }
@@ -183,7 +183,7 @@ namespace Azazel
 
     void VulkanDevice::destroy()
     {
-        vkDestroyDevice(device, nullptr);
+        device.destroy();
     }
 
     VkMemoryRequirements VulkanDevice::getMemoryRequirements(VkBuffer buffer) const

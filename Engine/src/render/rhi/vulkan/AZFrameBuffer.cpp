@@ -2,8 +2,7 @@
 
 namespace Azazel
 {
-    AZFramebuffer::AZFramebuffer(VkDevice& device, AZFramebufferDesc& framebufferDesc)
-    : device(device)
+    AZFramebuffer::AZFramebuffer(VulkanDevice& device, AZFramebufferDesc& framebufferDesc)
     {
         VkFramebufferCreateInfo framebufferInfo{};
         {
@@ -15,6 +14,7 @@ namespace Azazel
             framebufferInfo.height = framebufferDesc.height;
             framebufferInfo.layers = 1;
         }
-        vkCreateFramebuffer(device, &framebufferInfo, nullptr, &framebuffer);
+        //vkCreateFramebuffer(device.device, &framebufferInfo, nullptr, &framebuffer);
+        framebuffer = device.device.createFramebuffer(vk::FramebufferCreateInfo{ framebufferInfo });
     }
 }

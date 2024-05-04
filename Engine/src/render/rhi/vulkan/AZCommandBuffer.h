@@ -11,42 +11,31 @@ namespace Azazel
     {
     public:
         AZCommandPool(const VulkanDevice& device, int queueIndex);
-
         ~AZCommandPool();
 
-        AZCommandBuffer* allocateCommandBuffer(const VulkanDevice& device);
-
+        vk::CommandBuffer allocateCommandBuffer(const VulkanDevice& device) const;
         void reset();
-
         void destroy();
 
     public:
         const VulkanDevice& device;
-        VkCommandPool commandPool;
+        vk::CommandPool commandPool;
     };
 
     class AZCommandBuffer
     {
     public:
         AZCommandBuffer();
-
-        AZCommandBuffer(const VulkanDevice& device, const AZCommandPool& commandPool);
-
+        AZCommandBuffer(VkCommandBuffer commandBuffer);
         ~AZCommandBuffer();
-
         void begin() const;
-
         void end() const;
-
         void reset() const;
-
         void* getAPIBuffer();
 
-        static VkCommandBuffer beginSingleTimeCommands(const VulkanDevice& device, const AZCommandPool& commandPool);
-
-        static void endSingleTimeCommands(const VulkanDevice& device, const AZCommandPool& commandPool, const VkCommandBuffer commandBuffer);
-
+        static vk::CommandBuffer beginSingleTimeCommands(const VulkanDevice& device, const AZCommandPool& commandPool);
+        static void endSingleTimeCommands(const VulkanDevice& device, const AZCommandPool& commandPool, const vk::CommandBuffer& commandBuffer);
     public:
-        VkCommandBuffer commandBuffer;
+        vk::CommandBuffer commandBuffer;
     };
 }

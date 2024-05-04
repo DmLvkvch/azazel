@@ -7,11 +7,9 @@ namespace Azazel
     AZCommandPool::AZCommandPool(const VulkanDevice& device, int queueIndex)
     :device(device)
     {
-        VkCommandPoolCreateInfo poolInfo {};
-        poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-        poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-        poolInfo.queueFamilyIndex = queueIndex;
-        vkCreateCommandPool(device.device, &poolInfo, nullptr, &commandPool);
+        vk::CommandPoolCreateInfo poolInfo;
+        poolInfo.setFlags(vk::CommandPoolCreateFlagBits::eResetCommandBuffer).setQueueFamilyIndex(queueIndex);
+        commandPool = device.device.createCommandPool(poolInfo);
     }
 
     AZCommandPool::~AZCommandPool()
@@ -19,9 +17,16 @@ namespace Azazel
         destroy();
     }
 
-    AZCommandBuffer* AZCommandPool::allocateCommandBuffer(const VulkanDevice& device)
+    vk::CommandBuffer AZCommandPool::allocateCommandBuffer(const VulkanDevice& device) const
     {
-        return new AZCommandBuffer(device, *this);
+        VkCommandBuffer commandBuffer;
+        VkCommandBufferAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+        allocInfo.commandPool = commandPool;
+        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        allocInfo.commandBufferCount = 1;
+        vkAllocateCommandBuffers(device.device, &allocInfo, &commandBuffer);
+        return commandBuffer;
     }
 
     void AZCommandPool::reset()
@@ -44,17 +49,11 @@ namespace Azazel
     {
     }
 
-    AZCommandBuffer::AZCommandBuffer(const VulkanDevice& device, const AZCommandPool& commandPool)
+    AZCommandBuffer::AZCommandBuffer(VkCommandBuffer commandBuffer)
+        : commandBuffer(commandBuffer)
     {
-        VkCommandBufferAllocateInfo allocInfo {};
-        
-        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-        allocInfo.commandPool = commandPool.commandPool;
-        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-        allocInfo.commandBufferCount = 1;
-        
-        vkAllocateCommandBuffers(device.device, &allocInfo, &commandBuffer);
     }
+
     AZCommandBuffer::~AZCommandBuffer()
     {
     }
@@ -82,7 +81,7 @@ namespace Azazel
         return (void*)&commandBuffer;
     }
 
-    VkCommandBuffer AZCommandBuffer::beginSingleTimeCommands(const VulkanDevice& device, const AZCommandPool& commandPool)
+    vk::CommandBuffer AZCommandBuffer::beginSingleTimeCommands(const VulkanDevice& device, const AZCommandPool& commandPool)
     {
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -102,18 +101,13 @@ namespace Azazel
         return commandBuffer;
     }
 
-    void AZCommandBuffer::endSingleTimeCommands(const VulkanDevice& device, const AZCommandPool& commandPool, const VkCommandBuffer commandBuffer)
+    void AZCommandBuffer::endSingleTimeCommands(const VulkanDevice& device, const AZCommandPool& commandPool, const vk::CommandBuffer& commandBuffer)
     {
-        vkEndCommandBuffer(commandBuffer);
-
-        VkSubmitInfo submitInfo{};
-        submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-        submitInfo.commandBufferCount = 1;
-        submitInfo.pCommandBuffers = &commandBuffer;
-
-        vkQueueSubmit(device.graphicsQueue.queue, 1, &submitInfo, VK_NULL_HANDLE);
-        vkQueueWaitIdle(device.graphicsQueue.queue);
-
-        vkFreeCommandBuffers(device.device, commandPool.commandPool, 1, &commandBuffer);
+        commandBuffer.end();
+        vk::SubmitInfo submitInfo{};
+        submitInfo.setCommandBufferCount(1).setCommandBuffers({ 1, &commandBuffer });
+        device.graphicsQueue.queue.submit({ submitInfo });
+        device.graphicsQueue.queue.waitIdle();
+        device.device.freeCommandBuffers(commandPool.commandPool, { commandBuffer });
     }
 }

@@ -8,24 +8,25 @@ namespace Azazel
     {
         createBuffer(bufferDesc.size, bufferDesc.bufferUsageFlags, bufferDesc.memoryPropertyFlags);
     }
+
+    AZBuffer::~AZBuffer()
+    {
+        destroy();
+    }
     
     void AZBuffer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties)
     {
         auto& device = getVulkanContext().getVulkanDevice();
         
-        VkBufferCreateInfo bufferInfo{};
-        bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-        bufferInfo.size = size;
-        bufferInfo.usage = usage;
-        bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-        vkCreateBuffer(device.device, &bufferInfo, nullptr, &buffer);
+        vk::BufferCreateInfo bufferCreateInfo;
+        bufferCreateInfo.setSize(size).setUsage(vk::BufferUsageFlagBits{ usage }).setSharingMode(vk::SharingMode::eExclusive);
+        buffer = device.device.createBuffer(bufferCreateInfo);
+        
         VkMemoryRequirements memRequirements = device.getMemoryRequirements(buffer);
-        VkMemoryAllocateInfo allocInfo{};
-        allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-        allocInfo.allocationSize = memRequirements.size;
-        allocInfo.memoryTypeIndex = getVulkanContext().getPhysicalDevice().findMemoryType(memRequirements.memoryTypeBits, properties);
-        vkAllocateMemory(device.device, &allocInfo, nullptr, &bufferMemory);
-        vkBindBufferMemory(device.device, buffer, bufferMemory, 0);
+        vk::MemoryAllocateInfo allocateInfo;
+        allocateInfo.setAllocationSize(memRequirements.size).setMemoryTypeIndex(getVulkanContext().getPhysicalDevice().findMemoryType(memRequirements.memoryTypeBits, properties));
+        bufferMemory = device.device.allocateMemory(allocateInfo);
+        device.device.bindBufferMemory(buffer, bufferMemory, 0);
     }
 
     void AZBuffer::copyData(const void* data, size_t sz)
