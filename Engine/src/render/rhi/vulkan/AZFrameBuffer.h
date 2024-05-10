@@ -18,7 +18,7 @@ namespace Azazel
     {
     public:
         AZFramebuffer()
-            : framebuffer(vk::Framebuffer{})
+        : framebuffer(vk::Framebuffer {})
         {
 
         }

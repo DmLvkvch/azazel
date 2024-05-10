@@ -29,28 +29,32 @@ namespace Azazel
         }
     }
 
-    VkInstance AZInstance::createInstance() 
+    AZInstance::AZInstance()
+    {
+        instance = createInstance();
+    }
+
+    vk::Instance AZInstance::createInstance() 
     {
         (void) checkValidationLayerSupport(validationLayers);
 
-        VkApplicationInfo appInfo = createVkApplicationInfo("Azazel", "Azazel Engine");
+        vk::ApplicationInfo appInfo = createVkApplicationInfo("Azazel", "Azazel Engine");
 
         auto extensions = getRequiredExtensions();
 
-        VkInstanceCreateInfo createInfo = createVkInstanceCreateInfo(&appInfo, extensions, validationLayers);
+        vk::InstanceCreateInfo createInfo = createVkInstanceCreateInfo(&appInfo, extensions, validationLayers);
         
-        VkInstance instance;
-        vkCreateInstance(&createInfo, nullptr, &instance);
+        vk::Instance instance = vk::createInstance(createInfo);
 
-        setupDebugMessenger(instance);
+        debugMessenger = setupDebugMessenger(instance);
 
         return instance;
     }
 
     void AZInstance::destroy()
     {
-        DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
-        vkDestroyInstance(instance, nullptr);
+        instance.destroyDebugUtilsMessengerEXT(debugMessenger);
+        instance.destroy();
     }
 
     bool AZInstance::checkValidationLayerSupport(std::vector<const char*> & validationLayers)
@@ -78,17 +82,14 @@ namespace Azazel
         return true;
     }
 
-    VkApplicationInfo AZInstance::createVkApplicationInfo(const char* applicationName, const char* engineName)
+    vk::ApplicationInfo AZInstance::createVkApplicationInfo(const char* applicationName, const char* engineName)
     {
-        VkApplicationInfo appInfo {};
-        {
-            appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-            appInfo.pApplicationName = applicationName;
-            appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-            appInfo.pEngineName = engineName;
-            appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-            appInfo.apiVersion = VK_API_VERSION_1_0;
-        }
+        vk::ApplicationInfo appInfo;
+        appInfo.setPApplicationName(applicationName)
+               .setApplicationVersion(VK_MAKE_VERSION(1, 0, 0))
+               .setPEngineName(engineName)
+               .setEngineVersion(VK_MAKE_VERSION(1, 0, 0))
+               .setApiVersion(VK_API_VERSION_1_3);
         return appInfo;
     }
 
@@ -106,22 +107,18 @@ namespace Azazel
         return extensions;
     }
 
-    VkInstanceCreateInfo AZInstance::createVkInstanceCreateInfo(VkApplicationInfo* appInfo,
+    vk::InstanceCreateInfo AZInstance::createVkInstanceCreateInfo(vk::ApplicationInfo* appInfo,
                                                               std::vector<const char*>& extensions,   
                                                               std::vector<const char*>& validationLayers)
     {
-        VkInstanceCreateInfo createInfo {};
-        {
-            createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-            createInfo.pApplicationInfo = appInfo;
-            createInfo.flags = VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
-            createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
-            createInfo.ppEnabledExtensionNames = extensions.data();
-
-            createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
-            createInfo.ppEnabledLayerNames = validationLayers.data();
-        }
-        return createInfo;   
+        vk::InstanceCreateInfo instanceCreateInfo {};
+        instanceCreateInfo.setPApplicationInfo(appInfo)
+                          .setFlags(vk::InstanceCreateFlagBits::eEnumeratePortabilityKHR)
+                          .setEnabledExtensionCount(static_cast<uint32_t>(extensions.size()))
+                          .setPpEnabledExtensionNames(extensions.data())
+                          .setEnabledLayerCount(static_cast<uint32_t>(validationLayers.size()))
+                          .setPpEnabledLayerNames(validationLayers.data());
+        return instanceCreateInfo;   
     }
 
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
@@ -134,17 +131,12 @@ namespace Azazel
         return VK_FALSE;
     }
 
-    void AZInstance::setupDebugMessenger(VkInstance instance) 
+    vk::DebugUtilsMessengerEXT AZInstance::setupDebugMessenger(vk::Instance& instance) 
     {
-        VkDebugUtilsMessengerCreateInfoEXT createInfo {};
-        createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-        createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-        createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-        createInfo.pfnUserCallback = debugCallback;
-
-        if (CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger) != VK_SUCCESS) 
-        {
-            throw std::runtime_error("failed to set up debug messenger!");
-        }
+        vk::DebugUtilsMessengerCreateInfoEXT createInfo {};
+        createInfo.setMessageSeverity(vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose | vk::DebugUtilsMessageSeverityFlagBitsEXT::eError | vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning)
+                  .setMessageType(vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral | vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation | vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance)
+                  .setPfnUserCallback(debugCallback);
+        return instance.createDebugUtilsMessengerEXT(createInfo);
     }
 }

@@ -10,9 +10,9 @@ namespace Azazel
 {
     struct SwapChainSupportDetails
     {
-        VkSurfaceCapabilitiesKHR capabilities;
-        std::vector<VkSurfaceFormatKHR> formats;
-        std::vector<VkPresentModeKHR> presentModes;
+        vk::SurfaceCapabilitiesKHR capabilities;
+        std::vector<vk::SurfaceFormatKHR> formats;
+        std::vector<vk::PresentModeKHR> presentModes;
     };
 
     class GLFWWindow;
@@ -33,10 +33,10 @@ namespace Azazel
         std::vector<VkImageView> swapChainImageViews;
         std::vector<AZFramebuffer> swapChainFramebuffers;
 
-        VkSurfaceFormatKHR surfaceFormat;
-        VkFormat swapChainImageFormat;
-        VkExtent2D swapChainExtent;
-        VkPresentModeKHR presentMode;
+        vk::SurfaceFormatKHR surfaceFormat;
+        vk::Format swapChainImageFormat;
+        vk::Extent2D swapChainExtent;
+        vk::PresentModeKHR presentMode;
         
         VkImageView depthImageView;
         VkDeviceMemory depthImageMemory;
@@ -46,10 +46,10 @@ namespace Azazel
         void initSwapChainFramebuffers(AZRenderPass& renderPass);
     private:
         VkSwapchainKHR createSwapChain(GLFWwindow* window, AZSurface& surface);
-        std::vector<VkImageView> createImageViews(VkDevice device, std::vector<VkImage>& swapChainImages, VkFormat format);
-        VkSurfaceFormatKHR chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
-        VkPresentModeKHR choosePresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
-        VkExtent2D chooseExtent(GLFWwindow* window, const VkSurfaceCapabilitiesKHR& capabilities);
+        std::vector<VkImageView> createImageViews(vk::Device device, std::vector<vk::Image>& swapChainImages, VkFormat format);
+        VkSurfaceFormatKHR chooseSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats);
+        VkPresentModeKHR choosePresentMode(const std::vector<vk::PresentModeKHR>& availablePresentModes);
+        VkExtent2D chooseExtent(GLFWwindow* window, const vk::SurfaceCapabilitiesKHR& capabilities);
 
         VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
 
@@ -62,26 +62,27 @@ namespace Azazel
 
     struct VirtualFrame
     {
+        vk::Fence commandQueueFence;
     };
 
     class VirtualFrameProvider
     {
         std::vector<VirtualFrame> virtualFrames;
         uint32_t presentImageIndex = 0;
-        bool isFrameRunning = false;
+        bool frameRunning = false;
         size_t currentFrame = 0;
     public:
-        void Init(size_t frameCount, size_t stageBufferSize);
-        void Destroy();
+        void init(size_t frameCount, size_t stageBufferSize);
+        void destroy();
 
-        void StartFrame();
-        VirtualFrame& GetCurrentFrame();
-        VirtualFrame& GetNextFrame();
-        const VirtualFrame& GetCurrentFrame() const;
-        const VirtualFrame& GetNextFrame() const;
-        uint32_t GetPresentImageIndex() const;
-        bool IsFrameRunning() const;
-        size_t GetFrameCount() const;
-        void EndFrame();
+        void startFrame();
+        VirtualFrame& getCurrentFrame();
+        VirtualFrame& getNextFrame();
+        const VirtualFrame& getCurrentFrame() const;
+        const VirtualFrame& getNextFrame() const;
+        uint32_t getPresentImageIndex() const;
+        bool isFrameRunning() const;
+        size_t getFrameCount() const;
+        void endFrame();
     };
 }

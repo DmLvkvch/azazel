@@ -10,28 +10,25 @@ namespace Azazel
     class AZInstance
     {
     public:
-        AZInstance()
-        {
-            instance = createInstance();
-        }
+        AZInstance();
 
         ~AZInstance()
         {
             
         }
 
-        VkInstance createInstance();
+        vk::Instance createInstance();
         void destroy();
         bool checkValidationLayerSupport(std::vector<const char*> & validationLayers);
-        VkApplicationInfo createVkApplicationInfo(const char* applicationName, const char* engineName);
-        VkInstanceCreateInfo createVkInstanceCreateInfo(VkApplicationInfo* appInfo,
+        vk::ApplicationInfo createVkApplicationInfo(const char* applicationName, const char* engineName);
+        vk::InstanceCreateInfo createVkInstanceCreateInfo(vk::ApplicationInfo* appInfo,
                                                         std::vector<const char*>& extensions, 
                                                         std::vector<const char*>& validationLayers);
         std::vector<const char*> getRequiredExtensions();
-        void setupDebugMessenger(VkInstance instance);
+        vk::DebugUtilsMessengerEXT setupDebugMessenger(vk::Instance& instance);
 
-        VkInstance instance;
-        VkDebugUtilsMessengerEXT debugMessenger;
+        vk::Instance instance;
+        vk::DebugUtilsMessengerEXT debugMessenger;
 
         std::vector<const char*> validationLayers =
         {

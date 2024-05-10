@@ -39,8 +39,7 @@ namespace Azazel
 
     uint32_t AZSwapChain::acquireNextImage(VkSemaphore signalSemaphore) const
     {
-        uint32_t imageIndex;
-        vkAcquireNextImageKHR(device.device, swapChain, UINT64_MAX, signalSemaphore, VK_NULL_HANDLE, &imageIndex);
+        uint32_t imageIndex = device.device.acquireNextImageKHR(swapChain, UINT64_MAX, signalSemaphore).value;
         return imageIndex;
     }
 
@@ -51,7 +50,7 @@ namespace Azazel
     VkSwapchainKHR AZSwapChain::createSwapChain(GLFWwindow* window, AZSurface& surface)
     {
         VkSwapchainKHR swapChain;
-        SwapChainSupportDetails swapChainSupport = surface.querySwapChainSupport(physicalDevice.get());
+        SwapChainSupportDetails swapChainSupport = surface.querySwapChainSupport(physicalDevice.physicalDevice);
         surfaceFormat   = chooseSurfaceFormat(swapChainSupport.formats);
         presentMode     = choosePresentMode(swapChainSupport.presentModes);
         swapChainExtent = chooseExtent(window, swapChainSupport.capabilities);
@@ -138,8 +137,7 @@ namespace Azazel
 
         vkCreateImage(device.device, &imageInfo, nullptr, &image);
 
-        VkMemoryRequirements memRequirements;
-        vkGetImageMemoryRequirements(device.device, image, &memRequirements);
+        vk::MemoryRequirements memRequirements = device.device.getImageMemoryRequirements(image);
 
         VkMemoryAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -162,7 +160,7 @@ namespace Azazel
         return swapChainImageViews;
     }
 
-    VkSurfaceFormatKHR AZSwapChain::chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats)
+    vk::SurfaceFormatKHR AZSwapChain::chooseSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats)
     {
         for (const auto& availableFormat : availableFormats)
         {
@@ -174,7 +172,7 @@ namespace Azazel
         return availableFormats[0];
     }
 
-    VkPresentModeKHR AZSwapChain::choosePresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes)
+    vk::PresentModeKHR AZSwapChain::choosePresentMode(const std::vector<vk::PresentModeKHR>& availablePresentModes)
     {
         for (const auto& availablePresentMode : availablePresentModes)
         {
@@ -186,7 +184,7 @@ namespace Azazel
         return VK_PRESENT_MODE_FIFO_KHR;
     }
 
-    VkExtent2D AZSwapChain::chooseExtent(GLFWwindow* window, const VkSurfaceCapabilitiesKHR& capabilities)
+    vk::Extent2D AZSwapChain::chooseExtent(GLFWwindow* window, const vk::SurfaceCapabilitiesKHR& capabilities)
     {
         if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
         {
@@ -195,7 +193,7 @@ namespace Azazel
         int width = 0, height = 0;
         glfwGetFramebufferSize(window, &width, &height);
 
-        VkExtent2D actualExtent = { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
+        vk::Extent2D actualExtent = { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
 
         actualExtent.width = std::clamp(actualExtent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
         actualExtent.height = std::clamp(actualExtent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);

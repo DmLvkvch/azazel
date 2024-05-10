@@ -172,7 +172,7 @@ namespace Azazel
 
         g_MainWindowData.Surface = surface.surface;
         g_MainWindowData.SurfaceFormat = swapChain.surfaceFormat;
-        g_MainWindowData.PresentMode = swapChain.presentMode;
+        g_MainWindowData.PresentMode = static_cast<VkPresentModeKHR> (swapChain.presentMode);
 
         ImGui_ImplVulkanH_CreateOrResizeWindow(instance.instance, physicalDevice.get(), device.device, &g_MainWindowData, device.graphicsQueue.queueFamilyIndex, nullptr, window.getWidth(), window.getWidth(), 2);
 

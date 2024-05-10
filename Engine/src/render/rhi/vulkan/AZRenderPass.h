@@ -44,5 +44,6 @@ namespace Azazel
 
         const VulkanDevice& device;
         VkRenderPass renderPass;
+        vk::RenderPass vkRenderPass;
     };
 }

@@ -14,15 +14,15 @@ namespace Azazel
         destroy();
     }
     
-    void AZBuffer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties)
+    void AZBuffer::createBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties)
     {
         auto& device = getVulkanContext().getVulkanDevice();
         
         vk::BufferCreateInfo bufferCreateInfo;
-        bufferCreateInfo.setSize(size).setUsage(vk::BufferUsageFlagBits{ usage }).setSharingMode(vk::SharingMode::eExclusive);
+        bufferCreateInfo.setSize(size).setUsage(usage).setSharingMode(vk::SharingMode::eExclusive);
         buffer = device.device.createBuffer(bufferCreateInfo);
         
-        VkMemoryRequirements memRequirements = device.getMemoryRequirements(buffer);
+        vk::MemoryRequirements memRequirements = device.getMemoryRequirements(buffer);
         vk::MemoryAllocateInfo allocateInfo;
         allocateInfo.setAllocationSize(memRequirements.size).setMemoryTypeIndex(getVulkanContext().getPhysicalDevice().findMemoryType(memRequirements.memoryTypeBits, properties));
         bufferMemory = device.device.allocateMemory(allocateInfo);
@@ -75,7 +75,7 @@ namespace Azazel
     AZVertexBuffer::AZVertexBuffer(const BufferDesc& bufferDesc)
     : buffer(bufferDesc)
     {
-        BufferDesc stageBufferDesc {nullptr, bufferDesc.size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT};
+        BufferDesc stageBufferDesc {nullptr, bufferDesc.size, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent };
         AZBuffer stageBuffer {stageBufferDesc};
         stageBuffer.copyData(bufferDesc.data, bufferDesc.size);
         stageBuffer.copy(buffer);
@@ -90,7 +90,7 @@ namespace Azazel
     AZIndexBuffer::AZIndexBuffer(const BufferDesc& bufferDesc)
     : buffer(bufferDesc), indicesCount(bufferDesc.size / sizeof(uint32_t))
     {
-        BufferDesc stageBufferDesc {nullptr, bufferDesc.size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT};
+        BufferDesc stageBufferDesc {nullptr, bufferDesc.size, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent};
         AZBuffer stageBuffer {stageBufferDesc};
         stageBuffer.copyData(bufferDesc.data, bufferDesc.size);
         stageBuffer.copy(buffer);

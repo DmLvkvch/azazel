@@ -3,36 +3,24 @@
 
 namespace Azazel
 {
-    AZSurface::AZSurface(VkInstance& instance, GLFWwindow* window)
+    AZSurface::AZSurface(vk::Instance& instance, GLFWwindow* window)
     {
-        surface = createSurface(instance, window);
+        surface = vk::SurfaceKHR { createSurface(instance, window) };
     }
 
-    VkSurfaceKHR AZSurface::createSurface(VkInstance& instance, GLFWwindow* window)
+    vk::SurfaceKHR AZSurface::createSurface(vk::Instance& instance, GLFWwindow* window)
     {
+        VkSurfaceKHR surface;
         glfwCreateWindowSurface(instance, window, nullptr, &surface);
-        return surface;
+        return vk::SurfaceKHR {surface};
     }
 
-    SwapChainSupportDetails AZSurface::querySwapChainSupport(VkPhysicalDevice device)
+    SwapChainSupportDetails AZSurface::querySwapChainSupport(vk::PhysicalDevice& physicalDevice)
     {
         SwapChainSupportDetails details;
-        vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
-        
-        uint32_t formatCount;
-        vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, nullptr);
-        if (formatCount)
-        {
-            details.formats.resize(formatCount);
-            vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, details.formats.data());
-        }
-        uint32_t presentModeCount;
-        vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, nullptr);
-        if (presentModeCount)
-        {
-            details.presentModes.resize(presentModeCount);
-            vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, details.presentModes.data());
-        }
+        details.capabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
+        details.formats = physicalDevice.getSurfaceFormatsKHR(surface);
+        details.presentModes = physicalDevice.getSurfacePresentModesKHR(surface);
         return details;
     }
 }

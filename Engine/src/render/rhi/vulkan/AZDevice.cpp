@@ -3,59 +3,45 @@
 namespace Azazel
 {
 
-    PhysicalDevice::PhysicalDevice(VkInstance instance, VkSurfaceKHR surface)
+    PhysicalDevice::PhysicalDevice(vk::Instance& instance, vk::SurfaceKHR& surface)
     {
         physicalDevice = createPhysicalDevice(instance, surface);
-        vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memoryProperties);
-        vkGetPhysicalDeviceProperties(physicalDevice, &properties);
-        vkGetPhysicalDeviceFeatures(physicalDevice, &features);
+        memoryProperties = physicalDevice.getMemoryProperties();
+        properties = physicalDevice.getProperties();
+        features = physicalDevice.getFeatures();
     }
 
     PhysicalDevice::~PhysicalDevice()
     {
     }
 
-    VkPhysicalDevice PhysicalDevice::createPhysicalDevice(VkInstance instance, VkSurfaceKHR surface)
+    vk::PhysicalDevice PhysicalDevice::createPhysicalDevice(vk::Instance& instance, vk::SurfaceKHR& surface)
     {
-        uint32_t deviceCount = 0;
-        VkPhysicalDevice physicalDevice = nullptr;
-        vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
-        if (!deviceCount)
-        {
-            throw std::runtime_error("failed to find GPUs with Vulkan support!");
-        }
-        std::vector<VkPhysicalDevice> devices(deviceCount);
-        vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
-
+        auto devices = instance.enumeratePhysicalDevices();
         for (auto& device : devices)
         {
             if (isDeviceSuitable(device, surface, deviceExtensions))
             {
-                physicalDevice = device;
-                break;
+                return device;
             }
         }
-        if (!physicalDevice)
-        {
-            throw std::runtime_error("failed to find a suitable GPU!");
-        }
-        return physicalDevice;
+        return devices[0];
     }
 
-    bool PhysicalDevice::isDeviceSuitable(VkPhysicalDevice & device, VkSurfaceKHR surface, std::vector<const char*>& deviceExtensions)
+    bool PhysicalDevice::isDeviceSuitable(vk::PhysicalDevice& device, vk::SurfaceKHR& surface, std::vector<const char*>& deviceExtensions)
     {
         auto queueFamilies = findQueueFamilies(device);
         
         for (int i = 0; i < queueFamilies.size(); i++)
         {
             const auto& queueFamily = queueFamilies[i];
-
-            if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+            
+            if (queueFamily.queueFlags & vk::QueueFlagBits::eGraphics)
             {
                 indices.graphicsFamily = i;
             }
 
-            if (queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT)
+            if (queueFamily.queueFlags & vk::QueueFlagBits::eCompute)
             {
                 indices.computeFamily = i;
             }
@@ -68,13 +54,9 @@ namespace Azazel
         return indices.isComplete() && extensionsSupported;
     }
 
-    bool PhysicalDevice::checkDeviceExtensionSupport(VkPhysicalDevice & physicalDevice, std::vector<const char*>& deviceExtensions)
+    bool PhysicalDevice::checkDeviceExtensionSupport(vk::PhysicalDevice& physicalDevice, std::vector<const char*>& deviceExtensions)
     {
-        uint32_t extensionCount;
-        vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, nullptr);
-
-        std::vector<VkExtensionProperties> availableExtensions(extensionCount);
-        vkEnumerateDeviceExtensionProperties(physicalDevice, nullptr, &extensionCount, availableExtensions.data());
+        std::vector<vk::ExtensionProperties> availableExtensions = physicalDevice.enumerateDeviceExtensionProperties();
 
         std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
 
@@ -86,18 +68,12 @@ namespace Azazel
         return requiredExtensions.empty();
     }
 
-    std::vector<VkQueueFamilyProperties> PhysicalDevice::findQueueFamilies(VkPhysicalDevice & physicalDevice)
+    std::vector<vk::QueueFamilyProperties> PhysicalDevice::findQueueFamilies(vk::PhysicalDevice& physicalDevice)
     {
-        QueueFamilyIndices indices{};
-        uint32_t queueFamilyCount = 0;
-        vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, nullptr);
-
-        std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-        vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilies.data());
-        return queueFamilies;
+        return physicalDevice.getQueueFamilyProperties();
     }
 
-    std::optional<uint32_t> PhysicalDevice::findPresentQueue(VkPhysicalDevice & physicalDevice, VkSurfaceKHR surface)
+    std::optional<uint32_t> PhysicalDevice::findPresentQueue(vk::PhysicalDevice& physicalDevice, vk::SurfaceKHR& surface)
     {
         QueueFamilyIndices indices{};
         uint32_t queueFamilyCount = 0;
@@ -116,7 +92,7 @@ namespace Azazel
         return presentFamily;
     }
 
-    uint32_t PhysicalDevice::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const
+    uint32_t PhysicalDevice::findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags properties) const
     {
         for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++) 
         {
@@ -186,11 +162,9 @@ namespace Azazel
         device.destroy();
     }
 
-    VkMemoryRequirements VulkanDevice::getMemoryRequirements(VkBuffer buffer) const
+    vk::MemoryRequirements VulkanDevice::getMemoryRequirements(vk::Buffer buffer) const
     {
-        VkMemoryRequirements memRequirements;
-        vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
-        return memRequirements;
+        return device.getBufferMemoryRequirements(buffer);
     }
 }
 

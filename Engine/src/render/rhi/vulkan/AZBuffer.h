@@ -16,8 +16,8 @@ namespace Azazel
     {
         const void* data;
         uint64_t size;
-        VkBufferUsageFlags bufferUsageFlags;
-        VkMemoryPropertyFlags memoryPropertyFlags;
+        vk::BufferUsageFlags bufferUsageFlags;
+        vk::MemoryPropertyFlags memoryPropertyFlags;
     };
 
     class AZBuffer
@@ -26,7 +26,7 @@ namespace Azazel
         AZBuffer(const BufferDesc& bufferDesc);
         ~AZBuffer();
         void destroy();
-        void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties);
+        void createBuffer(vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties);
         void copy(const AZBuffer& dstBuffer);
         void copyData(const void* data, size_t sz);
         void map();
