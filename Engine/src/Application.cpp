@@ -107,7 +107,8 @@ namespace Azazel
         textureImageView = std::make_unique<AZImageView>(*textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
         textureSampler = std::make_unique<AZTextureSampler>(VK_FILTER_LINEAR, VK_SAMPLER_ADDRESS_MODE_REPEAT);
 
-        uniformBuffer = std::make_unique<AZUniformBuffer>(BufferDesc {nullptr, sizeof(UniformBufferObject), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT});
+        uniformBuffer = std::make_unique<AZUniformBuffer>(BufferDesc{ nullptr, sizeof(UniformBufferObject),
+            vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent });
 
         createDescriptorSetLayout();
         createDescriptorSets();
@@ -165,8 +166,8 @@ namespace Azazel
         }
 
         graphicsPipeline = createGraphicsPipeline(device.device);
-        vertexBuffer = std::make_unique<AZVertexBuffer>(BufferDesc{ (void*)vertices.data(), sizeof(vertices[0]) * vertices.size() , VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT});
-        indexBuffer = std::make_unique<AZIndexBuffer>(BufferDesc{ (void*)indices.data(), indices.size() * sizeof(uint32_t) , VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT});
+        vertexBuffer = std::make_unique<AZVertexBuffer>(BufferDesc{ (void*)vertices.data(), sizeof(vertices[0]) * vertices.size() , vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal });
+        indexBuffer = std::make_unique<AZIndexBuffer>(BufferDesc{ (void*)indices.data(), indices.size() * sizeof(uint32_t) , vk::BufferUsageFlagBits::eIndexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal });
 
         createSyncObjects();
 
