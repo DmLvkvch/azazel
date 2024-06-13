@@ -3,17 +3,15 @@
 namespace Azazel
 {
 
-    AZQueue::AZQueue(VkDevice device, uint32_t queueFamilyIndex)
+    AZQueue::AZQueue(vk::Device device, uint32_t queueFamilyIndex)
     {
-
         this->queue = createQueue(device, queueFamilyIndex);
         this->queueFamilyIndex = queueFamilyIndex;
     }
 
-    VkQueue AZQueue::createQueue(VkDevice device, uint32_t queueFamilyIndex)
+    vk::Queue AZQueue::createQueue(vk::Device device, uint32_t queueFamilyIndex)
     {
-        VkQueue queue;
-        vkGetDeviceQueue(device, queueFamilyIndex, 0, &queue);
+        vk::Queue queue = device.getQueue(queueFamilyIndex, 0);
         return queue;
     }
 }

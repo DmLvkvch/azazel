@@ -32,10 +32,10 @@ namespace Azazel
         void map();
         void unmap();
 
-        void* hostVisibleData = nullptr;
+        void* hostVisibleData;
         vk::Buffer buffer;
-        VkDeviceSize size = 0;
-        VkDeviceMemory bufferMemory = VK_NULL_HANDLE;
+        vk::DeviceSize size;
+        vk::DeviceMemory bufferMemory;
     };
 
     class AZVertexBuffer

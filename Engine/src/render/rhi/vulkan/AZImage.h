@@ -10,7 +10,7 @@ namespace Azazel
     class AZImage
     {
     public:
-        AZImage(TextureData textureData, VkFormat format) 
+        AZImage(TextureData textureData, vk::Format format)
         {
             createTextureImage(textureData.width, textureData.height, textureData.data, format);
         }
@@ -22,13 +22,13 @@ namespace Azazel
 
         void destroy();
     
-        void createTextureImage(int width, int height, unsigned char* pixels, VkFormat format);
-        void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory imageMemory);
-        void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
-        void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
+        void createTextureImage(int width, int height, unsigned char* pixels, vk::Format format);
+        void createImage(uint32_t width, uint32_t height, vk::Format format, vk::ImageTiling tiling, vk::ImageUsageFlags usage, vk::MemoryPropertyFlags properties, vk::Image& image, vk::DeviceMemory imageMemory);
+        void transitionImageLayout(vk::Image image, vk::Format format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout);
+        void copyBufferToImage(vk::Buffer buffer, vk::Image image, uint32_t width, uint32_t height);
 
-        VkImage textureImage;
-        VkDeviceMemory textureImageMemory;
+        vk::Image textureImage;
+        vk::DeviceMemory textureImageMemory;
     };
 
     class AZTextureSampler
@@ -36,27 +36,23 @@ namespace Azazel
     public:
         AZTextureSampler() : sampler(VK_NULL_HANDLE) {}
 
-        AZTextureSampler(VkFilter filter, VkSamplerAddressMode mode)
+        AZTextureSampler(vk::Filter filter, vk::SamplerAddressMode mode)
         {
             auto& physicalDevice = getVulkanContext().getPhysicalDevice();
             auto& device = getVulkanContext().getVulkanDevice();
 
-            VkSamplerCreateInfo samplerInfo{};
-            samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-            samplerInfo.magFilter = filter;
-            samplerInfo.minFilter = filter;
-            samplerInfo.addressModeU = mode;
-            samplerInfo.addressModeV = mode;
-            samplerInfo.addressModeW = mode;
-            samplerInfo.anisotropyEnable = physicalDevice.getPhysicalDeviceFeatures().samplerAnisotropy;
-            samplerInfo.maxAnisotropy = physicalDevice.getPhysicalDeviceProperties().limits.maxSamplerAnisotropy;
-            samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
-            samplerInfo.unnormalizedCoordinates = VK_FALSE;
-            samplerInfo.compareEnable = VK_FALSE;
-            samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
-            samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+            vk::SamplerCreateInfo samplerCreateInfo {};
+            samplerCreateInfo.setMagFilter(filter).setMinFilter(filter)
+                             .setAddressModeU(mode).setAddressModeV(mode).setAddressModeW(mode)
+                             .setAnisotropyEnable(physicalDevice.getPhysicalDeviceFeatures().samplerAnisotropy)
+                             .setMaxAnisotropy(physicalDevice.getPhysicalDeviceProperties().limits.maxSamplerAnisotropy)
+                             .setBorderColor(vk::BorderColor::eIntOpaqueBlack)
+                             .setUnnormalizedCoordinates(VK_FALSE)
+                             .setCompareEnable(VK_FALSE)
+                             .setCompareOp(vk::CompareOp::eAlways)
+                             .setMipmapMode(vk::SamplerMipmapMode::eLinear);
 
-            vkCreateSampler(device.device, &samplerInfo, nullptr, &sampler);
+            sampler = device.device.createSampler(samplerCreateInfo);
         }
 
         ~AZTextureSampler()
@@ -66,13 +62,13 @@ namespace Azazel
 
         void destroy();
 
-        VkSampler sampler;
+        vk::Sampler sampler;
     };
     
     class AZImageView
     {
     public:
-        AZImageView(AZImage& image, VkFormat format, VkImageAspectFlags aspectFlags)
+        AZImageView(AZImage& image, vk::Format format, vk::ImageAspectFlags aspectFlags)
         {
             this->imageView = createImageView(getVulkanContext().getVulkanDevice(), image.textureImage, format, aspectFlags);
         }
@@ -84,22 +80,14 @@ namespace Azazel
 
         void destroy();
 
-        VkImageView createImageView(const VulkanDevice& device, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
+        vk::ImageView createImageView(const VulkanDevice& device, vk::Image image, vk::Format format, vk::ImageAspectFlags aspectFlags)
         {
-            VkImageViewCreateInfo viewInfo{};
-            viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-            viewInfo.image = image;
-            viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-            viewInfo.format = format;
-            viewInfo.subresourceRange.aspectMask = aspectFlags;
-            viewInfo.subresourceRange.baseMipLevel = 0;
-            viewInfo.subresourceRange.levelCount = 1;
-            viewInfo.subresourceRange.baseArrayLayer = 0;
-            viewInfo.subresourceRange.layerCount = 1;
-
-            VkImageView imageView;
-            vkCreateImageView(device.device, &viewInfo, nullptr, &imageView);
-            return imageView;
+            vk::ImageViewCreateInfo imageViewCreateInfo {};
+            vk::ImageSubresourceRange subResourceRange {};
+            subResourceRange.setAspectMask(aspectFlags).setBaseMipLevel(0).setLevelCount(1).setBaseArrayLayer(0).setLayerCount(1);
+            imageViewCreateInfo.setImage(image).setViewType(vk::ImageViewType::e2D)
+                               .setFormat(format).setSubresourceRange(subResourceRange);
+            return device.device.createImageView(imageViewCreateInfo);
         }
 
         VkImageView imageView;

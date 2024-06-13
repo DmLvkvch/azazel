@@ -50,112 +50,76 @@ namespace Azazel
     VkSwapchainKHR AZSwapChain::createSwapChain(GLFWwindow* window, AZSurface& surface)
     {
         VkSwapchainKHR swapChain;
-        SwapChainSupportDetails swapChainSupport = surface.querySwapChainSupport(physicalDevice.physicalDevice);
+        SwapChainSupportDetails swapChainSupport = surface.querySwapChainSupport(physicalDevice.get());
         surfaceFormat   = chooseSurfaceFormat(swapChainSupport.formats);
         presentMode     = choosePresentMode(swapChainSupport.presentModes);
         swapChainExtent = chooseExtent(window, swapChainSupport.capabilities);
 
         imageCount = std::min(swapChainSupport.capabilities.maxImageCount, swapChainSupport.capabilities.minImageCount + 1);
+        vk::SwapchainCreateInfoKHR createInfo {};
 
-        VkSwapchainCreateInfoKHR createInfo{};
-        {
-            createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-            createInfo.surface = surface.surface;
-            createInfo.minImageCount = imageCount;
-            createInfo.imageFormat = surfaceFormat.format;
-            createInfo.imageColorSpace = surfaceFormat.colorSpace;
-            createInfo.imageExtent = swapChainExtent;
-            createInfo.imageArrayLayers = 1;
-            createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-        }
-
+        createInfo.setSurface(surface.surface).setMinImageCount(imageCount)
+                  .setImageFormat(surfaceFormat.format).setImageColorSpace(surfaceFormat.colorSpace)
+                  .setImageExtent(swapChainExtent).setImageArrayLayers(1)
+                  .setImageUsage(vk::ImageUsageFlagBits::eColorAttachment);
         auto& indices = physicalDevice.getQueueFamilyIndices();
         auto queueFamilyIndices = indices.getIndices();
 
         if (indices.graphicsFamily != indices.presentFamily)
         {
-            createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
-            createInfo.queueFamilyIndexCount = 2;
-            createInfo.pQueueFamilyIndices = queueFamilyIndices.data();
+            createInfo.setImageSharingMode(vk::SharingMode::eConcurrent)
+                      .setQueueFamilyIndices({2, queueFamilyIndices.data()});
         }
         else
         {
-            createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+            createInfo.setImageSharingMode(vk::SharingMode::eExclusive);
         }
+        createInfo.setPreTransform(swapChainSupport.capabilities.currentTransform)
+                  .setCompositeAlpha(vk::CompositeAlphaFlagBitsKHR::eOpaque)
+                  .setPresentMode(presentMode)
+                  .setClipped(VK_TRUE)
+                  .setOldSwapchain({});
 
-        createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
-        createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-        createInfo.presentMode = presentMode;
-        createInfo.clipped = VK_TRUE;
-        createInfo.oldSwapchain = VK_NULL_HANDLE;
-
-        vkCreateSwapchainKHR(device.device, &createInfo, nullptr, &swapChain);
-
-        vkGetSwapchainImagesKHR(device.device, swapChain, &imageCount, nullptr);
-        swapChainImages.resize(imageCount);
-        vkGetSwapchainImagesKHR(device.device, swapChain, &imageCount, swapChainImages.data());
-
+        swapChain = device.device.createSwapchainKHR(createInfo);
+        swapChainImages = device.device.getSwapchainImagesKHR(swapChain);
         swapChainImageFormat = surfaceFormat.format;
         return swapChain;
     }
 
-    VkImageView AZSwapChain::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
+    vk::ImageView AZSwapChain::createImageView(vk::Image image, vk::Format format, vk::ImageAspectFlags aspectFlags)
     {
-        VkImageViewCreateInfo createInfo{};
-        createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-        createInfo.image = image;
-        createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-        createInfo.format = format;
-        createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
-        createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
-        createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
-        createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
-        createInfo.subresourceRange.aspectMask = aspectFlags;
-        createInfo.subresourceRange.baseMipLevel = 0;
-        createInfo.subresourceRange.levelCount = 1;
-        createInfo.subresourceRange.baseArrayLayer = 0;
-        createInfo.subresourceRange.layerCount = 1;
-        VkImageView imageView;
-        vkCreateImageView(device.device, &createInfo, nullptr, &imageView);
-        return imageView;
+        vk::ImageViewCreateInfo createInfo {};
+        vk::ImageSubresourceRange subResourceRange {};
+        subResourceRange.setAspectMask(aspectFlags).setBaseMipLevel(0).setLevelCount(1).setBaseArrayLayer(0).setLayerCount(1);
+        vk::ComponentMapping componentMapping {};
+        createInfo.setImage(image).setViewType(vk::ImageViewType::e2D).setFormat(format).setComponents(componentMapping).setSubresourceRange(subResourceRange);
+        return device.device.createImageView(createInfo);
     }
 
-    void AZSwapChain::createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory)
+    void AZSwapChain::createImage(uint32_t width, uint32_t height, vk::Format format, vk::ImageTiling tiling, vk::ImageUsageFlags usage, vk::MemoryPropertyFlags properties, vk::Image& image, vk::DeviceMemory& imageMemory)
     {
-        VkImageCreateInfo imageInfo{};
-        imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-        imageInfo.imageType = VK_IMAGE_TYPE_2D;
-        imageInfo.extent = { width, height, 1 };
-        imageInfo.mipLevels = 1;
-        imageInfo.arrayLayers = 1;
-        imageInfo.format = format;
-        imageInfo.tiling = tiling;
-        imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        imageInfo.usage = usage;
-        imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-        imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-        vkCreateImage(device.device, &imageInfo, nullptr, &image);
+        vk::ImageCreateInfo imageCreateInfo {};
+        imageCreateInfo.setImageType(vk::ImageType::e2D).setExtent({width, height, 1}).setMipLevels(1)
+                       .setArrayLayers(1).setFormat(format).setTiling(tiling).setInitialLayout(vk::ImageLayout::eUndefined)
+                       .setUsage(usage).setSamples(vk::SampleCountFlagBits::e1).setSharingMode(vk::SharingMode::eExclusive);
+        image = device.device.createImage(imageCreateInfo);
 
         vk::MemoryRequirements memRequirements = device.device.getImageMemoryRequirements(image);
-
-        VkMemoryAllocateInfo allocInfo{};
-        allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-        allocInfo.allocationSize = memRequirements.size;
-        allocInfo.memoryTypeIndex = physicalDevice.findMemoryType(memRequirements.memoryTypeBits, properties);
-
-        vkAllocateMemory(device.device, &allocInfo, nullptr, &imageMemory);
-        vkBindImageMemory(device.device, image, imageMemory, 0);
+        vk::MemoryAllocateInfo allocInfo {};
+        allocInfo.setAllocationSize(memRequirements.size)
+                 .setMemoryTypeIndex(physicalDevice.findMemoryType(memRequirements.memoryTypeBits, properties));
+        imageMemory = device.device.allocateMemory(allocInfo);
+        device.device.bindImageMemory(image, imageMemory, 0);
     }
 
-    std::vector<VkImageView> AZSwapChain::createImageViews(VkDevice device, std::vector<VkImage>& swapChainImages, VkFormat format)
+    std::vector<vk::ImageView> AZSwapChain::createImageViews(vk::Device device, std::vector<vk::Image>& swapChainImages, vk::Format format)
     {
-        std::vector<VkImageView> swapChainImageViews;
+        std::vector<vk::ImageView> swapChainImageViews;
         swapChainImageViews.resize(swapChainImages.size());
 
         for (size_t i = 0; i < swapChainImages.size(); i++)
         {
-            swapChainImageViews[i] = createImageView(swapChainImages[i], format, VK_IMAGE_ASPECT_COLOR_BIT);
+            swapChainImageViews[i] = createImageView(swapChainImages[i], format,  vk::ImageAspectFlagBits::eColor);
         }
         return swapChainImageViews;
     }
@@ -164,7 +128,7 @@ namespace Azazel
     {
         for (const auto& availableFormat : availableFormats)
         {
-            if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+            if (availableFormat.format == vk::Format {VK_FORMAT_B8G8R8A8_SRGB} && availableFormat.colorSpace == vk::ColorSpaceKHR {VK_COLOR_SPACE_SRGB_NONLINEAR_KHR})
             {
                 return availableFormat;
             }
@@ -176,12 +140,12 @@ namespace Azazel
     {
         for (const auto& availablePresentMode : availablePresentModes)
         {
-            if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR)
+            if (availablePresentMode == vk::PresentModeKHR::eMailbox)
             {
                 return availablePresentMode;
             }
         }
-        return VK_PRESENT_MODE_FIFO_KHR;
+        return vk::PresentModeKHR::eFifo;
     }
 
     vk::Extent2D AZSwapChain::chooseExtent(GLFWwindow* window, const vk::SurfaceCapabilitiesKHR& capabilities)
@@ -203,9 +167,9 @@ namespace Azazel
 
     void AZSwapChain::initSwapChainFramebuffers(AZRenderPass& renderPass)
     {
-        VkFormat depthFormat = VK_FORMAT_D32_SFLOAT;
-        createImage(swapChainExtent.width, swapChainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage, depthImageMemory);
-        depthImageView = createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
+        vk::Format depthFormat = vk::Format::eD32Sfloat;
+        createImage(swapChainExtent.width, swapChainExtent.height, depthFormat, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eDepthStencilAttachment, vk::MemoryPropertyFlagBits::eDeviceLocal, depthImage, depthImageMemory);
+        depthImageView = createImageView(depthImage, depthFormat, vk::ImageAspectFlagBits::eDepth);
         
         swapChainFramebuffers.resize(swapChainImageViews.size());
         for (size_t i = 0; i < swapChainImageViews.size(); i++)

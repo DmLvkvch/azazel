@@ -28,9 +28,9 @@ namespace Azazel
         uint32_t acquireNextImage(VkSemaphore signalSemaphore) const;
         void recreate(uint32_t width, uint32_t height);
 
-        VkSwapchainKHR swapChain;
-        std::vector<VkImage> swapChainImages;
-        std::vector<VkImageView> swapChainImageViews;
+        vk::SwapchainKHR swapChain;
+        std::vector<vk::Image> swapChainImages;
+        std::vector<vk::ImageView> swapChainImageViews;
         std::vector<AZFramebuffer> swapChainFramebuffers;
 
         vk::SurfaceFormatKHR surfaceFormat;
@@ -38,51 +38,25 @@ namespace Azazel
         vk::Extent2D swapChainExtent;
         vk::PresentModeKHR presentMode;
         
-        VkImageView depthImageView;
-        VkDeviceMemory depthImageMemory;
-        VkImage depthImage;
+        vk::ImageView depthImageView;
+        vk::DeviceMemory depthImageMemory;
+        vk::Image depthImage;
         uint32_t imageCount;
 
         void initSwapChainFramebuffers(AZRenderPass& renderPass);
     private:
         VkSwapchainKHR createSwapChain(GLFWwindow* window, AZSurface& surface);
-        std::vector<VkImageView> createImageViews(vk::Device device, std::vector<vk::Image>& swapChainImages, VkFormat format);
-        VkSurfaceFormatKHR chooseSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats);
-        VkPresentModeKHR choosePresentMode(const std::vector<vk::PresentModeKHR>& availablePresentModes);
-        VkExtent2D chooseExtent(GLFWwindow* window, const vk::SurfaceCapabilitiesKHR& capabilities);
+        std::vector<vk::ImageView> createImageViews(vk::Device device, std::vector<vk::Image>& swapChainImages, vk::Format format);
+        vk::SurfaceFormatKHR chooseSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats);
+        vk::PresentModeKHR choosePresentMode(const std::vector<vk::PresentModeKHR>& availablePresentModes);
+        vk::Extent2D chooseExtent(GLFWwindow* window, const vk::SurfaceCapabilitiesKHR& capabilities);
 
-        VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
+        vk::ImageView createImageView(vk::Image image, vk::Format format, vk::ImageAspectFlags aspectFlags);
 
-        void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
+        void createImage(uint32_t width, uint32_t height, vk::Format format, vk::ImageTiling tiling, vk::ImageUsageFlags usage, vk::MemoryPropertyFlags properties, vk::Image& image, vk::DeviceMemory& imageMemory);
     
     private:
         VulkanDevice& device;
         PhysicalDevice& physicalDevice;
-    };
-
-    struct VirtualFrame
-    {
-        vk::Fence commandQueueFence;
-    };
-
-    class VirtualFrameProvider
-    {
-        std::vector<VirtualFrame> virtualFrames;
-        uint32_t presentImageIndex = 0;
-        bool frameRunning = false;
-        size_t currentFrame = 0;
-    public:
-        void init(size_t frameCount, size_t stageBufferSize);
-        void destroy();
-
-        void startFrame();
-        VirtualFrame& getCurrentFrame();
-        VirtualFrame& getNextFrame();
-        const VirtualFrame& getCurrentFrame() const;
-        const VirtualFrame& getNextFrame() const;
-        uint32_t getPresentImageIndex() const;
-        bool isFrameRunning() const;
-        size_t getFrameCount() const;
-        void endFrame();
     };
 }

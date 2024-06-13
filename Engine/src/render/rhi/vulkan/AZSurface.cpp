@@ -15,7 +15,7 @@ namespace Azazel
         return vk::SurfaceKHR {surface};
     }
 
-    SwapChainSupportDetails AZSurface::querySwapChainSupport(vk::PhysicalDevice& physicalDevice)
+    SwapChainSupportDetails AZSurface::querySwapChainSupport(const vk::PhysicalDevice& physicalDevice)
     {
         SwapChainSupportDetails details;
         details.capabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);

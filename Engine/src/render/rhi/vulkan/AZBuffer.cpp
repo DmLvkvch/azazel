@@ -1,5 +1,6 @@
 #include "AZBuffer.h"
 #include "AZContext.h"
+#include "VulkanMemoryAllocator.h"
 
 namespace Azazel
 {
@@ -23,8 +24,8 @@ namespace Azazel
         buffer = device.device.createBuffer(bufferCreateInfo);
         
         vk::MemoryRequirements memRequirements = device.getMemoryRequirements(buffer);
-        vk::MemoryAllocateInfo allocateInfo;
-        allocateInfo.setAllocationSize(memRequirements.size).setMemoryTypeIndex(getVulkanContext().getPhysicalDevice().findMemoryType(memRequirements.memoryTypeBits, properties));
+        vk::MemoryAllocateInfo allocateInfo {};
+        allocateInfo.setAllocationSize(memRequirements.size).setMemoryTypeIndex(device.physicalDevice.findMemoryType(memRequirements.memoryTypeBits, properties));
         bufferMemory = device.device.allocateMemory(allocateInfo);
         device.device.bindBufferMemory(buffer, bufferMemory, 0);
     }
@@ -41,8 +42,9 @@ namespace Azazel
         auto& device = getVulkanContext().getVulkanDevice();
         auto& commandPool = getVulkanContext().getCommandPool();
         auto commandBuffer = AZCommandBuffer::beginSingleTimeCommands(device, commandPool);
-        VkBufferCopy copyRegion {0, 0, size};
-        vkCmdCopyBuffer(commandBuffer, buffer, dstBuffer.buffer, 1, &copyRegion);
+        vk::BufferCopy copyRegion {0, 0, size};
+        vk::ArrayProxy<vk::BufferCopy> bufferCopies {copyRegion};
+        commandBuffer.copyBuffer(buffer, dstBuffer.buffer, bufferCopies);
         AZCommandBuffer::endSingleTimeCommands(device, commandPool, commandBuffer);
     }
 
@@ -71,6 +73,12 @@ namespace Azazel
             vkFreeMemory(device.device, bufferMemory, nullptr);
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     AZVertexBuffer::AZVertexBuffer(const BufferDesc& bufferDesc)
     : buffer(bufferDesc)

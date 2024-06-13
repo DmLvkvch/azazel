@@ -14,29 +14,28 @@ namespace Azazel
 
         }
 
-        AZQueue(VkDevice device, uint32_t queueFamilyIndex);
+        AZQueue(vk::Device device, uint32_t queueFamilyIndex);
 
-        VkQueue createQueue(VkDevice device, uint32_t queueFamilyIndex);
+        vk::Queue createQueue(vk::Device device, uint32_t queueFamilyIndex);
 
-        void submit(uint32_t submitCount, const VkSubmitInfo* submitInfo, VkFence fence) const
+        void submit(const vk::SubmitInfo* submitInfo, uint32_t submitCount, vk::Fence fence) const
         {
-            vkQueueSubmit(queue, submitCount, submitInfo, fence);
+            AZArrayProxy<vk::SubmitInfo> submitInfos{submitCount, submitInfo};
+            queue.submit(submitInfos, fence);
         }
 
-        void submit(std::vector<VkSubmitInfo> & submitInfo, VkFence fence) const
+        void submit(AZArrayProxy<vk::SubmitInfo> & submitInfo, vk::Fence fence) const
         {
-            vkQueueSubmit(queue, submitInfo.size(), submitInfo.data(), fence);
+            queue.submit(submitInfo, fence);
         }
 
-        VkQueue get()
+        vk::Queue get()
         {
             return queue;
         }
 
         vk::Queue queue;
-        VkQueueFlags flags;
         uint32_t queueFamilyIndex;
-        uint32_t queueIndex;
     };
 
     class PresentQueue

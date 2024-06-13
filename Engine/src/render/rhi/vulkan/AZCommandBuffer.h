@@ -26,7 +26,7 @@ namespace Azazel
     {
     public:
         AZCommandBuffer();
-        AZCommandBuffer(VkCommandBuffer commandBuffer);
+        AZCommandBuffer(vk::CommandBuffer commandBuffer);
         ~AZCommandBuffer();
         void begin() const;
         void end() const;

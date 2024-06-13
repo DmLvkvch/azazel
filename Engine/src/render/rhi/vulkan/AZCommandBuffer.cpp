@@ -5,7 +5,7 @@ namespace Azazel
 {
 
     AZCommandPool::AZCommandPool(const VulkanDevice& device, int queueIndex)
-    :device(device)
+    : device(device)
     {
         vk::CommandPoolCreateInfo poolInfo;
         poolInfo.setFlags(vk::CommandPoolCreateFlagBits::eResetCommandBuffer).setQueueFamilyIndex(queueIndex);
@@ -19,24 +19,21 @@ namespace Azazel
 
     vk::CommandBuffer AZCommandPool::allocateCommandBuffer(const VulkanDevice& device) const
     {
-        VkCommandBuffer commandBuffer;
-        VkCommandBufferAllocateInfo allocInfo{};
-        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-        allocInfo.commandPool = commandPool;
-        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-        allocInfo.commandBufferCount = 1;
-        vkAllocateCommandBuffers(device.device, &allocInfo, &commandBuffer);
+        vk::CommandBuffer commandBuffer {};
+        vk::CommandBufferAllocateInfo allocInfo {};
+        allocInfo.setCommandPool(commandPool).setLevel(vk::CommandBufferLevel::ePrimary).setCommandBufferCount(1);
+        device.device.allocateCommandBuffers(&allocInfo, &commandBuffer);
         return commandBuffer;
     }
 
     void AZCommandPool::reset()
     {
-        vkResetCommandPool(device.device, commandPool, VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT);
+        device.device.resetCommandPool(commandPool, vk::CommandPoolResetFlagBits::eReleaseResources);
     }
     
     void AZCommandPool::destroy()
     {
-        vkDestroyCommandPool(device.device, commandPool, nullptr);
+        device.device.destroyCommandPool(commandPool);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,8 +46,8 @@ namespace Azazel
     {
     }
 
-    AZCommandBuffer::AZCommandBuffer(VkCommandBuffer commandBuffer)
-        : commandBuffer(commandBuffer)
+    AZCommandBuffer::AZCommandBuffer(vk::CommandBuffer commandBuffer)
+    : commandBuffer(commandBuffer)
     {
     }
 
@@ -60,20 +57,19 @@ namespace Azazel
 
     void AZCommandBuffer::begin() const
     {
-        VkCommandBufferBeginInfo beginInfo{};
-        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-        beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-        vkBeginCommandBuffer(commandBuffer, &beginInfo);
+        vk::CommandBufferBeginInfo beginInfo{};
+        beginInfo.setFlags(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
+        commandBuffer.begin(beginInfo);
     }
 
     void AZCommandBuffer::end() const
     {
-        vkEndCommandBuffer(commandBuffer);
+        commandBuffer.end();
     }
 
     void AZCommandBuffer::reset() const
     {
-        vkResetCommandBuffer(commandBuffer, 0);
+        commandBuffer.reset();
     }
 
     void* AZCommandBuffer::getAPIBuffer()
@@ -83,21 +79,15 @@ namespace Azazel
 
     vk::CommandBuffer AZCommandBuffer::beginSingleTimeCommands(const VulkanDevice& device, const AZCommandPool& commandPool)
     {
-        VkCommandBufferAllocateInfo allocInfo{};
-        allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-        allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-        allocInfo.commandPool = commandPool.commandPool;
-        allocInfo.commandBufferCount = 1;
+        vk::CommandBufferAllocateInfo allocInfo{};
+        allocInfo.setLevel(vk::CommandBufferLevel::ePrimary).setCommandPool(commandPool.commandPool).setCommandBufferCount(1);
 
-        VkCommandBuffer commandBuffer;
-        vkAllocateCommandBuffers(device.device, &allocInfo, &commandBuffer);
+        vk::CommandBuffer commandBuffer {};
+        (void)device.device.allocateCommandBuffers(&allocInfo, &commandBuffer);
 
-        VkCommandBufferBeginInfo beginInfo{};
-        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-        beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-
-        vkBeginCommandBuffer(commandBuffer, &beginInfo);
-
+        vk::CommandBufferBeginInfo beginInfo{};
+        beginInfo.setFlags(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
+        commandBuffer.begin(beginInfo);
         return commandBuffer;
     }
 

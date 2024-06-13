@@ -39,31 +39,30 @@ namespace Azazel
         surface = std::make_unique<AZSurface>(instance->instance, static_cast<GLFWwindow*>(window.getNativeWindow()));
         physicalDevice = std::make_unique<PhysicalDevice>(instance->instance, surface->surface);
         device = std::make_unique<VulkanDevice>(*instance, *physicalDevice);
+
+        VmaAllocatorCreateInfo allocatorInfo {};
+        allocatorInfo.vulkanApiVersion = VK_MAKE_VERSION(1, 0, 0);
+        allocatorInfo.physicalDevice = physicalDevice->get();
+        allocatorInfo.device = device->device;
+        allocatorInfo.instance = instance->instance;
+        vmaCreateAllocator(&allocatorInfo, &allocator);
+
         swapChain = std::make_unique<AZSwapChain>(static_cast<GLFWwindow*>(window.getNativeWindow()), *surface, *physicalDevice, *device);
         renderPass = std::make_unique<AZRenderPass>(*device, swapChain->swapChainImageFormat);
         swapChain->initSwapChainFramebuffers(*renderPass);
 
         commandPool = std::make_unique<AZCommandPool>(*device, physicalDevice->getQueueFamilyIndices().graphicsFamily.value());
         commandBuffer = std::make_unique<AZCommandBuffer>(commandPool->allocateCommandBuffer(*device));
-
         descriptorPool = std::make_unique<AZDescriptorPool>(*device);
-
-        VmaAllocatorCreateInfo allocatorInfo = {};
-        allocatorInfo.vulkanApiVersion = VK_MAKE_VERSION(1, 0, 0);
-        allocatorInfo.physicalDevice = physicalDevice->get();
-        allocatorInfo.device = device->device;
-        allocatorInfo.instance = instance->instance;
-        vmaCreateAllocator(&allocatorInfo, &this->allocator);
     }
 
     void AZContext::destroy()
     {
-        descriptorPool.reset();
-        commandPool.reset();
-        renderPass.reset();
-        swapChain.reset();
-        device.reset();
-        surface.reset();
-        instance.reset();
+        // renderPass.reset();
+        // swapChain.reset();
+        // device.reset();
+        // physicalDevice.reset();
+        // surface.reset();
+        // instance.reset();
     }
 }

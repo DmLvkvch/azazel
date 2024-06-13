@@ -25,17 +25,17 @@ namespace Azazel
         return getVulkanContext().getAllocator();
     }
 
-    void deallocateImage(const VkImage& image, VmaAllocation allocation)
+    void deallocateImage(const vk::Image& image, VmaAllocation allocation)
     {
         vmaDestroyImage(getVulkanAllocator(), image, allocation);
     }
 
-    void deallocateBuffer(const VkBuffer& buffer, VmaAllocation allocation)
+    void deallocateBuffer(const vk::Buffer& buffer, VmaAllocation allocation)
     {
         vmaDestroyBuffer(getVulkanAllocator(), buffer, allocation);
     }
 
-    VmaAllocation allocateImage(const VkImageCreateInfo& imageCreateInfo, MemoryUsage usage, VkImage* image)
+    VmaAllocation allocateImage(const vk::ImageCreateInfo& imageCreateInfo, MemoryUsage usage, vk::Image* image)
     {
         VmaAllocation allocation = { };
         VmaAllocationCreateInfo allocationInfo = { };
@@ -44,7 +44,7 @@ namespace Azazel
         return allocation;
     }
 
-    VmaAllocation allocateBuffer(const VkBufferCreateInfo& bufferCreateInfo, MemoryUsage usage, VkBuffer* buffer)
+    VmaAllocation allocateBuffer(const vk::BufferCreateInfo& bufferCreateInfo, MemoryUsage usage, vk::Buffer* buffer)
     {
         VmaAllocation allocation = { };
         VmaAllocationCreateInfo allocationInfo = { };
@@ -53,11 +53,11 @@ namespace Azazel
         return allocation;
     }
 
-    uint8_t* mapMemory(VmaAllocation allocation)
+    void* mapMemory(VmaAllocation allocation)
     {
         void* memory = nullptr;
         vmaMapMemory(getVulkanAllocator(), allocation, &memory);
-        return (uint8_t*)memory;
+        return (uint8_t*) memory;
     }
 
     void unmapMemory(VmaAllocation allocation)

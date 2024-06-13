@@ -34,6 +34,11 @@ namespace Azazel
         instance = createInstance();
     }
 
+    AZInstance::~AZInstance()
+    {
+        destroy();
+    }
+
     vk::Instance AZInstance::createInstance() 
     {
         (void) checkValidationLayerSupport(validationLayers);
@@ -53,7 +58,7 @@ namespace Azazel
 
     void AZInstance::destroy()
     {
-        instance.destroyDebugUtilsMessengerEXT(debugMessenger);
+        DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
         instance.destroy();
     }
 
@@ -133,10 +138,13 @@ namespace Azazel
 
     vk::DebugUtilsMessengerEXT AZInstance::setupDebugMessenger(vk::Instance& instance) 
     {
-        vk::DebugUtilsMessengerCreateInfoEXT createInfo {};
-        createInfo.setMessageSeverity(vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose | vk::DebugUtilsMessageSeverityFlagBitsEXT::eError | vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning)
-                  .setMessageType(vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral | vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation | vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance)
-                  .setPfnUserCallback(debugCallback);
-        return instance.createDebugUtilsMessengerEXT(createInfo);
+        VkDebugUtilsMessengerCreateInfoEXT createInfo {};
+        createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+        createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+        createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+        createInfo.pfnUserCallback = debugCallback;
+        VkDebugUtilsMessengerEXT debugMessenger;
+        CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger);
+        return {debugMessenger};
     }
 }

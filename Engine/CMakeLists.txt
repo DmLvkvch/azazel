@@ -23,6 +23,7 @@ set_property (TARGET glslang::validator PROPERTY IMPORTED_LOCATION "${GLSLANG_VA
 include_directories ("vendor/glad/include"
                      "vendor/glslang/glslang/Public" 
                      "vendor/glslang/SPIRV" 
+                     "vendor/SPIRV-Reflect"
                      "vendor/VulkanMemoryAllocator/include" 
                      "vendor/glfw"
                      "vendor/glm"
@@ -78,7 +79,7 @@ endif ()
 
 #set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_WARNING_AS_ERROR)
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} Vulkan::Vulkan glfw SPIRV assimp stb_image glad glm::glm freetype IMGUI OpenGL::GL VulkanMemoryAllocator)
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} Vulkan::Vulkan glfw SPIRV spirv-reflect assimp stb_image glad glm::glm freetype IMGUI OpenGL::GL VulkanMemoryAllocator)
 
 file(REMOVE ${CMAKE_BINARY_DIR}/shaders)
 file(REMOVE ${CMAKE_BINARY_DIR}/images)

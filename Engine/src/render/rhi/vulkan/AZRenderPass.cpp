@@ -3,7 +3,18 @@
 
 namespace Azazel
 {
-    AZRenderPass::AZRenderPass(const VulkanDevice& device, VkFormat format)
+
+    AZFramebuffer::AZFramebuffer(VulkanDevice& device, AZFramebufferDesc& framebufferDesc)
+    {
+        vk::FramebufferCreateInfo framebufferInfo{};
+        framebufferInfo.setRenderPass(framebufferDesc.renderPass)
+                       .setAttachmentCount(static_cast<uint32_t>(framebufferDesc.attachments.size()))
+                       .setPAttachments(framebufferDesc.attachments.data())
+                       .setWidth(framebufferDesc.width).setHeight(framebufferDesc.height).setLayers(1);
+        framebuffer = device.device.createFramebuffer(framebufferInfo);
+    }
+
+    AZRenderPass::AZRenderPass(const VulkanDevice& device, vk::Format format)
     : device(device)
     {
         initRenderPass(format);
@@ -14,89 +25,71 @@ namespace Azazel
         destroy();
     }
     
-    void AZRenderPass::initRenderPass(VkFormat format)
+    void AZRenderPass::initRenderPass(vk::Format format)
     {
-        VkAttachmentDescription colorAttachment {};
-        colorAttachment.format         = format;
-        colorAttachment.samples        = VK_SAMPLE_COUNT_1_BIT;
-        colorAttachment.loadOp         = VK_ATTACHMENT_LOAD_OP_CLEAR;
-        colorAttachment.storeOp        = VK_ATTACHMENT_STORE_OP_STORE;
-        colorAttachment.stencilLoadOp  = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-        colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-        colorAttachment.initialLayout  = VK_IMAGE_LAYOUT_UNDEFINED;
-        colorAttachment.finalLayout    = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+        vk::AttachmentDescription colorAttachment {};
+        colorAttachment.setFormat(format).setSamples(vk::SampleCountFlagBits::e1)
+                       .setLoadOp(vk::AttachmentLoadOp::eClear).setStoreOp(vk::AttachmentStoreOp::eStore)
+                       .setStencilLoadOp(vk::AttachmentLoadOp::eDontCare).setStencilStoreOp(vk::AttachmentStoreOp::eDontCare)
+                       .setInitialLayout(vk::ImageLayout::eUndefined).setFinalLayout(vk::ImageLayout::ePresentSrcKHR);
 
-        VkAttachmentDescription depthAttachment {};
-        depthAttachment.format         = VK_FORMAT_D32_SFLOAT;
-        depthAttachment.samples        = VK_SAMPLE_COUNT_1_BIT;
-        depthAttachment.loadOp         = VK_ATTACHMENT_LOAD_OP_CLEAR;
-        depthAttachment.storeOp        = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-        depthAttachment.stencilLoadOp  = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-        depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-        depthAttachment.initialLayout  = VK_IMAGE_LAYOUT_UNDEFINED;
-        depthAttachment.finalLayout    = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+        vk::AttachmentDescription depthAttachment {};
+        depthAttachment.setFormat(vk::Format::eD32Sfloat).setSamples(vk::SampleCountFlagBits::e1)
+                       .setLoadOp(vk::AttachmentLoadOp::eClear).setStoreOp(vk::AttachmentStoreOp::eDontCare)
+                       .setStencilLoadOp(vk::AttachmentLoadOp::eDontCare).setStencilStoreOp(vk::AttachmentStoreOp::eDontCare)
+                       .setInitialLayout(vk::ImageLayout::eUndefined).setFinalLayout(vk::ImageLayout::eDepthStencilAttachmentOptimal);
 
-        VkAttachmentReference colorAttachmentRef {};
-        colorAttachmentRef.attachment = 0;
-        colorAttachmentRef.layout     = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+        vk::AttachmentReference colorAttachmentRef {};
+        colorAttachmentRef.setAttachment(0)
+                          .setLayout(vk::ImageLayout::eColorAttachmentOptimal);
 
-        VkAttachmentReference depthAttachmentRef {};
-        depthAttachmentRef.attachment = 1;
-        depthAttachmentRef.layout     = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+        vk::AttachmentReference depthAttachmentRef {};
+        depthAttachmentRef.setAttachment(1)
+                          .setLayout(vk::ImageLayout::eDepthStencilAttachmentOptimal);
 
-        VkSubpassDependency dependency {};
-        dependency.srcSubpass    = VK_SUBPASS_EXTERNAL;
-        dependency.dstSubpass    = 0;
-        dependency.srcStageMask  = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
-        dependency.srcAccessMask = 0;
-        dependency.dstStageMask  = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
-        dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+        vk::SubpassDependency dependency {};
+        dependency.setSrcSubpass(VK_SUBPASS_EXTERNAL)
+                  .setDstSubpass(0)
+                  .setSrcStageMask(vk::PipelineStageFlagBits::eColorAttachmentOutput | vk::PipelineStageFlagBits::eEarlyFragmentTests)
+                  .setSrcAccessMask(vk::AccessFlagBits::eNone)
+                  .setDstStageMask(vk::PipelineStageFlagBits::eColorAttachmentOutput | vk::PipelineStageFlagBits::eEarlyFragmentTests)
+                  .setDstAccessMask(vk::AccessFlagBits::eColorAttachmentWrite | vk::AccessFlagBits::eDepthStencilAttachmentWrite);
 
-        VkSubpassDescription subpass {};
-        subpass.pipelineBindPoint       = VK_PIPELINE_BIND_POINT_GRAPHICS;
-        subpass.colorAttachmentCount    = 1;
-        subpass.pColorAttachments       = &colorAttachmentRef;
-        subpass.pDepthStencilAttachment = &depthAttachmentRef;
+        vk::SubpassDescription subpass {};
+        subpass.setPipelineBindPoint(vk::PipelineBindPoint::eGraphics)
+               .setColorAttachmentCount(1)
+               .setPColorAttachments(&colorAttachmentRef)
+               .setPDepthStencilAttachment(&depthAttachmentRef);
 
-        std::array<VkAttachmentDescription, 2> attachments = {colorAttachment, depthAttachment};
-        VkRenderPassCreateInfo renderPassInfo {};
-        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-        renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
-        renderPassInfo.pAttachments    = attachments.data();
-        renderPassInfo.subpassCount    = 1;
-        renderPassInfo.pSubpasses      = &subpass;
-        renderPassInfo.dependencyCount = 1;
-        renderPassInfo.pDependencies   = &dependency;
-
-        vkCreateRenderPass(device.device, &renderPassInfo, nullptr, &renderPass);
+        std::array<vk::AttachmentDescription, 2> attachments = {colorAttachment, depthAttachment};
+        vk::RenderPassCreateInfo renderPassInfo {};
+        renderPassInfo.setAttachmentCount(static_cast<uint32_t>(attachments.size()))
+                      .setPAttachments(attachments.data())
+                      .setSubpassCount(1).setPSubpasses(&subpass)
+                      .setDependencyCount(1).setPDependencies(&dependency);
+        renderPass = device.device.createRenderPass(renderPassInfo);
     }
 
-    void AZRenderPass::beginRenderPass(const AZCommandBuffer& commandBuffer, VkFramebuffer framebuffer, VkExtent2D extent) const
+    void AZRenderPass::beginRenderPass(const AZCommandBuffer& commandBuffer, vk::Framebuffer framebuffer, vk::Extent2D extent) const
     {
-        VkRenderPassBeginInfo renderPassInfo {};
-        renderPassInfo.sType             = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        renderPassInfo.renderPass        = renderPass;
-        renderPassInfo.framebuffer       = framebuffer;
-        renderPassInfo.renderArea.offset = { 0, 0 };
-        renderPassInfo.renderArea.extent = extent;
-   
-        std::array<VkClearValue, 2> clearValues {};
-        clearValues[0].color = {{0.0f, 0.0f, 0.0f, 0.0f}};
-        clearValues[1].depthStencil = {1.0f, 0};
-
-        renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-        renderPassInfo.pClearValues = clearValues.data();
-
-        vkCmdBeginRenderPass(commandBuffer.commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+        vk::RenderPassBeginInfo renderPassBeginInfo {};
+        renderPassBeginInfo.setRenderPass(renderPass).setFramebuffer(framebuffer).setRenderArea({{0, 0}, extent});
+        std::array<vk::ClearValue, 2> clearValues {};
+        vk::ClearColorValue clearColorValue {0.0f, 0.0f, 0.0f, 0.0f};
+        clearValues[0].setColor(clearColorValue);
+        clearValues[1].setDepthStencil({1.0f, 0});
+        vk::ArrayProxyNoTemporaries vkClearValues {clearValues.size(), clearValues.data()};
+        renderPassBeginInfo.setClearValues(vkClearValues);
+        commandBuffer.commandBuffer.beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
     }
 
     void AZRenderPass::endRenderPass(const AZCommandBuffer& commandBuffer) const
     {
-        vkCmdEndRenderPass(commandBuffer.commandBuffer);
+        commandBuffer.commandBuffer.endRenderPass();
     }
 
     void AZRenderPass::destroy()
     {
-        vkDestroyRenderPass(device.device, renderPass, nullptr);
+        device.device.destroyRenderPass(renderPass);
     }
 }

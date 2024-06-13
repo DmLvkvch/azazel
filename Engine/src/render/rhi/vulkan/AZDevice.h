@@ -54,7 +54,7 @@ namespace Azazel
             return features;
         }
 
-        vk::PhysicalDevice get() const
+        const vk::PhysicalDevice& get() const
         {
             return physicalDevice;
         }
@@ -83,16 +83,16 @@ namespace Azazel
     class VulkanDevice
     {
     public:
-        VulkanDevice(AZInstance& context, PhysicalDevice& physicalDevice);
+        VulkanDevice(const AZInstance& context, const PhysicalDevice& physicalDevice);
         ~VulkanDevice();
 
-        VkDevice createDevice(AZInstance& context, PhysicalDevice& physicalDevice);
+        vk::Device createDevice(const AZInstance& context, const PhysicalDevice& physicalDevice);
+        vk::MemoryRequirements getMemoryRequirements(vk::Buffer& buffer) const;
         void destroy();
-
-        vk::MemoryRequirements getMemoryRequirements(vk::Buffer buffer) const;
     
         AZQueue graphicsQueue;
         AZQueue presentQueue;
         vk::Device device;
+        const PhysicalDevice& physicalDevice;
     };
 }

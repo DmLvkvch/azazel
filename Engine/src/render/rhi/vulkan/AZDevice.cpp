@@ -110,50 +110,42 @@ namespace Azazel
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    VulkanDevice::VulkanDevice(AZInstance& context, PhysicalDevice& physicalDevice)
+    VulkanDevice::VulkanDevice(const AZInstance& context, const PhysicalDevice& physicalDevice)
+    : physicalDevice(physicalDevice)
     {
-        device = vk::Device{ createDevice(context, physicalDevice) };
+        device = createDevice(context, physicalDevice);
         graphicsQueue = AZQueue(device, physicalDevice.getQueueFamilyIndices().graphicsFamily.value());
         presentQueue = AZQueue(device, physicalDevice.getQueueFamilyIndices().presentFamily.value());
     }
 
     VulkanDevice::~VulkanDevice()
     {
-        destroy();
+        //destroy();
     }
 
-    VkDevice VulkanDevice::createDevice(AZInstance& context, PhysicalDevice& physicalDevice)
+    vk::Device VulkanDevice::createDevice(const AZInstance& context, const PhysicalDevice& physicalDevice)
     {
-        VkDevice device;
+        vk::Device device {};
         const QueueFamilyIndices& indices = physicalDevice.getQueueFamilyIndices();
-        std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+        std::vector<vk::DeviceQueueCreateInfo> queueCreateInfos;
         std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily.value(), indices.presentFamily.value() };
         float queuePriority = 1.0f;
         for (uint32_t queueFamily : uniqueQueueFamilies)
         {
-            VkDeviceQueueCreateInfo queueCreateInfo{};
-            queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-            queueCreateInfo.queueFamilyIndex = queueFamily;
-            queueCreateInfo.queueCount = 1;
-            queueCreateInfo.pQueuePriorities = &queuePriority;
+            vk::DeviceQueueCreateInfo queueCreateInfo {};
+            queueCreateInfo.setQueueFamilyIndex(queueFamily).setQueueCount(1).setPQueuePriorities(&queuePriority);
             queueCreateInfos.push_back(queueCreateInfo);
         }
-        VkPhysicalDeviceFeatures deviceFeatures = physicalDevice.getPhysicalDeviceFeatures();
+        vk::PhysicalDeviceFeatures deviceFeatures = physicalDevice.getPhysicalDeviceFeatures();
         auto& deviceExtensions = context.deviceExtensions;
         auto& validationLayers = context.validationLayers;
-        VkDeviceCreateInfo createInfo{};
-        {
-            createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-            createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
-            createInfo.pQueueCreateInfos = queueCreateInfos.data();
-            createInfo.pEnabledFeatures = &deviceFeatures;
-            createInfo.enabledExtensionCount = 0;
-            createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
-            createInfo.ppEnabledLayerNames = validationLayers.data();
-            createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
-            createInfo.ppEnabledExtensionNames = deviceExtensions.data();
-        }
-        vkCreateDevice(physicalDevice.get(), &createInfo, nullptr, &device);
+        vk::DeviceCreateInfo createInfo {};
+        createInfo.setQueueCreateInfoCount(static_cast<uint32_t>(queueCreateInfos.size()))
+                  .setPQueueCreateInfos(queueCreateInfos.data()).setPEnabledFeatures(&deviceFeatures)
+                  .setEnabledExtensionCount(0)
+                  .setEnabledLayerCount(static_cast<uint32_t>(validationLayers.size())).setPpEnabledLayerNames(validationLayers.data())
+                  .setEnabledExtensionCount(static_cast<uint32_t>(deviceExtensions.size())).setPpEnabledExtensionNames(deviceExtensions.data());
+        device = physicalDevice.get().createDevice(createInfo);
         return device;
     }
 
@@ -162,7 +154,7 @@ namespace Azazel
         device.destroy();
     }
 
-    vk::MemoryRequirements VulkanDevice::getMemoryRequirements(vk::Buffer buffer) const
+    vk::MemoryRequirements VulkanDevice::getMemoryRequirements(vk::Buffer& buffer) const
     {
         return device.getBufferMemoryRequirements(buffer);
     }

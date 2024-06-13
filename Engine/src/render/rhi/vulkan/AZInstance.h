@@ -11,11 +11,7 @@ namespace Azazel
     {
     public:
         AZInstance();
-
-        ~AZInstance()
-        {
-            
-        }
+        ~AZInstance();
 
         vk::Instance createInstance();
         void destroy();
@@ -29,6 +25,7 @@ namespace Azazel
 
         vk::Instance instance;
         vk::DebugUtilsMessengerEXT debugMessenger;
+        vk::DispatchLoaderDynamic dynamicLoader {};
 
         std::vector<const char*> validationLayers =
         {

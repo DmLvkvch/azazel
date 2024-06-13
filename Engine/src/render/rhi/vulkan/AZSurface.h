@@ -12,7 +12,7 @@ namespace Azazel
     public:
         AZSurface(vk::Instance& instance, GLFWwindow* window);
 
-        SwapChainSupportDetails querySwapChainSupport(vk::PhysicalDevice& physicalDevice);
+        SwapChainSupportDetails querySwapChainSupport(const vk::PhysicalDevice& physicalDevice);
 
         vk::SurfaceKHR createSurface(vk::Instance& instance, GLFWwindow* window);
 

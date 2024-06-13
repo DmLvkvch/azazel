@@ -34,6 +34,8 @@
 
 #include <chrono>
 
+#include "render/rhi/vulkan/AZMaterial.h"
+
 namespace Azazel
 {
     Application* Application::app = nullptr;
@@ -101,11 +103,11 @@ namespace Azazel
 
         int w, h, c;
         unsigned char* pixels = stbi_load("textures/awesomeface.png", &w, &h, &c, STBI_rgb_alpha);
-        textureImage = std::make_unique<AZImage>(TextureData{w, h, c, pixels}, VK_FORMAT_R8G8B8A8_SRGB);
+        textureImage = std::make_unique<AZImage>(TextureData{w, h, c, pixels}, vk::Format::eR8G8B8A8Srgb);
         stbi_image_free(pixels);
         
-        textureImageView = std::make_unique<AZImageView>(*textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
-        textureSampler = std::make_unique<AZTextureSampler>(VK_FILTER_LINEAR, VK_SAMPLER_ADDRESS_MODE_REPEAT);
+        textureImageView = std::make_unique<AZImageView>(*textureImage, vk::Format::eR8G8B8A8Srgb, vk::ImageAspectFlagBits::eColor);
+        textureSampler = std::make_unique<AZTextureSampler>(vk::Filter::eLinear, vk::SamplerAddressMode::eRepeat);
 
         uniformBuffer = std::make_unique<AZUniformBuffer>(BufferDesc{ nullptr, sizeof(UniformBufferObject),
             vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent });
@@ -607,15 +609,18 @@ namespace Azazel
         submitInfo.pCommandBuffers = &cb;
         submitInfo.signalSemaphoreCount = 1;
         submitInfo.pSignalSemaphores = signalSemaphores;
-
-        device.graphicsQueue.submit(1, &submitInfo, inFlightFence);
+        vk::SubmitInfo sb {submitInfo};
+        AZArrayProxy<vk::SubmitInfo> submitInfos {1, &sb};
+        device.graphicsQueue.submit(submitInfos, inFlightFence);
 
         VkPresentInfoKHR presentInfo{};
         presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
         presentInfo.waitSemaphoreCount = 1;
         presentInfo.pWaitSemaphores = signalSemaphores;
         presentInfo.swapchainCount = 1;
-        presentInfo.pSwapchains = &swapChain.swapChain;
+        VkSwapchainKHR swp = (VkSwapchainKHR)swapChain.swapChain;
+        presentInfo.pSwapchains = &swp;
+        
         presentInfo.pImageIndices = &imageIndex;
 
         vkQueuePresentKHR(device.presentQueue.queue, &presentInfo);
