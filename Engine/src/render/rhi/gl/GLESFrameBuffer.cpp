@@ -2,10 +2,22 @@
 #include "gl_headers.h"
 
 #include <iostream>
-#include "GLESFrameBufferHistory.h"
 
 namespace Azazel
 {
+
+    void FrameBufferStack::activate(unsigned int id)
+    {
+        this->frameBufferStack.push_back(id);
+        glBindFramebuffer(GL_FRAMEBUFFER, id);
+    }
+
+    void FrameBufferStack::deactivateLast()
+    {
+        this->frameBufferStack.pop_back();
+        glBindFramebuffer(GL_FRAMEBUFFER, frameBufferStack.back());
+    }
+
     GLESFrameBuffer::GLESFrameBuffer(Texture* texture)
     : GLESFrameBuffer(texture, static_cast<Texture*>(nullptr))
     {
@@ -17,26 +29,26 @@ namespace Azazel
     GLESFrameBuffer::GLESFrameBuffer(Texture* texture, FrameBufferTarget* depthTarget)
     {
         glGenFramebuffers(1, &rendererID);
-        frameBufferHistory().activate(rendererID);
+        frameBufferStack().activate(rendererID);
         addColorAttachment(texture);
         setDepthTarget(depthTarget);
         
         checkFrameBufferStatus();
 
-        frameBufferHistory().deactivateLast();
+        frameBufferStack().deactivateLast();
     }
 
     GLESFrameBuffer::GLESFrameBuffer(Texture* texture, Texture* depthTarget)
     {
         glGenFramebuffers(1, &rendererID);
-        frameBufferHistory().activate(rendererID);
+        frameBufferStack().activate(rendererID);
 
         addColorAttachment(texture);
         setDepthTarget(depthTarget);
 
         checkFrameBufferStatus();
 
-        frameBufferHistory().deactivateLast();
+        frameBufferStack().deactivateLast();
     }
 
 
@@ -47,12 +59,12 @@ namespace Azazel
 
     void GLESFrameBuffer::bind() const
     {
-        frameBufferHistory().activate(rendererID);
+        frameBufferStack().activate(rendererID);
     }
     
     void GLESFrameBuffer::unbind() const
     {
-        frameBufferHistory().deactivateLast();
+        frameBufferStack().deactivateLast();
     }
 
     void GLESFrameBuffer::addColorAttachment(Texture* texture, int slot)
@@ -61,11 +73,11 @@ namespace Azazel
         {
             return;
         }
-        frameBufferHistory().activate(rendererID);
+        frameBufferStack().activate(rendererID);
         unsigned int textureId = texture->getRendererID();
         colorTextureTarget[slot] = texture;
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + slot, GL_TEXTURE_2D, textureId, 0);
-        frameBufferHistory().deactivateLast();
+        frameBufferStack().deactivateLast();
     }
 
     int GLESFrameBuffer::checkFrameBufferStatus()
@@ -84,7 +96,7 @@ namespace Azazel
         {
             return;
         }
-        frameBufferHistory().activate(rendererID);
+        frameBufferStack().activate(rendererID);
         if (depthTarget->checkTargetType<FrameBufferTextureTarget>())
         {
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTarget->getRendererID(), 0);
@@ -93,7 +105,7 @@ namespace Azazel
         {
             glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthTarget->getRendererID()); 
         }
-        frameBufferHistory().deactivateLast();
+        frameBufferStack().deactivateLast();
     }
 
     void GLESFrameBuffer::setDepthTarget(RenderBuffer* renderBuffer)
@@ -102,9 +114,9 @@ namespace Azazel
         {
             return;
         }
-        frameBufferHistory().activate(rendererID);
+        frameBufferStack().activate(rendererID);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBuffer->getRendererID()); 
-        frameBufferHistory().deactivateLast();
+        frameBufferStack().deactivateLast();
     }
 
     void GLESFrameBuffer::setDepthTarget(Texture* depthTexture)
@@ -113,8 +125,8 @@ namespace Azazel
         {
             return;
         }
-        frameBufferHistory().activate(rendererID);
+        frameBufferStack().activate(rendererID);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture->getRendererID(), 0);
-        frameBufferHistory().deactivateLast();
+        frameBufferStack().deactivateLast();
     }
 }

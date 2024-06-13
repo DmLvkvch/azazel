@@ -8,7 +8,7 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include "logging/Log.h"
+#include "api/logging/Log.h"
 #include "IO/KeyCodes.h"
 
 namespace Azazel
@@ -28,12 +28,12 @@ namespace Azazel
         title = props.title;
 
         // INIT GLFW
-        GLFWwindow* window = initGLFW(width, height, title);
+        window = initGLFW(width, height, title);
 
         // INIT GLAD
         if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
         {
-            Log::getLogger()->errorLog("Failed to initialize GLAD!");
+            Log::getLogger().errorLog("Failed to initialize GLAD!");
         }
 
         //INIT IMGUI
@@ -136,7 +136,7 @@ namespace Azazel
         int succes = glfwInit();
         if (succes == GLFW_FALSE)
         {
-            Log::getLogger()->errorLog("Failed to initialize GLFW!");
+            Log::getLogger().errorLog("Failed to initialize GLFW!");
         }
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
@@ -145,11 +145,11 @@ namespace Azazel
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
         glfwWindowHint(GLFW_SAMPLES, 4);
-        window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+        GLFWwindow* window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
         
         if (window == NULL)
         {
-            Log::getLogger()->errorLog("Failed to create GLFW window!");
+            Log::getLogger().errorLog("Failed to create GLFW window!");
             glfwTerminate();
         }
         glfwMakeContextCurrent(window);
@@ -200,7 +200,6 @@ namespace Azazel
     void GLWindow::onUpdate(float delta)
     {
         glfwPollEvents();
-        glfwSwapBuffers(window);
     }
 
     unsigned int GLWindow::getWidth() const

@@ -43,12 +43,10 @@ namespace Azazel
 
         Camera()
         {
-            std::cout << "Camera constructor" << std::endl;
         }
 
         ~Camera()
         {
-            std::cout << "Camera destructor" << std::endl;
         }
 
         void onInputUpdate(float delta)

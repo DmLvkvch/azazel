@@ -29,12 +29,10 @@ namespace Azazel
         using EventCallbackFn = std::function<void(Event&)>;
         Window() 
         {
-            std::cout << "Window constructor" << std::endl;
         }
 
         virtual ~Window()
         {
-            std::cout << "Window destructor" << std::endl;
         }
 
         virtual void onUpdate(float delta) = 0;
@@ -45,7 +43,9 @@ namespace Azazel
         virtual void setVSync(bool enabled) = 0;
         virtual bool isVSync() const = 0;
         virtual void* getNativeWindow() = 0;
-        static Window* create(const WindowProperties& props = WindowProperties());
+        virtual void drawFrame(){}
+
+        static Window* create(const WindowProperties& properties = WindowProperties());
     private:
         static Window* window;
     };

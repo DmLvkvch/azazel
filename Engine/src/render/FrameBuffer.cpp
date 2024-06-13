@@ -2,9 +2,8 @@
 
 #ifdef AZAZEL_GL
 #include "render/rhi/gl/GLESFrameBuffer.h"
-#include "render/rhi/gl/GLESFrameBufferHistory.h"
 #else
-#include "render/rhi/vulkan/VKFrameBuffer.h"
+#include "render/rhi/vulkan/AZFramebuffer.h"
 #endif
 
 namespace Azazel
@@ -20,7 +19,7 @@ namespace Azazel
         #ifdef AZAZEL_GL
         return new GLESFrameBuffer(texture, depthTarget);
         #else
-        return new VKFrameBuffer(texture, depthTarget);
+        return nullptr;// new AZFrameBuffer(texture, depthTarget);
         #endif
     }
 
@@ -29,7 +28,7 @@ namespace Azazel
         #ifdef AZAZEL_GL
         return new GLESFrameBuffer(texture, depthTarget);
         #else
-        return new VKFrameBuffer(texture, depthTarget);
+        return nullptr;// new AZFrameBuffer(texture, depthTarget);
         #endif
     }
 

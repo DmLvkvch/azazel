@@ -1,0 +1,1140 @@
+diff --git a/.DS_Store b/.DS_Store
+index 183ad11..19e3243 100644
+Binary files a/.DS_Store and b/.DS_Store differ
+diff --git a/Engine/.DS_Store b/Engine/.DS_Store
+index 35bfb19..ef32bcf 100644
+Binary files a/Engine/.DS_Store and b/Engine/.DS_Store differ
+diff --git a/Engine/src/Application.cpp b/Engine/src/Application.cpp
+index 87e18ab..52544c3 100644
+--- a/Engine/src/Application.cpp
++++ b/Engine/src/Application.cpp
+@@ -101,11 +101,11 @@ namespace Azazel
+ 
+         int w, h, c;
+         unsigned char* pixels = stbi_load("textures/awesomeface.png", &w, &h, &c, STBI_rgb_alpha);
+-        textureImage = std::make_unique<AZImage>(TextureData{w, h, c, pixels}, VK_FORMAT_R8G8B8A8_SRGB);
++        textureImage = std::make_unique<AZImage>(TextureData{w, h, c, pixels}, vk::Format::eR8G8B8A8Srgb);
+         stbi_image_free(pixels);
+         
+-        textureImageView = std::make_unique<AZImageView>(*textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
+-        textureSampler = std::make_unique<AZTextureSampler>(VK_FILTER_LINEAR, VK_SAMPLER_ADDRESS_MODE_REPEAT);
++        textureImageView = std::make_unique<AZImageView>(*textureImage, vk::Format::eR8G8B8A8Srgb, vk::ImageAspectFlagBits::eColor);
++        textureSampler = std::make_unique<AZTextureSampler>(vk::Filter::eLinear, vk::SamplerAddressMode::eRepeat);
+ 
+         uniformBuffer = std::make_unique<AZUniformBuffer>(BufferDesc{ nullptr, sizeof(UniformBufferObject),
+             vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent });
+@@ -607,15 +607,18 @@ namespace Azazel
+         submitInfo.pCommandBuffers = &cb;
+         submitInfo.signalSemaphoreCount = 1;
+         submitInfo.pSignalSemaphores = signalSemaphores;
+-
+-        device.graphicsQueue.submit(1, &submitInfo, inFlightFence);
++        vk::SubmitInfo sb {submitInfo};
++        AZArrayProxy<vk::SubmitInfo> submitInfos {1, &sb};
++        device.graphicsQueue.submit(submitInfos, inFlightFence);
+ 
+         VkPresentInfoKHR presentInfo{};
+         presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+         presentInfo.waitSemaphoreCount = 1;
+         presentInfo.pWaitSemaphores = signalSemaphores;
+         presentInfo.swapchainCount = 1;
+-        presentInfo.pSwapchains = &swapChain.swapChain;
++        VkSwapchainKHR swp = (VkSwapchainKHR)swapChain.swapChain;
++        presentInfo.pSwapchains = &swp;
++        
+         presentInfo.pImageIndices = &imageIndex;
+ 
+         vkQueuePresentKHR(device.presentQueue.queue, &presentInfo);
+diff --git a/Engine/src/render/rhi/vulkan/AZBuffer.cpp b/Engine/src/render/rhi/vulkan/AZBuffer.cpp
+index 7e015df..7bce550 100644
+--- a/Engine/src/render/rhi/vulkan/AZBuffer.cpp
++++ b/Engine/src/render/rhi/vulkan/AZBuffer.cpp
+@@ -1,5 +1,6 @@
+ #include "AZBuffer.h"
+ #include "AZContext.h"
++#include "VulkanMemoryAllocator.h"
+ 
+ namespace Azazel
+ {
+@@ -23,8 +24,8 @@ namespace Azazel
+         buffer = device.device.createBuffer(bufferCreateInfo);
+         
+         vk::MemoryRequirements memRequirements = device.getMemoryRequirements(buffer);
+-        vk::MemoryAllocateInfo allocateInfo;
+-        allocateInfo.setAllocationSize(memRequirements.size).setMemoryTypeIndex(getVulkanContext().getPhysicalDevice().findMemoryType(memRequirements.memoryTypeBits, properties));
++        vk::MemoryAllocateInfo allocateInfo {};
++        allocateInfo.setAllocationSize(memRequirements.size).setMemoryTypeIndex(device.physicalDevice.findMemoryType(memRequirements.memoryTypeBits, properties));
+         bufferMemory = device.device.allocateMemory(allocateInfo);
+         device.device.bindBufferMemory(buffer, bufferMemory, 0);
+     }
+@@ -41,8 +42,8 @@ namespace Azazel
+         auto& device = getVulkanContext().getVulkanDevice();
+         auto& commandPool = getVulkanContext().getCommandPool();
+         auto commandBuffer = AZCommandBuffer::beginSingleTimeCommands(device, commandPool);
+-        VkBufferCopy copyRegion {0, 0, size};
+-        vkCmdCopyBuffer(commandBuffer, buffer, dstBuffer.buffer, 1, &copyRegion);
++        vk::BufferCopy copyRegion {0, 0, size};
++        commandBuffer.copyBuffer(buffer, dstBuffer.buffer, {1, copyRegion});
+         AZCommandBuffer::endSingleTimeCommands(device, commandPool, commandBuffer);
+     }
+ 
+@@ -72,6 +73,12 @@ namespace Azazel
+         }
+     }
+ 
++    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
++    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
++    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
++    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
++    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
++
+     AZVertexBuffer::AZVertexBuffer(const BufferDesc& bufferDesc)
+     : buffer(bufferDesc)
+     {
+diff --git a/Engine/src/render/rhi/vulkan/AZBuffer.h b/Engine/src/render/rhi/vulkan/AZBuffer.h
+index 7a176d9..e9fe020 100644
+--- a/Engine/src/render/rhi/vulkan/AZBuffer.h
++++ b/Engine/src/render/rhi/vulkan/AZBuffer.h
+@@ -32,10 +32,10 @@ namespace Azazel
+         void map();
+         void unmap();
+ 
+-        void* hostVisibleData = nullptr;
++        void* hostVisibleData;
+         vk::Buffer buffer;
+-        VkDeviceSize size = 0;
+-        VkDeviceMemory bufferMemory = VK_NULL_HANDLE;
++        vk::DeviceSize size;
++        vk::DeviceMemory bufferMemory;
+     };
+ 
+     class AZVertexBuffer
+diff --git a/Engine/src/render/rhi/vulkan/AZContext.cpp b/Engine/src/render/rhi/vulkan/AZContext.cpp
+index 7c59ff7..d024ec7 100644
+--- a/Engine/src/render/rhi/vulkan/AZContext.cpp
++++ b/Engine/src/render/rhi/vulkan/AZContext.cpp
+@@ -39,30 +39,30 @@ namespace Azazel
+         surface = std::make_unique<AZSurface>(instance->instance, static_cast<GLFWwindow*>(window.getNativeWindow()));
+         physicalDevice = std::make_unique<PhysicalDevice>(instance->instance, surface->surface);
+         device = std::make_unique<VulkanDevice>(*instance, *physicalDevice);
++
++        VmaAllocatorCreateInfo allocatorInfo {};
++        allocatorInfo.vulkanApiVersion = VK_MAKE_VERSION(1, 0, 0);
++        allocatorInfo.physicalDevice = physicalDevice->get();
++        allocatorInfo.device = device->device;
++        allocatorInfo.instance = instance->instance;
++        vmaCreateAllocator(&allocatorInfo, &allocator);
++
+         swapChain = std::make_unique<AZSwapChain>(static_cast<GLFWwindow*>(window.getNativeWindow()), *surface, *physicalDevice, *device);
+         renderPass = std::make_unique<AZRenderPass>(*device, swapChain->swapChainImageFormat);
+         swapChain->initSwapChainFramebuffers(*renderPass);
+ 
+         commandPool = std::make_unique<AZCommandPool>(*device, physicalDevice->getQueueFamilyIndices().graphicsFamily.value());
+         commandBuffer = std::make_unique<AZCommandBuffer>(commandPool->allocateCommandBuffer(*device));
+-
+         descriptorPool = std::make_unique<AZDescriptorPool>(*device);
+-
+-        VmaAllocatorCreateInfo allocatorInfo = {};
+-        allocatorInfo.vulkanApiVersion = VK_MAKE_VERSION(1, 0, 0);
+-        allocatorInfo.physicalDevice = physicalDevice->get();
+-        allocatorInfo.device = device->device;
+-        allocatorInfo.instance = instance->instance;
+-        vmaCreateAllocator(&allocatorInfo, &this->allocator);
+     }
+ 
+     void AZContext::destroy()
+     {
+-        descriptorPool.reset();
+-        commandPool.reset();
++
+         renderPass.reset();
+         swapChain.reset();
+         device.reset();
++        physicalDevice.reset();
+         surface.reset();
+         instance.reset();
+     }
+diff --git a/Engine/src/render/rhi/vulkan/AZDevice.cpp b/Engine/src/render/rhi/vulkan/AZDevice.cpp
+index 277dba3..3bcb305 100644
+--- a/Engine/src/render/rhi/vulkan/AZDevice.cpp
++++ b/Engine/src/render/rhi/vulkan/AZDevice.cpp
+@@ -110,7 +110,8 @@ namespace Azazel
+     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
+-    VulkanDevice::VulkanDevice(AZInstance& context, PhysicalDevice& physicalDevice)
++    VulkanDevice::VulkanDevice(const AZInstance& context, const PhysicalDevice& physicalDevice)
++    : physicalDevice(physicalDevice)
+     {
+         device = vk::Device{ createDevice(context, physicalDevice) };
+         graphicsQueue = AZQueue(device, physicalDevice.getQueueFamilyIndices().graphicsFamily.value());
+@@ -122,7 +123,7 @@ namespace Azazel
+         destroy();
+     }
+ 
+-    VkDevice VulkanDevice::createDevice(AZInstance& context, PhysicalDevice& physicalDevice)
++    VkDevice VulkanDevice::createDevice(const AZInstance& context, const PhysicalDevice& physicalDevice)
+     {
+         VkDevice device;
+         const QueueFamilyIndices& indices = physicalDevice.getQueueFamilyIndices();
+@@ -162,7 +163,7 @@ namespace Azazel
+         device.destroy();
+     }
+ 
+-    vk::MemoryRequirements VulkanDevice::getMemoryRequirements(vk::Buffer buffer) const
++    vk::MemoryRequirements VulkanDevice::getMemoryRequirements(vk::Buffer& buffer) const
+     {
+         return device.getBufferMemoryRequirements(buffer);
+     }
+diff --git a/Engine/src/render/rhi/vulkan/AZDevice.h b/Engine/src/render/rhi/vulkan/AZDevice.h
+index 3c29c68..f4f89e3 100644
+--- a/Engine/src/render/rhi/vulkan/AZDevice.h
++++ b/Engine/src/render/rhi/vulkan/AZDevice.h
+@@ -54,7 +54,7 @@ namespace Azazel
+             return features;
+         }
+ 
+-        vk::PhysicalDevice get() const
++        const vk::PhysicalDevice& get() const
+         {
+             return physicalDevice;
+         }
+@@ -83,16 +83,17 @@ namespace Azazel
+     class VulkanDevice
+     {
+     public:
+-        VulkanDevice(AZInstance& context, PhysicalDevice& physicalDevice);
++        VulkanDevice(const AZInstance& context, const PhysicalDevice& physicalDevice);
+         ~VulkanDevice();
+ 
+-        VkDevice createDevice(AZInstance& context, PhysicalDevice& physicalDevice);
++        VkDevice createDevice(const AZInstance& context, const PhysicalDevice& physicalDevice);
+         void destroy();
+ 
+-        vk::MemoryRequirements getMemoryRequirements(vk::Buffer buffer) const;
++        vk::MemoryRequirements getMemoryRequirements(vk::Buffer& buffer) const;
+     
+         AZQueue graphicsQueue;
+         AZQueue presentQueue;
+         vk::Device device;
++        const PhysicalDevice& physicalDevice;
+     };
+ }
+diff --git a/Engine/src/render/rhi/vulkan/AZGraphicsPipeline.h b/Engine/src/render/rhi/vulkan/AZGraphicsPipeline.h
+index 23b7cea..b9d85ef 100644
+--- a/Engine/src/render/rhi/vulkan/AZGraphicsPipeline.h
++++ b/Engine/src/render/rhi/vulkan/AZGraphicsPipeline.h
+@@ -12,21 +12,9 @@ namespace Azazel
+ 
+         }
+ 
+-        AZDescriptorSetLayout(VKDevice device)
++        AZDescriptorSetLayout(VkDevice device)
+         {
+-            VkDescriptorSetLayoutBinding layoutBinding {};
+-            uboLayoutBinding.binding = 0;
+-            uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+-            uboLayoutBinding.descriptorCount = 1;
+-            uboLayoutBinding.pImmutableSamplers = nullptr;
+-            uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+-
+-            VkDescriptorSetLayoutCreateInfo layoutInfo {};
+-            layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+-            layoutInfo.bindingCount = 1;
+-            layoutInfo.pBindings = &layoutBinding;
+-
+-            vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &descriptorSetLayout);
++
+         }
+ 
+         ~AZDescriptorSetLayout()
+@@ -34,7 +22,7 @@ namespace Azazel
+ 
+         }
+ 
+-        VkDescriptorSetLayout descriptorSetLayout;
++        vk::DescriptorSetLayout descriptorSetLayout;
+     };
+ 
+     class AZGraphicsPipeline
+diff --git a/Engine/src/render/rhi/vulkan/AZImage.cpp b/Engine/src/render/rhi/vulkan/AZImage.cpp
+index a86f353..62edc85 100644
+--- a/Engine/src/render/rhi/vulkan/AZImage.cpp
++++ b/Engine/src/render/rhi/vulkan/AZImage.cpp
+@@ -3,30 +3,28 @@
+ 
+ namespace Azazel
+ {
+-    void AZImage::createTextureImage(int width, int height, unsigned char* pixels, VkFormat format)
++    void AZImage::createTextureImage(int width, int height, unsigned char* pixels, vk::Format format)
+     {
+         uint64_t pixelSize = 4;
+         VkDeviceSize imageSize = pixelSize * width * height;
+         auto& ctx = getVulkanContext();
+         auto& device = ctx.getVulkanDevice();
+-        BufferDesc stageBufferDesc {pixels, imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT};
++        BufferDesc stageBufferDesc {pixels, imageSize, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent};
+         AZBuffer stageBuffer {stageBufferDesc};
+-        stageBuffer.map();
+-        memcpy(stageBuffer.hostVisibleData, pixels, imageSize);
+-        stageBuffer.unmap();
+-        createImage(width, height, format, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
+-        transitionImageLayout(textureImage, format, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
++        stageBuffer.copyData(pixels, imageSize);
++        createImage(width, height, format, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal, textureImage, textureImageMemory);
++        transitionImageLayout(textureImage, format, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal);
+         copyBufferToImage(stageBuffer.buffer, textureImage, static_cast<uint32_t>(width), static_cast<uint32_t>(height));
+-        transitionImageLayout(textureImage, format, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
++        transitionImageLayout(textureImage, format, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
+     }
+-    void AZImage::createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory imageMemory)
++
++    void AZImage::createImage(uint32_t width, uint32_t height, vk::Format format, vk::ImageTiling tiling, vk::ImageUsageFlags usage, vk::MemoryPropertyFlags properties, vk::Image& image, vk::DeviceMemory imageMemory)
+     {
+         auto& ctx = getVulkanContext();
+         auto& device = ctx.getVulkanDevice();
+-        auto& physicalDevice = ctx.getPhysicalDevice();
+-        VkImageCreateInfo imageInfo{};
+-        imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+-        imageInfo.imageType = VK_IMAGE_TYPE_2D;
++        auto& physicalDevice = device.physicalDevice;
++        vk::ImageCreateInfo imageInfo{};
++        imageInfo.imageType = vk::ImageType::e2D;
+         imageInfo.extent.width = width;
+         imageInfo.extent.height = height;
+         imageInfo.extent.depth = 1;
+@@ -34,82 +32,76 @@ namespace Azazel
+         imageInfo.arrayLayers = 1;
+         imageInfo.format = format;
+         imageInfo.tiling = tiling;
+-        imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
++        imageInfo.initialLayout = vk::ImageLayout::eUndefined;
+         imageInfo.usage = usage;
+-        imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+-        imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+-        vkCreateImage(device.device, &imageInfo, nullptr, &image);
+-        VkMemoryRequirements memRequirements;
+-        vkGetImageMemoryRequirements(device.device, image, &memRequirements);
+-        VkMemoryAllocateInfo allocInfo{};
+-        allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+-        allocInfo.allocationSize = memRequirements.size;
+-        allocInfo.memoryTypeIndex = physicalDevice.findMemoryType(memRequirements.memoryTypeBits, properties);
+-        vkAllocateMemory(device.device, &allocInfo, nullptr, &imageMemory);
+-        vkBindImageMemory(device.device, image, imageMemory, 0);
++        imageInfo.samples = vk::SampleCountFlagBits::e1;
++        imageInfo.sharingMode = vk::SharingMode::eExclusive;
++        image = device.device.createImage(imageInfo);
++        
++        auto memRequirements = device.device.getImageMemoryRequirements(image);
++        vk::MemoryAllocateInfo allocInfo {};
++        allocInfo.setAllocationSize(memRequirements.size).setMemoryTypeIndex(physicalDevice.findMemoryType(memRequirements.memoryTypeBits, properties));
++        imageMemory = device.device.allocateMemory(allocInfo);
++        device.device.bindImageMemory(image, imageMemory, 0);
+     }
+-    void AZImage::transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout)
++
++    void AZImage::transitionImageLayout(vk::Image image, vk::Format format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout)
+     {
+         auto& ctx = getVulkanContext();
+         auto& device = ctx.getVulkanDevice();
+         auto& commandPool = ctx.getCommandPool();
+-        VkCommandBuffer commandBuffer = AZCommandBuffer::beginSingleTimeCommands(device, commandPool);
+-        VkImageMemoryBarrier barrier{};
+-        barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
++        vk::CommandBuffer commandBuffer = AZCommandBuffer::beginSingleTimeCommands(device, commandPool);
++        vk::ImageMemoryBarrier barrier{};
+         barrier.oldLayout = oldLayout;
+         barrier.newLayout = newLayout;
+         barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+         barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+         barrier.image = image;
+-        barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
++        barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+         barrier.subresourceRange.baseMipLevel = 0;
+         barrier.subresourceRange.levelCount = 1;
+         barrier.subresourceRange.baseArrayLayer = 0;
+         barrier.subresourceRange.layerCount = 1;
+-        VkPipelineStageFlags sourceStage;
+-        VkPipelineStageFlags destinationStage;
+-        if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
++        vk::PipelineStageFlags sourceStage {};
++        vk::PipelineStageFlags destinationStage {};
++        if (oldLayout == vk::ImageLayout::eUndefined && newLayout == vk::ImageLayout::eTransferDstOptimal)
+         {
+-            barrier.srcAccessMask = 0;
+-            barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+-            sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+-            destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
++            barrier.srcAccessMask = vk::AccessFlagBits::eNone;
++            barrier.dstAccessMask = vk::AccessFlagBits::eTransferWrite;
++            sourceStage = vk::PipelineStageFlagBits::eTopOfPipe;
++            destinationStage = vk::PipelineStageFlagBits::eTransfer;
+         }
+-        else if (oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
++        else if (oldLayout == vk::ImageLayout::eTransferDstOptimal && newLayout == vk::ImageLayout::eShaderReadOnlyOptimal)
+         {
+-            barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+-            barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+-            sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+-            destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
++            barrier.srcAccessMask = vk::AccessFlagBits::eTransferWrite;
++            barrier.dstAccessMask = vk::AccessFlagBits::eShaderRead;
++            sourceStage = vk::PipelineStageFlagBits::eTransfer;
++            destinationStage = vk::PipelineStageFlagBits::eFragmentShader;
+         }
+-        vkCmdPipelineBarrier(commandBuffer, sourceStage, destinationStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
++        vk::ArrayProxy<vk::ImageMemoryBarrier> barriers {1, &barrier};
++        commandBuffer.pipelineBarrier(sourceStage, destinationStage, vk::DependencyFlagBits::eByRegion, {}, {}, barriers);
+         AZCommandBuffer::endSingleTimeCommands(device, commandPool, commandBuffer);
+     }
+-    void AZImage::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height)
++    void AZImage::copyBufferToImage(vk::Buffer buffer, vk::Image image, uint32_t width, uint32_t height) 
+     {
+         auto& ctx = getVulkanContext();
+         auto& device = ctx.getVulkanDevice();
+         auto& commandPool = ctx.getCommandPool();
+-        VkCommandBuffer commandBuffer = AZCommandBuffer::beginSingleTimeCommands(device, commandPool);
+-        VkBufferImageCopy region{};
+-        region.bufferOffset = 0;
+-        region.bufferRowLength = 0;
+-        region.bufferImageHeight = 0;
+-        region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+-        region.imageSubresource.mipLevel = 0;
+-        region.imageSubresource.baseArrayLayer = 0;
+-        region.imageSubresource.layerCount = 1;
+-        region.imageOffset = { 0, 0, 0 };
+-        region.imageExtent = { width, height, 1 };
+-        vkCmdCopyBufferToImage(commandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
++        vk::CommandBuffer commandBuffer = AZCommandBuffer::beginSingleTimeCommands(device, commandPool);
++        vk::ImageSubresourceLayers imageSubresourceLayers {};
++        imageSubresourceLayers.setAspectMask(vk::ImageAspectFlagBits::eColor).setMipLevel(0).setLayerCount(0).setBaseArrayLayer(0);
++        vk::BufferImageCopy region {};
++        region.setBufferOffset(0).setBufferRowLength(0).setBufferImageHeight(0)
++              .setImageSubresource(imageSubresourceLayers).setImageOffset({0, 0, 0}).setImageExtent({width, height, 1});
++        vk::ArrayProxy<vk::BufferImageCopy> regions { 1, region };
++        commandBuffer.copyBufferToImage(buffer, image, vk::ImageLayout::eTransferDstOptimal, regions);
+         AZCommandBuffer::endSingleTimeCommands(device, commandPool, commandBuffer);
+     }
+     void AZImage::destroy()
+     {
+-        auto& ctx = getVulkanContext();
+-        auto& device = ctx.getVulkanDevice().device;
+-        vkDestroyImage(device, textureImage, nullptr);
+-        vkFreeMemory(device, textureImageMemory, nullptr);
++        auto& device = getVulkanContext().getVulkanDevice();
++        device.device.destroyImage(textureImage);
++        device.device.freeMemory(textureImageMemory);
+     }
+ 
+     void AZTextureSampler::destroy()
+diff --git a/Engine/src/render/rhi/vulkan/AZImage.h b/Engine/src/render/rhi/vulkan/AZImage.h
+index bbf9d82..d20dcc5 100644
+--- a/Engine/src/render/rhi/vulkan/AZImage.h
++++ b/Engine/src/render/rhi/vulkan/AZImage.h
+@@ -10,7 +10,7 @@ namespace Azazel
+     class AZImage
+     {
+     public:
+-        AZImage(TextureData textureData, VkFormat format) 
++        AZImage(TextureData textureData, vk::Format format)
+         {
+             createTextureImage(textureData.width, textureData.height, textureData.data, format);
+         }
+@@ -22,13 +22,13 @@ namespace Azazel
+ 
+         void destroy();
+     
+-        void createTextureImage(int width, int height, unsigned char* pixels, VkFormat format);
+-        void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory imageMemory);
+-        void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+-        void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
++        void createTextureImage(int width, int height, unsigned char* pixels, vk::Format format);
++        void createImage(uint32_t width, uint32_t height, vk::Format format, vk::ImageTiling tiling, vk::ImageUsageFlags usage, vk::MemoryPropertyFlags properties, vk::Image& image, vk::DeviceMemory imageMemory);
++        void transitionImageLayout(vk::Image image, vk::Format format, vk::ImageLayout oldLayout, vk::ImageLayout newLayout);
++        void copyBufferToImage(vk::Buffer buffer, vk::Image image, uint32_t width, uint32_t height);
+ 
+-        VkImage textureImage;
+-        VkDeviceMemory textureImageMemory;
++        vk::Image textureImage;
++        vk::DeviceMemory textureImageMemory;
+     };
+ 
+     class AZTextureSampler
+@@ -36,27 +36,23 @@ namespace Azazel
+     public:
+         AZTextureSampler() : sampler(VK_NULL_HANDLE) {}
+ 
+-        AZTextureSampler(VkFilter filter, VkSamplerAddressMode mode)
++        AZTextureSampler(vk::Filter filter, vk::SamplerAddressMode mode)
+         {
+             auto& physicalDevice = getVulkanContext().getPhysicalDevice();
+             auto& device = getVulkanContext().getVulkanDevice();
+ 
+-            VkSamplerCreateInfo samplerInfo{};
+-            samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+-            samplerInfo.magFilter = filter;
+-            samplerInfo.minFilter = filter;
+-            samplerInfo.addressModeU = mode;
+-            samplerInfo.addressModeV = mode;
+-            samplerInfo.addressModeW = mode;
+-            samplerInfo.anisotropyEnable = physicalDevice.getPhysicalDeviceFeatures().samplerAnisotropy;
+-            samplerInfo.maxAnisotropy = physicalDevice.getPhysicalDeviceProperties().limits.maxSamplerAnisotropy;
+-            samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+-            samplerInfo.unnormalizedCoordinates = VK_FALSE;
+-            samplerInfo.compareEnable = VK_FALSE;
+-            samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
+-            samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+-
+-            vkCreateSampler(device.device, &samplerInfo, nullptr, &sampler);
++            vk::SamplerCreateInfo samplerCreateInfo {};
++            samplerCreateInfo.setMagFilter(filter).setMinFilter(filter)
++                             .setAddressModeU(mode).setAddressModeV(mode).setAddressModeW(mode)
++                             .setAnisotropyEnable(physicalDevice.getPhysicalDeviceFeatures().samplerAnisotropy)
++                             .setMaxAnisotropy(physicalDevice.getPhysicalDeviceProperties().limits.maxSamplerAnisotropy)
++                             .setBorderColor(vk::BorderColor::eIntOpaqueBlack)
++                             .setUnnormalizedCoordinates(VK_FALSE)
++                             .setCompareEnable(VK_FALSE)
++                             .setCompareOp(vk::CompareOp::eAlways)
++                             .setMipmapMode(vk::SamplerMipmapMode::eLinear);
++
++            sampler = device.device.createSampler(samplerCreateInfo);
+         }
+ 
+         ~AZTextureSampler()
+@@ -66,13 +62,13 @@ namespace Azazel
+ 
+         void destroy();
+ 
+-        VkSampler sampler;
++        vk::Sampler sampler;
+     };
+     
+     class AZImageView
+     {
+     public:
+-        AZImageView(AZImage& image, VkFormat format, VkImageAspectFlags aspectFlags)
++        AZImageView(AZImage& image, vk::Format format, vk::ImageAspectFlags aspectFlags)
+         {
+             this->imageView = createImageView(getVulkanContext().getVulkanDevice(), image.textureImage, format, aspectFlags);
+         }
+@@ -84,22 +80,14 @@ namespace Azazel
+ 
+         void destroy();
+ 
+-        VkImageView createImageView(const VulkanDevice& device, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
++        vk::ImageView createImageView(const VulkanDevice& device, vk::Image image, vk::Format format, vk::ImageAspectFlags aspectFlags)
+         {
+-            VkImageViewCreateInfo viewInfo{};
+-            viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+-            viewInfo.image = image;
+-            viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+-            viewInfo.format = format;
+-            viewInfo.subresourceRange.aspectMask = aspectFlags;
+-            viewInfo.subresourceRange.baseMipLevel = 0;
+-            viewInfo.subresourceRange.levelCount = 1;
+-            viewInfo.subresourceRange.baseArrayLayer = 0;
+-            viewInfo.subresourceRange.layerCount = 1;
+-
+-            VkImageView imageView;
+-            vkCreateImageView(device.device, &viewInfo, nullptr, &imageView);
+-            return imageView;
++            vk::ImageViewCreateInfo imageViewCreateInfo {};
++            vk::ImageSubresourceRange subResourceRange {};
++            subResourceRange.setAspectMask(aspectFlags).setBaseMipLevel(0).setLevelCount(1).setBaseArrayLayer(0).setLayerCount(1);
++            imageViewCreateInfo.setImage(image).setViewType(vk::ImageViewType::e2D)
++                               .setFormat(format).setSubresourceRange(subResourceRange);
++            return device.device.createImageView(imageViewCreateInfo);
+         }
+ 
+         VkImageView imageView;
+diff --git a/Engine/src/render/rhi/vulkan/AZInstance.cpp b/Engine/src/render/rhi/vulkan/AZInstance.cpp
+index a614458..c798471 100644
+--- a/Engine/src/render/rhi/vulkan/AZInstance.cpp
++++ b/Engine/src/render/rhi/vulkan/AZInstance.cpp
+@@ -34,6 +34,11 @@ namespace Azazel
+         instance = createInstance();
+     }
+ 
++    AZInstance::~AZInstance()
++    {
++        destroy();
++    }
++
+     vk::Instance AZInstance::createInstance() 
+     {
+         (void) checkValidationLayerSupport(validationLayers);
+@@ -53,7 +58,7 @@ namespace Azazel
+ 
+     void AZInstance::destroy()
+     {
+-        instance.destroyDebugUtilsMessengerEXT(debugMessenger);
++        DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
+         instance.destroy();
+     }
+ 
+@@ -133,10 +138,13 @@ namespace Azazel
+ 
+     vk::DebugUtilsMessengerEXT AZInstance::setupDebugMessenger(vk::Instance& instance) 
+     {
+-        vk::DebugUtilsMessengerCreateInfoEXT createInfo {};
+-        createInfo.setMessageSeverity(vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose | vk::DebugUtilsMessageSeverityFlagBitsEXT::eError | vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning)
+-                  .setMessageType(vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral | vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation | vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance)
+-                  .setPfnUserCallback(debugCallback);
+-        return instance.createDebugUtilsMessengerEXT(createInfo);
++        VkDebugUtilsMessengerCreateInfoEXT createInfo {};
++        createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
++        createInfo.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
++        createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
++        createInfo.pfnUserCallback = debugCallback;
++        VkDebugUtilsMessengerEXT debugMessenger;
++        CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &debugMessenger);
++        return {debugMessenger};
+     }
+ }
+\ No newline at end of file
+diff --git a/Engine/src/render/rhi/vulkan/AZInstance.h b/Engine/src/render/rhi/vulkan/AZInstance.h
+index cf46f5b..0f6069a 100644
+--- a/Engine/src/render/rhi/vulkan/AZInstance.h
++++ b/Engine/src/render/rhi/vulkan/AZInstance.h
+@@ -11,11 +11,7 @@ namespace Azazel
+     {
+     public:
+         AZInstance();
+-
+-        ~AZInstance()
+-        {
+-            
+-        }
++        ~AZInstance();
+ 
+         vk::Instance createInstance();
+         void destroy();
+@@ -29,6 +25,7 @@ namespace Azazel
+ 
+         vk::Instance instance;
+         vk::DebugUtilsMessengerEXT debugMessenger;
++        vk::DispatchLoaderDynamic dynamicLoader {};
+ 
+         std::vector<const char*> validationLayers =
+         {
+diff --git a/Engine/src/render/rhi/vulkan/AZQueue.cpp b/Engine/src/render/rhi/vulkan/AZQueue.cpp
+index 6391a16..7b2f075 100644
+--- a/Engine/src/render/rhi/vulkan/AZQueue.cpp
++++ b/Engine/src/render/rhi/vulkan/AZQueue.cpp
+@@ -3,17 +3,15 @@
+ namespace Azazel
+ {
+ 
+-    AZQueue::AZQueue(VkDevice device, uint32_t queueFamilyIndex)
++    AZQueue::AZQueue(vk::Device device, uint32_t queueFamilyIndex)
+     {
+-
+         this->queue = createQueue(device, queueFamilyIndex);
+         this->queueFamilyIndex = queueFamilyIndex;
+     }
+ 
+-    VkQueue AZQueue::createQueue(VkDevice device, uint32_t queueFamilyIndex)
++    vk::Queue AZQueue::createQueue(vk::Device device, uint32_t queueFamilyIndex)
+     {
+-        VkQueue queue;
+-        vkGetDeviceQueue(device, queueFamilyIndex, 0, &queue);
++        vk::Queue queue = device.getQueue(queueFamilyIndex, 0);
+         return queue;
+     }
+ }
+\ No newline at end of file
+diff --git a/Engine/src/render/rhi/vulkan/AZQueue.h b/Engine/src/render/rhi/vulkan/AZQueue.h
+index 6118e45..a0dbe30 100644
+--- a/Engine/src/render/rhi/vulkan/AZQueue.h
++++ b/Engine/src/render/rhi/vulkan/AZQueue.h
+@@ -14,29 +14,28 @@ namespace Azazel
+ 
+         }
+ 
+-        AZQueue(VkDevice device, uint32_t queueFamilyIndex);
++        AZQueue(vk::Device device, uint32_t queueFamilyIndex);
+ 
+-        VkQueue createQueue(VkDevice device, uint32_t queueFamilyIndex);
++        vk::Queue createQueue(vk::Device device, uint32_t queueFamilyIndex);
+ 
+-        void submit(uint32_t submitCount, const VkSubmitInfo* submitInfo, VkFence fence) const
++        void submit(const vk::SubmitInfo* submitInfo, uint32_t submitCount, vk::Fence fence) const
+         {
+-            vkQueueSubmit(queue, submitCount, submitInfo, fence);
++            AZArrayProxy<vk::SubmitInfo> submitInfos{submitCount, submitInfo};
++            queue.submit(submitInfos, fence);
+         }
+ 
+-        void submit(std::vector<VkSubmitInfo> & submitInfo, VkFence fence) const
++        void submit(AZArrayProxy<vk::SubmitInfo> & submitInfo, vk::Fence fence) const
+         {
+-            vkQueueSubmit(queue, submitInfo.size(), submitInfo.data(), fence);
++            queue.submit(submitInfo, fence);
+         }
+ 
+-        VkQueue get()
++        vk::Queue get()
+         {
+             return queue;
+         }
+ 
+         vk::Queue queue;
+-        VkQueueFlags flags;
+         uint32_t queueFamilyIndex;
+-        uint32_t queueIndex;
+     };
+ 
+     class PresentQueue
+diff --git a/Engine/src/render/rhi/vulkan/AZRenderPass.cpp b/Engine/src/render/rhi/vulkan/AZRenderPass.cpp
+index b3766e6..5489590 100644
+--- a/Engine/src/render/rhi/vulkan/AZRenderPass.cpp
++++ b/Engine/src/render/rhi/vulkan/AZRenderPass.cpp
+@@ -3,7 +3,7 @@
+ 
+ namespace Azazel
+ {
+-    AZRenderPass::AZRenderPass(const VulkanDevice& device, VkFormat format)
++    AZRenderPass::AZRenderPass(const VulkanDevice& device, vk::Format format)
+     : device(device)
+     {
+         initRenderPass(format);
+@@ -14,17 +14,13 @@ namespace Azazel
+         destroy();
+     }
+     
+-    void AZRenderPass::initRenderPass(VkFormat format)
++    void AZRenderPass::initRenderPass(vk::Format format)
+     {
+-        VkAttachmentDescription colorAttachment {};
+-        colorAttachment.format         = format;
+-        colorAttachment.samples        = VK_SAMPLE_COUNT_1_BIT;
+-        colorAttachment.loadOp         = VK_ATTACHMENT_LOAD_OP_CLEAR;
+-        colorAttachment.storeOp        = VK_ATTACHMENT_STORE_OP_STORE;
+-        colorAttachment.stencilLoadOp  = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+-        colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+-        colorAttachment.initialLayout  = VK_IMAGE_LAYOUT_UNDEFINED;
+-        colorAttachment.finalLayout    = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
++        vk::AttachmentDescription colorAttachment {};
++        colorAttachment.setFormat(format).setSamples(vk::SampleCountFlagBits::e1)
++        .setLoadOp(vk::AttachmentLoadOp::eClear).setStoreOp(vk::AttachmentStoreOp::eStore)
++        .setStencilLoadOp(vk::AttachmentLoadOp::eDontCare).setStencilStoreOp(vk::AttachmentStoreOp::eDontCare)
++        .setInitialLayout(vk::ImageLayout::eUndefined).setFinalLayout(vk::ImageLayout::ePresentSrcKHR);
+ 
+         VkAttachmentDescription depthAttachment {};
+         depthAttachment.format         = VK_FORMAT_D32_SFLOAT;
+@@ -71,28 +67,22 @@ namespace Azazel
+         vkCreateRenderPass(device.device, &renderPassInfo, nullptr, &renderPass);
+     }
+ 
+-    void AZRenderPass::beginRenderPass(const AZCommandBuffer& commandBuffer, VkFramebuffer framebuffer, VkExtent2D extent) const
++    void AZRenderPass::beginRenderPass(const AZCommandBuffer& commandBuffer, vk::Framebuffer framebuffer, vk::Extent2D extent) const
+     {
+-        VkRenderPassBeginInfo renderPassInfo {};
+-        renderPassInfo.sType             = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+-        renderPassInfo.renderPass        = renderPass;
+-        renderPassInfo.framebuffer       = framebuffer;
+-        renderPassInfo.renderArea.offset = { 0, 0 };
+-        renderPassInfo.renderArea.extent = extent;
+-   
+-        std::array<VkClearValue, 2> clearValues {};
+-        clearValues[0].color = {{0.0f, 0.0f, 0.0f, 0.0f}};
+-        clearValues[1].depthStencil = {1.0f, 0};
+-
+-        renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+-        renderPassInfo.pClearValues = clearValues.data();
+-
+-        vkCmdBeginRenderPass(commandBuffer.commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
++        vk::RenderPassBeginInfo renderPassBeginInfo {};
++        renderPassBeginInfo.setRenderPass(renderPass).setFramebuffer(framebuffer).setRenderArea({{0, 0}, extent});
++        std::array<vk::ClearValue, 2> clearValues {};
++        vk::ClearColorValue clearColorValue {0.0f, 0.0f, 0.0f, 0.0f};
++        clearValues[0].setColor(clearColorValue);
++        clearValues[1].setDepthStencil({1.0f, 0});
++        vk::ArrayProxyNoTemporaries vkClearValues {clearValues.size(), clearValues.data()};
++        renderPassBeginInfo.setClearValues(vkClearValues);
++        commandBuffer.commandBuffer.beginRenderPass(renderPassBeginInfo, vk::SubpassContents::eInline);
+     }
+ 
+     void AZRenderPass::endRenderPass(const AZCommandBuffer& commandBuffer) const
+     {
+-        vkCmdEndRenderPass(commandBuffer.commandBuffer);
++        commandBuffer.commandBuffer.endRenderPass();
+     }
+ 
+     void AZRenderPass::destroy()
+diff --git a/Engine/src/render/rhi/vulkan/AZRenderPass.h b/Engine/src/render/rhi/vulkan/AZRenderPass.h
+index 27668d8..64a28a5 100644
+--- a/Engine/src/render/rhi/vulkan/AZRenderPass.h
++++ b/Engine/src/render/rhi/vulkan/AZRenderPass.h
+@@ -13,7 +13,7 @@ namespace Azazel
+         std::array<VkAttachmentDescription, T> attachments;
+         AZAttachmentDesc& addAttachment(int index, VkFormat format)
+         {
+-
++            
+         }
+     };
+ 
+@@ -30,13 +30,13 @@ namespace Azazel
+     class AZRenderPass
+     {
+     public:
+-        AZRenderPass(const VulkanDevice& device, VkFormat format);
++        AZRenderPass(const VulkanDevice& device, vk::Format format);
+ 
+         ~AZRenderPass();
+ 
+-        void initRenderPass(VkFormat format);
++        void initRenderPass(vk::Format format);
+ 
+-        void beginRenderPass(const AZCommandBuffer& commandBuffer, VkFramebuffer framebuffer, VkExtent2D extent) const;
++        void beginRenderPass(const AZCommandBuffer& commandBuffer, vk::Framebuffer framebuffer, vk::Extent2D extent) const;
+ 
+         void endRenderPass(const AZCommandBuffer& commandBuffer) const;
+ 
+diff --git a/Engine/src/render/rhi/vulkan/AZSurface.cpp b/Engine/src/render/rhi/vulkan/AZSurface.cpp
+index 73478ee..7e6c0f0 100644
+--- a/Engine/src/render/rhi/vulkan/AZSurface.cpp
++++ b/Engine/src/render/rhi/vulkan/AZSurface.cpp
+@@ -15,7 +15,7 @@ namespace Azazel
+         return vk::SurfaceKHR {surface};
+     }
+ 
+-    SwapChainSupportDetails AZSurface::querySwapChainSupport(vk::PhysicalDevice& physicalDevice)
++    SwapChainSupportDetails AZSurface::querySwapChainSupport(const vk::PhysicalDevice& physicalDevice)
+     {
+         SwapChainSupportDetails details;
+         details.capabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
+diff --git a/Engine/src/render/rhi/vulkan/AZSurface.h b/Engine/src/render/rhi/vulkan/AZSurface.h
+index 8a8d7c4..bd4d931 100644
+--- a/Engine/src/render/rhi/vulkan/AZSurface.h
++++ b/Engine/src/render/rhi/vulkan/AZSurface.h
+@@ -12,7 +12,7 @@ namespace Azazel
+     public:
+         AZSurface(vk::Instance& instance, GLFWwindow* window);
+ 
+-        SwapChainSupportDetails querySwapChainSupport(vk::PhysicalDevice& physicalDevice);
++        SwapChainSupportDetails querySwapChainSupport(const vk::PhysicalDevice& physicalDevice);
+ 
+         vk::SurfaceKHR createSurface(vk::Instance& instance, GLFWwindow* window);
+ 
+diff --git a/Engine/src/render/rhi/vulkan/AZSwapChain.cpp b/Engine/src/render/rhi/vulkan/AZSwapChain.cpp
+index 677b15e..33919bd 100644
+--- a/Engine/src/render/rhi/vulkan/AZSwapChain.cpp
++++ b/Engine/src/render/rhi/vulkan/AZSwapChain.cpp
+@@ -50,112 +50,76 @@ namespace Azazel
+     VkSwapchainKHR AZSwapChain::createSwapChain(GLFWwindow* window, AZSurface& surface)
+     {
+         VkSwapchainKHR swapChain;
+-        SwapChainSupportDetails swapChainSupport = surface.querySwapChainSupport(physicalDevice.physicalDevice);
++        SwapChainSupportDetails swapChainSupport = surface.querySwapChainSupport(physicalDevice.get());
+         surfaceFormat   = chooseSurfaceFormat(swapChainSupport.formats);
+         presentMode     = choosePresentMode(swapChainSupport.presentModes);
+         swapChainExtent = chooseExtent(window, swapChainSupport.capabilities);
+ 
+         imageCount = std::min(swapChainSupport.capabilities.maxImageCount, swapChainSupport.capabilities.minImageCount + 1);
++        vk::SwapchainCreateInfoKHR createInfo {};
+ 
+-        VkSwapchainCreateInfoKHR createInfo{};
+-        {
+-            createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+-            createInfo.surface = surface.surface;
+-            createInfo.minImageCount = imageCount;
+-            createInfo.imageFormat = surfaceFormat.format;
+-            createInfo.imageColorSpace = surfaceFormat.colorSpace;
+-            createInfo.imageExtent = swapChainExtent;
+-            createInfo.imageArrayLayers = 1;
+-            createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+-        }
+-
++        createInfo.setSurface(surface.surface).setMinImageCount(imageCount)
++                  .setImageFormat(surfaceFormat.format).setImageColorSpace(surfaceFormat.colorSpace)
++                  .setImageExtent(swapChainExtent).setImageArrayLayers(1)
++                  .setImageUsage(vk::ImageUsageFlagBits::eColorAttachment);
+         auto& indices = physicalDevice.getQueueFamilyIndices();
+         auto queueFamilyIndices = indices.getIndices();
+ 
+         if (indices.graphicsFamily != indices.presentFamily)
+         {
+-            createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+-            createInfo.queueFamilyIndexCount = 2;
+-            createInfo.pQueueFamilyIndices = queueFamilyIndices.data();
++            createInfo.setImageSharingMode(vk::SharingMode::eConcurrent)
++                      .setQueueFamilyIndices({2, queueFamilyIndices.data()});
+         }
+         else
+         {
+-            createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
++            createInfo.setImageSharingMode(vk::SharingMode::eExclusive);
+         }
+-
+-        createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
+-        createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+-        createInfo.presentMode = presentMode;
+-        createInfo.clipped = VK_TRUE;
+-        createInfo.oldSwapchain = VK_NULL_HANDLE;
+-
+-        vkCreateSwapchainKHR(device.device, &createInfo, nullptr, &swapChain);
+-
+-        vkGetSwapchainImagesKHR(device.device, swapChain, &imageCount, nullptr);
+-        swapChainImages.resize(imageCount);
+-        vkGetSwapchainImagesKHR(device.device, swapChain, &imageCount, swapChainImages.data());
+-
++        createInfo.setPreTransform(swapChainSupport.capabilities.currentTransform)
++                  .setCompositeAlpha(vk::CompositeAlphaFlagBitsKHR::eOpaque)
++                  .setPresentMode(presentMode)
++                  .setClipped(VK_TRUE)
++                  .setOldSwapchain({});
++
++        swapChain = device.device.createSwapchainKHR(createInfo);
++        swapChainImages = device.device.getSwapchainImagesKHR(swapChain);
+         swapChainImageFormat = surfaceFormat.format;
+         return swapChain;
+     }
+ 
+-    VkImageView AZSwapChain::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
++    vk::ImageView AZSwapChain::createImageView(vk::Image image, vk::Format format, vk::ImageAspectFlags aspectFlags)
+     {
+-        VkImageViewCreateInfo createInfo{};
+-        createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+-        createInfo.image = image;
+-        createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+-        createInfo.format = format;
+-        createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+-        createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+-        createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+-        createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+-        createInfo.subresourceRange.aspectMask = aspectFlags;
+-        createInfo.subresourceRange.baseMipLevel = 0;
+-        createInfo.subresourceRange.levelCount = 1;
+-        createInfo.subresourceRange.baseArrayLayer = 0;
+-        createInfo.subresourceRange.layerCount = 1;
+-        VkImageView imageView;
+-        vkCreateImageView(device.device, &createInfo, nullptr, &imageView);
+-        return imageView;
++        vk::ImageViewCreateInfo createInfo {};
++        vk::ImageSubresourceRange subResourceRange {};
++        subResourceRange.setAspectMask(aspectFlags).setBaseMipLevel(0).setLevelCount(1).setBaseArrayLayer(0).setLayerCount(1);
++        vk::ComponentMapping componentMapping {};
++        createInfo.setImage(image).setViewType(vk::ImageViewType::e2D).setFormat(format).setComponents(componentMapping).setSubresourceRange(subResourceRange);
++        return device.device.createImageView(createInfo);
+     }
+ 
+-    void AZSwapChain::createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory)
++    void AZSwapChain::createImage(uint32_t width, uint32_t height, vk::Format format, vk::ImageTiling tiling, vk::ImageUsageFlags usage, vk::MemoryPropertyFlags properties, vk::Image& image, vk::DeviceMemory& imageMemory)
+     {
+-        VkImageCreateInfo imageInfo{};
+-        imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+-        imageInfo.imageType = VK_IMAGE_TYPE_2D;
+-        imageInfo.extent = { width, height, 1 };
+-        imageInfo.mipLevels = 1;
+-        imageInfo.arrayLayers = 1;
+-        imageInfo.format = format;
+-        imageInfo.tiling = tiling;
+-        imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+-        imageInfo.usage = usage;
+-        imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+-        imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+-
+-        vkCreateImage(device.device, &imageInfo, nullptr, &image);
++        vk::ImageCreateInfo imageCreateInfo {};
++        imageCreateInfo.setImageType(vk::ImageType::e2D).setExtent({width, height, 1}).setMipLevels(1)
++                       .setArrayLayers(1).setFormat(format).setTiling(tiling).setInitialLayout(vk::ImageLayout::ePresentSrcKHR)
++                       .setUsage(usage).setSamples(vk::SampleCountFlagBits::e1).setSharingMode(vk::SharingMode::eExclusive);
++        image = device.device.createImage(imageCreateInfo);
+ 
+         vk::MemoryRequirements memRequirements = device.device.getImageMemoryRequirements(image);
+-
+-        VkMemoryAllocateInfo allocInfo{};
+-        allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+-        allocInfo.allocationSize = memRequirements.size;
+-        allocInfo.memoryTypeIndex = physicalDevice.findMemoryType(memRequirements.memoryTypeBits, properties);
+-
+-        vkAllocateMemory(device.device, &allocInfo, nullptr, &imageMemory);
+-        vkBindImageMemory(device.device, image, imageMemory, 0);
++        vk::MemoryAllocateInfo allocInfo {};
++        allocInfo.setAllocationSize(memRequirements.size)
++                 .setMemoryTypeIndex(physicalDevice.findMemoryType(memRequirements.memoryTypeBits, properties));
++        imageMemory = device.device.allocateMemory(allocInfo);
++        device.device.bindImageMemory(image, imageMemory, 0);
+     }
+ 
+-    std::vector<VkImageView> AZSwapChain::createImageViews(VkDevice device, std::vector<VkImage>& swapChainImages, VkFormat format)
++    std::vector<vk::ImageView> AZSwapChain::createImageViews(vk::Device device, std::vector<vk::Image>& swapChainImages, vk::Format format)
+     {
+-        std::vector<VkImageView> swapChainImageViews;
++        std::vector<vk::ImageView> swapChainImageViews;
+         swapChainImageViews.resize(swapChainImages.size());
+ 
+         for (size_t i = 0; i < swapChainImages.size(); i++)
+         {
+-            swapChainImageViews[i] = createImageView(swapChainImages[i], format, VK_IMAGE_ASPECT_COLOR_BIT);
++            swapChainImageViews[i] = createImageView(swapChainImages[i], format,  vk::ImageAspectFlagBits::eColor);
+         }
+         return swapChainImageViews;
+     }
+@@ -164,7 +128,7 @@ namespace Azazel
+     {
+         for (const auto& availableFormat : availableFormats)
+         {
+-            if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
++            if (availableFormat.format == vk::Format {VK_FORMAT_B8G8R8A8_SRGB} && availableFormat.colorSpace == vk::ColorSpaceKHR {VK_COLOR_SPACE_SRGB_NONLINEAR_KHR})
+             {
+                 return availableFormat;
+             }
+@@ -176,12 +140,12 @@ namespace Azazel
+     {
+         for (const auto& availablePresentMode : availablePresentModes)
+         {
+-            if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR)
++            if (availablePresentMode == vk::PresentModeKHR::eMailbox)
+             {
+                 return availablePresentMode;
+             }
+         }
+-        return VK_PRESENT_MODE_FIFO_KHR;
++        return vk::PresentModeKHR::eFifo;
+     }
+ 
+     vk::Extent2D AZSwapChain::chooseExtent(GLFWwindow* window, const vk::SurfaceCapabilitiesKHR& capabilities)
+@@ -193,7 +157,7 @@ namespace Azazel
+         int width = 0, height = 0;
+         glfwGetFramebufferSize(window, &width, &height);
+ 
+-        vk::Extent2D actualExtent = { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
++        vk::Extent2D actualExtent = { static_cast<uint32_t>(width) * 2, static_cast<uint32_t>(height) * 2 };
+ 
+         actualExtent.width = std::clamp(actualExtent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
+         actualExtent.height = std::clamp(actualExtent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
+@@ -203,9 +167,9 @@ namespace Azazel
+ 
+     void AZSwapChain::initSwapChainFramebuffers(AZRenderPass& renderPass)
+     {
+-        VkFormat depthFormat = VK_FORMAT_D32_SFLOAT;
+-        createImage(swapChainExtent.width, swapChainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage, depthImageMemory);
+-        depthImageView = createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
++        vk::Format depthFormat = vk::Format::eD32Sfloat;
++        createImage(swapChainExtent.width, swapChainExtent.height, depthFormat, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eDepthStencilAttachment, vk::MemoryPropertyFlagBits::eDeviceLocal, depthImage, depthImageMemory);
++        depthImageView = createImageView(depthImage, depthFormat, vk::ImageAspectFlagBits::eDepth);
+         
+         swapChainFramebuffers.resize(swapChainImageViews.size());
+         for (size_t i = 0; i < swapChainImageViews.size(); i++)
+diff --git a/Engine/src/render/rhi/vulkan/AZSwapChain.h b/Engine/src/render/rhi/vulkan/AZSwapChain.h
+index 096db87..c55c528 100644
+--- a/Engine/src/render/rhi/vulkan/AZSwapChain.h
++++ b/Engine/src/render/rhi/vulkan/AZSwapChain.h
+@@ -28,9 +28,9 @@ namespace Azazel
+         uint32_t acquireNextImage(VkSemaphore signalSemaphore) const;
+         void recreate(uint32_t width, uint32_t height);
+ 
+-        VkSwapchainKHR swapChain;
+-        std::vector<VkImage> swapChainImages;
+-        std::vector<VkImageView> swapChainImageViews;
++        vk::SwapchainKHR swapChain;
++        std::vector<vk::Image> swapChainImages;
++        std::vector<vk::ImageView> swapChainImageViews;
+         std::vector<AZFramebuffer> swapChainFramebuffers;
+ 
+         vk::SurfaceFormatKHR surfaceFormat;
+@@ -38,22 +38,22 @@ namespace Azazel
+         vk::Extent2D swapChainExtent;
+         vk::PresentModeKHR presentMode;
+         
+-        VkImageView depthImageView;
+-        VkDeviceMemory depthImageMemory;
+-        VkImage depthImage;
++        vk::ImageView depthImageView;
++        vk::DeviceMemory depthImageMemory;
++        vk::Image depthImage;
+         uint32_t imageCount;
+ 
+         void initSwapChainFramebuffers(AZRenderPass& renderPass);
+     private:
+         VkSwapchainKHR createSwapChain(GLFWwindow* window, AZSurface& surface);
+-        std::vector<VkImageView> createImageViews(vk::Device device, std::vector<vk::Image>& swapChainImages, VkFormat format);
+-        VkSurfaceFormatKHR chooseSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats);
+-        VkPresentModeKHR choosePresentMode(const std::vector<vk::PresentModeKHR>& availablePresentModes);
+-        VkExtent2D chooseExtent(GLFWwindow* window, const vk::SurfaceCapabilitiesKHR& capabilities);
++        std::vector<vk::ImageView> createImageViews(vk::Device device, std::vector<vk::Image>& swapChainImages, vk::Format format);
++        vk::SurfaceFormatKHR chooseSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats);
++        vk::PresentModeKHR choosePresentMode(const std::vector<vk::PresentModeKHR>& availablePresentModes);
++        vk::Extent2D chooseExtent(GLFWwindow* window, const vk::SurfaceCapabilitiesKHR& capabilities);
+ 
+-        VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
++        vk::ImageView createImageView(vk::Image image, vk::Format format, vk::ImageAspectFlags aspectFlags);
+ 
+-        void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
++        void createImage(uint32_t width, uint32_t height, vk::Format format, vk::ImageTiling tiling, vk::ImageUsageFlags usage, vk::MemoryPropertyFlags properties, vk::Image& image, vk::DeviceMemory& imageMemory);
+     
+     private:
+         VulkanDevice& device;
+diff --git a/Engine/src/render/rhi/vulkan/VulkanMemoryAllocator.cpp b/Engine/src/render/rhi/vulkan/VulkanMemoryAllocator.cpp
+index b27aaa7..fe521a4 100644
+--- a/Engine/src/render/rhi/vulkan/VulkanMemoryAllocator.cpp
++++ b/Engine/src/render/rhi/vulkan/VulkanMemoryAllocator.cpp
+@@ -25,17 +25,17 @@ namespace Azazel
+         return getVulkanContext().getAllocator();
+     }
+ 
+-    void deallocateImage(const VkImage& image, VmaAllocation allocation)
++    void deallocateImage(const vk::Image& image, VmaAllocation allocation)
+     {
+         vmaDestroyImage(getVulkanAllocator(), image, allocation);
+     }
+ 
+-    void deallocateBuffer(const VkBuffer& buffer, VmaAllocation allocation)
++    void deallocateBuffer(const vk::Buffer& buffer, VmaAllocation allocation)
+     {
+         vmaDestroyBuffer(getVulkanAllocator(), buffer, allocation);
+     }
+ 
+-    VmaAllocation allocateImage(const VkImageCreateInfo& imageCreateInfo, MemoryUsage usage, VkImage* image)
++    VmaAllocation allocateImage(const vk::ImageCreateInfo& imageCreateInfo, MemoryUsage usage, vk::Image* image)
+     {
+         VmaAllocation allocation = { };
+         VmaAllocationCreateInfo allocationInfo = { };
+@@ -44,7 +44,7 @@ namespace Azazel
+         return allocation;
+     }
+ 
+-    VmaAllocation allocateBuffer(const VkBufferCreateInfo& bufferCreateInfo, MemoryUsage usage, VkBuffer* buffer)
++    VmaAllocation allocateBuffer(const vk::BufferCreateInfo& bufferCreateInfo, MemoryUsage usage, vk::Buffer* buffer)
+     {
+         VmaAllocation allocation = { };
+         VmaAllocationCreateInfo allocationInfo = { };
+@@ -53,11 +53,11 @@ namespace Azazel
+         return allocation;
+     }
+ 
+-    uint8_t* mapMemory(VmaAllocation allocation)
++    void* mapMemory(VmaAllocation allocation)
+     {
+         void* memory = nullptr;
+         vmaMapMemory(getVulkanAllocator(), allocation, &memory);
+-        return (uint8_t*)memory;
++        return (uint8_t*) memory;
+     }
+ 
+     void unmapMemory(VmaAllocation allocation)
+diff --git a/Engine/src/render/rhi/vulkan/VulkanMemoryAllocator.h b/Engine/src/render/rhi/vulkan/VulkanMemoryAllocator.h
+index eb27db2..d6bf605 100644
+--- a/Engine/src/render/rhi/vulkan/VulkanMemoryAllocator.h
++++ b/Engine/src/render/rhi/vulkan/VulkanMemoryAllocator.h
+@@ -25,11 +25,11 @@ namespace Azazel
+     };
+ 
+     VmaAllocator getVulkanAllocator();
+-    void deallocateImage(const VkImage& image, VmaAllocation allocation);
+-    void deallocateBuffer(const VkBuffer& buffer, VmaAllocation allocation);
+-    VmaAllocation allocateImage(const VkImageCreateInfo& imageCreateInfo, MemoryUsage usage, VkImage* image);
+-    VmaAllocation allocateBuffer(const VkBufferCreateInfo& bufferCreateInfo, MemoryUsage usage, VkBuffer* buffer);
+-    uint8_t* mapMemory(VmaAllocation allocation);
++    void deallocateImage(const vk::Image& image, VmaAllocation allocation);
++    void deallocateBuffer(const vk::Buffer& buffer, VmaAllocation allocation);
++    VmaAllocation allocateImage(const vk::ImageCreateInfo& imageCreateInfo, MemoryUsage usage, vk::Image* image);
++    VmaAllocation allocateBuffer(const vk::BufferCreateInfo& bufferCreateInfo, MemoryUsage usage, vk::Buffer* buffer);
++    void* mapMemory(VmaAllocation allocation);
+     void unmapMemory(VmaAllocation allocation);
+     void flushMemory(VmaAllocation allocation, size_t byteSize, size_t offset);
+ }
+\ No newline at end of file

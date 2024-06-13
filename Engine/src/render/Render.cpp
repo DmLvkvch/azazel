@@ -1,7 +1,6 @@
 #include "Render.h"
 
 #include "rhi/gl/GLESRender.h"
-#include "rhi/vulkan/VKRender.h"
 
 #include <iostream>
 
@@ -16,7 +15,7 @@ namespace Azazel
             #ifdef AZAZEL_GL
             render.reset(new GLESRender());
             #else
-            render.reset(new VKRender());
+            //render.reset(new VKRender());
             #endif
         }
         return render.get();

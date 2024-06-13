@@ -1,14 +1,7 @@
 #include "GLESTexture.h"
 
 #include "gl_headers.h"
-#include <iostream>
-#include "logging/Log.h"
-
-//#ifdef _DEBUG
-//#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
-//#else
-//#define DBG_NEW new
-//#endif
+#include "api/logging/Log.h"
 
 namespace Azazel
 {
@@ -78,7 +71,7 @@ namespace Azazel
         }
         if (!data)
         {
-            Log::getLogger()->warnLog("Creating texture with no data provided");
+            Log::getLogger().warnLog("Creating texture with no data provided");
         }
         
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data);

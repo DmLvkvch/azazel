@@ -40,12 +40,10 @@ namespace Azazel
 
         TextureDataResourceManager()
         {
-            std::cout << "TextureDataResourceManager constructor" << std::endl;
         }
 
         virtual ~TextureDataResourceManager()
         {
-            std::cout << "TextureDataResourceManager destructor" << std::endl;
         }
 
         TextureData loadResource(const std::string& path, int flipVertically, bool needCache)

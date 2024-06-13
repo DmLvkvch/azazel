@@ -69,7 +69,10 @@ namespace Azazel
 
         virtual void clear(bool color = true, bool depth = false, bool stencil = false) = 0;
 
-        virtual void setViewport(int x, int y, unsigned int width, unsigned int height) = 0;
+        virtual void setViewport(int x, int y, unsigned int width, unsigned int height)
+        {
+
+        }
 
         void setViewport(const Viewport& viewport)
         {
@@ -101,31 +104,40 @@ namespace Azazel
 
         virtual void setDepthTest(bool enable) = 0;
 
-        virtual void setDepthMask(bool enable) = 0;
+        virtual void setDepthMask(bool enable)
+        {
 
-        virtual void setDepthFunc(CompareFunction compareFunction) = 0;
+        }
 
-        virtual void setStencilTest(bool enable) = 0;
+        virtual void setDepthFunc(CompareFunction compareFunction) {}
 
-        virtual void setStencilMask(unsigned int mask) = 0;
+        virtual void setStencilTest(bool enable) {}
 
-        virtual void setStencilFunc(CompareFunction compareFunction, int ref, unsigned int mask) = 0;
+        virtual void setStencilMask(unsigned int mask) {}
 
-        virtual void setStencilOp(StencilOperation sfail, StencilOperation dpfail, StencilOperation dppass) = 0;
+        virtual void setStencilFunc(CompareFunction compareFunction, int ref, unsigned int mask) {}
 
-        virtual void setStencilOpSeparate(CullMode face, StencilOperation sfail, StencilOperation dpfail, StencilOperation dppass) = 0;
+        virtual void setStencilOp(StencilOperation sfail, StencilOperation dpfail, StencilOperation dppass) {}
 
-        virtual void setBlend(bool enable) = 0;
+        virtual void setStencilOpSeparate(CullMode face, StencilOperation sfail, StencilOperation dpfail, StencilOperation dppass) {}
+
+        virtual void setBlend(bool enable) {}
 
         virtual void drawIndexed(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) = 0;
 
-        virtual void drawIndexedInstanced(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, int instanceCount) = 0;
+        virtual void drawIndexedInstanced(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, int instanceCount) {}
 
-        virtual void drawIndexedInstanced(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture, int instanceCount) = 0;
+        virtual void drawIndexedInstanced(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader, const Texture& texture, int instanceCount) {}
 
-        virtual void drawArrays(const VertexArray& vertexArray, const Shader& shader, const Texture& texture) = 0;
+        virtual void drawArrays(const VertexArray& vertexArray, const Shader& shader, const Texture& texture)
+        {
+
+        }
     
-        virtual void drawArrays(const VertexArray& vertexArray, const Shader& shader, int vertexCount) = 0;
+        virtual void drawArrays(const VertexArray& vertexArray, const Shader& shader, int vertexCount)
+        {
+
+        }
 
         void drawMesh(const Mesh& mesh, const Shader& shader, const Texture& texture)
         {

@@ -3,6 +3,8 @@
 #include "Window.h"
 
 struct GLFWwindow;
+#include <vulkan/vulkan.h>
+#include <vector>
 
 //#ifdef _DEBUG
 //#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
@@ -32,7 +34,7 @@ namespace Azazel
         GLFWwindow* initGLFW(int width, int height, const std::string& title);
         void initImgui(GLFWwindow* window, int width, int height);
     private:
-        GLFWwindow* window;
+        
         int width;
         int height;
         std::string title;
@@ -43,5 +45,7 @@ namespace Azazel
         };
 
         WindowData windowData;
+
+        GLFWwindow* window;
     };
 }

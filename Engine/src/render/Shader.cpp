@@ -3,7 +3,6 @@
 #ifdef AZAZEL_GL
 #include "rhi/gl/GLESShader.h"
 #else 
-#include "rhi/vulkan/VKShader.h"
 #endif
 
 namespace Azazel
@@ -28,7 +27,7 @@ namespace Azazel
         #ifdef AZAZEL_GL
         return new GLESShader(vertex, fragment);
         #else 
-        return new VKShader(vertex, fragment);
+        return nullptr; // new AZShader(vertex, fragment);
         #endif
     }
 }

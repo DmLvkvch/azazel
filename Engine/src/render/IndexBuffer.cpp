@@ -3,7 +3,6 @@
 #ifdef AZAZEL_GL
 #include "render/rhi/gl/GLESIndexBuffer.h"
 #else
-#include "render/rhi/vulkan/VKIndexBuffer.h"
 #endif
 
 namespace Azazel
@@ -13,12 +12,13 @@ namespace Azazel
 
     }
     
-    IndexBuffer* IndexBuffer::create(const unsigned int* indices, size_t count)
+    IndexBuffer* IndexBuffer::create(const unsigned int* indices,
+                                     unsigned int count)
     {
         #ifdef AZAZEL_GL
         return new GLESIndexBuffer(indices, count);
         #else
-        return new VKIndexBuffer(indices, count);
+        return nullptr;// new VKIndexBuffer(indices, count);
         #endif
     }
 }

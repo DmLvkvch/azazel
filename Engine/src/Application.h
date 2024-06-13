@@ -5,28 +5,70 @@
 #include "camera/Camera.h"
 #include <memory>
 
-#ifdef _DEBUG
-#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
-// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
-// allocations to be of _CLIENT_BLOCK type
-#else
-#define DBG_NEW new
-#endif
+#include "render/rhi/vulkan/AZBuffer.h"
+#include "render/rhi/vulkan/AZCommandBuffer.h"
+#include "render/rhi/vulkan/AZInstance.h"
+#include "render/rhi/vulkan/AZSurface.h"
+#include "render/rhi/vulkan/AZDevice.h"
+#include "render/rhi/vulkan/AZSwapChain.h"
+#include "render/rhi/vulkan/AZRenderPass.h"
+#include "render/rhi/vulkan/AZFramebuffer.h"
+#include "render/rhi/vulkan/AZDescriptorSet.h"
+#include "render/rhi/vulkan/AZImage.h"
+#include <vulkan/vulkan.h>
+#include "render/Model.h"
 
 namespace Azazel
 {
     class Application
     {
     public:
-        Application();
+        Application(Window& window);
         ~Application();
         void run();
         void onEvent(Event& e);
         void pushLayer(Layer* layer);
         Window* getWindow();
+        static  void setApplication(Application* application);
         static Application* getApplication();
         unsigned long long subscribe(const std::function<void(Event&)>& func);
         unsigned long long subscribe(const std::function<void(float)>& func);
+
+        void createDescriptorSets();
+
+        void createDescriptorSetLayout();
+
+        void updateUniformBuffer();
+
+        VkShaderModule createShaderModule(VkDevice device, const std::vector<char>& code);
+
+        VkPipeline createGraphicsPipeline(VkDevice device);
+
+        void recordCommandBuffer(const AZCommandBuffer& azCommandBuffer, uint32_t imageIndex);
+
+        void createSyncObjects();
+
+        void drawFrame();
+
+
+        VkPipeline graphicsPipeline;
+
+        VkSemaphore imageAvailableSemaphore;
+        VkSemaphore renderFinishedSemaphore;
+        VkFence inFlightFence;
+
+        std::vector<VkDescriptorSet> descriptorSets;
+
+        VkDescriptorSetLayout descriptorSetLayout;
+        VkPipelineLayout pipelineLayout;
+
+        std::unique_ptr<AZVertexBuffer> vertexBuffer;
+        std::unique_ptr<AZIndexBuffer> indexBuffer;
+        std::unique_ptr<AZUniformBuffer> uniformBuffer;
+
+        std::unique_ptr<AZImageView> textureImageView;
+        std::unique_ptr<AZImage> textureImage;
+        std::unique_ptr<AZTextureSampler> textureSampler;
 
         void unsubscribe(long long id);
 
@@ -34,7 +76,7 @@ namespace Azazel
         void updateTargets(float delta);
     private:
         unsigned long long id = 0;
-        std::unique_ptr<Window> window;
+        Window& window;
         LayerStack layerStack;
         bool running = true;
         static Application* app;
@@ -42,5 +84,7 @@ namespace Azazel
         EventDispatcher<void, Event&> eventSubscribers;
         EventDispatcher<void , float> updateSubscribers;
         std::unique_ptr<Camera> camera;
+        
+        Model cerberus;
     };
 }

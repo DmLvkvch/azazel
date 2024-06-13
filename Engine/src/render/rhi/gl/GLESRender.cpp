@@ -196,7 +196,7 @@ namespace Azazel
         shader.bind();
         vertexArray.bind();
         indexBuffer.bind();
-        glDrawElements(GL_TRIANGLES, indexBuffer.getElementCount() * sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, indexBuffer.getElementCount(), GL_UNSIGNED_INT, 0);
         drawCalls++;
     }
 

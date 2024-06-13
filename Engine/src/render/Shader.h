@@ -18,10 +18,16 @@ namespace Azazel
             GEOMETRY
         };
 
-        static constexpr char const* UNIFORM_TEXTURE0      = "u_texture_0";
-        static constexpr char const* UNIFORM_TEXTURE1      = "u_texture_1";
-        static constexpr char const* UNIFORM_TEXTURE2      = "u_texture_2";
-        static constexpr char const* UNIFORM_TEXTURE3      = "u_texture_3";
+        static constexpr char const* UNIFORM_TEXTURE[8]    = {
+                                                                "u_texture_0", 
+                                                                "u_texture_1",
+                                                                "u_texture_2",
+                                                                "u_texture_3",
+                                                                "u_texture_4",
+                                                                "u_texture_5",
+                                                                "u_texture_6",
+                                                                "u_texture_7"
+                                                            };
         
         static constexpr char const* UNIFORM_MVP_MATRIX    = "u_mvp";
         static constexpr char const* UNIFORM_MODEL_MATRIX  = "u_model_matrix";
@@ -42,7 +48,7 @@ namespace Azazel
 
         virtual Shader* setTexture(const std::string& name, const Texture& texture, int slot = 0) = 0;
 
-        virtual Shader* setTextureCube(const std::string& name, const CubeMap& cubeMap, int slot = 0) = 0;
+        virtual Shader* setTextureCube(const std::string& name, const CubeMap& cubeMap, int slot = 0) {return nullptr;}
 
 	    virtual Shader* setVec4f(const std::string& name, const glm::vec4& vec4) = 0;
 
@@ -52,7 +58,7 @@ namespace Azazel
 
         virtual Shader* setVec2f(const std::string& name, const glm::vec2& vec2) = 0;
 
-        virtual Shader* setBool(const std::string& name, bool value) = 0;
+        virtual Shader* setBool(const std::string& name, bool value) {return nullptr;}
 
         void setLabel(const std::string& label);
 

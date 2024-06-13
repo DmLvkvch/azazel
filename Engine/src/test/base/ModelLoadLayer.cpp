@@ -2,7 +2,7 @@
 
 #include "api/file/FileUtils.h"
 #include "TextureUtils.h"
-#include "logging/Log.h"
+#include "api/logging/Log.h"
 #include <functional>
 #include "resources/ResourceManager.h"
 #include "render/ModelHelper.h"
@@ -18,7 +18,7 @@ namespace Azazel
 
         floor = ModelHelper::floor();
 
-        sphere = ModelHelper::sphere(36, 36);
+        sphere = ModelHelper::sphere (36, 36);
         sphere.transform.scale = { 0.5f, 0.5f, 0.5f };
 
         cerberus = ResourceManagers::getModelResourceManager().loadResource("objects/cerberus/cfg.json");
@@ -40,6 +40,8 @@ namespace Azazel
         delete depthTexture;
     }
 
+float time = 0.0f;
+
     void ModelLoadLayer::onUpdate(float delta)
     {
         cube.transform.rotation.y += delta / 10.0f;
@@ -55,12 +57,10 @@ namespace Azazel
 
         glm::vec3 lightPos {0.0f, 5.0f, 0.0f};
 
-        // lightPos.x = 0.0f + sin(glfwGetTime()) * 5.0f;
-        // lightPos.z = cos(glfwGetTime()) * 10.0f;
-        // lightPos.y = 8.0f + 4.0f * cos(glfwGetTime());
+
 
         sphere.transform.position = lightPos;
-
+        
         glm::mat4 lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
         glm::mat4 lightSpaceMatrix = lightProjection * lightView;
 
@@ -117,5 +117,7 @@ namespace Azazel
         renderer->setDepthFunc(CompareFunction::LESS_EQUAL);
         sbr.draw();
         renderer->setDepthFunc(CompareFunction::LESS);
+
+
     }
 }

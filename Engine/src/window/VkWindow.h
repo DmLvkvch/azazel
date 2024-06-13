@@ -1,8 +1,10 @@
 #pragma once
 
 #include "Window.h"
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan.hpp>
+
 #include <vector>
+#include <optional>
 
 struct GLFWwindow;
 
@@ -22,26 +24,23 @@ namespace Azazel
         virtual bool isVSync() const override;
         virtual void* getNativeWindow() override;
     private:
-        void destroyGLFW();
-        void destroyImgui();
-        void createInstance();
-
-        void initVulkan();
-
-		void createDebugCallback();
-		void findPhysicalDevice();
-		void findQueueFamilies();
-
-		void createWindowSurface();
-		void checkSwapChainSupport();
-		void createLogicalDevice();
-		void createSemaphores();
-		void createCommandPool();
-        
         GLFWwindow* initGLFW(int width, int height, const std::string& title);
-        void initImgui(GLFWwindow* window, int width, int height);
+        void initGLFWCallbacks(GLFWwindow*);
+
+        void destroyGLFW();
+
     private:
+        std::string title;
 
+        GLFWwindow* window;
+        int width;
+        int height;
 
+        struct WindowData
+        {
+            EventCallbackFn eventCallback;
+        };
+
+        WindowData windowData;
     };
 }

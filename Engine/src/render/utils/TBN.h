@@ -8,12 +8,15 @@
 #include <numeric>
 #include <vector>
 
-namespace Azazel {
-
-    class Utils {
+namespace Azazel
+{
+    class Utils
+    {
     public:
-        static void tbn(std::vector<Vertex_P3_N3_T2_TAN3_BTAN_3>& vertices, const std::vector<unsigned int>& indices) {
-            for (unsigned int i = 0; i < indices.size() - 2; i += 3) {
+        static void tbn(std::vector<Vertex_P3_N3_T2_TAN3_BTAN_3>& vertices, const std::vector<unsigned int>& indices)
+        {
+            for (unsigned int i = 0; i < indices.size() - 2; i += 3)
+            {
                 unsigned int v1 = indices[i];
                 unsigned int v2 = indices[i + 1];
                 unsigned int v3 = indices[i + 2];
@@ -52,14 +55,16 @@ namespace Azazel {
                 vertices[v3].normal += normal;
             }
 
-            for (unsigned int i = 0; i < vertices.size(); i++) {
+            for (unsigned int i = 0; i < vertices.size(); i++)
+            {
                 vertices[i].tangent = glm::normalize(vertices[i].tangent);
                 vertices[i].bitangent = glm::normalize(vertices[i].bitangent);
                 vertices[i].normal = glm::normalize(vertices[i].normal);
             }
         }
 
-        static void tbn(std::vector<Vertex_P3_N3_T2_TAN3_BTAN_3>& vertices) {
+        static void tbn(std::vector<Vertex_P3_N3_T2_TAN3_BTAN_3>& vertices) 
+        {
             std::vector<unsigned int> indices(vertices.size());
             std::iota(indices.begin(), indices.end(), 0);
             tbn(vertices, indices);

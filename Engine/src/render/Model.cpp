@@ -6,6 +6,7 @@
 #include "TextureUtils.h"
 #include "api/file/FileUtils.h"
 #include "Render.h"
+#include <nlohmann/json.hpp>
 
 namespace Azazel
 {
@@ -46,23 +47,6 @@ namespace Azazel
         }
         std::string directory = path.substr(0, path.find_last_of('/'));
         processNode(scene->mRootNode, scene, directory);
-    }
-
-    void Model::draw(Shader& shader)
-    {
-        shader.bind();
-        auto modelMatrix = transform.getTransformMatrix();
-        shader.setMatrix4f("model", modelMatrix);
-        shader.setMatrix4f("u_normal_matrix", glm::transpose(glm::inverse(glm::mat3(modelMatrix))));
-        for (const auto& mesh : meshes)
-        {
-            if (mesh.material)
-            {
-                auto m = mesh.material;
-                m->applyProperties(shader);
-            }
-            Render::getRender()->drawMesh(mesh, shader);
-        }
     }
 
     void Model::processNode(aiNode* node, const aiScene* scene, const std::string& directory)
@@ -106,7 +90,7 @@ namespace Azazel
                 vector.z = mesh->mBitangents[i].z;
                 vertex.bitangent = vector;
             }
-            if (mesh->mTextureCoords[0])
+            if(mesh->mTextureCoords[0])
             {
                 vertex.texCoord =  { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
             }
@@ -146,8 +130,8 @@ namespace Azazel
             }
         }
         auto m = Mesh::createMesh<Vertex_P3_N3_T2_TAN3_BTAN_3>(vertices, indices);
-        m.textures = std::move(textures);
         m.material = mat;
+        textures.clear();
         return m;
     }
 
@@ -181,8 +165,23 @@ namespace Azazel
             texture.reset(Texture::create(textureData));
             TextureUtils::freeTextureData(textureData);
             textures.push_back(texture);
-           
         }
     }
 
+    void Model::draw(Shader& shader)
+    {
+        shader.bind();
+        auto modelMatrix = transform.getTransformMatrix();
+        shader.setMatrix4f("model", modelMatrix);
+        shader.setMatrix4f("u_normal_matrix", glm::transpose(glm::inverse(glm::mat3(modelMatrix))));
+        for (const auto& mesh : meshes)
+        {
+            if (mesh.material)
+            {
+                auto m = mesh.material;
+                m->applyProperties(shader);
+            }
+            Render::getRender()->drawMesh(mesh, shader);
+        }
+    }
 }

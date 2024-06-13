@@ -26,3 +26,12 @@
 [submodule "Engine/vendor/json"]
 	path = Engine/vendor/json
 	url = https://github.com/nlohmann/json
+[submodule "Engine/vendor/glslang"]
+	path = Engine/vendor/glslang
+	url = https://github.com/KhronosGroup/glslang
+[submodule "Engine/vendor/VulkanMemoryAllocator"]
+	path = Engine/vendor/VulkanMemoryAllocator
+	url = https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator
+[submodule "Engine/vendor/SPIRV-Reflect"]
+	path = Engine/vendor/SPIRV-Reflect
+	url = https://github.com/KhronosGroup/SPIRV-Reflect

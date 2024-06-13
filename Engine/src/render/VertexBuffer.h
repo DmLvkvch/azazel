@@ -5,7 +5,6 @@
 #include <string>
 
 // TODO remove opengl dependency
-#include "rhi/gl/gl_headers.h"
 
 namespace Azazel
 {
@@ -57,24 +56,8 @@ namespace Azazel
         return 0;
     }
 
-    // TODO remove opengl dependency
     static int shaderTypeToGLType(ShaderDataType type)
     {
-        switch(type)
-        {
-            case ShaderDataType::FLOAT:  return GL_FLOAT;
-            case ShaderDataType::FLOAT2: return GL_FLOAT;
-            case ShaderDataType::FLOAT3: return GL_FLOAT;
-            case ShaderDataType::FLOAT4: return GL_FLOAT;
-            case ShaderDataType::MAT3:   return GL_FLOAT;
-            case ShaderDataType::MAT4:   return GL_FLOAT;
-            case ShaderDataType::INT:    return GL_INT;
-            case ShaderDataType::INT2:   return GL_INT;
-            case ShaderDataType::INT3:   return GL_INT;
-            case ShaderDataType::INT4:   return GL_INT;
-            case ShaderDataType::BOOL:   return GL_BOOL;
-            case ShaderDataType::None:   throw std::invalid_argument("Invalid type None");
-        }
         return 0;
     }
 
@@ -168,7 +151,7 @@ namespace Azazel
         virtual void setLayout(const BufferLayout& bufferlayout) = 0;
         virtual const BufferLayout& getBufferLayout() const = 0;
         virtual void updateSubData(int offset, void* data, int size) = 0;
-        virtual void updateData(void* data, int size) = 0;
+        virtual void updateData(void* data, int size) {}
         
         static VertexBuffer* create(const float* vertices, size_t size);
     };

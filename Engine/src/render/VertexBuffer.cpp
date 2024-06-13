@@ -3,7 +3,6 @@
 #ifdef AZAZEL_GL
 #include "render/rhi/gl/GLESVertexBuffer.h"
 #else 
-#include "render/rhi/vulkan/VKVertexBuffer.h"
 #endif
 
 namespace Azazel
@@ -13,7 +12,7 @@ namespace Azazel
         #ifdef AZAZEL_GL
         return new GLESVertexBuffer(vertices, size);
         #else 
-        return new VKVertexBuffer(vertices, size);
+        return nullptr; //VKVertexBuffer(vertices, size);
         #endif
     }
 }

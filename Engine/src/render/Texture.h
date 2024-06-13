@@ -7,7 +7,7 @@
 
 namespace Azazel
 {
-    struct TextureDescriptor
+    struct TextureDesc
     {
         TextureType textureType = TextureType::TEXTURE_2D;
         PixelFormat textureFormat = PixelFormat::RGBA8888;

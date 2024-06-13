@@ -17,12 +17,10 @@ namespace Azazel
 
     Input::Input()
     {
-        std::cout << "Input constructor" << std::endl;
     }
 
     Input::~Input()
     {
-        std::cout << "Input destructor" << std::endl;
     }
 
     bool Input::isKeyPressed(int keycode)

@@ -9,13 +9,7 @@ namespace Azazel
         STATIC,
         DYNAMIC
     };
-
-    enum class BufferType : uint32_t
-    {
-        VERTEX,
-        INDEX
-    };
-
+    
     enum class ShaderStage : uint32_t
     {
         VERTEX,

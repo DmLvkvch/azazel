@@ -33,7 +33,6 @@ namespace Azazel
             this->meshes = std::move(model.meshes);
             this->textures = std::move(model.textures);
             this->transform = std::move(model.transform);
-
         }
 
         Model(const Model& model)
@@ -61,6 +60,10 @@ namespace Azazel
             return *this;
         }
 
+        ~Model()
+        {
+        }
+
     public:
         Transform transform;
 
@@ -74,7 +77,7 @@ namespace Azazel
         void processNode(aiNode* node, const aiScene* scene, const std::string& directory);
 
         Mesh processMesh(aiMesh* mesh, const aiScene* scene, const std::string& directory);
-    private:
+    public:
         std::vector<Mesh> meshes;
         std::vector<std::shared_ptr<Texture>> textures;
     };

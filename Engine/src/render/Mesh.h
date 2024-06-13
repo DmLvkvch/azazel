@@ -44,12 +44,6 @@ namespace Azazel
             indexBuffer.reset(IndexBuffer::create(indices, count));
             std::shared_ptr<VertexBuffer> vertexBuffer (VertexBuffer::create(vertices, size));
             vertexArray->addBuffer(vertexBuffer, T::bufferLayout);
-            layout = T::bufferLayout;
-        }
-
-        BufferLayout getVertex()
-        {
-            return layout; 
         }
 
         ~Mesh()
@@ -57,10 +51,8 @@ namespace Azazel
 
         }
 
-        std::vector<std::shared_ptr<Texture>> textures;
         std::optional<Material> material = std::nullopt;
-    private:
-        BufferLayout layout;
+    public:
         std::shared_ptr<VertexArray> vertexArray;
         std::shared_ptr<IndexBuffer> indexBuffer;
     };
