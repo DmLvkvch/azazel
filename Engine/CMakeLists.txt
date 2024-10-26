@@ -39,9 +39,13 @@ OPTION (ASSIMP_BUILD_TESTS "If the test suite for Assimp is built in addition to
 OPTION (ASSIMP_WARNINGS_AS_ERRORS "Treat all warnings as errors." OFF)
 OPTION (ASSIMP_INSTALL "Disable this if you want to use assimp as a submodule." OFF )
 OPTION (FT_DISABLE_HARFBUZZ "DISABLE HARFBUZZ" ON)
+OPTION (FT_DISABLE_BROTLI "DISABLE BROTLI" ON)
+
+OPTION (SPIRV_REFLECT_STATIC_LIB "Build a SPIRV-Reflect static library" ON)
 
 add_subdirectory(vendor/glad)
 add_subdirectory(vendor/glslang)
+add_subdirectory(vendor/SPIRV-Reflect)
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/glm)
 add_subdirectory(vendor/stb_image)
@@ -79,7 +83,7 @@ endif ()
 
 #set_property(TARGET ${PROJECT_NAME} PROPERTY COMPILE_WARNING_AS_ERROR)
 
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} Vulkan::Vulkan glfw SPIRV spirv-reflect assimp stb_image glad glm::glm freetype IMGUI OpenGL::GL VulkanMemoryAllocator)
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} Vulkan::Vulkan glfw SPIRV spirv-reflect-static assimp stb_image glad glm::glm freetype IMGUI OpenGL::GL VulkanMemoryAllocator)
 
 file(REMOVE ${CMAKE_BINARY_DIR}/shaders)
 file(REMOVE ${CMAKE_BINARY_DIR}/images)

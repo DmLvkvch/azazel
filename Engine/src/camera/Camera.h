@@ -52,27 +52,27 @@ namespace Azazel
         void onInputUpdate(float delta)
         {
             float cameraSpeed = static_cast<float>(2.5 * delta) / 1000.0f;
-            if (Input::getInput()->isKeyPressed(KEY_W))
+            if (Input::getInput().isKeyPressed(KEY_W))
             {
                 moveForward(cameraSpeed);
             }
-            if (Input::getInput()->isKeyPressed(KEY_S))
+            if (Input::getInput().isKeyPressed(KEY_S))
             {
                 moveForward(-cameraSpeed);
             }
-            if (Input::getInput()->isKeyPressed(KEY_A))
+            if (Input::getInput().isKeyPressed(KEY_A))
             {
                 moveRight(cameraSpeed);
             }
-            if (Input::getInput()->isKeyPressed(KEY_D))
+            if (Input::getInput().isKeyPressed(KEY_D))
             {
                 moveRight(-cameraSpeed);
             }
-            if (Input::getInput()->isKeyPressed(KEY_Q))
+            if (Input::getInput().isKeyPressed(KEY_Q))
             {
                 moveUp(cameraSpeed);
             }
-            if (Input::getInput()->isKeyPressed(KEY_E))
+            if (Input::getInput().isKeyPressed(KEY_E))
             {
                 moveUp(-cameraSpeed);
             }

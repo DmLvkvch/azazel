@@ -1,9 +1,12 @@
 #pragma once
 
-#include "vk_headers.h"
-#include <vector>
-#include <set>
+#include <vulkan/vulkan.hpp>     // for DispatchLoaderDynamic, DebugUtilsMes...
+#include <vulkan/vulkan_core.h>  // for VK_KHR_SWAPCHAIN_EXTENSION_NAME
 #include <optional>
+#include <set>
+#include <vector>                // for vector
+
+#include "vk_headers.h"
 
 namespace Azazel
 {

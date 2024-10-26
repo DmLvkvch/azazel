@@ -26,6 +26,6 @@ namespace Azazel
         poolInfo.maxSets = 2048 * pool_sizes.size();
         poolInfo.poolSizeCount = pool_sizes.size();
         poolInfo.pPoolSizes = pool_sizes.data();
-        vkCreateDescriptorPool(device.device, &poolInfo, nullptr, &descriptorPool);
+        descriptorPool = device.device.createDescriptorPool(poolInfo);
     }
 }

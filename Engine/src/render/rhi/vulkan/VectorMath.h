@@ -9,7 +9,7 @@
 
 namespace Azazel
 {
-        using Vector2 = glm::vec2;
+    using Vector2 = glm::vec2;
     using Vector3 = glm::vec3;
     using Vector4 = glm::vec4;
 
@@ -95,11 +95,9 @@ namespace Azazel
         const Vector2& tex1, const Vector2& tex2, const Vector2& tex3
     )
     {
-        // Edges of the triangle : postion delta
         auto deltaPos1 = pos2 - pos1;
         auto deltaPos2 = pos3 - pos1;
 
-        // texture delta
         auto deltaT1 = tex2 - tex1;
         auto deltaT2 = tex3 - tex1;
 

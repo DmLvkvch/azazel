@@ -22,7 +22,7 @@ namespace Azazel
         vk::CommandBuffer commandBuffer {};
         vk::CommandBufferAllocateInfo allocInfo {};
         allocInfo.setCommandPool(commandPool).setLevel(vk::CommandBufferLevel::ePrimary).setCommandBufferCount(1);
-        device.device.allocateCommandBuffers(&allocInfo, &commandBuffer);
+        std::ignore = device.device.allocateCommandBuffers(&allocInfo, &commandBuffer);
         return commandBuffer;
     }
 

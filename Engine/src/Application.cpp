@@ -504,7 +504,7 @@ namespace Azazel
 
     void Application::recordCommandBuffer(const AZCommandBuffer& azCommandBuffer, uint32_t imageIndex)
     {
-        VkCommandBuffer commandBuffer = azCommandBuffer.commandBuffer;
+        vk::CommandBuffer commandBuffer = azCommandBuffer.commandBuffer;
         vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[imageIndex], 0, nullptr);
 
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
@@ -512,13 +512,13 @@ namespace Azazel
         VkViewport viewport{};
         viewport.x = 0.0f;
         viewport.y = 0.0f;
-        viewport.width = (float)swapChain.swapChainExtent.width;
-        viewport.height = (float)swapChain.swapChainExtent.height;
+        viewport.width = (float) swapChain.swapChainExtent.width;
+        viewport.height = (float) swapChain.swapChainExtent.height;
         viewport.minDepth = 0.0f;
         viewport.maxDepth = 1.0f;
 
         vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
-        VkRect2D scissor{};
+        VkRect2D scissor {};
         scissor.offset = { 0, 0 };
         scissor.extent = swapChain.swapChainExtent;
         vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
@@ -531,12 +531,12 @@ namespace Azazel
 
     void Application::createSyncObjects()
     {
-        VkSemaphoreCreateInfo semaphoreInfo{};
+        VkSemaphoreCreateInfo semaphoreInfo {};
         {
             semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
         }
 
-        VkFenceCreateInfo fenceInfo{};
+        VkFenceCreateInfo fenceInfo {};
         {
             fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
             fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;

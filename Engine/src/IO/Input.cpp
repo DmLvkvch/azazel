@@ -8,11 +8,10 @@
 
 namespace Azazel
 {
-    std::unique_ptr<Input> Input::input(new Input());
-
-    Input* Input::getInput()
+    Input& Input::getInput()
     {
-        return Input::input.get();
+        static Input input;
+        return input;
     }
 
     Input::Input()

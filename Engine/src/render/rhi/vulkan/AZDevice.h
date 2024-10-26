@@ -1,13 +1,20 @@
 #pragma once
 
-#include "AZQueue.h"
-#include "AZInstance.h"
-#include <optional>
+#include <stdint.h>              // for uint32_t
+#include <vulkan/vulkan.hpp>     // for Device, PhysicalDevice, MemoryProper...
+#include <vulkan/vulkan_core.h>  // for VK_KHR_SWAPCHAIN_EXTENSION_NAME
+#include <array>                 // for array
+#include <optional>              // for optional
 #include <set>
-#include <array>
+#include <vector>                // for vector
+
+#include "AZInstance.h"
+#include "AZQueue.h"             // for AZQueue
 
 namespace Azazel
 {
+class AZInstance;
+
     struct QueueFamilyIndices
     {
         std::optional<uint32_t> presentFamily;

@@ -1,5 +1,11 @@
 #include "AZDevice.h"
 
+#include <set>                             // for set, __tree_const_iterator
+#include <string>                          // for basic_string, string
+
+#include "render/rhi/vulkan/AZInstance.h"  // for AZInstance
+#include "render/rhi/vulkan/AZQueue.h"     // for AZQueue
+
 namespace Azazel
 {
 

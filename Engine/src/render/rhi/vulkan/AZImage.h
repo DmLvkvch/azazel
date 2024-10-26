@@ -4,6 +4,7 @@
 #include "AZContext.h"
 #include <stb_image/stb_image.h>
 #include "render/TextureData.h"
+#include <iostream>
 
 namespace Azazel
 {

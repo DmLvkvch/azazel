@@ -1,6 +1,7 @@
 #include "AZBuffer.h"
 #include "AZContext.h"
 #include "VulkanMemoryAllocator.h"
+#include <variant>
 
 namespace Azazel
 {
@@ -51,13 +52,13 @@ namespace Azazel
     void AZBuffer::map()
     {
         auto& device = getVulkanContext().getVulkanDevice();
-        vkMapMemory(device.device, bufferMemory, 0, size, 0, &hostVisibleData);
+        hostVisibleData = device.device.mapMemory(bufferMemory, 0, size, {});
     }
 
     void AZBuffer::unmap()
     {
         auto& device = getVulkanContext().getVulkanDevice();
-        vkUnmapMemory(device.device, bufferMemory);
+        device.device.unmapMemory(bufferMemory);
         hostVisibleData = nullptr;
     }
 

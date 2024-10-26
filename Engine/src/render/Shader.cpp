@@ -4,12 +4,13 @@
 #include "rhi/gl/GLESShader.h"
 #else 
 #endif
+#include <string>
 
 namespace Azazel
 {
     Shader::Shader(const std::string& vertexShader, const std::string& fragmentShader)
-    {
-
+    {  
+        std::stoi()
     }
 
     Shader::~Shader()

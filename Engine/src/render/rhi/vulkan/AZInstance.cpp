@@ -1,9 +1,12 @@
 #include "AZInstance.h"
 
-#include <iostream>
-#include <exception>
-#include <GLFW/glfw3.h>
-#include "api/logging/Log.h"
+#include <GLFW/glfw3.h>          // for glfwGetRequiredInstanceExtensions
+#include <stdint.h>              // for uint32_t
+#include <string.h>              // for strcmp
+#include <vulkan/vk_platform.h>  // for VKAPI_ATTR, VKAPI_CALL
+#include <string>                // for basic_string
+
+#include "api/logging/Log.h"     // for Log
 
 namespace Azazel
 {

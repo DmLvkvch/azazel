@@ -41,7 +41,7 @@ namespace Azazel
         device = std::make_unique<VulkanDevice>(*instance, *physicalDevice);
 
         VmaAllocatorCreateInfo allocatorInfo {};
-        allocatorInfo.vulkanApiVersion = VK_MAKE_VERSION(1, 0, 0);
+        allocatorInfo.vulkanApiVersion = VK_MAKE_VERSION(1, 0, 3);
         allocatorInfo.physicalDevice = physicalDevice->get();
         allocatorInfo.device = device->device;
         allocatorInfo.instance = instance->instance;

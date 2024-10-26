@@ -1,25 +1,40 @@
 #pragma once
 
-#include "window/Window.h"
-#include "LayerStack.h"
-#include "camera/Camera.h"
-#include <memory>
-
-#include "render/rhi/vulkan/AZBuffer.h"
-#include "render/rhi/vulkan/AZCommandBuffer.h"
-#include "render/rhi/vulkan/AZInstance.h"
-#include "render/rhi/vulkan/AZSurface.h"
-#include "render/rhi/vulkan/AZDevice.h"
-#include "render/rhi/vulkan/AZSwapChain.h"
-#include "render/rhi/vulkan/AZRenderPass.h"
-#include "render/rhi/vulkan/AZFramebuffer.h"
-#include "render/rhi/vulkan/AZDescriptorSet.h"
-#include "render/rhi/vulkan/AZImage.h"
+#include <stdint.h>                             // for uint32_t
 #include <vulkan/vulkan.h>
-#include "render/Model.h"
+#include <vulkan/vulkan_core.h>                 // for VkDevice, VkPipeline
+#include <functional>                           // for function
+#include <memory>                               // for unique_ptr
+#include <vector>                               // for vector
+
+#include "LayerStack.h"                         // for LayerStack
+#include "camera/Camera.h"
+#include "events/Event.h"                       // for Event (ptr only), Eve...
+#include "render/Model.h"                       // for Model
+#include "render/rhi/vulkan/AZBuffer.h"
+#include "render/rhi/vulkan/AZCommandBuffer.h"  // for AZCommandBuffer
+#include "render/rhi/vulkan/AZDescriptorSet.h"
+#include "render/rhi/vulkan/AZDevice.h"
+#include "render/rhi/vulkan/AZFramebuffer.h"
+#include "render/rhi/vulkan/AZImage.h"
+#include "render/rhi/vulkan/AZInstance.h"
+#include "render/rhi/vulkan/AZRenderPass.h"
+#include "render/rhi/vulkan/AZSurface.h"
+#include "render/rhi/vulkan/AZSwapChain.h"
+#include "window/Window.h"
 
 namespace Azazel
 {
+class AZImage;
+class AZImageView;
+class AZIndexBuffer;
+class AZTextureSampler;
+class AZUniformBuffer;
+class AZVertexBuffer;
+class Camera;
+class Layer;
+class Window;
+
     class Application
     {
     public:
